@@ -1,0 +1,10 @@
+{
+  "name": "تطبيق الرافدين",
+  "short_name": "الرافدين",
+  "description": "نظام مبيعات",
+  "start_url": ".",
+  "display": "standalone",
+  "background_color": "#0d47a1",
+  "theme_color": "#0d47a1",
+  "icons": []
+}
