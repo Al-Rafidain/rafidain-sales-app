@@ -27,6 +27,46 @@
         <h1>تطبيق الرافدين</h1>
         <p>نظام مبيعات</p>
     </div>
+    <!-- صفحة الفاتورة -->
+<div id="invoice-page" style="padding:20px; background:white; color:black;">
+  <h2>فاتورة جديدة</h2>
+  
+  <input type="text" id="searchProduct" placeholder="ابحث عن منتج او باركود..." style="width:100%; padding:10px;">
+  
+  <table id="invoiceTable" border="1" style="width:100%; margin-top:10px;">
+    <tr>
+      <th>المنتج</th>
+      <th>الكمية</th>
+      <th>السعر</th>
+      <th>المجموع</th>
+    </tr>
+  </table>
+  
+  <h3>المجموع الكلي: <span id="total">0</span> دينار</h3>
+  <button onclick="printInvoice()">طباعة الفاتورة</button>
+</div>
+
+<script>
+let cart = [];
+function addToCart(name, price){
+  cart.push({name, price, qty:1});
+  updateTable();
+}
+function updateTable(){
+  let table = document.getElementById("invoiceTable");
+  let total = 0;
+  table.innerHTML = "<tr><th>المنتج</th><th>الكمية</th><th>السعر</th><th>المجموع</th></tr>";
+  cart.forEach(item=>{
+    let sum = item.price * item.qty;
+    total += sum;
+    table.innerHTML += `<tr><td>${item.name}</td><td>${item.qty}</td><td>${item.price}</td><td>${sum}</td></tr>`;
+  });
+  document.getElementById("total").innerText = total;
+}
+function printInvoice(){
+  window.print();
+}
+</script>
     <script>
 if('serviceWorker' in navigator) {
   navigator.serviceWorker.register('service-worker.js');
