@@ -48,6 +48,21 @@
 
 <script>
 let cart = [];
+    // منتجات تجريبية
+let products = [
+  {name: "شامبو", price: 5000},
+  {name: "صابون", price: 2000},
+  {name: "معجون اسنان", price: 3500}
+];
+
+// نخلي من نضغط Enter بالبحث يضيف المنتج
+document.getElementById("searchProduct").addEventListener("keypress", function(e){
+  if(e.key === "Enter"){
+    let p = products.find(x => x.name.includes(this.value));
+    if(p) addToCart(p.name, p.price);
+    this.value = "";
+  }
+});
 function addToCart(name, price){
   cart.push({name, price, qty:1});
   updateTable();
