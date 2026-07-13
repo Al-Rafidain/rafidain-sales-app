@@ -64,15 +64,13 @@
     msg.innerText = "جاري تسجيل الدخول...";
     msg.className = "text-center mt-3 text-sm text-blue-400";
 
-    signInWithEmailAndPassword(auth, email, password)
-    .then((userCredential) => {
-      msg.innerText = "تم تسجيل الدخول بنجاح";
+    msg.innerText = "تم تسجيل الدخول بنجاح";
       
-      if(role === "sales") {
-        window.location.href = "sales.html";
-      } else if(role === "admin") {
-        window.location.href = "dashboard.html";
-      }
+if(role === "sales") {
+  window.location.href = "sales.html";
+} else if(role === "admin") {
+  window.location.href = "dashboard.html";
+}
     })
     .catch((error) => {
       msg.innerText = "خطأ: " + error.message;
