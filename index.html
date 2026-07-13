@@ -21,21 +21,17 @@
 </div>
 
 <script>
-// اول ما يفتح الموقع يضيف المستخدمين اذا ماكو
-let users = JSON.parse(localStorage.getItem('users'));
-if(!users){
-  users = [
-    {username:"admin", password:"1234"},
-    {username:"احمد", password:"1234"}
-  ];
-  localStorage.setItem('users', JSON.stringify(users));
-}
+// اجباري كل ما يفتح الموقع يحدث المستخدمين
+let users = [
+  {username:"admin", password:"1234"},
+  {username:"ahmed", password:"1234"}
+];
+localStorage.setItem('users', JSON.stringify(users));
 
 function login(){
   let user = document.getElementById('username').value.trim();
   let pass = document.getElementById('password').value.trim();
   
-  users = JSON.parse(localStorage.getItem('users'));
   let found = users.find(u => u.username === user && u.password === pass);
   
   if(found){
