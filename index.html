@@ -46,10 +46,17 @@
       msg.innerText = "جاري تسجيل الدخول...";
       
       signInWithEmailAndPassword(auth, email, password)
-      .then((userCredential) => {
-        msg.innerText = "تم الدخول بنجاح ✅";
-        msg.className = "text-green-400 text-center mt-3 text-sm";
-      })
+      const role = document.getElementById("userRole").value;
+if(role === ""){
+  msg.innerText = "⚠️ اختار نوع الدخول اول";
+  msg.className = "text-yellow-400 text-center mt-3 text-sm";
+  return;
+}
+if(role === "sales"){
+  window.location.href = "sales.html";
+} else if(role === "admin"){
+  window.location.href = "dashboard.html";
+}
       .catch((error) => {
         msg.innerText = "خطأ: " + error.code;
         msg.className = "text-red-400 text-center mt-3 text-sm";
