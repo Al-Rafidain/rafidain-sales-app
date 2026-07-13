@@ -11,9 +11,9 @@
 <div class="bg-gray-800 p-8 rounded-lg shadow-lg w-96">
   <h1 class="text-2xl font-bold text-center mb-6">تسجيل الدخول</h1>
   
-  <input id="email" type="email" placeholder="الايميل" value="admin@rafidain.com" class="w-full p-3 mb-3 bg-gray-700 rounded text-white">
+  <input id="email" type="email" placeholder="الايميل" class="w-full p-3 mb-3 bg-gray-700 rounded text-white">
   
-  <input id="password" type="password" placeholder="كلمة السر" value="12345678" class="w-full p-3 mb-3 bg-gray-700 rounded text-white">
+  <input id="password" type="password" placeholder="كلمة السر" class="w-full p-3 mb-3 bg-gray-700 rounded text-white">
   
   <select id="userRole" class="w-full p-3 mb-4 bg-gray-700 rounded text-white">
     <option value="">اختر نوع الدخول</option>
@@ -21,7 +21,7 @@
     <option value="admin">الادارة</option>
   </select>
 
-  <button onclick="login()" class="w-full bg-blue-600 p-3 rounded hover:bg-blue-700 font-bold">دخول</button>
+  <button id="loginBtn" class="w-full bg-blue-600 p-3 rounded hover:bg-blue-700 font-bold cursor-pointer">دخول</button>
 
   <p id="msg" class="text-center mt-3 text-sm"></p>
 </div>
@@ -43,7 +43,7 @@
   const app = initializeApp(firebaseConfig);
   const auth = getAuth(app);
 
-  window.login = function() {
+  document.getElementById("loginBtn").onclick = function() {
     const email = document.getElementById("email").value;
     const password = document.getElementById("password").value;
     const role = document.getElementById("userRole").value;
