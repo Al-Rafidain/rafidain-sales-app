@@ -17,7 +17,7 @@ if(!loggedIn){
   window.location.href = 'index.html';
 }
 
-// اذا مو admin يرجعه لصفحة البيع
+// يرجعه لصفحة البيع اذا مو admin
 if(currentUser !== 'admin'){
   window.location.href = 'sales.html';
 }
@@ -28,4 +28,42 @@ if(currentUser !== 'admin'){
     <h1 class="text-3xl font-bold">لوحة تحكم الادارة</h1>
     <div>
       <span class="ml-4">مرحبا: <b id="userName"></b></span>
-      <button onclick="logout()" class="bg-red-500 text-white
+      <button onclick="logout()" class="bg-red-500 text-white px-4 py-2 rounded">تسجيل الخروج</button>
+    </div>
+  </div>
+
+  <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+    
+    <!-- ادارة المنتجات -->
+    <a href="add-product.html" class="bg-white p-6 rounded-lg shadow hover:shadow-lg">
+      <h2 class="text-xl font-bold mb-2">اضافة منتج</h2>
+      <p class="text-gray-600">اضافة منتجات جديدة للمخزن</p>
+    </a>
+
+    <!-- التقارير -->
+    <a href="reports.html" class="bg-white p-6 rounded-lg shadow hover:shadow-lg">
+      <h2 class="text-xl font-bold mb-2">التقارير</h2>
+      <p class="text-gray-600">عرض تقارير المبيعات</p>
+    </a>
+
+    <!-- ادارة المستخدمين -->
+    <a href="users.html" class="bg-white p-6 rounded-lg shadow hover:shadow-lg">
+      <h2 class="text-xl font-bold mb-2">ادارة المستخدمين</h2>
+      <p class="text-gray-600">اضافة وحذف المستخدمين</p>
+    </a>
+
+  </div>
+</div>
+
+<script>
+document.getElementById('userName').innerText = currentUser;
+
+function logout(){
+  localStorage.removeItem('loggedIn');
+  localStorage.removeItem('currentUser');
+  window.location.href = 'index.html';
+}
+</script>
+
+</body>
+</html>
