@@ -1,15 +1,19 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-  <meta charset="UTF-8">
-  <title>لوحة الادارة</title>
-  <script src="https://cdn.tailwindcss.com"></script>
+<meta charset="UTF-8">
+<title>لوحة الادارة - الرفيدين</title>
+<script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body class="bg-gray-900 text-white flex items-center justify-center h-screen">
-  <div class="text-center">
-    <h1 class="text-4xl mb-4">مرحبا بيك في لوحة الادارة ✅</h1>
-    <p>هنا رح نخلي التقارير والمنتجات والمستخدمين</p>
-    <a href="index.html" class="text-blue-400">تسجيل خروج</a>
+<body class="bg-gray-900 text-white p-8">
+  <h1 class="text-3xl font-bold text-center mb-6">✅ مرحبا بيك في لوحة الادارة</h1>
+  <p class="text-center text-gray-400 mb-8">هنا راح تضيف التقارير والمنتجات والمستخدمين</p>
+  
+  <div class="grid grid-cols-2 gap-4 max-w-2xl mx-auto">
+    <button class="bg-blue-600 p-4 rounded hover:bg-blue-700">اضافة منتج</button>
+    <button class="bg-green-600 p-4 rounded hover:bg-green-700">عرض التقارير</button>
+    <button class="bg-purple-600 p-4 rounded hover:bg-purple-700">المستخدمين</button>
+    <button onclick="window.location.href='index.html'" class="bg-red-600 p-4 rounded hover:bg-red-700">تسجيل الخروج</button>
   </div>
 </body>
 </html>
