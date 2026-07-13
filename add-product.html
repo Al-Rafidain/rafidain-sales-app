@@ -1,27 +1,42 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
-<head><meta charset="UTF-8"><title>اضافة منتج</title><script src="https://cdn.tailwindcss.com"></script></head>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>اضافة منتج</title>
+<script src="https://cdn.tailwindcss.com"></script>
+</head>
 <body class="bg-gray-100 p-4">
-<div class="max-w-lg mx-auto bg-white p-6 rounded shadow">
-<h1 class="text-2xl font-bold mb-4">اضافة منتج جديد</h1>
-<input id="pname" placeholder="اسم المنتج" class="w-full p-2 mb-3 border rounded">
-<input id="pprice" type="number" placeholder="السعر" class="w-full p-2 mb-3 border rounded">
-<input id="pqty" type="number" placeholder="الكمية" class="w-full p-2 mb-3 border rounded">
-<button onclick="addProduct()" class="w-full bg-green-600 text-white p-3 rounded">حفظ المنتج</button>
-<a href="dashboard.html" class="block text-center mt-4 text-blue-600">رجوع</a>
+<div class="max-w-lg mx-auto bg-white p-6 rounded-lg shadow">
+<h1 class="text-2xl font-bold mb-4 text-center">اضافة منتج جديد</h1>
+<input id="pbarcode" placeholder="الباركود" class="w-full p-3 mb-3 border rounded text-lg">
+<input id="pname" placeholder="اسم المنتج" class="w-full p-3 mb-3 border rounded text-lg">
+<input id="pprice" type="number" placeholder="السعر" class="w-full p-3 mb-3 border rounded text-lg">
+<input id="pqty" type="number" placeholder="الكمية" class="w-full p-3 mb-3 border rounded text-lg">
+<button onclick="addProduct()" class="w-full bg-green-600 text-white p-3 rounded font-bold text-lg hover:bg-green-700">حفظ المنتج</button>
+<a href="dashboard.html" class="block text-center mt-4 text-blue-600">رجوع للوحة التحكم</a>
 </div>
 <script>
-if(localStorage.getItem('currentUser')!== 'admin'){ window.location.href = 'index.html'; }
+if(localStorage.getItem('currentUser') !== 'admin'){ window.location.href = 'index.html'; }
+
 function addProduct(){
-  let name = document.getElementById('pname').value;
+  let barcode = document.getElementById('pbarcode').value.trim();
+  let name = document.getElementById('pname').value.trim();
   let price = parseFloat(document.getElementById('pprice').value);
   let qty = parseInt(document.getElementById('pqty').value);
-  if(!name ||!price ||!qty) return alert('املأ كل الحقول');
+  if(!barcode || !name || !price || !qty) return alert('املأ كل الحقول');
+  
   let products = JSON.parse(localStorage.getItem('products')) || [];
-  products.push({name, price, qty});
+  if(products.find(p => p.barcode === barcode)) return alert('الباركود موجود مسبقا');
+  
+  products.push({barcode, name, price, qty});
   localStorage.setItem('products', JSON.stringify(products));
-  alert('تمت الاضافة');
-  document.getElementById('pname').value=''; document.getElementById('pprice').value=''; document.getElementById('pqty').value='';
+  alert('تمت اضافة المنتج بنجاح');
+  document.getElementById('pbarcode').value=''; 
+  document.getElementById('pname').value=''; 
+  document.getElementById('pprice').value=''; 
+  document.getElementById('pqty').value='';
+  document.getElementById('pbarcode').focus();
 }
 </script>
 </body>
