@@ -2,18 +2,47 @@
 <html lang="ar" dir="rtl">
 <head>
 <meta charset="UTF-8">
-<title>لوحة الادارة - الرفيدين</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>لوحة الادارة</title>
 <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body class="bg-gray-900 text-white p-8">
-  <h1 class="text-3xl font-bold text-center mb-6">✅ مرحبا بيك في لوحة الادارة</h1>
-  <p class="text-center text-gray-400 mb-8">هنا راح تضيف التقارير والمنتجات والمستخدمين</p>
+<body class="bg-gray-900 text-white flex items-center justify-center h-screen">
+
+<div class="bg-gray-800 p-8 rounded-lg shadow-lg w-96 text-center">
+  <h1 class="text-2xl font-bold mb-6">مرحبا بيك بالادارة</h1>
   
-  <div class="grid grid-cols-2 gap-4 max-w-2xl mx-auto">
-    <button class="bg-blue-600 p-4 rounded hover:bg-blue-700">اضافة منتج</button>
-    <button class="bg-green-600 p-4 rounded hover:bg-green-700">عرض التقارير</button>
-    <button class="bg-purple-600 p-4 rounded hover:bg-purple-700">المستخدمين</button>
-    <button onclick="window.location.href='index.html'" class="bg-red-600 p-4 rounded hover:bg-red-700">تسجيل الخروج</button>
+  <div class="buttons space-y-3">
+    <button class="btn w-full bg-green-600 p-3 rounded hover:bg-green-700 font-bold cursor-pointer" onclick="showReports()">عرض التقارير</button>
+    <button class="btn w-full bg-blue-600 p-3 rounded hover:bg-blue-700 font-bold cursor-pointer" onclick="addProduct()">اضافة منتج</button>
+    <button class="btn w-full bg-purple-600 p-3 rounded hover:bg-purple-700 font-bold cursor-pointer" onclick="showUsers()">المستخدمين</button>
+    <button class="btn w-full bg-red-600 p-3 rounded hover:bg-red-700 font-bold cursor-pointer" onclick="logout()">تسجيل الخروج</button>
   </div>
+</div>
+
+<script>
+// هاي وظائف الازرار
+function showReports(){
+  alert("راح نعرض صفحة التقارير");
+  // window.location.href = 'orders.html'; 
+}
+
+function addProduct(){
+  alert("راح نعرض صفحة اضافة منتج");
+  // window.location.href = 'add-product.html';
+}
+
+function showUsers(){
+  alert("راح نعرض صفحة المستخدمين");
+  // window.location.href = 'users.html';
+}
+
+function logout(){
+  if(confirm("متأكد تريد تسوي خروج؟")){
+    localStorage.clear(); 
+    window.location.href = 'index.html'; // يرجعك لهاي الصفحة اللي داز صورتها
+  }
+}
+</script>
+
 </body>
 </html>
