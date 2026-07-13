@@ -3,60 +3,51 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>لوحة الادارة</title>
+<title>لوحة التحكم</title>
 <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body class="bg-gray-100">
 
-<script>
-// فحص تسجيل الدخول
-let loggedIn = localStorage.getItem('loggedIn');
-let currentUser = localStorage.getItem('currentUser');
-
-if(!loggedIn){
-  window.location.href = 'index.html';
-}
-
-// يرجعه لصفحة البيع اذا مو admin
-if(currentUser !== 'admin'){
-  window.location.href = 'sales.html';
-}
-</script>
-
-<div class="p-6">
-  <div class="flex justify-between items-center mb-6">
-    <h1 class="text-3xl font-bold">لوحة تحكم الادارة</h1>
-    <div>
-      <span class="ml-4">مرحبا: <b id="userName"></b></span>
-      <button onclick="logout()" class="bg-red-500 text-white px-4 py-2 rounded">تسجيل الخروج</button>
-    </div>
+<div class="bg-blue-600 text-white p-4 flex justify-between items-center">
+  <h1 class="text-2xl font-bold">لوحة تحكم الادارة</h1>
+  <div>
+    <span>مرحبا: <b id="currentUser"></b></span>
+    <button onclick="logout()" class="bg-red-500 px-4 py-2 rounded mr-2">تسجيل الخروج</button>
   </div>
+</div>
 
+<div class="container mx-auto p-6">
   <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
     
-    <!-- ادارة المنتجات -->
-    <a href="add-product.html" class="bg-white p-6 rounded-lg shadow hover:shadow-lg">
-      <h2 class="text-xl font-bold mb-2">اضافة منتج</h2>
+    <!-- اضافة منتج -->
+    <div onclick="window.location.href='add-product.html'" class="bg-white p-6 rounded-lg shadow cursor-pointer hover:bg-gray-50">
+      <h2 class="font-bold text-lg mb-2">اضافة منتج</h2>
       <p class="text-gray-600">اضافة منتجات جديدة للمخزن</p>
-    </a>
+    </div>
 
     <!-- التقارير -->
-    <a href="reports.html" class="bg-white p-6 rounded-lg shadow hover:shadow-lg">
-      <h2 class="text-xl font-bold mb-2">التقارير</h2>
+    <div onclick="window.location.href='reports.html'" class="bg-white p-6 rounded-lg shadow cursor-pointer hover:bg-gray-50">
+      <h2 class="font-bold text-lg mb-2">التقارير</h2>
       <p class="text-gray-600">عرض تقارير المبيعات</p>
-    </a>
+    </div>
 
     <!-- ادارة المستخدمين -->
-    <a href="users.html" class="bg-white p-6 rounded-lg shadow hover:shadow-lg">
-      <h2 class="text-xl font-bold mb-2">ادارة المستخدمين</h2>
+    <div onclick="window.location.href='users.html'" class="bg-white p-6 rounded-lg shadow cursor-pointer hover:bg-gray-50">
+      <h2 class="font-bold text-lg mb-2">ادارة المستخدمين</h2>
       <p class="text-gray-600">اضافة وحذف المستخدمين</p>
-    </a>
+    </div>
 
   </div>
 </div>
 
 <script>
-document.getElementById('userName').innerText = currentUser;
+// منع الدخول اذا مو ادمن
+if(localStorage.getItem('loggedIn') !== 'true' || localStorage.getItem('currentUser') !== 'admin'){
+  window.location.href = 'index.html';
+}
+
+// عرض اسم المستخدم
+document.getElementById('currentUser').innerText = localStorage.getItem('currentUser');
 
 function logout(){
   localStorage.removeItem('loggedIn');
