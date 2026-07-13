@@ -1,77 +1,13 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
-<head>
-<meta charset="UTF-8">
-<title>ادارة المستخدمين</title>
-<script src="https://cdn.tailwindcss.com"></script>
-</head>
-<body class="bg-gray-900 text-white p-4">
-
-<div class="max-w-2xl mx-auto">
-  <h1 class="text-2xl font-bold mb-4">ادارة المستخدمين</h1>
-  
-  <!-- اضافة مستخدم -->
-  <div class="bg-gray-800 p-4 rounded mb-4">
-    <h2 class="font-bold mb-2">اضافة مستخدم جديد</h2>
-    <input id="newUser" placeholder="اسم المستخدم" class="w-full p-2 mb-2 rounded bg-gray-700">
-    <input id="newPass" placeholder="كلمة السر" class="w-full p-2 mb-2 rounded bg-gray-700">
-    <button onclick="addUser()" class="w-full bg-green-600 p-2 rounded">اضافة</button>
-  </div>
-
-  <!-- قائمة المستخدمين -->
-  <div class="bg-gray-800 p-4 rounded">
-    <h2 class="font-bold mb-2">المستخدمين الحاليين</h2>
-    <div id="userList"></div>
-  </div>
-  
-  <a href="dashboard.html" class="block text-center mt-4 text-blue-400">رجوع للوحة التحكم</a>
-</div>
-
+<head><meta charset="UTF-8"><title>ادارة المستخدمين</title><script src="https://cdn.tailwindcss.com"></script></head>
+<body class="bg-gray-900 text-white p-4"><div class="max-w-2xl mx-auto"><h1 class="text-2xl font-bold mb-4">ادارة المستخدمين</h1><div class="bg-gray-800 p-4 rounded mb-4"><h2 class="font-bold mb-2">اضافة مستخدم جديد</h2><input id="newUser" placeholder="اسم المستخدم" class="w-full p-2 mb-2 rounded bg-gray-700"><input id="newPass" placeholder="كلمة السر" class="w-full p-2 mb-2 rounded bg-gray-700"><button onclick="addUser()" class="w-full bg-green-600 p-2 rounded">اضافة</button></div><div class="bg-gray-800 p-4 rounded"><h2 class="font-bold mb-2">المستخدمين الحاليين</h2><div id="userList"></div></div><a href="dashboard.html" class="block text-center mt-4 text-blue-400">رجوع للوحة التحكم</a></div>
 <script>
-// منع الدخول اذا مو ادمن
-if(localStorage.getItem('currentUser') !== 'admin'){
-  window.location.href = 'index.html';
-}
-
-function loadUsers(){
-  let users = JSON.parse(localStorage.getItem('users')) || [];
-  let list = document.getElementById('userList');
-  list.innerHTML = '';
-  users.forEach((u, i) => {
-    if(u.username !== 'admin'){ // ما نخلي حذف الادمن
-      list.innerHTML += `
-        <div class="flex justify-between bg-gray-700 p-2 rounded mb-2">
-          <span>${u.username}</span>
-          <button onclick="deleteUser(${i})" class="text-red-500">حذف</button>
-        </div>
-      `;
-    }
-  });
-}
-
-function addUser(){
-  let user = document.getElementById('newUser').value.trim();
-  let pass = document.getElementById('newPass').value.trim();
-  if(!user || !pass) return alert('دخل الاسم وكلمة السر');
-  
-  let users = JSON.parse(localStorage.getItem('users')) || [];
-  users.push({username:user, password:pass});
-  localStorage.setItem('users', JSON.stringify(users));
-  
-  document.getElementById('newUser').value = '';
-  document.getElementById('newPass').value = '';
-  loadUsers();
-}
-
-function deleteUser(index){
-  let users = JSON.parse(localStorage.getItem('users')) || [];
-  users.splice(index, 1);
-  localStorage.setItem('users', JSON.stringify(users));
-  loadUsers();
-}
-
+if(localStorage.getItem('currentUser')!== 'admin'){ window.location.href = 'index.html'; }
+function loadUsers(){ let users = JSON.parse(localStorage.getItem('users')) || []; let list = document.getElementById('userList'); list.innerHTML = ''; users.forEach((u, i) => { if(u.username!== 'admin'){ list.innerHTML += `<div class="flex justify-between bg-gray-700 p-2 rounded mb-2"><span>${u.username}</span><button onclick="deleteUser(${i})" class="text-red-500">حذف</button></div>`; } }); }
+function addUser(){ let user = document.getElementById('newUser').value.trim(); let pass = document.getElementById('newPass').value.trim(); if(!user ||!pass) return alert('دخل الاسم وكلمة السر'); let users = JSON.parse(localStorage.getItem('users')) || []; users.push({username:user, password:pass}); localStorage.setItem('users', JSON.stringify(users)); document.getElementById('newUser').value = ''; document.getElementById('newPass').value = ''; loadUsers(); }
+function deleteUser(index){ let users = JSON.parse(localStorage.getItem('users')) || []; users.splice(index, 1); localStorage.setItem('users', JSON.stringify(users)); loadUsers(); }
 loadUsers();
 </script>
-
 </body>
 </html>
