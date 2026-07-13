@@ -1,66 +1,85 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>نظام الرافدين للمبيعات</title>
-  <script src="https://cdn.tailwindcss.com"></script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>تسجيل الدخول - الرفيدين</title>
+<script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body class="bg-gray-900 text-white flex items-center justify-center h-screen">
-  <div class="bg-gray-800 p-8 rounded-lg shadow-lg w-96">
-    <h1 class="text-2xl font-bold text-center mb-6">تسجيل الدخول</h1>
-    12 <input id="email" type="email" placeholder="الايميل" value="admin@rafidain.com" class="w-full p-3 mb-3 bg-gray-700 rounded text-white">
- <input id="password" type="password" placeholder="كلمة السر" value="12345678" class="w-full p-3 mb-3 bg-gray-700 rounded text-white">
-<select id="userRole" class="w-full p-3 mb-4 bg-gray-700 rounded text-white">
-  <option value="">اختر نوع الدخول</option>
-  <option value="sales">موظف مبيعات</option>
-  <option value="admin">الادارة</option>
-</select>
-<button onclick="login()" class="w-full bg-blue-600 p-3 rounded hover:bg-blue-700 font-bold">دخول</button>
 
-  <script type="module">
-    // الكود مالك الحقي
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-    import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
-    
+<div class="bg-gray-800 p-8 rounded-lg shadow-lg w-96">
+  <h1 class="text-2xl font-bold text-center mb-6">تسجيل الدخول</h1>
+  
+  <input id="email" type="email" placeholder="الايميل" value="admin@rafidain.com" class="w-full p-3 mb-3 bg-gray-700 rounded text-white">
+  
+  <input id="password" type="password" placeholder="كلمة السر" value="12345678" class="w-full p-3 mb-3 bg-gray-700 rounded text-white">
+  
+  <select id="userRole" class="w-full p-3 mb-4 bg-gray-700 rounded text-white">
+    <option value="">اختر نوع الدخول</option>
+    <option value="sales">موظف مبيعات</option>
+    <option value="admin">الادارة</option>
+  </select>
+
+  <button onclick="login()" class="w-full bg-blue-600 p-3 rounded hover:bg-blue-700 font-bold">دخول</button>
+
+  <p id="msg" class="text-center mt-3 text-sm"></p>
+</div>
+
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+  import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+
   const firebaseConfig = {
-  apiKey: "AIzaSyDnryQ2sFm7Rudel7z_xOpVtdXUcxFceHQ",
-  authDomain: "rafidain-sales.firebaseapp.com",
-  projectId: "rafidain-sales",
-  storageBucket: "rafidain-sales.firebasestorage.app",
-  messagingSenderId: "161657937115",
-  appId: "1:161657937115:web:94c2af2801877edea400fe",
-  measurementId: "G-408C6ED680"
-};
+    apiKey: "AIzaSyDq7oQZcRrTjFeZ_uXbVDq7cCfce8V0",
+    authDomain: "rafidain-sales.firebaseapp.com",
+    projectId: "rafidain-sales",
+    storageBucket: "rafidain-sales.appspot.com",
+    messagingSenderId: "71657937115",
+    appId: "1:71657937115:web:c84c26a187edae4004fe",
+    measurementId: "G-40BCE8D60"
+  };
 
-    const app = initializeApp(firebaseConfig);
-    const auth = getAuth(app);
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
 
-    window.login = function() {
-      const email = document.getElementById('email').value;
-      const password = document.getElementById('password').value;
-      const msg = document.getElementById('msg');
-      
-      msg.innerText = "جاري تسجيل الدخول...";
-      
-      signInWithEmailAndPassword(auth, email, password)
-      const role = document.getElementById("userRole").value;
-if(role === ""){
-  msg.innerText = "⚠️ اختار نوع الدخول اول";
-  msg.className = "text-yellow-400 text-center mt-3 text-sm";
-  return;
-}
-if(role === "sales"){
-  window.location.href = "sales.html";
-} else if(role === "admin"){
-  window.location.href = "dashboard.html";
-}
-      .catch((error) => {
-        msg.innerText = "خطأ: " + error.code;
-        msg.className = "text-red-400 text-center mt-3 text-sm";
-        alert(error.message);
-      });
+  window.login = function() {
+    const email = document.getElementById("email").value;
+    const password = document.getElementById("password").value;
+    const role = document.getElementById("userRole").value;
+    const msg = document.getElementById("msg");
+
+    if(!email || !password) {
+      msg.innerText = "رجاء املأ الايميل والباسورد";
+      msg.className = "text-center mt-3 text-sm text-red-400";
+      return;
     }
-  </script>
+
+    if(role === "") {
+      msg.innerText = "⚠️ رجاء اختار نوع الدخول";
+      msg.className = "text-yellow-400 text-center mt-3 text-sm";
+      return;
+    }
+
+    msg.innerText = "جاري تسجيل الدخول...";
+    msg.className = "text-center mt-3 text-sm text-blue-400";
+
+    signInWithEmailAndPassword(auth, email, password)
+    .then((userCredential) => {
+      msg.innerText = "تم تسجيل الدخول بنجاح";
+      
+      if(role === "sales") {
+        window.location.href = "sales.html";
+      } else if(role === "admin") {
+        window.location.href = "dashboard.html";
+      }
+    })
+    .catch((error) => {
+      msg.innerText = "خطأ: " + error.message;
+      msg.className = "text-red-400 text-center mt-3 text-sm";
+    });
+  }
+</script>
+
 </body>
 </html>
