@@ -1,91 +1,12 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
-<head>
-  <meta charset="UTF-8">
-  <title>عرض التقارير</title>
-  <script src="https://cdn.tailwindcss.com"></script>
-</head>
-<body class="bg-gray-900 text-white p-4">
-
-  <div class="max-w-5xl mx-auto">
-    <h1 class="text-2xl font-bold text-center mb-4">تقرير المنتجات</h1>
-    
-    <div class="bg-gray-800 p-4 rounded-lg mb-4 text-center">
-      <p class="text-lg">اجمالي قيمة المخزن: <span id="total" class="text-green-400 font-bold">0</span> دينار</p>
-    </div>
-
-    <table class="w-full bg-gray-800 rounded-lg overflow-hidden">
-      <thead class="bg-blue-600">
-        <tr>
-          <th class="p-3">#</th>
-          <th class="p-3">اسم المنتج</th>
-          <th class="p-3">السعر</th>
-          <th class="p-3">الكمية</th>
-          <th class="p-3">الاجمالي</th>
-          <th class="p-3">الاجراءات</th>
-        </tr>
-      </thead>
-      <tbody id="productsTable"></tbody>
-    </table>
-
-    <button onclick="window.location.href='dashboard.html'" class="mt-6 w-full bg-gray-600 p-3 rounded hover:bg-gray-700 font-bold">رجوع</button>
-  </div>
-
+<head><meta charset="UTF-8"><title>التقارير</title><script src="https://cdn.tailwindcss.com"></script></head>
+<body class="bg-gray-100 p-4"><div class="max-w-4xl mx-auto bg-white p-6 rounded shadow"><h1 class="text-2xl font-bold mb-4">تقارير المبيعات</h1><div id="salesList"></div><a href="dashboard.html" class="block text-center mt-4 text-blue-600">رجوع</a></div>
 <script>
-let products = JSON.parse(localStorage.getItem('products')) || [];
-let table = document.getElementById('productsTable');
-let totalSpan = document.getElementById('total');
-let total = 0;
-
-function renderTable(){
-  table.innerHTML = "";
-  total = 0;
-  if(products.length == 0){
-    table.innerHTML = '<tr><td colspan="6" class="p-4 text-center">لا توجد منتجات بعد</td></tr>';
-  } else {
-    products.forEach((p, i) => {
-      let itemTotal = p.price * p.qty;
-      total += itemTotal;
-      table.innerHTML += `
-        <tr class="border-b border-gray-700">
-          <td class="p-3">${i+1}</td>
-          <td class="p-3">${p.name}</td>
-          <td class="p-3">${p.price} دينار</td>
-          <td class="p-3">${p.qty}</td>
-          <td class="p-3 text-green-400">${itemTotal} دينار</td>
-          <td class="p-3 space-x-2">
-            <button onclick="editProduct(${i})" class="bg-yellow-600 px-3 py-1 rounded text-sm">تعديل</button>
-            <button onclick="deleteProduct(${i})" class="bg-red-600 px-3 py-1 rounded text-sm">حذف</button>
-          </td>
-        </tr>
-      `;
-    });
-  }
-  totalSpan.innerText = total;
-}
-
-function deleteProduct(index){
-  if(confirm("متاكد تريد تحذف هذا المنتج؟")){
-    products.splice(index, 1);
-    localStorage.setItem('products', JSON.stringify(products));
-    renderTable();
-  }
-}
-
-function editProduct(index){
-  let p = products[index];
-  let newName = prompt("اسم المنتج الجديد:", p.name);
-  let newPrice = prompt("السعر الجديد:", p.price);
-  let newQty = prompt("الكمية الجديدة:", p.qty);
-  if(newName && newPrice && newQty){
-    products[index] = {name: newName, price: parseFloat(newPrice), qty: parseInt(newQty)};
-    localStorage.setItem('products', JSON.stringify(products));
-    renderTable();
-  }
-}
-
-renderTable();
+if(localStorage.getItem('currentUser')!== 'admin'){ window.location.href = 'index.html'; }
+let sales = JSON.parse(localStorage.getItem('sales')) || []; let list = document.getElementById('salesList');
+if(sales.length === 0){ list.innerHTML = '<p>لا توجد مبيعات</p>'; }
+else{ sales.forEach(s => { list.innerHTML += `<div class="border p-3 mb-2 rounded"><p><b>التاريخ:</b> ${s.date}</p><p><b>البائع:</b> ${s.user}</p><p><b>المجموع:</b> ${s.total} دينار</p></div>`; }); }
 </script>
-
 </body>
 </html>
