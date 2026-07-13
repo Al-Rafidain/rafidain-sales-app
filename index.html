@@ -19,19 +19,18 @@
 </div>
 
 <script>
-// اول ما تفتح الصفحة تاكد اكو يوزرات
-if(!localStorage.getItem('users')){
-  let defaultUsers = [{username:"admin", password:"1234"}];
-  localStorage.setItem('users', JSON.stringify(defaultUsers));
+// نجيب المستخدمين اذا موجودين، اذا لا نسوي admin فقط مرة وحدة
+let users = JSON.parse(localStorage.getItem('users'));
+if(!users){
+  users = [{username:"admin", password:"1234"}];
+  localStorage.setItem('users', JSON.stringify(users));
 }
 
 function login(){
   let user = document.getElementById('username').value.trim();
   let pass = document.getElementById('password').value.trim();
   
-  // جيب المستخدمين من التخزين
-  let users = JSON.parse(localStorage.getItem('users'));
-  
+  users = JSON.parse(localStorage.getItem('users')); // نحدث القائمة
   let found = users.find(u => u.username === user && u.password === pass);
   
   if(found){
