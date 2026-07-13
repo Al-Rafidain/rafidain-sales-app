@@ -9,32 +9,20 @@
 <body class="bg-gray-900 text-white flex items-center justify-center h-screen">
 
 <div class="bg-gray-800 p-8 rounded-lg shadow-lg w-96 text-center">
-  <h1 class="text-2xl font-bold mb-6">مرحبا بيك بالادارة</h1>
+  <h1 class="text-2xl font-bold mb-6">مرحبا بك الادارة</h1>
   
   <div class="space-y-3">
-    <button class="w-full bg-green-600 p-3 rounded hover:bg-green-700 font-bold cursor-pointer" onclick="showReports()">عرض التقارير</button>
-    <button class="w-full bg-blue-600 p-3 rounded hover:bg-blue-700 font-bold cursor-pointer" onclick="addProduct()">اضافة منتج</button>
-    <button class="w-full bg-purple-600 p-3 rounded hover:bg-purple-700 font-bold cursor-pointer" onclick="showUsers()">المستخدمين</button>
+    <button class="w-full bg-green-600 p-3 rounded hover:bg-green-700 font-bold cursor-pointer" onclick="window.location.href='reports.html'">عرض التقارير</button>
+    <button class="w-full bg-blue-600 p-3 rounded hover:bg-blue-700 font-bold cursor-pointer" onclick="window.location.href='add-product.html'">اضافة منتج</button>
+    <button class="w-full bg-purple-600 p-3 rounded hover:bg-purple-700 font-bold cursor-pointer" onclick="alert('قريبا')">المستخدمين</button>
     <button class="w-full bg-red-600 p-3 rounded hover:bg-red-700 font-bold cursor-pointer" onclick="logout()">تسجيل الخروج</button>
   </div>
 </div>
 
 <script>
-function showReports(){
-  alert("راح نعرض صفحة التقارير");
-}
-
-function addProduct(){
-  window.location.href = 'add-product.html';
-}
-
-function showUsers(){
-  alert("راح نعرض صفحة المستخدمين");
-}
-
 function logout(){
-  if(confirm("متأكد تريد تسوي خروج؟")){
-    localStorage.clear(); 
+  if(confirm("هل تريد تسجيل الخروج؟")){
+    localStorage.clear();
     window.location.href = 'index.html';
   }
 }
