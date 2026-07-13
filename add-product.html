@@ -1,43 +1,86 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>اضافة منتج</title>
-<script src="https://cdn.tailwindcss.com"></script>
-</head>
+<head><meta charset="UTF-8"><title>ادارة المنتجات</title><script src="https://cdn.tailwindcss.com"></script></head>
 <body class="bg-gray-100 p-4">
-<div class="max-w-lg mx-auto bg-white p-6 rounded-lg shadow">
-<h1 class="text-2xl font-bold mb-4 text-center">اضافة منتج جديد</h1>
-<input id="pbarcode" placeholder="الباركود" class="w-full p-3 mb-3 border rounded text-lg">
-<input id="pname" placeholder="اسم المنتج" class="w-full p-3 mb-3 border rounded text-lg">
-<input id="pprice" type="number" placeholder="السعر" class="w-full p-3 mb-3 border rounded text-lg">
-<input id="pqty" type="number" placeholder="الكمية" class="w-full p-3 mb-3 border rounded text-lg">
-<button onclick="addProduct()" class="w-full bg-green-600 text-white p-3 rounded font-bold text-lg hover:bg-green-700">حفظ المنتج</button>
-<a href="dashboard.html" class="block text-center mt-4 text-blue-600">رجوع للوحة التحكم</a>
+<div class="max-w-4xl mx-auto bg-white p-6 rounded-lg shadow mb-4">
+<h1 class="text-2xl font-bold mb-4 text-center">ادارة المنتجات</h1>
+<div class="grid md:grid-cols-4 gap-2">
+<input id="pbarcode" placeholder="الباركود" class="p-2 border rounded">
+<input id="pname" placeholder="اسم المنتج" class="p-2 border rounded">
+<input id="pprice" type="number" placeholder="السعر" class="p-2 border rounded">
+<input id="pqty" type="number" placeholder="الكمية" class="p-2 border rounded">
 </div>
-<script>
-if(localStorage.getItem('currentUser') !== 'admin'){ window.location.href = 'index.html'; }
+<button id="saveBtn" onclick="saveProduct()" class="w-full bg-green-600 text-white p-3 rounded font-bold mt-3">حفظ المنتج</button>
+<a href="dashboard.html" class="block text-center mt-4 text-blue-600">رجوع</a>
+</div>
 
-function addProduct(){
+<div class="max-w-4xl mx-auto bg-white p-6 rounded-lg shadow">
+<h2 class="text-xl font-bold mb-3">المنتجات الموجودة</h2>
+<table class="w-full text-center">
+<thead class="bg-gray-200"><tr><th class="p-2">الباركود</th><th>الاسم</th><th>السعر</th><th>الكمية</th><th>اجراء</th></tr></thead>
+<tbody id="productsTable"></tbody>
+</table>
+</div>
+
+<script>
+if(localStorage.getItem('currentUser')!== 'admin'){ window.location.href = 'index.html'; }
+let editIndex = -1;
+
+function loadProducts(){
+  let products = JSON.parse(localStorage.getItem('products')) || [];
+  let table = document.getElementById('productsTable'); table.innerHTML='';
+  products.forEach((p, i)=>{
+    table.innerHTML += `<tr class="border-b">
+      <td class="p-2">${p.barcode}</td><td>${p.name}</td><td>${p.price}</td><td>${p.qty}</td>
+      <td><button onclick="editProduct(${i})" class="bg-yellow-500 text-white px-2 py-1 rounded">تعديل</button>
+      <button onclick="deleteProduct(${i})" class="bg-red-500 text-white px-2 py-1 rounded">حذف</button></td>
+    </tr>`;
+  });
+}
+
+function saveProduct(){
   let barcode = document.getElementById('pbarcode').value.trim();
   let name = document.getElementById('pname').value.trim();
   let price = parseFloat(document.getElementById('pprice').value);
   let qty = parseInt(document.getElementById('pqty').value);
-  if(!barcode || !name || !price || !qty) return alert('املأ كل الحقول');
-  
+  if(!barcode ||!name ||!price ||!qty) return alert('املأ كل الحقول');
   let products = JSON.parse(localStorage.getItem('products')) || [];
-  if(products.find(p => p.barcode === barcode)) return alert('الباركود موجود مسبقا');
-  
-  products.push({barcode, name, price, qty});
+
+  if(editIndex === -1){
+    if(products.find(p => p.barcode === barcode)) return alert('الباركود موجود');
+    products.push({barcode, name, price, qty});
+  } else {
+    products[editIndex] = {barcode, name, price, qty};
+    editIndex = -1; document.getElementById('saveBtn').innerText = 'حفظ المنتج';
+  }
   localStorage.setItem('products', JSON.stringify(products));
-  alert('تمت اضافة المنتج بنجاح');
-  document.getElementById('pbarcode').value=''; 
-  document.getElementById('pname').value=''; 
-  document.getElementById('pprice').value=''; 
-  document.getElementById('pqty').value='';
-  document.getElementById('pbarcode').focus();
+  alert('تم الحفظ');
+  clearInputs(); loadProducts();
 }
+
+function editProduct(i){
+  let products = JSON.parse(localStorage.getItem('products'));
+  let p = products[i];
+  document.getElementById('pbarcode').value = p.barcode;
+  document.getElementById('pname').value = p.name;
+  document.getElementById('pprice').value = p.price;
+  document.getElementById('pqty').value = p.qty;
+  editIndex = i; document.getElementById('saveBtn').innerText = 'تحديث المنتج';
+}
+
+function deleteProduct(i){
+  if(!confirm('متأكد تريد تحذف؟')) return;
+  let products = JSON.parse(localStorage.getItem('products'));
+  products.splice(i,1);
+  localStorage.setItem('products', JSON.stringify(products));
+  loadProducts();
+}
+
+function clearInputs(){
+  document.getElementById('pbarcode').value=''; document.getElementById('pname').value='';
+  document.getElementById('pprice').value=''; document.getElementById('pqty').value='';
+}
+loadProducts();
 </script>
 </body>
 </html>
