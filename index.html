@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>تسجيل الدخول - الرفيدين</title>
+<title>تسجيل الدخول</title>
 <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body class="bg-gray-900 text-white flex items-center justify-center h-screen">
@@ -11,50 +11,31 @@
 <div class="bg-gray-800 p-8 rounded-lg shadow-lg w-96">
   <h1 class="text-2xl font-bold text-center mb-6">تسجيل الدخول</h1>
   
-  <input id="email" type="email" placeholder="الايميل" class="w-full p-3 mb-3 bg-gray-700 rounded text-white">
+  <input id="username" type="text" placeholder="اسم المستخدم" class="w-full p-2 mb-3 rounded bg-gray-700 text-white">
+  <input id="password" type="password" placeholder="كلمة السر" class="w-full p-2 mb-4 rounded bg-gray-700 text-white">
   
-  <input id="password" type="password" placeholder="كلمة السر" class="w-full p-3 mb-3 bg-gray-700 rounded text-white">
-  
-  <select id="userRole" class="w-full p-3 mb-4 bg-gray-700 rounded text-white">
-    <option value="">اختر نوع الدخول</option>
-    <option value="sales">موظف مبيعات</option>
-    <option value="admin">الادارة</option>
-  </select>
-
-  <button id="loginBtn" class="w-full bg-blue-600 p-3 rounded hover:bg-blue-700 font-bold cursor-pointer">دخول</button>
-
-  <p id="msg" class="text-center mt-3 text-sm"></p>
+  <button onclick="login()" class="w-full bg-blue-600 p-3 rounded font-bold hover:bg-blue-700">دخول</button>
+  <p id="error" class="text-red-500 text-center mt-3 hidden">الاسم او كلمة السر خطأ</p>
 </div>
 
-<script type="module">
-
-  document.getElementById("loginBtn").onclick = function() {
-    const email = document.getElementById("email").value;
-    const password = document.getElementById("password").value;
-    const role = document.getElementById("userRole").value;
-    const msg = document.getElementById("msg");
-
-    if(!email || !password) {
-      msg.innerText = "رجاء املأ الايميل والباسورد";
-      msg.className = "text-center mt-3 text-sm text-red-400";
-      return;
-    }
-
-    if(role === "") {
-      msg.innerText = "⚠️ رجاء اختار نوع الدخول";
-      msg.className = "text-yellow-400 text-center mt-3 text-sm";
-      return;
-    }
-
-    msg.innerText = "تم تسجيل الدخول بنجاح";
-    msg.className = "text-center mt-3 text-sm text-green-400";
-
-    if(role === "sales") {
-  window.location.href = "sales.html";
-} else if(role === "admin") {
-  window.location.href = "dashboard.html";
-    }
+<script>
+function login(){
+  let user = document.getElementById('username').value;
+  let pass = document.getElementById('password').value;
+  
+  // جيب المستخدمين من التخزين
+  let users = JSON.parse(localStorage.getItem('users')) || [{username:"admin", password:"1234"}];
+  
+  let found = users.find(u => u.username === user && u.password === pass);
+  
+  if(found){
+    localStorage.setItem('loggedIn', 'true');
+    localStorage.setItem('currentUser', user);
+    window.location.href = 'dashboard.html';
+  } else {
+    document.getElementById('error').classList.remove('hidden');
   }
+}
 </script>
 
 </body>
