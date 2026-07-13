@@ -2,18 +2,68 @@
 <html lang="ar" dir="rtl">
 <head>
 <meta charset="UTF-8">
-<title>لوحة المبيعات - الرفيدين</title>
+<title>شاشة البيع</title>
 <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body class="bg-gray-900 text-white p-8">
-  <h1 class="text-3xl font-bold text-center mb-6">✅ مرحبا بيك في لوحة المبيعات</h1>
-  <p class="text-center text-gray-400 mb-8">هنا راح تبيع وتشوف الفواتير</p>
-  
-  <div class="grid grid-cols-2 gap-4 max-w-2xl mx-auto">
-    <button class="bg-blue-600 p-4 rounded hover:bg-blue-700">فاتورة جديدة</button>
-    <button class="bg-green-600 p-4 rounded hover:bg-green-700">عرض المنتجات</button>
-    <button class="bg-yellow-600 p-4 rounded hover:bg-yellow-700">سجل المبيعات</button>
-    <button onclick="window.location.href='index.html'" class="bg-red-600 p-4 rounded hover:bg-red-700">تسجيل الخروج</button>
+<body class="bg-gray-100 p-4">
+
+<div class="flex justify-between items-center mb-4">
+  <h1 class="text-2xl font-bold">شاشة البيع</h1>
+  <a href="index.html" class="bg-red-500 text-white px-4 py-2 rounded">خروج</a>
+</div>
+
+<div class="grid grid-cols-2 gap-4">
+  <div class="bg-white p-4 rounded shadow">
+    <h2 class="font-bold mb-2">المنتجات</h2>
+    <div id="productsList"></div>
   </div>
+  
+  <div class="bg-white p-4 rounded shadow">
+    <h2 class="font-bold mb-2">الفاتورة</h2>
+    <div id="cart"></div>
+    <p class="font-bold mt-2">المجموع: <span id="total">0</span> دينار</p>
+    <button onclick="checkout()" class="w-full bg-green-600 text-white p-2 mt-2 rounded">اتمام البيع</button>
+  </div>
+</div>
+
+<script>
+let cart = [];
+let products = JSON.parse(localStorage.getItem('products')) || [];
+
+function loadProducts(){
+  let list = document.getElementById('productsList');
+  list.innerHTML = '';
+  products.forEach((p,i)=>{
+    list.innerHTML += `<button onclick="addToCart(${i})" class="w-full bg-blue-500 text-white p-2 mb-2 rounded">${p.name} - ${p.price}</button>`;
+  });
+}
+
+function addToCart(i){
+  cart.push(products[i]);
+  updateCart();
+}
+
+function updateCart(){
+  let c = document.getElementById('cart');
+  c.innerHTML = '';
+  let total = 0;
+  cart.forEach(p=>{
+    c.innerHTML += `<p>${p.name} - ${p.price}</p>`;
+    total += Number(p.price);
+  });
+  document.getElementById('total').innerText = total;
+}
+
+function checkout(){
+  let sales = JSON.parse(localStorage.getItem('sales')) || [];
+  sales.push({items:cart, total: document.getElementById('total').innerText, date: new Date().toLocaleString()});
+  localStorage.setItem('sales', JSON.stringify(sales));
+  cart = [];
+  updateCart();
+  alert('تم البيع');
+}
+
+loadProducts();
+</script>
 </body>
 </html>
