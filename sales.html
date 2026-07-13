@@ -1,90 +1,79 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>شاشة البيع</title>
-<script src="https://cdn.tailwindcss.com"></script>
-</head>
+<head><meta charset="UTF-8"><title>شاشة البيع</title><script src="https://cdn.tailwindcss.com"></script></head>
 <body class="bg-gray-100">
 <div class="bg-blue-600 text-white p-4 flex justify-between items-center">
-  <button onclick="logout()" class="bg-red-500 px-4 py-2 rounded font-bold">تسجيل الخروج</button>
-  <h1 class="text-2xl font-bold">شاشة البيع - الكاشير</h1>
+  <button onclick="logout()" class="bg-red-500 px-4 py-2 rounded font-bold">خروج</button>
+  <h1 class="text-2xl font-bold">شاشة البيع</h1>
   <span>مرحبا: <b id="currentUser"></b></span>
 </div>
 <div class="container mx-auto p-4 md:grid md:grid-cols-2 gap-4">
-  
   <div class="bg-white p-4 rounded-lg shadow">
-    <h2 class="font-bold text-xl mb-3 border-b pb-2">1. مسح الباركود</h2>
-    <input id="barcodeInput" onkeyup="if(event.key === 'Enter') addByBarcode()" placeholder="امسح الباركود هنا واضغط Enter" class="w-full p-4 mb-3 border-4 border-blue-500 rounded text-2xl text-center" autofocus>
-    <div id="lastItem" class="text-center text-green-600 font-bold text-lg h-8"></div>
+    <h2 class="font-bold text-xl mb-3">مسح الباركود</h2>
+    <input id="barcodeInput" onkeyup="if(event.key === 'Enter') addByBarcode()" placeholder="امسح الباركود واضغط Enter" class="w-full p-4 mb-3 border-4 border-blue-500 rounded text-2xl text-center" autofocus>
+    <div id="lastItem" class="text-center text-green-600 font-bold h-8"></div>
   </div>
-
   <div class="bg-white p-4 rounded-lg shadow">
-    <h2 class="font-bold text-xl mb-3 border-b pb-2">2. الفاتورة</h2>
+    <h2 class="font-bold text-xl mb-3">الفاتورة</h2>
     <div id="invoiceItems" class="space-y-2 h-80 overflow-y-auto mb-3"></div>
-    <div class="border-t pt-2">
-      <p class="font-bold text-3xl text-center">المجموع: <span id="total">0</span> دينار</p>
-      <button onclick="completeSale()" class="w-full bg-green-600 text-white p-4 rounded font-bold text-xl mt-3 hover:bg-green-700">اتمام البيع F12</button>
-    </div>
+    <p class="font-bold text-3xl text-center">المجموع: <span id="total">0</span> دينار</p>
+    <button onclick="completeSale()" class="w-full bg-green-600 text-white p-4 rounded font-bold text-xl mt-3">اتمام البيع</button>
   </div>
-
 </div>
 <script>
-if(localStorage.getItem('loggedIn') !== 'true'){ window.location.href = 'index.html'; }
+if(localStorage.getItem('loggedIn')!== 'true'){ window.location.href = 'index.html'; }
 document.getElementById('currentUser').innerText = localStorage.getItem('currentUser');
-
-let cart = []; 
-let products = JSON.parse(localStorage.getItem('products')) || [];
+let cart = []; let products = JSON.parse(localStorage.getItem('products')) || [];
 
 function addByBarcode(){
   let barcode = document.getElementById('barcodeInput').value.trim();
   if(!barcode) return;
-  
   let product = products.find(p => p.barcode === barcode);
-  if(!product) return alert('خطأ: الباركود غير موجود');
-  if(product.qty <= 0) return alert('خطأ: الكمية نفذت');
-  
+  if(!product) return alert('الباركود غير موجود');
+  if(product.qty <= 0) return alert('الكمية نفذت');
   let item = cart.find(c => c.barcode === product.barcode);
-  if(item){ item.qty++; } 
-  else { cart.push({barcode: product.barcode, name: product.name, price: product.price, qty: 1}); }
-  
-  product.qty--;
-  localStorage.setItem('products', JSON.stringify(products));
-  
+  if(item){ item.qty++; } else { cart.push({barcode: product.barcode, name: product.name, price: product.price, qty: 1}); }
+  product.qty--; localStorage.setItem('products', JSON.stringify(products));
   document.getElementById('lastItem').innerText = `تم اضافة: ${product.name}`;
   setTimeout(() => document.getElementById('lastItem').innerText = '', 1500);
-  
+  updateInvoice(); document.getElementById('barcodeInput').value = ''; document.getElementById('barcodeInput').focus();
+}
+
+function removeFromCart(index){
+  let item = cart[index];
+  let product = products.find(p => p.barcode === item.barcode);
+  product.qty += item.qty; // نرجع الكمية للمخزن
+  cart.splice(index,1);
+  localStorage.setItem('products', JSON.stringify(products));
   updateInvoice();
-  document.getElementById('barcodeInput').value = '';
-  document.getElementById('barcodeInput').focus();
 }
 
-function updateInvoice(){ 
-  let list = document.getElementById('invoiceItems'); 
-  let total = 0; 
-  list.innerHTML = ''; 
-  cart.forEach((item) => { 
-    total += item.price * item.qty; 
-    list.innerHTML += `<div class="flex justify-between bg-gray-100 p-3 rounded text-lg"><span>${item.name} x ${item.qty}</span><span>${item.price * item.qty} د</span></div>`; 
-  }); 
-  document.getElementById('total').innerText = total; 
+function updateInvoice(){
+  let list = document.getElementById('invoiceItems');
+  let total = 0;
+  list.innerHTML = '';
+  cart.forEach((item, i) => {
+    total += item.price * item.qty;
+    list.innerHTML += `<div class="flex justify-between items-center bg-gray-100 p-2 rounded">
+      <span>${item.name} x ${item.qty}</span>
+      <div><span class="font-bold">${item.price * item.qty} د</span>
+      <button onclick="removeFromCart(${i})" class="bg-red-500 text-white px-2 py-1 rounded mr-2">حذف</button></div>
+    </div>`;
+  });
+  document.getElementById('total').innerText = total;
 }
 
-function completeSale(){ 
-  if(cart.length === 0) return alert('الفاتورة فارغة'); 
-  let sales = JSON.parse(localStorage.getItem('sales')) || []; 
-  sales.push({date: new Date().toLocaleString('ar-IQ'), user: localStorage.getItem('currentUser'), items: cart, total: document.getElementById('total').innerText}); 
-  localStorage.setItem('sales', JSON.stringify(sales)); 
-  alert('تم حفظ البيع بنجاح'); 
-  cart = []; 
-  updateInvoice(); 
+function completeSale(){
+  if(cart.length === 0) return alert('الفاتورة فارغة');
+  let sales = JSON.parse(localStorage.getItem('sales')) || [];
+  sales.push({date: new Date().toLocaleString('ar-IQ'), user: localStorage.getItem('currentUser'), items: cart, total: document.getElementById('total').innerText});
+  localStorage.setItem('sales', JSON.stringify(sales));
+  alert('تم حفظ البيع');
+  cart = [];
+  updateInvoice();
 }
 
 function logout(){ localStorage.removeItem('loggedIn'); localStorage.removeItem('currentUser'); window.location.href = 'index.html'; }
-
-// اختصار F12 لاتمام البيع
-document.addEventListener('keydown', function(e){ if(e.key === 'F12'){ completeSale(); } });
 </script>
 </body>
 </html>
