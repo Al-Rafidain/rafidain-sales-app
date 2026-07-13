@@ -15,7 +15,7 @@
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
         import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-        import { getFirestore } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+        import { getFirestore, collection, addDoc, getDocs, deleteDoc, doc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
         const firebaseConfig = {
           apiKey: "AIzaSyDnryQ2sFm7Rudel7z_xOpVtdXUcxFceHQ",
@@ -31,6 +31,7 @@
         const db = getFirestore(app);
         const appDiv = document.getElementById('app');
         let errorMsg = "";
+        let products = [];
 
         function showLogin() {
             appDiv.innerHTML = `
@@ -45,26 +46,66 @@
                     <button id="signupBtn" class="w-full bg-gray-200 text-gray-700 p-3 rounded-lg mt-3 font-bold hover:bg-gray-300">انشاء حساب جديد</button>
                 </div>
             </div>`;
-            
             document.getElementById('loginBtn').onclick = login;
             document.getElementById('signupBtn').onclick = signup;
             errorMsg = "";
         }
 
+        async function loadProducts() {
+            const querySnapshot = await getDocs(collection(db, "products"));
+            products = [];
+            querySnapshot.forEach((doc) => products.push({id: doc.id, ...doc.data()}));
+            showDashboard(auth.currentUser);
+        }
+
         function showDashboard(user) {
+            let productsHTML = products.map(p => `
+                <div class="bg-gray-50 p-3 rounded-lg flex justify-between">
+                    <span>${p.name} - ${p.price} د.ع</span>
+                    <button onclick="deleteProduct('${p.id}')" class="text-red-500">حذف</button>
+                </div>
+            `).join('');
+
             appDiv.innerHTML = `
-            <div class="p-6 max-w-4xl mx-auto">
+            <div class="p-4 max-w-4xl mx-auto">
                 <div class="flex justify-between items-center mb-6">
-                    <h1 class="text-3xl font-bold">مرحبا بك</h1>
+                    <h1 class="text-2xl font-bold">مرحبا ${user.email}</h1>
                     <button id="logoutBtn" class="bg-red-500 text-white px-4 py-2 rounded-lg">تسجيل خروج</button>
                 </div>
-                <div class="bg-white p-6 rounded-2xl shadow">
-                    <p class="text-lg">الايميل: ${user.email}</p>
-                    <p class="mt-4 text-green-600 font-bold">🎉 مبروك! التطبيق متصل بالـ Firebase بنجاح</p>
-                    <p class="mt-2 text-gray-600">الخطوة الجاية: نضيف صفحة المنتجات والفواتير</p>
+
+                <div class="grid md:grid-cols-2 gap-6">
+                    <div class="bg-white p-6 rounded-2xl shadow">
+                        <h2 class="text-xl font-bold mb-4">اضافة منتج جديد</h2>
+                        <input id="pName" placeholder="اسم المنتج" class="w-full p-2 border rounded mb-2">
+                        <input id="pPrice" type="number" placeholder="السعر" class="w-full p-2 border rounded mb-2">
+                        <button id="addProductBtn" class="w-full bg-green-600 text-white p-2 rounded font-bold">اضافة</button>
+                    </div>
+
+                    <div class="bg-white p-6 rounded-2xl shadow">
+                        <h2 class="text-xl font-bold mb-4">المنتجات</h2>
+                        <div class="space-y-2 max-h-60 overflow-y-auto">${productsHTML || 'لا توجد منتجات'}</div>
+                    </div>
                 </div>
             </div>`;
             document.getElementById('logoutBtn').onclick = () => signOut(auth);
+            document.getElementById('addProductBtn').onclick = addProduct;
+            window.deleteProduct = deleteProduct;
+        }
+
+        async function addProduct() {
+            const name = document.getElementById('pName').value;
+            const price = document.getElementById('pPrice').value;
+            if(name && price) {
+                await addDoc(collection(db, "products"), {name, price: Number(price)});
+                document.getElementById('pName').value = '';
+                document.getElementById('pPrice').value = '';
+                loadProducts();
+            }
+        }
+
+        async function deleteProduct(id) {
+            await deleteDoc(doc(db, "products", id));
+            loadProducts();
         }
 
         async function login() {
@@ -90,7 +131,7 @@
         }
 
         onAuthStateChanged(auth, user => {
-            if (user) showDashboard(user);
+            if (user) loadProducts();
             else showLogin();
         });
 
