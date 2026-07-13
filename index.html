@@ -27,21 +27,6 @@
 </div>
 
 <script type="module">
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-  import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
-
-  const firebaseConfig = {
-    apiKey: "AIzaSyDq7oQZcRrTjFeZ_uXbVDq7cCfce8V0",
-    authDomain: "rafidain-sales.firebaseapp.com",
-    projectId: "rafidain-sales",
-    storageBucket: "rafidain-sales.appspot.com",
-    messagingSenderId: "71657937115",
-    appId: "1:71657937115:web:c84c26a187edae4004fe",
-    measurementId: "G-40BCE8D60"
-  };
-
-  const app = initializeApp(firebaseConfig);
-  const auth = getAuth(app);
 
   document.getElementById("loginBtn").onclick = function() {
     const email = document.getElementById("email").value;
@@ -61,21 +46,14 @@
       return;
     }
 
-    msg.innerText = "جاري تسجيل الدخول...";
-    msg.className = "text-center mt-3 text-sm text-blue-400";
-
     msg.innerText = "تم تسجيل الدخول بنجاح";
-      
-if(role === "sales") {
-  window.location.href = "sales.html";
-} else if(role === "admin") {
-  window.location.href = "dashboard.html";
-}
-    })
-    .catch((error) => {
-      msg.innerText = "خطأ: " + error.message;
-      msg.className = "text-red-400 text-center mt-3 text-sm";
-    });
+    msg.className = "text-center mt-3 text-sm text-green-400";
+
+    if(role === "sales") {
+      window.location.href = "sales.html";
+    } else if(role === "admin") {
+      window.location.href = "dashboard.html";
+    }
   }
 </script>
 
