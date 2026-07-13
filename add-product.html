@@ -1,53 +1,28 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>اضافة منتج</title>
-<script src="https://cdn.tailwindcss.com"></script>
-</head>
-<body class="bg-gray-900 text-white flex items-center justify-center h-screen">
-
-<div class="bg-gray-800 p-8 rounded-lg shadow-lg w-96">
-  <h1 class="text-2xl font-bold mb-6 text-center">اضافة منتج جديد</h1>
-  
-  <input id="productName" type="text" placeholder="اسم المنتج" class="w-full p-3 mb-3 bg-gray-700 rounded text-white">
-  <input id="productPrice" type="number" placeholder="السعر" class="w-full p-3 mb-3 bg-gray-700 rounded text-white">
-  <input id="productQty" type="number" placeholder="الكمية" class="w-full p-3 mb-3 bg-gray-700 rounded text-white">
-  
-  <button onclick="saveProduct()" class="w-full bg-blue-600 p-3 rounded hover:bg-blue-700 font-bold cursor-pointer mb-3">حفظ المنتج</button>
-  <button onclick="window.location.href='dashboard.html'" class="w-full bg-gray-600 p-3 rounded hover:bg-gray-700 font-bold cursor-pointer">رجوع</button>
-  
-  <p id="msg" class="text-center mt-3 text-sm"></p>
+<head><meta charset="UTF-8"><title>اضافة منتج</title><script src="https://cdn.tailwindcss.com"></script></head>
+<body class="bg-gray-100 p-4">
+<div class="max-w-lg mx-auto bg-white p-6 rounded shadow">
+<h1 class="text-2xl font-bold mb-4">اضافة منتج جديد</h1>
+<input id="pname" placeholder="اسم المنتج" class="w-full p-2 mb-3 border rounded">
+<input id="pprice" type="number" placeholder="السعر" class="w-full p-2 mb-3 border rounded">
+<input id="pqty" type="number" placeholder="الكمية" class="w-full p-2 mb-3 border rounded">
+<button onclick="addProduct()" class="w-full bg-green-600 text-white p-3 rounded">حفظ المنتج</button>
+<a href="dashboard.html" class="block text-center mt-4 text-blue-600">رجوع</a>
 </div>
-
 <script>
-function saveProduct(){
-  const name = document.getElementById('productName').value;
-  const price = document.getElementById('productPrice').value;
-  const qty = document.getElementById('productQty').value;
-  const msg = document.getElementById('msg');
-  
-  if(!name || !price || !qty){
-    msg.innerText = "رجاء املأ كل الحقول";
-    msg.className = "text-red-400 text-center mt-3";
-    return;
-  }
-  
-  // نحفظ المنتج بـ localStorage
+if(localStorage.getItem('currentUser')!== 'admin'){ window.location.href = 'index.html'; }
+function addProduct(){
+  let name = document.getElementById('pname').value;
+  let price = parseFloat(document.getElementById('pprice').value);
+  let qty = parseInt(document.getElementById('pqty').value);
+  if(!name ||!price ||!qty) return alert('املأ كل الحقول');
   let products = JSON.parse(localStorage.getItem('products')) || [];
-  products.push({name, price, qty, id: Date.now()});
+  products.push({name, price, qty});
   localStorage.setItem('products', JSON.stringify(products));
-  
-  msg.innerText = "تم حفظ المنتج بنجاح ✅";
-  msg.className = "text-green-400 text-center mt-3";
-  
-  // نفرغ الحقول
-  document.getElementById('productName').value = "";
-  document.getElementById('productPrice').value = "";
-  document.getElementById('productQty').value = "";
+  alert('تمت الاضافة');
+  document.getElementById('pname').value=''; document.getElementById('pprice').value=''; document.getElementById('pqty').value='';
 }
 </script>
-
 </body>
 </html>
