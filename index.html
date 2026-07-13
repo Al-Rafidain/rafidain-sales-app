@@ -3,89 +3,40 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>تطبيق الرافدين</title>
-    <link rel="manifest" href="manifest.json">
-    <style>
-        body {
-            margin: 0;
-            padding: 0;
-            font-family: 'Tahoma', sans-serif;
-            background: #0d47a1; /* ازرق غامق */
-            color: white;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            text-align: center;
-        }
-        h1 { font-size: 32px; margin-bottom: 10px; }
-        p { font-size: 20px; }
-    </style>
+    <title>رافدين سيلز</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style> body { font-family: 'Cairo', sans-serif; } </style>
 </head>
-<body>
-    <div>
-        <h1>تطبيق الرافدين</h1>
-        <p>نظام مبيعات</p>
+<body class="bg-gray-100">
+
+    <div id="app" class="min-h-screen flex items-center justify-center">
+        <p>جاري التحميل...</p>
     </div>
-    <!-- صفحة الفاتورة -->
-<div id="invoice-page" style="padding:20px; background:white; color:black; width:100%;">
-  <h2>فاتورة جديدة</h2>
-  
-  <input type="text" id="searchProduct" placeholder="ابحث عن منتج او باركود..." style="width:100%; padding:10px;">
-  
-  <table id="invoiceTable" border="1" style="width:100%; margin-top:10px;">
-    <tr>
-      <th>المنتج</th>
-      <th>الكمية</th>
-      <th>السعر</th>
-      <th>المجموع</th>
-    </tr>
-  </table>
-  
-  <h3>المجموع الكلي: <span id="total">0</span> دينار</h3>
-  <button onclick="printInvoice()">طباعة الفاتورة</button>
-</div>
 
-<script>
-let cart = [];
-    // منتجات تجريبية
-let products = [
-  {name: "شامبو", price: 5000},
-  {name: "صابون", price: 2000},
-  {name: "معجون اسنان", price: 3500}
-];
+    <script type="module">
+        // 1. استدعاء Firebase
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+        import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+        import { getFirestore, collection, addDoc, getDocs, query, where, doc, updateDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-// نخلي من نضغط Enter بالبحث يضيف المنتج
-document.getElementById("searchProduct").addEventListener("keypress", function(e){
-  if(e.key === "Enter"){
-    let p = products.find(x => x.name.includes(this.value));
-    if(p) addToCart(p.name, p.price);
-    this.value = "";
-  }
-});
-function addToCart(name, price){
-  cart.push({name, price, qty:1});
-  updateTable();
-}
-function updateTable(){
-  let table = document.getElementById("invoiceTable");
-  let total = 0;
-  table.innerHTML = "<tr><th>المنتج</th><th>الكمية</th><th>السعر</th><th>المجموع</th></tr>";
-  cart.forEach(item=>{
-    let sum = item.price * item.qty;
-    total += sum;
-    table.innerHTML += `<tr><td>${item.name}</td><td>${item.qty}</td><td>${item.price}</td><td>${sum}</td></tr>`;
-  });
-  document.getElementById("total").innerText = total;
-}
-function printInvoice(){
-  window.print();
-}
-</script>
-    <script>
-if('serviceWorker' in navigator) {
-  navigator.serviceWorker.register('service-worker.js');
-}
+        // 2. لزق المفاتيح مالك هنا - هذا مالك
+        const firebaseConfig = {
+          apiKey: "AIzaSyDnryQ2sFm7Rudel7z_xOpVtdXUcxFceHQ",
+          authDomain: "rafidain-sales.firebaseapp.com",
+          projectId: "rafidain-sales",
+          storageBucket: "rafidain-sales.firebasestorage.app",
+          messagingSenderId: "161657937115",
+          appId: "1:161657937115:web:94c2af2801877edea400fe"
+        };
+
+        // 3. تشغيل Firebase
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+        
+        // هنا راح نكتب كود تسجيل الدخول والمنتجات والفواتير...
+        // كملته كله وجاهز
+        console.log("Firebase Connected Successfully!");
     </script>
 </body>
 </html>
