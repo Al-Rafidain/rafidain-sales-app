@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ادارة المستخدمين</title>
+<script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-900 text-white p-4">
+
+<div class="max-w-3xl mx-auto">
+  <h1 class="text-2xl font-bold text-center mb-6">ادارة المستخدمين</h1>
+
+  <div class="bg-gray-800 p-4 rounded-lg mb-4">
+    <h2 class="font-bold mb-3 text-green-400">اضافة مستخدم جديد</h2>
+    <input id="newUser" type="text" placeholder="اسم المستخدم" class="w-full p-2 mb-2 rounded bg-gray-700 text-white border-gray-600">
+    <input id="newPass" type="password" placeholder="كلمة السر" class="w-full p-2 mb-3 rounded bg-gray-700 text-white border-gray-600">
+    <button onclick="addUser()" class="w-full bg-green-600 p-2 rounded font-bold hover:bg-green-700">اضافة</button>
+  </div>
+
+  <table class="w-full bg-gray-800 rounded-lg overflow-hidden">
+    <thead class="bg-purple-600">
+      <tr>
+        <th class="p-3 text-center">#</th>
+        <th class="p-3 text-center">اسم المستخدم</th>
+        <th class="p-3 text-center">الاجراء</th>
+      </tr>
+    </thead>
+    <tbody id="usersTable"></tbody>
+  </table>
+
+  <button onclick="window.location.href='dashboard.html'" class="mt-6 w-full bg-gray-600 p-3 rounded font-bold hover:bg-gray-700">رجوع للوحة</button>
+</div>
+
+<script>
+let users = JSON.parse(localStorage.getItem('users')) || [{username:"admin", password:"1234"}];
+
+function renderUsers(){
+  let table = document.getElementById('usersTable');
+  table.innerHTML = "";
+  users.forEach((u, i) => {
+    table.innerHTML += `
+      <tr class="border-b border-gray-700">
+        <td class="p-3 text-center">${i+1}</td>
+        <td class="p-3 text-center">${u.username}</td>
+        <td class="p-3 text-center">
+          ${u.username != "admin" ? `<button onclick="deleteUser(${i})" class="bg-red-600 px-3 py-1 rounded text-sm hover:bg-red-700">حذف</button>` : '<span class="text-gray-500">مدير</span>'}
+        </td>
+      </tr>
+    `;
+  });
+}
+
+function addUser(){
+  let user = document.getElementById('newUser').value.trim();
+  let pass = document.getElementById('newPass').value.trim();
+  if(user && pass){
+    // تاكد ما مكرر
+    if(users.find(u => u.username === user)){
+      alert("هذا المستخدم موجود already");
+      return;
+    }
+    users.push({username:user, password:pass});
+    localStorage.setItem('users', JSON.stringify(users));
+    document.getElementById('newUser').value = "";
+    document.getElementById('newPass').value = "";
+    renderUsers();
+    alert("تم اضافة المستخدم");
+  } else {
+    alert("دخل الاسم وكلمة السر");
+  }
+}
+
+function deleteUser(i){
+  if(confirm("متأكد تريد تحذف هذا المستخدم؟")){
+    users.splice(i,1);
+    localStorage.setItem('users', JSON.stringify(users));
+    renderUsers();
+  }
+}
+
+renderUsers();
+</script>
+</body>
+</html>
