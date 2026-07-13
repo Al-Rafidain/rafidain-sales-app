@@ -11,35 +11,31 @@
 <div class="bg-gray-800 p-8 rounded-lg shadow-lg w-96 text-center">
   <h1 class="text-2xl font-bold mb-6">مرحبا بيك بالادارة</h1>
   
-  <div class="buttons space-y-3">
-    <button class="btn w-full bg-green-600 p-3 rounded hover:bg-green-700 font-bold cursor-pointer" onclick="showReports()">عرض التقارير</button>
-    <button class="btn w-full bg-blue-600 p-3 rounded hover:bg-blue-700 font-bold cursor-pointer" onclick="addProduct()">اضافة منتج</button>
-    <button class="btn w-full bg-purple-600 p-3 rounded hover:bg-purple-700 font-bold cursor-pointer" onclick="showUsers()">المستخدمين</button>
-    <button class="btn w-full bg-red-600 p-3 rounded hover:bg-red-700 font-bold cursor-pointer" onclick="logout()">تسجيل الخروج</button>
+  <div class="space-y-3">
+    <button class="w-full bg-green-600 p-3 rounded hover:bg-green-700 font-bold cursor-pointer" onclick="showReports()">عرض التقارير</button>
+    <button class="w-full bg-blue-600 p-3 rounded hover:bg-blue-700 font-bold cursor-pointer" onclick="addProduct()">اضافة منتج</button>
+    <button class="w-full bg-purple-600 p-3 rounded hover:bg-purple-700 font-bold cursor-pointer" onclick="showUsers()">المستخدمين</button>
+    <button class="w-full bg-red-600 p-3 rounded hover:bg-red-700 font-bold cursor-pointer" onclick="logout()">تسجيل الخروج</button>
   </div>
 </div>
 
 <script>
-// هاي وظائف الازرار
 function showReports(){
   alert("راح نعرض صفحة التقارير");
-  // window.location.href = 'orders.html'; 
 }
 
 function addProduct(){
-  alert("راح نعرض صفحة اضافة منتج");
-  // window.location.href = 'add-product.html';
+  window.location.href = 'add-product.html';
 }
 
 function showUsers(){
   alert("راح نعرض صفحة المستخدمين");
-  // window.location.href = 'users.html';
 }
 
 function logout(){
   if(confirm("متأكد تريد تسوي خروج؟")){
     localStorage.clear(); 
-    window.location.href = 'index.html'; // يرجعك لهاي الصفحة اللي داز صورتها
+    window.location.href = 'index.html';
   }
 }
 </script>
