@@ -1,22 +1,48 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-    <meta charset="UTF-8">
-    <title>رافدين سيلز</title>
-    <style>
-        body {font-family:Arial; text-align:center; padding:50px; background:#0f172a; color:white;}
-        .box {background:#1e293b; padding:30px; border-radius:12px; display:inline-block;}
-        input,button {padding:10px; margin:5px; border-radius:8px; border:none;}
-        button {background:#6366f1; color:white; cursor:pointer;}
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>رافدين سيلز</title>
+<script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body>
-    <div class="box">
-        <h1>رافدين سيلز</h1>
-        <p>نظام ادارة المبيعات اشتغل</p>
-        <input type="email" placeholder="الايميل"><br>
-        <input type="password" placeholder="كلمة السر"><br>
-        <button>دخول</button>
-    </div>
-</body>
-</html>
+<body class="bg-gradient-to-br from-slate-900 to-indigo-900 text-white flex items-center justify-center min-h-screen">
+
+<div class="bg-slate-800/80 backdrop-blur-sm p-8 rounded-2xl w-96 shadow-2xl">
+  <h1 class="text-3xl font-bold text-center mb-2">رافدين سيلز</h1>
+  <p class="text-slate-400 text-center mb-6">نظام المبيعات</p>
+  
+  <input id="email" type="email" placeholder="الايميل" value="admin@rafidain.com" class="w-full p-3 mb-3 rounded-lg bg-slate-700 border-slate-600 outline-none">
+  <input id="pass" type="password" placeholder="كلمة السر" value="12345678" class="w-full p-3 mb-4 rounded-lg bg-slate-700 border-slate-600 outline-none">
+  
+  <button onclick="login()" class="w-full bg-indigo-600 hover:bg-indigo-700 p-3 rounded-lg font-bold">دخول</button>
+  <p id="msg" class="text-center mt-3 text-sm"></p>
+</div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+
+// هذا الـ config مالك
+const firebaseConfig = {
+  apiKey: "AIzaSyDnryQ2sFm7Rudel7z_xOpVtdXUcxFceHQ",
+  authDomain: "rafidain-sales.firebaseapp.com",
+  projectId: "rafidain-sales",
+  storageBucket: "rafidain-sales.firebasestorage.app",
+  messagingSenderId: "161657937115",
+  appId: "1:161657937115:web:94c2af2801877edea400fe",
+  measurementId: "G-408C6ED680"
+};
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+
+window.login = function(){
+  const email = document.getElementById('email').value;
+  const pass = document.getElementById('pass').value;
+  document.getElementById('msg').innerText = "جاري الدخول...";
+  
+  signInWithEmailAndPassword(auth, email, pass)
+  .then(() => {
+    document.getElementById('msg').innerText = "تم الدخول بنجاح!";
+    document.getElementById('msg').className = "text-green-400 text-center mt
