@@ -2,13 +2,13 @@
 <html lang="ar" dir="rtl">
 <head>
   <meta charset="UTF-8">
-  <title>نظام الماركت الاحترافي</title>
+  <title>نظام الماركت الاحترافي v4</title>
   <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&display=swap" rel="stylesheet">
-  <script src="https://unpkg.com/html5-qrcode"></script>
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
     body { font-family: 'Cairo', sans-serif; background: #F0F2F5; }
-    .header { background: linear-gradient(135deg, #1A4D8F, #2E6DB4); color: white; padding: 15px; text-align: center; font-size: 22px; font-weight: bold; }
+    .header { background: linear-gradient(135deg, #1A4D8F, #2E6DB4); color: white; padding: 15px; display: flex; justify-content: space-between; align-items: center; font-size: 20px; font-weight: bold; }
+    .cashier-info { background: white; color: #1A4D8F; padding: 8px 15px; border-radius: 8px; font-size: 14px; }
     .container { padding: 20px; max-width: 1400px; margin: auto; }
     .stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 12px; margin-bottom: 20px; }
     .stat-card { background: white; padding: 15px; border-radius: 16px; text-align: center; box-shadow: 0 4px 12px rgba(0,0,0,0.08); }
@@ -19,16 +19,30 @@
     .modal-content { background: white; padding: 25px; border-radius: 16px; width: 95%; max-width: 700px; max-height: 90vh; overflow-y: auto; }
     .btn { background: #1A4D8F; color: white; padding: 12px; border: none; border-radius: 8px; cursor: pointer; width: 100%; margin-top: 8px; font-weight: bold; }
     input, select { width: 100%; padding: 10px; margin: 6px 0; border: 1px solid #ddd; border-radius: 8px; }
-    table { width: 100%; background: white; border-radius: 12px; margin-top: 15px; }
+    table { width: 100%; background: white; border-radius: 12px; margin-top: 15px; border-collapse: collapse; }
     table th { background: #1A4D8F; color: white; padding: 10px; }
     table td { padding: 10px; text-align: center; border-bottom: 1px solid #eee; }
-    #reader { width: 100%; }
     #invoicePrint { display: none; width: 80mm; font-size: 12px; }
     @media print { body * { visibility: hidden; } #invoicePrint, #invoicePrint * { visibility: visible; } #invoicePrint { position: absolute; left: 0; top: 0; display: block !important; } }
+    .login-screen { position: fixed; top:0; left:0; width:100%; height:100%; background:#1A4D8F; display:flex; justify-content:center; align-items:center; z-index:1000; }
+    .login-box { background:white; padding:30px; border-radius:16px; width:90%; max-width:500px; text-align:center; }
+    .cashier-btn { background:#28A745; color:white; padding:20px; margin:10px; border:none; border-radius:12px; font-size:18px; cursor:pointer; width:45%; }
   </style>
 </head>
 <body>
-  <div class="header" id="marketName">الماركت</div>
+
+  <div class="login-screen" id="loginScreen">
+    <div class="login-box">
+      <h2>اختر اسمك</h2>
+      <div id="cashierList"></div>
+      <button style="background:#DC3545; color:white; padding:10px; border:none; border-radius:8px; width:100%; margin-top:10px" onclick="addNewCashier()">➕ اضافة كاشير جديد</button>
+    </div>
+  </div>
+
+  <div class="header">
+    <div id="marketName">الماركت</div>
+    <div class="cashier-info">👨‍💼 <span id="currentCashierSpan">الكاشير</span> | <a href="#" onclick="logout()" style="color:#1A4D8F">تبديل</a></div>
+  </div>
 
   <div class="container">
     <div class="stats">
@@ -40,14 +54,12 @@
       <div class="stat-card"><h3 id="totalDebt">0</h3><p>📉 الديون</p></div>
     </div>
 
-    <!-- 18 زر -->
     <div class="grid">
       <button class="feature-btn" onclick="openModal('settingsModal')">⚙️<br>اعدادات</button>
-      <button class="feature-btn" onclick="openModal('cashierModal')">👨‍💼<br>الكاشير</button>
       <button class="feature-btn" onclick="openModal('customerModal')">👤➕<br>عميل جديد</button>
       <button class="feature-btn" onclick="openModal('orderModal')">🛒➕<br>طلب جديد</button>
       <button class="feature-btn" onclick="showCart()">🧺<br>السلة</button>
-      <button class="feature-btn" onclick="startScanner()">📷<br>مسح الباركود</button>
+      <button class="feature-btn" onclick="openModal('barcodeModal')">🔢<br>ادخال الباركود</button>
       <button class="feature-btn" onclick="printLastInvoice()">🖨️<br>طباعة اخر فاتورة</button>
       <button class="feature-btn" onclick="showOrders()">📋<br>سجل الطلبات</button>
       <button class="feature-btn" onclick="showDebts()">💳<br>الديون</button>
@@ -55,25 +67,22 @@
       <button class="feature-btn" onclick="openModal('productModal')">📦<br>المنتجات</button>
       <button class="feature-btn" onclick="checkStock()">⚠️<br>تنبيه المخزون</button>
       <button class="feature-btn" onclick="openModal('loyaltyModal')">⭐<br>نقاط الولاء</button>
-      <button class="feature-btn" onclick="openModal('shiftModal')">🕐<br>الوردية</button>
+      <button class="feature-btn" onclick="closeShift()">🕐<br>اغلاق الوردية</button>
       <button class="feature-btn" onclick="openModal('supplierModal')">🚚<br>الموردين</button>
       <button class="feature-btn" onclick="toggleDark()">🌙<br>دارك مود</button>
       <button class="feature-btn" onclick="exportExcel()">📥<br>تصدير Excel</button>
       <button class="feature-btn" onclick="backupData()">☁️<br>نسخ احتياطي</button>
+      <button class="feature-btn" onclick="showCashiers()">👨‍💼<br>الكاشيرين</button>
     </div>
-
     <div id="contentArea" style="margin-top:20px"></div>
   </div>
 
-  <!-- المودالات -->
+  <div class="modal" id="barcodeModal"><div class="modal-content"><h3>ادخال الباركود يدوي</h3><input id="barcodeInput" type="number" placeholder="اكتب رقم الباركود" onkeypress="if(event.key=='Enter') searchBarcode()"><button class="btn" onclick="searchBarcode()">بحث</button><div id="barcodeResult"></div><button class="btn" style="background:#DC3545" onclick="closeModal('barcodeModal')">اغلاق</button></div></div>
   <div class="modal" id="settingsModal"><div class="modal-content"><h3>اعدادات المحل</h3><input id="setMarketName" placeholder="اسم الماركت"><input id="setMarketPhone" placeholder="رقم الهاتف"><input id="setLoyaltyRate" type="number" placeholder="كل كم دينار = نقطة"><select id="paperSize"><option value="80">ورق 80mm</option><option value="58">ورق 58mm</option></select><button class="btn" onclick="saveSettings()">حفظ</button><button class="btn" style="background:#DC3545" onclick="closeModal('settingsModal')">الغاء</button></div></div>
-  <div class="modal" id="cashierModal"><div class="modal-content"><h3>اسم الكاشير</h3><input id="cashierName" placeholder="اسم ابو الكاشير"><button class="btn" onclick="saveCashier()">حفظ</button><button class="btn" style="background:#DC3545" onclick="closeModal('cashierModal')">اغلاق</button></div></div>
   <div class="modal" id="customerModal"><div class="modal-content"><h3>عميل جديد</h3><input id="custName" placeholder="الاسم"><input id="custPhone" placeholder="الهاتف"><button class="btn" onclick="addCustomer()">حفظ</button><button class="btn" style="background:#DC3545" onclick="closeModal('customerModal')">الغاء</button></div></div>
   <div class="modal" id="productModal"><div class="modal-content"><h3>اضافة منتج</h3><input id="prodCode" placeholder="كود الباركود"><input id="prodName" placeholder="اسم المنتج"><input id="prodPrice" type="number" placeholder="السعر"><input id="prodStock" type="number" placeholder="المخزون"><button class="btn" onclick="addProduct()">حفظ</button><button class="btn" style="background:#DC3545" onclick="closeModal('productModal')">الغاء</button></div></div>
-  <div class="modal" id="orderModal"><div class="modal-content"><h3>طلب جديد</h3><select id="orderCustomer"></select><input id="orderProduct" placeholder="المنتج"><input id="orderPrice" type="number" placeholder="السعر"><input id="orderQty" type="number" placeholder="الكمية" value="1"><button class="btn" onclick="addToCart()">اضافة للسلة</button><div id="cartList"></div><h4>الاجمالي: <span id="cartTotal">0</span> د.ع</h4><select id="paymentMethod"><option value="كاش">كاش</option><option value="ماستر">ماستر</option><option value="دين">دين</option></select><button class="btn btn-success" onclick="completeOrder()">حفظ وطباعة</button><button class="btn" style="background:#DC3545" onclick="closeModal('orderModal')">الغاء</button></div></div>
-  <div class="modal" id="loyaltyModal"><div class="modal-content"><h3>نقاط الولاء</h3><p>كل <span id="loyaltyRate">100000</span> د.ع = نقطة</p><input id="addPointsCustomer" placeholder="رقم العميل"><input id="addPoints" type="number" placeholder="عدد النقاط"><button class="btn" onclick="addPoints()">اضافة نقاط</button><button class="btn" style="background:#DC3545" onclick="closeModal('loyaltyModal')">اغلاق</button></div></div>
-  <div class="modal" id="scannerModal"><div class="modal-content"><h3>مسح الباركود</h3><div id="reader"></div><button class="btn" style="background:#DC3545" onclick="stopScanner()">ايقاف</button></div></div>
-  <div class="modal" id="shiftModal"><div class="modal-content"><h3>جرد الوردية</h3><button class="btn" onclick="closeShift()">اغلاق الوردية</button><button class="btn" style="background:#DC3545" onclick="closeModal('shiftModal')">الغاء</button></div></div>
+  <div class="modal" id="orderModal"><div class="modal-content"><h3>طلب جديد</h3><select id="orderCustomer"></select><input id="orderProduct" placeholder="المنتج"><input id="orderPrice" type="number" placeholder="السعر"><input id="orderQty" type="number" placeholder="الكمية" value="1"><button class="btn" onclick="addToCart()">اضافة للسلة</button><div id="cartList"></div><h4>الاجمالي: <span id="cartTotal">0</span> د.ع</h4><select id="paymentMethod"><option value="كاش">كاش</option><option value="ماستر">ماستر</option><option value="دين">دين</option></select><button class="btn" style="background:#28A745" onclick="completeOrder()">حفظ وطباعة</button><button class="btn" style="background:#DC3545" onclick="closeModal('orderModal')">الغاء</button></div></div>
+  <div class="modal" id="loyaltyModal"><div class="modal-content"><h3>نقاط الولاء</h3><p>كل <span id="loyaltyRateSpan">100000</span> د.ع = نقطة</p><input id="addPointsCustomer" placeholder="رقم العميل"><input id="addPoints" type="number" placeholder="عدد النقاط"><button class="btn" onclick="addPoints()">اضافة نقاط</button><button class="btn" style="background:#DC3545" onclick="closeModal('loyaltyModal')">اغلاق</button></div></div>
   <div class="modal" id="supplierModal"><div class="modal-content"><h3>الموردين</h3><input id="supplierName" placeholder="اسم المورد"><button class="btn" onclick="alert('تم اضافة المورد')">حفظ</button><button class="btn" style="background:#DC3545" onclick="closeModal('supplierModal')">اغلاق</button></div></div>
 
   <div id="invoicePrint"></div>
@@ -81,58 +90,79 @@
 <script>
   let customers = JSON.parse(localStorage.getItem('customers')) || [];
   let orders = JSON.parse(localStorage.getItem('orders')) || [];
-  let products = JSON.parse(localStorage.getItem('products')) || [];
+  let products = JSON.parse(localStorage.getItem('products')) || [{code:'111', name:'ببسي', price:1000, stock:50}];
+  let cashiers = JSON.parse(localStorage.getItem('cashiers')) || [{id:1, name:'احمد'},{id:2, name:'علي'}];
   let cart = [];
   let settings = JSON.parse(localStorage.getItem('settings')) || {marketName:'الماركت', loyaltyRate:100000, paperSize:'80'};
-  let cashier = localStorage.getItem('cashier') || 'الكاشير';
-  let html5QrCode;
+  let currentCashier = localStorage.getItem('currentCashier') || '';
 
-  marketName.innerText = settings.marketName;
-  loyaltyRate.innerText = settings.loyaltyRate;
+  window.onload = function(){
+    showCashierButtons();
+    if(currentCashier){
+      document.getElementById('loginScreen').style.display='none';
+      document.getElementById('currentCashierSpan').innerText = currentCashier;
+    }
+    document.getElementById('marketName').innerText = settings.marketName;
+    document.getElementById('loyaltyRateSpan').innerText = settings.loyaltyRate;
+    updateStats();
+  }
+
+  function showCashierButtons(){
+    let html = '';
+    cashiers.forEach(c=>{ html += `<button class="cashier-btn" onclick="selectCashier('${c.name}')">${c.name}</button>`; });
+    document.getElementById('cashierList').innerHTML = html;
+  }
+  function selectCashier(name){ currentCashier = name; localStorage.setItem('currentCashier', name); document.getElementById('loginScreen').style.display='none'; document.getElementById('currentCashierSpan').innerText = name; }
+  function addNewCashier(){ let name = prompt('اكتب اسم الكاشير:'); if(name){ cashiers.push({id:Date.now(), name}); localStorage.setItem('cashiers', JSON.stringify(cashiers)); showCashierButtons(); } }
+  function logout(){ localStorage.removeItem('currentCashier'); location.reload(); }
 
   function openModal(id){ document.getElementById(id).style.display='flex'; loadCustomers(); }
   function closeModal(id){ document.getElementById(id).style.display='none'; }
-  function saveSettings(){ settings={marketName:setMarketName.value, phone:setMarketPhone.value, loyaltyRate:+setLoyaltyRate.value, paperSize:paperSize.value}; localStorage.setItem('settings',JSON.stringify(settings)); marketName.innerText=settings.marketName; loyaltyRate.innerText=settings.loyaltyRate; alert('تم'); closeModal('settingsModal'); }
-  function saveCashier(){ cashier=cashierName.value; localStorage.setItem('cashier',cashier); alert('تم'); closeModal('cashierModal'); }
-  function addCustomer(){ customers.push({id:Date.now(), name:custName.value, phone:custPhone.value, points:0, debt:0}); localStorage.setItem('customers',JSON.stringify(customers)); alert('تم'); closeModal('customerModal'); updateStats(); }
-  function addProduct(){ products.push({code:prodCode.value, name:prodName.value, price:+prodPrice.value, stock:+prodStock.value}); localStorage.setItem('products',JSON.stringify(products)); alert('تم'); closeModal('productModal'); }
-  function addToCart(){ cart.push({product:orderProduct.value, price:+orderPrice.value, qty:+orderQty.value}); showCart(); }
-  function showCart(){ let html='<h4>السلة</h4>'; let total=0; cart.forEach((i,idx)=>{total+=i.price*i.qty; html+=`<p>${i.product} x${i.qty} = ${i.price*i.qty}</p>`}); cartList.innerHTML=html; cartTotal.innerText=total; }
-  function loadCustomers(){ orderCustomer.innerHTML='<option value="">عميل عادي</option>'; customers.forEach(c=>orderCustomer.innerHTML+=`<option value="${c.id}">${c.name}</option>`); }
+
+  function searchBarcode(){ let code = document.getElementById('barcodeInput').value; let p = products.find(x=>x.code==code); if(p){ document.getElementById('barcodeResult').innerHTML = `<p style="color:green">✅ ${p.name} - ${p.price} د.ع</p><button class="btn" onclick="addToCartFromBarcode('${p.name}', ${p.price})">اضافة للسلة</button>`; } else { document.getElementById('barcodeResult').innerHTML = `<p style="color:red">❌ غير موجود</p>`; } }
+  function addToCartFromBarcode(name, price){ cart.push({product:name, price:price, qty:1}); showCart(); document.getElementById('barcodeInput').value=''; document.getElementById('barcodeResult').innerHTML='<p style="color:green">تمت الاضافة</p>'; }
+
+  function saveSettings(){ settings={marketName:document.getElementById('setMarketName').value, phone:document.getElementById('setMarketPhone').value, loyaltyRate:+document.getElementById('setLoyaltyRate').value, paperSize:document.getElementById('paperSize').value}; localStorage.setItem('settings',JSON.stringify(settings)); document.getElementById('marketName').innerText=settings.marketName; document.getElementById('loyaltyRateSpan').innerText=settings.loyaltyRate; alert('تم الحفظ'); closeModal('settingsModal'); }
+  function addCustomer(){ customers.push({id:Date.now(), name:document.getElementById('custName').value, phone:document.getElementById('custPhone').value, points:0, debt:0}); localStorage.setItem('customers',JSON.stringify(customers)); alert('تم'); closeModal('customerModal'); updateStats(); }
+  function addProduct(){ products.push({code:document.getElementById('prodCode').value, name:document.getElementById('prodName').value, price:+document.getElementById('prodPrice').value, stock:+document.getElementById('prodStock').value}); localStorage.setItem('products',JSON.stringify(products)); alert('تم'); closeModal('productModal'); }
+  function addToCart(){ cart.push({product:document.getElementById('orderProduct').value, price:+document.getElementById('orderPrice').value, qty:+document.getElementById('orderQty').value}); showCart(); }
+  function showCart(){ let html='<h4>السلة</h4>'; let total=0; cart.forEach((i,idx)=>{total+=i.price*i.qty; html+=`<p>${i.product} x${i.qty} = ${i.price*i.qty} <button onclick="cart.splice(${idx},1);showCart()">حذف</button></p>`}); document.getElementById('cartList').innerHTML=html; document.getElementById('cartTotal').innerText=total; }
+  function loadCustomers(){ document.getElementById('orderCustomer').innerHTML='<option value="">عميل عادي</option>'; customers.forEach(c=>document.getElementById('orderCustomer').innerHTML+=`<option value="${c.id}">${c.name}</option>`); }
+  
   function completeOrder(){
     let total=cart.reduce((s,i)=>s+i.price*i.qty,0); let invoiceNum='INV'+Date.now(); let date=new Date().toLocaleString('ar-IQ');
-    orders.push({id:invoiceNum, items:cart, total, payment:paymentMethod.value, date, cashier});
-    if(paymentMethod.value=='دين'){ let c=customers.find(x=>x.id==orderCustomer.value); if(c){c.debt+=total; c.points+=Math.floor(total/settings.loyaltyRate);} }
-    localStorage.setItem('orders',JSON.stringify(orders)); localStorage.setItem('customers',JSON.stringify(customers));
-    printInvoice({id:invoiceNum, product:cart.map(i=>i.product).join(','), qty:cart.reduce((s,i)=>s+i.qty,0), total, date, cashier});
+    orders.push({id:invoiceNum, items:cart, total, payment:document.getElementById('paymentMethod').value, date, cashier:currentCashier});
+    if(document.getElementById('paymentMethod').value=='دين'){ let c=customers.find(x=>x.id==document.getElementById('orderCustomer').value); if(c){c.debt+=total; c.points+=Math.floor(total/settings.loyaltyRate);} }
+    cart.forEach(i=>{let p=products.find(x=>x.name==i.product); if(p)p.stock-=i.qty;});
+    localStorage.setItem('orders',JSON.stringify(orders)); localStorage.setItem('customers',JSON.stringify(customers)); localStorage.setItem('products',JSON.stringify(products));
+    printInvoice({id:invoiceNum, total, date, cashier:currentCashier});
     cart=[]; closeModal('orderModal'); updateStats();
   }
   function printInvoice(order){
     let paperWidth = settings.paperSize == '58' ? '58mm' : '80mm';
-    invoicePrint.innerHTML = `<div style="width:${paperWidth}"><div style="text-align:center"><b>${settings.marketName}</b></div><div style="text-align:center">${settings.phone}</div><hr><div>رقم: ${order.id}</div><div>الكاشير: ${order.cashier}</div><div>التاريخ: ${order.date}</div><hr><div>الاجمالي: ${order.total} د.ع</div><div style="text-align:center">شكرا لكم</div></div>`;
+    document.getElementById('invoicePrint').innerHTML = `<div style="width:${paperWidth}"><div style="text-align:center"><b>${settings.marketName}</b></div><div style="text-align:center">${settings.phone||''}</div><hr><div>رقم: ${order.id}</div><div>الكاشير: ${order.cashier}</div><div>التاريخ: ${order.date}</div><hr><div>الاجمالي: ${order.total} د.ع</div><div style="text-align:center">شكرا لكم</div></div>`;
     window.print();
   }
-  function printLastInvoice(){ if(orders.length==0) return alert('لا توجد'); printInvoice(orders[orders.length-1]); }
-  function showOrders(){ let html='<h3>سجل الطلبات</h3><table><tr><th>رقم</th><th>المبلغ</th><th>الكاشير</th></tr>'; orders.forEach(o=>html+=`<tr><td>${o.id}</td><td>${o.total}</td><td>${o.cashier}</td></tr>`); contentArea.innerHTML=html+'</table>'; }
-  function showDebts(){ let html='<h3>الديون</h3>'; customers.filter(c=>c.debt>0).forEach(c=>html+=`<p>${c.name}: ${c.debt}</p>`); contentArea.innerHTML=html; }
-  function checkStock(){ let html='<h3>المخزون القليل</h3>'; products.filter(p=>p.stock<5).forEach(p=>html+=`<p style="color:red">${p.name}: ${p.stock}</p>`); contentArea.innerHTML=html; }
-  function showReport(){ contentArea.innerHTML=`<h3>التقرير</h3><p>الطلبات: ${orders.length}</p><p>الايراد: ${orders.reduce((s,o)=>s+o.total,0)}</p>`; }
-  function addPoints(){ let c=customers.find(x=>x.id==addPointsCustomer.value); if(c){c.points+= +addPoints.value; localStorage.setItem('customers',JSON.stringify(customers)); alert('تم')} }
+  function printLastInvoice(){ if(orders.length==0) return alert('لا توجد فواتير'); printInvoice(orders[orders.length-1]); }
+  function showOrders(){ let html='<h3>سجل الطلبات</h3><table><tr><th>رقم</th><th>المبلغ</th><th>الكاشير</th><th>التاريخ</th></tr>'; orders.forEach(o=>html+=`<tr><td>${o.id}</td><td>${o.total}</td><td>${o.cashier}</td><td>${o.date}</td></tr>`); document.getElementById('contentArea').innerHTML=html+'</table>'; }
+  function showDebts(){ let html='<h3>الديون</h3>'; customers.filter(c=>c.debt>0).forEach(c=>html+=`<p>${c.name}: ${c.debt} د.ع</p>`); document.getElementById('contentArea').innerHTML=html; }
+  function checkStock(){ let html='<h3>المخزون القليل</h3>'; products.filter(p=>p.stock<5).forEach(p=>html+=`<p style="color:red">${p.name}: ${p.stock}</p>`); document.getElementById('contentArea').innerHTML=html; }
+  function showReport(){ document.getElementById('contentArea').innerHTML=`<h3>التقرير</h3><p>الطلبات: ${orders.length}</p><p>الايراد: ${orders.reduce((s,o)=>s+o.total,0)} د.ع</p>`; }
+  function addPoints(){ let c=customers.find(x=>x.id==document.getElementById('addPointsCustomer').value); if(c){c.points+= +document.getElementById('addPoints').value; localStorage.setItem('customers',JSON.stringify(customers)); alert('تم')} }
   function toggleDark(){ document.body.style.background = document.body.style.background=='#1a1a1a'?'#F0F2F5':'#1a1a1a'; }
-  function exportExcel(){ alert('تم تصدير Excel'); }
-  function backupData(){ let a=document.createElement('a'); a.href=URL.createObjectURL(new Blob([JSON.stringify({customers,orders,products})])); a.download='backup.json'; a.click(); }
-  function closeShift(){ alert('تم اغلاق الوردية'); closeModal('shiftModal'); }
-  function startScanner(){ openModal('scannerModal'); html5QrCode=new Html5Qrcode("reader"); html5QrCode.start({facingMode:"environment"},{fps:10},code=>{let p=products.find(x=>x.code==code); if(p){orderProduct.value=p.name; orderPrice.value=p.price;} setTimeout(stopScanner,2000);}); }
-  function stopScanner(){ if(html5QrCode)html5QrCode.stop(); closeModal('scannerModal'); }
+  function exportExcel(){ alert('تم تصدير البيانات'); }
+  function backupData(){ let a=document.createElement('a'); a.href=URL.createObjectURL(new Blob([JSON.stringify({customers,orders,products,cashiers})])); a.download='backup.json'; a.click(); }
+  function closeShift(){ alert('تم اغلاق الوردية. الايراد: '+orders.reduce((s,o)=>s+o.total,0)); }
+  function showCashiers(){ document.getElementById('contentArea').innerHTML='<h3>الكاشيرين</h3>'+cashiers.map(c=>`<p>${c.name}</p>`).join(''); }
+
   function updateStats(){
-    totalOrders.innerText=orders.length;
-    totalRevenue.innerText=orders.reduce((s,o)=>s+o.total,0);
-    cashBox.innerText=orders.filter(o=>o.payment=='كاش').reduce((s,o)=>s+o.total,0);
-    totalCustomers.innerText=customers.length;
-    totalPoints.innerText=customers.reduce((s,c)=>s+c.points,0);
-    totalDebt.innerText=customers.reduce((s,c)=>s+c.debt,0);
+    document.getElementById('totalOrders').innerText=orders.length;
+    document.getElementById('totalRevenue').innerText=orders.reduce((s,o)=>s+o.total,0);
+    document.getElementById('cashBox').innerText=orders.filter(o=>o.payment=='كاش').reduce((s,o)=>s+o.total,0);
+    document.getElementById('totalCustomers').innerText=customers.length;
+    document.getElementById('totalPoints').innerText=customers.reduce((s,c)=>s+c.points,0);
+    document.getElementById('totalDebt').innerText=customers.reduce((s,c)=>s+c.debt,0);
   }
-  updateStats();
 </script>
 </body>
-</html>
+                                                                                       </html>
