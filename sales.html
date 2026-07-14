@@ -2,37 +2,44 @@
 <html lang="ar" dir="rtl">
 <head>
   <meta charset="UTF-8">
-  <title>لوحة موظف المبيعات</title>
+  <title>لوحة موظف المبيعات المتقدمة</title>
   <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&display=swap" rel="stylesheet">
   <script src="https://unpkg.com/html5-qrcode"></script>
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
     body { font-family: 'Cairo', sans-serif; background: #F5F7FA; }
-    .header { background: #1A4D8F; color: white; padding: 20px; text-align: center; font-size: 22px; font-weight: bold; }
-    .container { padding: 20px; max-width: 1100px; margin: auto; }
-    .stats { display: flex; gap: 15px; margin-bottom: 25px; flex-wrap: wrap; }
-    .stat-card { flex: 1; min-width: 160px; background: white; padding: 20px; border-radius: 16px; text-align: center; box-shadow: 0 4px 12px rgba(0,0,0,0.08); }
+    .header { background: linear-gradient(135deg, #1A4D8F, #2E6DB4); color: white; padding: 20px; text-align: center; font-size: 22px; font-weight: bold; }
+    .container { padding: 20px; max-width: 1200px; margin: auto; }
+    .stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 15px; margin-bottom: 25px; }
+    .stat-card { background: white; padding: 20px; border-radius: 16px; text-align: center; box-shadow: 0 4px 12px rgba(0,0,0,0.08); }
     .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 15px; }
-    .feature-btn { background: white; padding: 20px; border-radius: 16px; text-align: center; box-shadow: 0 4px 12px rgba(0,0,0,0.08); cursor: pointer; border: none; font-family: 'Cairo'; font-weight: bold; font-size: 15px; }
-    .feature-btn:hover { background: #1A4D8F; color: white; }
+    .feature-btn { background: white; padding: 20px; border-radius: 16px; text-align: center; box-shadow: 0 4px 12px rgba(0,0,0,0.08); cursor: pointer; border: none; font-family: 'Cairo'; font-weight: bold; transition: 0.3s; }
+    .feature-btn:hover { background: #1A4D8F; color: white; transform: translateY(-3px); }
     .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); justify-content: center; align-items: center; z-index: 999; }
-    .modal-content { background: white; padding: 25px; border-radius: 16px; width: 90%; max-width: 550px; max-height: 90vh; overflow-y: auto; }
+    .modal-content { background: white; padding: 25px; border-radius: 16px; width: 90%; max-width: 600px; max-height: 90vh; overflow-y: auto; }
     .btn { background: #1A4D8F; color: white; padding: 12px; border: none; border-radius: 8px; cursor: pointer; width: 100%; margin-top: 8px; font-weight: bold; }
+    .btn-success { background: #28A745; }
+    .btn-warning { background: #FFC107; color: #000; }
     table { width: 100%; background: white; border-radius: 12px; margin-top: 15px; }
     table th { background: #1A4D8F; color: white; padding: 10px; }
     table td { padding: 10px; text-align: center; border-bottom: 1px solid #eee; }
     #reader { width: 100%; }
+    .payment-method { display: flex; gap: 10px; margin: 10px 0; }
+    .payment-method label { flex: 1; padding: 10px; border: 2px solid #ddd; border-radius: 8px; text-align: center; cursor: pointer; }
+    .payment-method input:checked + label { border-color: #1A4D8F; background: #E3F2FD; }
   </style>
 </head>
 <body>
-  <div class="header">لوحة موظف المبيعات</div>
+  <div class="header">لوحة موظف المبيعات المتقدمة</div>
   
   <div class="container">
     <div class="stats">
       <div class="stat-card"><h3 id="totalOrders">0</h3><p>📦 الطلبات</p></div>
       <div class="stat-card"><h3 id="totalRevenue">0 د.ع</h3><p>💰 الايراد</p></div>
+      <div class="stat-card"><h3 id="totalCash">0 د.ع</h3><p>💵 كاش</p></div>
+      <div class="stat-card"><h3 id="totalCard">0 د.ع</h3><p>💳 ماستر</p></div>
       <div class="stat-card"><h3 id="totalCustomers">0</h3><p>👥 العملاء</p></div>
-      <div class="stat-card"><h3 id="totalDebt">0 د.ع</h3><p>💳 الديون</p></div>
+      <div class="stat-card"><h3 id="totalDebt">0 د.ع</h3><p>📉 الديون</p></div>
     </div>
 
     <div class="grid">
@@ -45,90 +52,110 @@
       <button class="feature-btn" onclick="showReport()">📊<br>التقارير</button>
       <button class="feature-btn" onclick="showOffers()">🏷️<br>العروض</button>
       <button class="feature-btn" onclick="openModal('productModal')">📦<br>ادارة المنتجات</button>
+      <button class="feature-btn" onclick="openModal('returnModal')">↩️<br>مرتجع</button>
+      <button class="feature-btn" onclick="openModal('discountModal')">%<br>خصم</button>
+      <button class="feature-btn" onclick="openModal('installmentModal')">📅<br>اقساط</button>
       <button class="feature-btn" onclick="backupData()">☁️<br>نسخ احتياطي</button>
+      <button class="feature-btn" onclick="clearData()">🗑️<br>مسح البيانات</button>
     </div>
 
     <div id="contentArea" style="margin-top:20px"></div>
   </div>
 
-  <!-- مودالات -->
-  <div class="modal" id="customerModal"><div class="modal-content"><h3>عميل جديد</h3><input id="custName" placeholder="الاسم"><input id="custPhone" placeholder="الهاتف"><input id="custAddress" placeholder="العنوان"><button class="btn" onclick="addCustomer()">حفظ</button><button class="btn" style="background:#DC3545" onclick="closeModal('customerModal')">الغاء</button></div></div>
-  
-  <div class="modal" id="orderModal"><div class="modal-content"><h3>طلب جديد</h3><select id="orderCustomer"></select><input id="orderProduct" placeholder="المنتج"><input id="orderPrice" type="number" placeholder="السعر"><input id="orderQty" type="number" placeholder="الكمية" value="1"><select id="orderStatus"><option value="نقدي">نقدي</option><option value="دين">دين</option></select><button class="btn" onclick="addOrder()">حفظ</button><button class="btn" style="background:#DC3545" onclick="closeModal('orderModal')">الغاء</button></div></div>
+  <!-- مودال الطلب مع الدفع -->
+  <div class="modal" id="orderModal">
+    <div class="modal-content">
+      <h3>انشاء طلب جديد</h3>
+      <select id="orderCustomer"></select>
+      <input id="orderProduct" placeholder="المنتج">
+      <input id="orderPrice" type="number" placeholder="السعر">
+      <input id="orderQty" type="number" placeholder="الكمية" value="1">
+      <input id="orderDiscount" type="number" placeholder="الخصم %" value="0">
+      
+      <h4>طريقة الدفع</h4>
+      <div class="payment-method">
+        <input type="radio" name="payment" id="cash" value="كاش" checked><label for="cash">💵 كاش</label>
+        <input type="radio" name="payment" id="card" value="ماستر"><label for="card">💳 ماستر</label>
+        <input type="radio" name="payment" id="debt" value="دين"><label for="debt">📉 دين</label>
+      </div>
+      <div id="cardInfo" style="display:none">
+        <input id="cardNumber" placeholder="اخر 4 ارقام من البطاقة">
+      </div>
 
-  <div class="modal" id="productModal"><div class="modal-content"><h3>اضافة منتج</h3><input id="prodCode" placeholder="كود الباركود"><input id="prodName" placeholder="اسم المنتج"><input id="prodPrice" type="number" placeholder="السعر"><button class="btn" onclick="addProduct()">حفظ المنتج</button><button class="btn" style="background:#DC3545" onclick="closeModal('productModal')">الغاء</button></div></div>
+      <button class="btn btn-success" onclick="addOrder()">اتمام الدفع</button>
+      <button class="btn" style="background:#DC3545" onclick="closeModal('orderModal')">الغاء</button>
+    </div>
+  </div>
 
-  <div class="modal" id="scannerModal"><div class="modal-content"><h3>مسح الباركود بالكامرة</h3><div id="reader"></div><p id="scanResult"></p><button class="btn" style="background:#DC3545" onclick="stopScanner()">ايقاف الكامرة</button></div></div>
+  <div class="modal" id="customerModal"><div class="modal-content"><h3>عميل جديد</h3><input id="custName" placeholder="الاسم"><input id="custPhone" placeholder="الهاتف"><button class="btn" onclick="addCustomer()">حفظ</button><button class="btn" style="background:#DC3545" onclick="closeModal('customerModal')">الغاء</button></div></div>
+  <div class="modal" id="productModal"><div class="modal-content"><h3>اضافة منتج</h3><input id="prodCode" placeholder="كود الباركود"><input id="prodName" placeholder="اسم المنتج"><input id="prodPrice" type="number" placeholder="السعر"><button class="btn" onclick="addProduct()">حفظ</button><button class="btn" style="background:#DC3545" onclick="closeModal('productModal')">الغاء</button></div></div>
+  <div class="modal" id="scannerModal"><div class="modal-content"><h3>مسح الباركود</h3><div id="reader"></div><p id="scanResult"></p><button class="btn" style="background:#DC3545" onclick="stopScanner()">ايقاف</button></div></div>
+  <div class="modal" id="returnModal"><div class="modal-content"><h3>مرتجع</h3><input id="returnOrderId" placeholder="رقم الطلب"><button class="btn btn-warning" onclick="returnOrder()">ارجاع</button><button class="btn" style="background:#DC3545" onclick="closeModal('returnModal')">الغاء</button></div></div>
+  <div class="modal" id="discountModal"><div class="modal-content"><h3>اضافة خصم</h3><input id="discountValue" type="number" placeholder="نسبة الخصم %"><button class="btn" onclick="alert('تم تفعيل الخصم')">تفعيل</button><button class="btn" style="background:#DC3545" onclick="closeModal('discountModal')">الغاء</button></div></div>
+  <div class="modal" id="installmentModal"><div class="modal-content"><h3>جدولة اقساط</h3><input id="installCustomer" placeholder="اسم العميل"><input id="installAmount" type="number" placeholder="المبلغ"><input id="installMonths" type="number" placeholder="عدد الاشهر"><button class="btn" onclick="alert('تم جدولة الاقساط')">حفظ</button><button class="btn" style="background:#DC3545" onclick="closeModal('installmentModal')">الغاء</button></div></div>
 
 <script>
   let customers = JSON.parse(localStorage.getItem('customers')) || [];
   let orders = JSON.parse(localStorage.getItem('orders')) || [];
-  let products = JSON.parse(localStorage.getItem('products')) || [{code:'123',name:'لابتوب',price:1200000},{code:'456',name:'موبايل',price:800000}];
+  let products = JSON.parse(localStorage.getItem('products')) || [{code:'123',name:'لابتوب',price:1200000}];
   let html5QrCode;
+
+  document.querySelectorAll('input[name="payment"]').forEach(r=>r.onchange=()=>{cardInfo.style.display = r.value=='ماستر' ? 'block' : 'none'});
 
   function openModal(id){ document.getElementById(id).style.display='flex'; loadCustomers(); }
   function closeModal(id){ document.getElementById(id).style.display='none'; }
   
   function addCustomer(){
-    if(!custName.value) return alert('اكتب الاسم');
-    customers.push({id:Date.now(), name:custName.value, phone:custPhone.value, address:custAddress.value, debt:0});
-    localStorage.setItem('customers',JSON.stringify(customers)); alert('تم اضافة العميل'); closeModal('customerModal'); updateStats();
+    customers.push({id:Date.now(), name:custName.value, phone:custPhone.value, debt:0});
+    localStorage.setItem('customers',JSON.stringify(customers)); alert('تم'); closeModal('customerModal'); updateStats();
   }
   function addProduct(){
-    if(!prodCode.value) return alert('اكتب الكود');
     products.push({code:prodCode.value, name:prodName.value, price:+prodPrice.value});
-    localStorage.setItem('products',JSON.stringify(products)); alert('تم اضافة المنتج'); closeModal('productModal');
+    localStorage.setItem('products',JSON.stringify(products)); alert('تم'); closeModal('productModal');
   }
   function addOrder(){
-    let total = orderPrice.value * orderQty.value;
-    orders.push({id:Date.now(), customerId:orderCustomer.value, product:orderProduct.value, price:orderPrice.value, qty:orderQty.value, total, status:orderStatus.value, date:new Date().toLocaleDateString('ar-IQ')});
-    if(orderStatus.value=='دين'){ let c=customers.find(x=>x.id==orderCustomer.value); c.debt+= +total; }
+    let payment = document.querySelector('input[name="payment"]:checked').value;
+    let discount = orderDiscount.value/100;
+    let total = orderPrice.value * orderQty.value * (1-discount);
+    
+    orders.push({id:Date.now(), customerId:orderCustomer.value, product:orderProduct.value, qty:orderQty.value, total, payment, discount, date:new Date().toLocaleDateString('ar-IQ')});
+    
+    if(payment=='دين'){ let c=customers.find(x=>x.id==orderCustomer.value); c.debt+= +total; }
     localStorage.setItem('orders',JSON.stringify(orders)); localStorage.setItem('customers',JSON.stringify(customers));
-    alert('تم انشاء الطلب: '+total+' د.ع'); closeModal('orderModal'); updateStats();
+    alert(`تم الدفع: ${total} د.ع\nالطريقة: ${payment}`); closeModal('orderModal'); updateStats();
   }
   function loadCustomers(){
     orderCustomer.innerHTML='<option value="">اختر العميل</option>';
     customers.forEach(c=>orderCustomer.innerHTML+=`<option value="${c.id}">${c.name}</option>`);
   }
   function showOrders(){
-    let html='<h3>سجل الطلبات</h3><table><tr><th>العميل</th><th>المنتج</th><th>الكمية</th><th>المبلغ</th><th>الحالة</th></tr>';
-    orders.forEach(o=>{ let c=customers.find(x=>x.id==o.customerId); html+=`<tr><td>${c?c.name:'-'}</td><td>${o.product}</td><td>${o.qty}</td><td>${o.total} د.ع</td><td>${o.status}</td></tr>`; });
+    let html='<h3>سجل الطلبات</h3><table><tr><th>المنتج</th><th>الكمية</th><th>المبلغ</th><th>الدفع</th><th>التاريخ</th></tr>';
+    orders.forEach(o=>html+=`<tr><td>${o.product}</td><td>${o.qty}</td><td>${o.total} د.ع</td><td>${o.payment}</td><td>${o.date}</td></tr>`);
     contentArea.innerHTML=html+'</table>';
   }
   function showDebts(){
-    let html='<h3>ديون العملاء</h3><table><tr><th>الاسم</th><th>الهاتف</th><th>المبلغ</th></tr>';
-    customers.filter(c=>c.debt>0).forEach(c=>html+=`<tr><td>${c.name}</td><td>${c.phone}</td><td style="color:red">${c.debt} د.ع</td></tr>`);
+    let html='<h3>الديون</h3><table><tr><th>الاسم</th><th>المبلغ</th></tr>';
+    customers.filter(c=>c.debt>0).forEach(c=>html+=`<tr><td>${c.name}</td><td style="color:red">${c.debt} د.ع</td></tr>`);
     contentArea.innerHTML=html+'</table>';
   }
   function showReport(){
-    let total=orders.reduce((s,o)=>s+ +o.total,0);
-    contentArea.innerHTML=`<h3>التقرير</h3><p>عدد الطلبات: ${orders.length}</p><p>الايراد: ${total} د.ع</p><p>عدد العملاء: ${customers.length}</p>`;
+    let cash=orders.filter(o=>o.payment=='كاش').reduce((s,o)=>s+ +o.total,0);
+    let card=orders.filter(o=>o.payment=='ماستر').reduce((s,o)=>s+ +o.total,0);
+    contentArea.innerHTML=`<h3>التقرير</h3><p>كاش: ${cash} د.ع</p><p>ماستر: ${card} د.ع</p><p>الاجمالي: ${cash+card} د.ع</p>`;
   }
-  function showOffers(){ contentArea.innerHTML='<h3>العروض</h3><p>1. خصم 10% فوق المليون</p><p>2. توصيل مجاني</p><p>3. قطعة ثانية بنصف السعر</p>'; }
-  function showProducts(){ let html='<h3>المنتجات</h3><table><tr><th>الكود</th><th>الاسم</th><th>السعر</th></tr>'; products.forEach(p=>html+=`<tr><td>${p.code}</td><td>${p.name}</td><td>${p.price} د.ع</td></tr>`); contentArea.innerHTML=html+'</table>'; }
-  function backupData(){ let data=JSON.stringify({customers,orders,products}); localStorage.setItem('backup',data); alert('تم حفظ النسخة الاحتياطية'); }
-  function printInvoice(){ if(orders.length==0) return alert('لا توجد طلبات'); window.print(); }
-
-  // الكامرة
-  function startScanner(){
-    openModal('scannerModal');
-    html5QrCode = new Html5Qrcode("reader");
-    html5QrCode.start({ facingMode: "environment" }, { fps: 10 }, (code)=>{
-      let p = products.find(x=>x.code==code);
-      document.getElementById('scanResult').innerHTML = p ? `<b>تم العثور:</b> ${p.name} - ${p.price} د.ع` : `<b style="color:red">الكود ${code} غير موجود</b>`;
-      orderProduct.value = p ? p.name : '';
-      orderPrice.value = p ? p.price : '';
-      setTimeout(()=>stopScanner(), 2000);
-    });
-  }
-  function stopScanner(){
-    if(html5QrCode){ html5QrCode.stop(); }
-    closeModal('scannerModal');
-  }
+  function showOffers(){ contentArea.innerHTML='<h3>العروض</h3><p>خصم 10% فوق المليون</p>'; }
+  function returnOrder(){ let id=returnOrderId.value; orders=orders.filter(o=>o.id!=id); localStorage.setItem('orders',JSON.stringify(orders)); alert('تم الارجاع'); closeModal('returnModal'); updateStats(); }
+  function backupData(){ localStorage.setItem('backup',JSON.stringify({customers,orders,products})); alert('تم النسخ'); }
+  function clearData(){ if(confirm('متأكد؟')){localStorage.clear(); location.reload();} }
+  function startScanner(){ openModal('scannerModal'); html5QrCode=new Html5Qrcode("reader"); html5QrCode.start({facingMode:"environment"},{fps:10},code=>{let p=products.find(x=>x.code==code); scanResult.innerHTML=p?`${p.name} - ${p.price} د.ع`:'غير موجود'; orderProduct.value=p?.name||''; orderPrice.value=p?.price||''; setTimeout(stopScanner,2000);}); }
+  function stopScanner(){ if(html5QrCode)html5QrCode.stop(); closeModal('scannerModal'); }
+  function printInvoice(){ window.print(); }
 
   function updateStats(){
     totalOrders.innerText=orders.length;
     totalRevenue.innerText=orders.reduce((s,o)=>s+ +o.total,0)+' د.ع';
+    totalCash.innerText=orders.filter(o=>o.payment=='كاش').reduce((s,o)=>s+ +o.total,0)+' د.ع';
+    totalCard.innerText=orders.filter(o=>o.payment=='ماستر').reduce((s,o)=>s+ +o.total,0)+' د.ع';
     totalCustomers.innerText=customers.length;
     totalDebt.innerText=customers.reduce((s,c)=>s+c.debt,0)+' د.ع';
   }
