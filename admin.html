@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <title>لوحة الادارة - نظام الماركت</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Cairo', sans-serif; background: #F0F2F5; padding: 20px; }
+   .header { background: linear-gradient(135deg, #FFC107, #FFA000); color: #000; padding: 20px; border-radius: 16px; margin-bottom: 20px; text-align: center; font-size: 24px; font-weight: bold; }
+   .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: 15px; }
+   .card { background: white; padding: 20px; border-radius: 16px; box-shadow: 0 4px 12px rgba(0,0,0,0.08); }
+   .btn { background: #1A4D8F; color: white; padding: 10px; border: none; border-radius: 8px; cursor: pointer; width: 100%; margin-top: 8px; font-weight: bold; }
+   .btn-danger { background: #DC3545; }
+   .btn-success { background: #28A745; }
+    table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+    table th { background: #1A4D8F; color: white; padding: 10px; }
+    table td { padding: 8px; text-align: center; border-bottom: 1px solid #eee; }
+    input, select { width: 100%; padding: 8px; margin: 5px 0; border: 1px solid #ddd; border-radius: 8px; }
+   .alert { background:#FFF3CD; border:1px solid #FFC107; padding:10px; border-radius:8px; margin:10px 0; }
+   .back-btn { background: #6C757D; color: white; padding: 10px 20px; border: none; border-radius: 8px; cursor: pointer; margin-bottom: 15px; }
+  </style>
+</head>
+<body>
+
+  <button class="back-btn" onclick="window.location.href='index.html'">⬅️ الرجوع للكاشير</button>
+
+  <div class="header">👑 لوحة الادارة</div>
+
+  <div class="grid">
+
+    <!-- 1. تقارير الكاشيرين -->
+    <div class="card">
+      <h3>📊 تقارير الكاشيرين</h3>
+      <div id="cashierReport"></div>
+    </div>
+
+    <!-- 2. ادارة الكاشيرين والصلاحيات -->
+    <div class="card">
+      <h3>👨‍💼 ادارة الكاشيرين</h3>
+      <div id="cashierManage"></div>
+      <input id="newCashierName" placeholder="اسم كاشير جديد">
+      <button class="btn btn-success" onclick="addCashier()">➕ اضافة كاشير</button>
+    </div>
+
+    <!-- 3. جرد المخزون -->
+    <div class="card">
+      <h3>📦 جرد المخزون</h3>
+      <button class="btn" onclick="exportInventory()">📥 تصدير Excel</button>
+      <div id="inventoryList"></div>
+    </div>
+
+    <!-- 4. ادارة الديون -->
+    <div class="card">
+      <h3>💳 ادارة الديون</h3>
+      <div id="debtList"></div>
+      <input id="debtCustomerName" placeholder="اسم العميل">
+      <button class="btn btn-success" onclick="clearDebt()">تسديد الدين</button>
+    </div>
+
+    <!-- 5. عملاء VIP -->
+    <div class="card">
+      <h3>⭐ افضل 10 عملاء</h3>
+      <div id="vipCustomers"></div>
+    </div>
+
+    <!-- 6. النسخ الاحتياطي -->
+    <div class="card">
+      <h3>☁️ النسخ الاحتياطي</h3>
+      <button class="btn" onclick="backupData()">تحميل نسخة</button>
+      <input type="file" id="restoreFile" onchange="restoreData(event)">
+      <button class="btn btn-danger" onclick="resetAll()">🗑️ مسح كل البيانات</button>
+    </div>
+
+  </div>
+
+<script>
+  let customers = JSON.parse(localStorage.getItem('customers')) || [];
+  let orders = JSON.parse(localStorage.getItem('orders')) || [];
+  let products = JSON.parse(localStorage.getItem('products')) || [];
+  let cashiers = JSON.parse(localStorage.getItem('cashiers')) || [];
+  let settings = JSON.parse(localStorage.getItem('settings')) || {lowStock:5};
+
+  window.onload = function(){
+    loadCashierReport();
+    loadCashierManage();
+    loadInventory();
+    loadDebts();
+    loadVIP();
+  }
+
+  function loadCashierReport(){
+    let html = '<table><tr><th>الكاشير</th><th>الطلبات</th><th>الايراد</th></tr>';
+    cashiers.forEach(c=>{
+      let cOrders = orders.filter(o=>o.cashier==c.name);
+      let total = cOrders.reduce((s,o)=>s+o.total,0);
+      html += `<tr><td>${c.name}</td><td>${cOrders.length}</td><td>${total.toLocaleString()}</td></tr>`;
+    });
+    html += '</table>';
+    document.getElementById('cashierReport').innerHTML = html;
+  }
+
+  function loadCashierManage(){
+    let html = '';
+    cashiers.forEach(c=> html += `<p>${c.name} - ${c.role} <button onclick="deleteCashier('${c.name}')">حذف</button></p>`);
+    document.getElementById('cashierManage').innerHTML = html;
+  }
+
+  function addCashier(){
+    let name = document.getElementById('newCashierName').value;
+    if(name){ cashiers.push({id:Date.now(), name, role:'cashier'}); localStorage.setItem('cashiers', JSON.stringify(cashiers)); location.reload(); }
+  }
+  function deleteCashier(name){ if(confirm('متأكد؟')){ cashiers = cashiers.filter(c=>c.name!=name); localStorage.setItem('cashiers', JSON.stringify(cashiers)); location.reload(); } }
+
+  function loadInventory(){
+    let low = products.filter(p=>p.stock < settings.lowStock);
+    let html = `<div class="alert">⚠️ عدد المنتجات الناقصة: ${low.length}</div><table><tr><th>المنتج</th><th>المخزون</th></tr>`;
+    products.forEach(p=> html += `<tr><td>${p.name}</td><td style="color:${p.stock<settings.lowStock?'red':'green'}">${p.stock}</td></tr>`);
+    document.getElementById('inventoryList').innerHTML = html + '</table>';
+  }
+  function exportInventory(){ let csv = 'المنتج,السعر,المخزون\n'; products.forEach(p=>csv+=`${p.name},${p.price},${p.stock}\n`); let a=document.createElement('a'); a.href=URL.createObjectURL(new Blob([csv])); a.download='inventory.csv'; a.click(); }
+
+  function loadDebts(){
+    let html = '<table><tr><th>العميل</th><th>الدين</th></tr>';
+    customers.filter(c=>c.debt>0).forEach(c=> html += `<tr><td>${c.name}</td><td>${c.debt.toLocaleString()}</td></tr>`);
+    document.getElementById('debtList').innerHTML = html + '</table>';
+  }
+  function clearDebt(){ let name = document.getElementById('debtCustomerName').value; let c = customers.find(x=>x.name==name); if(c){ c.debt=0; localStorage.setItem('customers',JSON.stringify(customers)); alert('تم التسديد'); location.reload(); } }
+
+  function loadVIP(){
+    let top = customers.sort((a,b)=>b.points-a.points).slice(0,10);
+    let html = '<table><tr><th>العميل</th><th>النقاط</th></tr>';
+    top.forEach(c=> html += `<tr><td>${c.name}</td><td>${c.points}</td></tr>`);
+    document.getElementById('vipCustomers').innerHTML = html + '</table>';
+  }
+
+  function backupData(){ let a=document.createElement('a'); a.href=URL.createObjectURL(new Blob([JSON.stringify({customers,orders,products,cashiers,settings})])); a.download='backup.json'; a.click(); }
+  function restoreData(e){ let file = e.target.files[0]; let reader = new FileReader(); reader.onload = function(){ let data = JSON.parse(reader.result); localStorage.setItem('customers',JSON.stringify(data.customers)); localStorage.setItem('orders',JSON.stringify(data.orders)); localStorage.setItem('products',JSON.stringify(data.products)); alert('تم الاسترجاع'); location.reload(); } reader.readAsText(file); }
+  function resetAll(){ if(confirm('راح ينمسح كلشي! متأكد؟')){ localStorage.clear(); location.reload(); } }
+</script>
+</body>
+</html>
