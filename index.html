@@ -9,20 +9,18 @@
 .header{background:linear-gradient(135deg,#1A4D8F,#2E6DB4);color:white;padding:15px;display:flex;justify-content:space-between;align-items:center;font-size:20px;font-weight:bold;position:sticky;top:0}
 .container{padding:20px;max-width:1400px;margin:auto}
 .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px}
-.feature-btn{background:white;padding:20px 10px;border-radius:16px;text-align:center;box-shadow:0 4px 12px rgba(0,0,0,.08);cursor:pointer;border:none;font-weight:bold;font-size:14px;transition:.2s}
-.feature-btn:hover{transform:translateY(-3px)}
+.feature-btn{background:white;padding:20px 10px;border-radius:16px;text-align:center;box-shadow:0 4px 12px rgba(0,0,0,.08);cursor:pointer;border:none;font-weight:bold;font-size:14px}
 .admin-btn{background:#FFC107!important;color:#000!important}
 .modal{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.7);justify-content:center;align-items:center;z-index:999}
 .modal-content{background:white;padding:25px;border-radius:16px;width:95%;max-width:900px;max-height:90vh;overflow-y:auto}
 .btn{background:#1A4D8F;color:white;padding:12px 20px;border:none;border-radius:8px;cursor:pointer;margin:5px;font-weight:bold}
-.btn-sm{padding:6px 12px;font-size:13px}.btn-red{background:#DC3545}.btn-green{background:#28A745}.btn-orange{background:#FD7E14}
+.btn-sm{padding:6px 12px;font-size:13px}.btn-red{background:#DC3545}.btn-green{background:#28A745}
 input,select{width:100%;padding:12px;margin:8px 0;border:1px solid #ddd;border-radius:8px;font-family:'Cairo'}
 table{width:100%;background:white;border-radius:12px;margin-top:15px;border-collapse:collapse}
 table th{background:#1A4D8F;color:white;padding:12px}table td{padding:12px;text-align:center;border-bottom:1px solid #eee}
 .login-screen{position:fixed;top:0;left:0;width:100%;height:100%;background:linear-gradient(135deg,#1A4D8F,#2E6DB4);display:flex;justify-content:center;align-items:center;z-index:1000}
 .login-box{background:white;padding:30px;border-radius:16px;width:90%;max-width:420px;text-align:center}
 .stat-box{background:white;padding:20px;border-radius:12px;text-align:center;box-shadow:0 2px 8px rgba(0,0,0,.1)}
-.alert{padding:12px;border-radius:8px;margin:10px 0}.alert-danger{background:#f8d7da;color:#721c24}.alert-success{background:#d4edda;color:#155724}
 </style>
 </head>
 <body>
@@ -34,6 +32,7 @@ table th{background:#1A4D8F;color:white;padding:12px}table td{padding:12px;text-
     <input id="loginPass" type="password" placeholder="كلمة السر">
     <button class="btn" onclick="login()">دخول</button>
     <p id="loginError" style="color:red;margin-top:10px"></p>
+    <p style="font-size:12px">مدير: admin / 1234 | كاشير: ahmed / 1111</p>
   </div>
 </div>
 
@@ -48,39 +47,37 @@ table th{background:#1A4D8F;color:white;padding:12px}table td{padding:12px;text-
   </div>
 </div>
 
-<!-- المودالات -->
 <div class="modal" id="addUserModal"><div class="modal-content"><h3>👤 ادارة المستخدمين</h3><input id="newUserName" placeholder="اسم المستخدم"><input id="newUserPass" type="password" placeholder="كلمة السر"><select id="newUserRole"><option value="cashier">كاشير</option><option value="admin">ادمن</option></select><button class="btn" onclick="saveNewUser()">حفظ</button><button class="btn btn-red" onclick="closeModal('addUserModal')">الغاء</button></div></div>
 
 <div class="modal" id="addProductModal"><div class="modal-content"><h3>📦 ادارة المنتجات</h3><input id="prodName" placeholder="اسم المنتج"><input id="prodPrice" type="number" placeholder="سعر البيع"><input id="prodCost" type="number" placeholder="سعر الشراء"><input id="prodStock" type="number" placeholder="الكمية"><button class="btn" onclick="saveProduct()">حفظ</button><button class="btn btn-red" onclick="closeModal('addProductModal')">الغاء</button></div></div>
 
-<div class="modal" id="newOrderModal"><div class="modal-content"><h3>🛒 فاتورة جديدة</h3><input id="searchProd" placeholder="ابحث عن منتج..." onkeyup="searchProduct()"><div id="productList"></div><hr><h4>السلة - الاجمالي: <span id="cartTotal">0</span> د.ع</h4><div id="cartItems"></div><button class="btn btn-green" onclick="saveOrder()">طباعة وحفظ</button><button class="btn btn-red" onclick="closeModal('newOrderModal')">الغاء</button></div></div>
-
-<div class="modal" id="backupModal"><div class="modal-content"><h3>💾 النسخ الاحتياطي</h3><button class="btn" onclick="exportData()">تصدير البيانات</button><input type="file" id="importFile" onchange="importData(event)"><button class="btn btn-red" onclick="closeModal('backupModal')">اغلاق</button></div></div>
+<div class="modal" id="newOrderModal"><div class="modal-content"><h3>🛒 فاتورة جديدة</h3><input id="searchProd" placeholder="ابحث عن منتج..." onkeyup="searchProduct()"><div id="productList"></div><hr><h4>السلة - الاجمالي: <span id="cartTotal">0</span> د.ع</h4><div id="cartItems"></div><button class="btn btn-green" onclick="saveOrder()">حفظ الفاتورة</button><button class="btn btn-red" onclick="closeModal('newOrderModal')">الغاء</button></div></div>
 
 <script>
-// البيانات
-if(!localStorage.getItem('rafidain_final')){localStorage.clear(); localStorage.setItem('rafidain_final','1');}
-let users=JSON.parse(localStorage.getItem('users'))||[{name:'admin',pass:'1234',role:'admin'}];
-let products=JSON.parse(localStorage.getItem('products'))||[{id:1,name:'لابتوب',price:750000,cost:700000,stock:10}];
+if(!localStorage.getItem('rafidain_final_v2')){localStorage.clear(); localStorage.setItem('rafidain_final_v2','1');}
+let users=JSON.parse(localStorage.getItem('users'))||[{name:'admin',pass:'1234',role:'admin'},{name:'ahmed',pass:'1111',role:'cashier'}];
+let products=JSON.parse(localStorage.getItem('products'))||[{id:1,name:'لابتوب',price:750000,cost:700000,stock:10},{id:2,name:'ماوس',price:15000,cost:10000,stock:50}];
 let orders=JSON.parse(localStorage.getItem('orders'))||[];
-let currentUser=null; let cart=[]; let editIndex=-1;
+let currentUser=null; let cart=[];
 
 window.onload=function(){if(localStorage.getItem('currentUser')){currentUser=JSON.parse(localStorage.getItem('currentUser')); showApp();}}
 
-function login(){let u=document.getElementById('loginUser').value.trim(); let p=document.getElementById('loginPass').value.trim(); let user=users.find(x=>x.name==u && x.pass==p); if(user){currentUser=user; localStorage.setItem('currentUser',JSON.stringify(user)); showApp();} else{document.getElementById('loginError').innerText='خطأ';}}
+function login(){let u=document.getElementById('loginUser').value.trim(); let p=document.getElementById('loginPass').value.trim(); let user=users.find(x=>x.name==u && x.pass==p); if(user){currentUser=user; localStorage.setItem('currentUser',JSON.stringify(user)); showApp();} else{document.getElementById('loginError').innerText='خطأ بالدخول';}}
 
 function showApp(){
   document.getElementById('loginScreen').style.display='none';
   document.getElementById('mainApp').style.display='block';
-  document.getElementById('currentUserSpan').innerText = currentUser.name;
+  document.getElementById('currentUserSpan').innerText = currentUser.name + ' - ' + currentUser.role;
   loadButtons();
 }
 
 function loadButtons(){
   let html='';
+  // هاي للكل - مدير وكاشير
   html+=`<button class="feature-btn" onclick="showNewOrder()">🛒➕<br>فاتورة جديدة</button>`;
   html+=`<button class="feature-btn" onclick="showMyOrders()">📋<br>سجل مبيعاتي</button>`;
 
+  // هاي بس للمدير
   if(currentUser.role=='admin'){
     html+=`<button class="feature-btn admin-btn" onclick="showDashboard()">📊<br>لوحة التحكم</button>`;
     html+=`<button class="feature-btn admin-btn" onclick="showProducts()">📦<br>المخزن والمنتجات</button>`;
@@ -88,58 +85,29 @@ function loadButtons(){
     html+=`<button class="feature-btn admin-btn" onclick="showUsers()">👥<br>ادارة المستخدمين</button>`;
     html+=`<button class="feature-btn admin-btn" onclick="showReports()">📈<br>التقارير والارباح</button>`;
     html+=`<button class="feature-btn admin-btn" onclick="showLowStock()">⚠️<br>تنبيهات المخزن</button>`;
-    html+=`<button class="feature-btn admin-btn" onclick="openModal('backupModal')">💾<br>نسخ احتياطي</button>`;
   }
   document.getElementById('mainGrid').innerHTML=html;
 }
 
-// 1. لوحة التحكم
-function showDashboard(){
-  let totalSales=orders.reduce((sum,o)=>sum+o.total,0);
-  let totalProfit=orders.reduce((sum,o)=>sum+o.profit,0);
-  let lowStock=products.filter(p=>p.stock<5).length;
-  document.getElementById('contentArea').innerHTML=`
-  <h3>📊 لوحة التحكم</h3>
-  <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:15px">
-    <div class="stat-box"><h2>${totalSales.toLocaleString()}</h2><p>المبيعات</p></div>
-    <div class="stat-box"><h2 style="color:green">${totalProfit.toLocaleString()}</h2><p>صافي الربح</p></div>
-    <div class="stat-box"><h2>${products.length}</h2><p>المنتجات</p></div>
-    <div class="stat-box"><h2 style="color:red">${lowStock}</h2><p>منتجات قليلة</p></div>
-  </div>`;
-}
-
-// 2. ادارة المستخدمين
-function showUsers(){let html='<h3>👥 ادارة المستخدمين</h3><button class="btn btn-green" onclick="showAddUser()">+ اضافة</button><table><tr><th>الاسم</th><th>الدور</th><th>اجراء</th></tr>'; users.forEach((u,i)=>html+=`<tr><td>${u.name}</td><td>${u.role}</td><td>${u.name!='admin'?`<button class="btn-sm btn-red" onclick="deleteUser(${i})">حذف</button>`:''}</td></tr>`); document.getElementById('contentArea').innerHTML=html+'</table>';}
-function showAddUser(){editIndex=-1; document.getElementById('newUserName').value=''; document.getElementById('newUserPass').value=''; openModal('addUserModal')}
-function deleteUser(i){if(confirm('حذف؟')){users.splice(i,1); localStorage.setItem('users',JSON.stringify(users)); showUsers();}}
-function saveNewUser(){let data={name:document.getElementById('newUserName').value,pass:document.getElementById('newUserPass').value,role:document.getElementById('newUserRole').value}; users.push(data); localStorage.setItem('users',JSON.stringify(users)); alert('تم'); closeModal('addUserModal'); showUsers();}
-
-// 3. ادارة المنتجات + المخزن
-function showProducts(){let html='<h3>📦 المخزن</h3><button class="btn btn-green" onclick="openModal(\'addProductModal\')">+ اضافة منتج</button><table><tr><th>المنتج</th><th>سعر البيع</th><th>سعر الشراء</th><th>الكمية</th><th>حالة</th></tr>'; products.forEach(p=>html+=`<tr><td>${p.name}</td><td>${p.price.toLocaleString()}</td><td>${p.cost.toLocaleString()}</td><td>${p.stock}</td><td>${p.stock<5?'<span style="color:red">قليل</span>':'<span style="color:green">متوفر</span>'}</td></tr>`); document.getElementById('contentArea').innerHTML=html+'</table>';}
-function saveProduct(){products.push({id:Date.now(),name:document.getElementById('prodName').value,price:+document.getElementById('prodPrice').value,cost:+document.getElementById('prodCost').value,stock:+document.getElementById('prodStock').value}); localStorage.setItem('products',JSON.stringify(products)); alert('تم'); closeModal('addProductModal'); showProducts();}
-
-// 4. تنبيهات المخزن
-function showLowStock(){let low=products.filter(p=>p.stock<5); let html='<h3>⚠️ تنبيهات: منتجات قاربت على النفاذ</h3><table><tr><th>المنتج</th><th>المتبقي</th></tr>'; low.forEach(p=>html+=`<tr><td>${p.name}</td><td style="color:red">${p.stock}</td></tr>`); document.getElementById('contentArea').innerHTML=html+'</table>';}
-
-// 5. فاتورة جديدة + بحث
+// ميزات الكاشير
 function showNewOrder(){cart=[]; searchProduct(); openModal('newOrderModal');}
 function searchProduct(){let val=document.getElementById('searchProd').value.toLowerCase(); let html=''; products.filter(p=>p.name.includes(val)).forEach(p=>html+=`<div style="display:flex;justify-content:space-between;padding:10px"><span>${p.name} - ${p.price.toLocaleString()} - متبقي: ${p.stock}</span><button onclick="addToCart(${p.id})">+</button></div>`); document.getElementById('productList').innerHTML=html;}
 function addToCart(id){let prod=products.find(p=>p.id==id); if(prod.stock>0){cart.push(prod); prod.stock--; localStorage.setItem('products',JSON.stringify(products)); updateCart();}}
 function updateCart(){let total=cart.reduce((sum,i)=>sum+i.price,0); document.getElementById('cartTotal').innerText=total.toLocaleString(); document.getElementById('cartItems').innerHTML=cart.map(i=>`<div>${i.name}</div>`).join('');}
 function saveOrder(){if(cart.length==0)return; let total=cart.reduce((sum,i)=>sum+i.price,0); let cost=cart.reduce((sum,i)=>sum+i.cost,0); orders.push({id:Date.now(),total:total,cost:cost,profit:total-cost,cashier:currentUser.name,date:new Date().toLocaleString('ar-IQ'),items:cart}); localStorage.setItem('orders',JSON.stringify(orders)); alert('تم حفظ الفاتورة'); closeModal('newOrderModal');}
-
-// 6. كل الفواتير
-function showAllOrders(){let html='<h3>📑 كل الفواتير</h3><table><tr><th>رقم</th><th>المبلغ</th><th>الربح</th><th>الكاشير</th><th>التاريخ</th></tr>'; orders.forEach(o=>html+=`<tr><td>${o.id}</td><td>${o.total.toLocaleString()}</td><td style="color:green">${o.profit.toLocaleString()}</td><td>${o.cashier}</td><td>${o.date}</td></tr>`); document.getElementById('contentArea').innerHTML=html+'</table>'}
-
-// 7. طلباتي
 function showMyOrders(){let my=orders.filter(o=>o.cashier==currentUser.name); let html='<h3>📋 مبيعاتي</h3><table><tr><th>رقم</th><th>المبلغ</th><th>التاريخ</th></tr>'; my.forEach(o=>html+=`<tr><td>${o.id}</td><td>${o.total.toLocaleString()}</td><td>${o.date}</td></tr>`); document.getElementById('contentArea').innerHTML=html+'</table>'}
 
-// 8. التقارير
-function showReports(){let html='<h3>📈 تقرير الارباح حسب الكاشير</h3><table><tr><th>الكاشير</th><th>عدد الفواتير</th><th>المبيعات</th><th>الربح</th></tr>'; users.filter(u=>u.role=='cashier').forEach(u=>{let uo=orders.filter(o=>o.cashier==u.name); let total=uo.reduce((s,o)=>s+o.total,0); let profit=uo.reduce((s,o)=>s+o.profit,0); html+=`<tr><td>${u.name}</td><td>${uo.length}</td><td>${total.toLocaleString()}</td><td style="color:green">${profit.toLocaleString()}</td></tr>`;}); document.getElementById('contentArea').innerHTML=html+'</table>';}
-
-// 9. نسخ احتياطي
-function exportData(){let data={users,products,orders}; let blob=new Blob([JSON.stringify(data)],{type:'json'}); let a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download='backup_rafidain.json'; a.click();}
-function importData(e){let file=e.target.files[0]; let reader=new FileReader(); reader.onload=function(){let data=JSON.parse(reader.result); localStorage.setItem('users',JSON.stringify(data.users)); localStorage.setItem('products',JSON.stringify(data.products)); localStorage.setItem('orders',JSON.stringify(data.orders)); alert('تم الاسترجاع'); location.reload();}; reader.readAsText(file);}
+// ميزات المدير
+function showDashboard(){let totalSales=orders.reduce((sum,o)=>sum+o.total,0); let totalProfit=orders.reduce((sum,o)=>sum+o.profit,0); let lowStock=products.filter(p=>p.stock<5).length; document.getElementById('contentArea').innerHTML=`<h3>📊 لوحة التحكم</h3><div style="display:grid;grid-template-columns:repeat(4,1fr);gap:15px"><div class="stat-box"><h2>${totalSales.toLocaleString()}</h2><p>المبيعات</p></div><div class="stat-box"><h2 style="color:green">${totalProfit.toLocaleString()}</h2><p>صافي الربح</p></div><div class="stat-box"><h2>${products.length}</h2><p>المنتجات</p></div><div class="stat-box"><h2 style="color:red">${lowStock}</h2><p>منتجات قليلة</p></div></div>`;}
+function showUsers(){let html='<h3>👥 ادارة المستخدمين</h3><button class="btn btn-green" onclick="showAddUser()">+ اضافة</button><table><tr><th>الاسم</th><th>الدور</th><th>اجراء</th></tr>'; users.forEach((u,i)=>html+=`<tr><td>${u.name}</td><td>${u.role}</td><td>${u.name!='admin'?`<button class="btn-sm btn-red" onclick="deleteUser(${i})">حذف</button>`:''}</td></tr>`); document.getElementById('contentArea').innerHTML=html+'</table>';}
+function showAddUser(){document.getElementById('newUserName').value=''; document.getElementById('newUserPass').value=''; openModal('addUserModal')}
+function deleteUser(i){if(confirm('حذف؟')){users.splice(i,1); localStorage.setItem('users',JSON.stringify(users)); showUsers();}}
+function saveNewUser(){let data={name:document.getElementById('newUserName').value,pass:document.getElementById('newUserPass').value,role:document.getElementById('newUserRole').value}; users.push(data); localStorage.setItem('users',JSON.stringify(users)); alert('تم'); closeModal('addUserModal'); showUsers();}
+function showProducts(){let html='<h3>📦 المخزن</h3><button class="btn btn-green" onclick="openModal(\'addProductModal\')">+ اضافة منتج</button><table><tr><th>المنتج</th><th>سعر البيع</th><th>الكمية</th><th>حالة</th></tr>'; products.forEach(p=>html+=`<tr><td>${p.name}</td><td>${p.price.toLocaleString()}</td><td>${p.stock}</td><td>${p.stock<5?'<span style="color:red">قليل</span>':'<span style="color:green">متوفر</span>'}</td></tr>`); document.getElementById('contentArea').innerHTML=html+'</table>';}
+function saveProduct(){products.push({id:Date.now(),name:document.getElementById('prodName').value,price:+document.getElementById('prodPrice').value,cost:+document.getElementById('prodCost').value,stock:+document.getElementById('prodStock').value}); localStorage.setItem('products',JSON.stringify(products)); alert('تم'); closeModal('addProductModal'); showProducts();}
+function showAllOrders(){let html='<h3>📑 كل الفواتير</h3><table><tr><th>رقم</th><th>المبلغ</th><th>الربح</th><th>الكاشير</th><th>التاريخ</th></tr>'; orders.forEach(o=>html+=`<tr><td>${o.id}</td><td>${o.total.toLocaleString()}</td><td style="color:green">${o.profit.toLocaleString()}</td><td>${o.cashier}</td><td>${o.date}</td></tr>`); document.getElementById('contentArea').innerHTML=html+'</table>'}
+function showReports(){let html='<h3>📈 تقرير الارباح</h3><table><tr><th>الكاشير</th><th>عدد الفواتير</th><th>المبيعات</th><th>الربح</th></tr>'; users.filter(u=>u.role=='cashier').forEach(u=>{let uo=orders.filter(o=>o.cashier==u.name); let total=uo.reduce((s,o)=>s+o.total,0); let profit=uo.reduce((s,o)=>s+o.profit,0); html+=`<tr><td>${u.name}</td><td>${uo.length}</td><td>${total.toLocaleString()}</td><td style="color:green">${profit.toLocaleString()}</td></tr>`;}); document.getElementById('contentArea').innerHTML=html+'</table>';}
+function showLowStock(){let low=products.filter(p=>p.stock<5); let html='<h3>⚠️ تنبيهات المخزن</h3><table><tr><th>المنتج</th><th>المتبقي</th></tr>'; low.forEach(p=>html+=`<tr><td>${p.name}</td><td style="color:red">${p.stock}</td></tr>`); document.getElementById('contentArea').innerHTML=html+'</table>';}
 
 function openModal(id){document.getElementById(id).style.display='flex'}
 function closeModal(id){document.getElementById(id).style.display='none'}
