@@ -2,95 +2,91 @@
 <html lang="ar" dir="rtl">
 <head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>نظام الماركت v6</title>
+<title>نظام الماركت v6.1</title>
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&display=swap" rel="stylesheet">
 <style>
 *{margin:0;padding:0;box-sizing:border-box}body{font-family:'Cairo';background:#F0F2F5}
-.header{background:linear-gradient(135deg,#1A4D8F,#2E6DB4);color:white;padding:15px;display:flex;justify-content:space-between;font-size:20px;font-weight:bold}
+.header{background:linear-gradient(135deg,#1A4D8F,#2E6DB4);color:white;padding:15px;display:flex;justify-content:space-between;align-items:center;font-size:20px;font-weight:bold}
+.cashier-info{background:white;color:#1A4D8F;padding:8px 15px;border-radius:8px;font-size:14px}
 .container{padding:20px;max-width:1400px;margin:auto}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:12px;margin-bottom:20px}
+.stat-card{background:white;padding:15px;border-radius:16px;text-align:center;box-shadow:0 4px 12px rgba(0,0,0,.08)}
+.stat-card h3{color:#1A4D8F;font-size:24px}
 .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px}
 .feature-btn{background:white;padding:15px 8px;border-radius:16px;text-align:center;box-shadow:0 4px 12px rgba(0,0,0,.08);cursor:pointer;border:none;font-family:'Cairo';font-weight:bold;font-size:13px}
 .admin-btn{background:#FFC107!important;color:#000!important}
+.modal{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.7);justify-content:center;align-items:center;z-index:999}
+.modal-content{background:white;padding:25px;border-radius:16px;width:95%;max-width:800px;max-height:90vh;overflow-y:auto}
+.btn{background:#1A4D8F;color:white;padding:12px;border:none;border-radius:8px;cursor:pointer;width:100%;margin-top:8px;font-weight:bold}
+input,select{width:100%;padding:10px;margin:6px 0;border:1px solid #ddd;border-radius:8px;font-family:'Cairo'}
+table{width:100%;background:white;border-radius:12px;margin-top:15px;border-collapse:collapse}
+table th{background:#1A4D8F;color:white;padding:10px}
+table td{padding:10px;text-align:center;border-bottom:1px solid #eee}
 .login-screen{position:fixed;top:0;left:0;width:100%;height:100%;background:#1A4D8F;display:flex;justify-content:center;align-items:center;z-index:1000}
 .login-box{background:white;padding:30px;border-radius:16px;width:90%;max-width:500px;text-align:center}
 .cashier-btn{background:#28A745;color:white;padding:20px;margin:10px;border:none;border-radius:12px;font-size:18px;cursor:pointer;width:45%}
-.btn{background:#1A4D8F;color:white;padding:12px;border:none;border-radius:8px;cursor:pointer;width:100%;margin-top:8px;font-weight:bold}
-.modal{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.7);justify-content:center;align-items:center;z-index:999}
-.modal-content{background:white;padding:25px;border-radius:16px;width:95%;max-width:600px}
-input{width:100%;padding:10px;margin:6px 0;border:1px solid #ddd;border-radius:8px}
 </style>
 </head>
 <body>
 
 <div class="login-screen" id="loginScreen">
-  <div class="login-box">
-    <h2>👨‍💼 اختر اسمك</h2>
-    <div id="cashierList" style="display:flex;flex-wrap:wrap;justify-content:center"></div>
-    <button style="background:#DC3545;color:white;padding:12px;border:none;border-radius:8px;width:100%;margin-top:10px" onclick="addNewCashier()">➕ اضافة كاشير جديد</button>
-  </div>
+  <div class="login-box"><h2>👨‍💼 اختر اسمك</h2><div id="cashierList" style="display:flex;flex-wrap:wrap;justify-content:center"></div>
+  <button style="background:#DC3545;color:white;padding:10px;border:none;border-radius:8px;width:100%;margin-top:10px" onclick="addNewCashier()">➕ اضافة كاشير جديد</button></div>
 </div>
 
 <div id="mainApp" style="display:none">
-  <div class="header">
-    <div id="marketName">الماركت</div>
-    <div><a href="#" onclick="logout()" style="color:white">تبديل الكاشير</a></div>
-  </div>
-  <div class="container">
-    <div class="grid">
-      <button class="feature-btn admin-btn" onclick="window.location.href='admin.html'">👑<br>لوحة الادمن</button>
-      <button class="feature-btn" onclick="alert('اعدادات')">⚙️<br>اعدادات</button>
-      <button class="feature-btn" onclick="alert('طلب جديد')">🛒➕<br>طلب جديد</button>
-      <button class="feature-btn" onclick="alert('المنتجات')">📦<br>المنتجات</button>
-    </div>
-  </div>
+<div class="header"><div id="marketName">الماركت</div><div class="cashier-info">👨‍💼 <span id="currentCashierSpan"></span> | <a href="#" onclick="logout()" style="color:#1A4D8F">تبديل</a></div></div>
+<div class="container">
+<div class="stats">
+<div class="stat-card"><h3 id="totalOrders">0</h3><p>📦 الطلبات</p></div>
+<div class="stat-card"><h3 id="totalRevenue">0</h3><p>💰 الايراد</p></div>
+<div class="stat-card"><h3 id="totalCustomers">0</h3><p>👥 العملاء</p></div>
+<div class="stat-card"><h3 id="totalDebt">0</h3><p>📉 الديون</p></div>
+</div>
+<div class="grid">
+<button class="feature-btn admin-btn" onclick="window.location.href='admin.html'">👑<br>لوحة الادمن</button>
+<button class="feature-btn" onclick="openModal('settingsModal')">⚙️<br>اعدادات</button>
+<button class="feature-btn" onclick="openModal('customerModal')">👤➕<br>عميل جديد</button>
+<button class="feature-btn" onclick="openModal('orderModal')">🛒➕<br>طلب جديد</button>
+<button class="feature-btn" onclick="openModal('productModal')">📦<br>المنتجات</button>
+<button class="feature-btn" onclick="showOrders()">📋<br>سجل الطلبات</button>
+<button class="feature-btn" onclick="showDebts()">💳<br>الديون</button>
+<button class="feature-btn" onclick="backupData()">☁️<br>نسخ احتياطي</button>
+</div><div id="contentArea" style="margin-top:20px"></div>
+</div>
 </div>
 
+<div class="modal" id="settingsModal"><div class="modal-content"><h3>اعدادات</h3><input id="setMarketName" placeholder="اسم الماركت"><button class="btn" onclick="saveSettings()">حفظ</button><button class="btn" style="background:#DC3545" onclick="closeModal('settingsModal')">الغاء</button></div></div>
+<div class="modal" id="customerModal"><div class="modal-content"><h3>عميل جديد</h3><input id="custName" placeholder="الاسم"><input id="custPhone" placeholder="الهاتف"><button class="btn" onclick="addCustomer()">حفظ</button><button class="btn" style="background:#DC3545" onclick="closeModal('customerModal')">الغاء</button></div></div>
+<div class="modal" id="productModal"><div class="modal-content"><h3>اضافة منتج</h3><input id="prodName" placeholder="اسم المنتج"><input id="prodPrice" type="number" placeholder="السعر"><input id="prodStock" type="number" placeholder="المخزون"><button class="btn" onclick="addProduct()">حفظ</button><button class="btn" style="background:#DC3545" onclick="closeModal('productModal')">الغاء</button></div></div>
+<div class="modal" id="orderModal"><div class="modal-content"><h3>طلب جديد</h3><select id="orderCustomer"></select><input id="orderProduct" placeholder="المنتج"><input id="orderPrice" type="number" placeholder="السعر"><input id="orderQty" type="number" value="1"><button class="btn" onclick="addToCart()">اضافة للسلة</button><div id="cartList"></div><h4>الاجمالي: <span id="cartTotal">0</span></h4><button class="btn" style="background:#28A745" onclick="completeOrder()">حفظ الطلب</button><button class="btn" style="background:#DC3545" onclick="closeModal('orderModal')">الغاء</button></div></div>
+
 <script>
-let cashiers = JSON.parse(localStorage.getItem('cashiers')) || [];
-let currentCashier = localStorage.getItem('currentCashier') || '';
+let customers=JSON.parse(localStorage.getItem('customers'))||[];
+let orders=JSON.parse(localStorage.getItem('orders'))||[];
+let products=JSON.parse(localStorage.getItem('products'))||[];
+let cashiers=JSON.parse(localStorage.getItem('cashiers'))||[];
+let cart=[];
+let settings=JSON.parse(localStorage.getItem('settings'))||{marketName:'الماركت'};
+let currentCashier=localStorage.getItem('currentCashier')||'';
 
-function showCashierButtons(){
-  let html='';
-  if(cashiers.length==0){
-    html = '<p style="color:gray">لا يوجد كاشيرين. اضف واحد</p>';
-  } else {
-    cashiers.forEach(c=>{
-      html += `<button class="cashier-btn" onclick="selectCashier('${c.name}')">${c.name}</button>`;
-    });
-  }
-  document.getElementById('cashierList').innerHTML = html;
-}
-
-function selectCashier(name){
-  currentCashier = name;
-  localStorage.setItem('currentCashier', name);
-  document.getElementById('loginScreen').style.display='none';
-  document.getElementById('mainApp').style.display='block';
-  document.getElementById('marketName').innerText = 'الماركت - ' + name;
-}
-
-function addNewCashier(){
-  let name = prompt('اكتب اسم الكاشير:');
-  if(name && name.trim() != ''){
-    cashiers.push({id:Date.now(), name:name.trim(), role:'cashier'});
-    localStorage.setItem('cashiers', JSON.stringify(cashiers));
-    showCashierButtons();
-  }
-}
-
-function logout(){
-  localStorage.removeItem('currentCashier');
-  location.reload();
-}
-
-window.onload = function(){
-  showCashierButtons();
-  if(currentCashier){
-    document.getElementById('loginScreen').style.display='none';
-    document.getElementById('mainApp').style.display='block';
-    document.getElementById('marketName').innerText = 'الماركت - ' + currentCashier;
-  }
-}
+window.onload=function(){showCashierButtons();if(currentCashier){document.getElementById('loginScreen').style.display='none';document.getElementById('mainApp').style.display='block';document.getElementById('currentCashierSpan').innerText=currentCashier}document.getElementById('marketName').innerText=settings.marketName;updateStats()}
+function showCashierButtons(){let html='';cashiers.forEach(c=>{html+=`<button class="cashier-btn" onclick="selectCashier('${c.name}')">${c.name}</button>`});document.getElementById('cashierList').innerHTML=html}
+function selectCashier(name){currentCashier=name;localStorage.setItem('currentCashier',name);location.reload()}
+function addNewCashier(){let name=prompt('اسم الكاشير:');if(name){cashiers.push({id:Date.now(),name});localStorage.setItem('cashiers',JSON.stringify(cashiers));showCashierButtons()}}
+function logout(){localStorage.removeItem('currentCashier');location.reload()}
+function openModal(id){document.getElementById(id).style.display='flex';loadCustomers()}
+function closeModal(id){document.getElementById(id).style.display='none'}
+function saveSettings(){settings.marketName=document.getElementById('setMarketName').value;localStorage.setItem('settings',JSON.stringify(settings));location.reload()}
+function addCustomer(){customers.push({id:Date.now(),name:document.getElementById('custName').value,phone:document.getElementById('custPhone').value,debt:0});localStorage.setItem('customers',JSON.stringify(customers));closeModal('customerModal');updateStats()}
+function addProduct(){products.push({id:Date.now(),name:document.getElementById('prodName').value,price:+document.getElementById('prodPrice').value,stock:+document.getElementById('prodStock').value});localStorage.setItem('products',JSON.stringify(products));closeModal('productModal')}
+function addToCart(){cart.push({product:document.getElementById('orderProduct').value,price:+document.getElementById('orderPrice').value,qty:+document.getElementById('orderQty').value});showCart()}
+function showCart(){let html='<h4>السلة</h4>';let total=0;cart.forEach(i=>{total+=i.price*i.qty;html+=`<p>${i.product} x${i.qty} = ${i.price*i.qty}</p>`});document.getElementById('cartList').innerHTML=html;document.getElementById('cartTotal').innerText=total}
+function loadCustomers(){document.getElementById('orderCustomer').innerHTML='<option>عميل عادي</option>';customers.forEach(c=>document.getElementById('orderCustomer').innerHTML+=`<option value="${c.id}">${c.name}</option>`)}
+function completeOrder(){let total=cart.reduce((s,i)=>s+i.price*i.qty,0);orders.push({id:'INV'+Date.now(),items:cart,total,date:new Date().toLocaleString('ar-IQ'),cashier:currentCashier});localStorage.setItem('orders',JSON.stringify(orders));cart=[];closeModal('orderModal');updateStats()}
+function showOrders(){let html='<h3>سجل الطلبات</h3><table><tr><th>رقم</th><th>المبلغ</th><th>الكاشير</th></tr>';orders.forEach(o=>html+=`<tr><td>${o.id}</td><td>${o.total}</td><td>${o.cashier}</td></tr>`);document.getElementById('contentArea').innerHTML=html+'</table>'}
+function showDebts(){let html='<h3>الديون</h3>';customers.filter(c=>c.debt>0).forEach(c=>html+=`<p>${c.name}: ${c.debt}</p>`);document.getElementById('contentArea').innerHTML=html}
+function backupData(){let a=document.createElement('a');a.href=URL.createObjectURL(new Blob([JSON.stringify({customers,orders,products})]));a.download='backup.json';a.click()}
+function updateStats(){document.getElementById('totalOrders').innerText=orders.length;document.getElementById('totalRevenue').innerText=orders.reduce((s,o)=>s+o.total,0);document.getElementById('totalCustomers').innerText=customers.length;document.getElementById('totalDebt').innerText=customers.reduce((s,c)=>s+c.debt,0)}
 </script>
-</body>
-</html>
+</body></html>
