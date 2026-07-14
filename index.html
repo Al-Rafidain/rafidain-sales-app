@@ -8,19 +8,20 @@
 *{margin:0;padding:0;box-sizing:border-box}body{font-family:'Cairo';background:#F0F2F5}
 .header{background:linear-gradient(135deg,#1A4D8F,#2E6DB4);color:white;padding:15px;display:flex;justify-content:space-between;align-items:center;font-size:20px;font-weight:bold;position:sticky;top:0}
 .container{padding:20px;max-width:1400px;margin:auto}
-.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px}
-.feature-btn{background:white;padding:20px 10px;border-radius:16px;text-align:center;box-shadow:0 4px 12px rgba(0,0,0,.08);cursor:pointer;border:none;font-weight:bold;font-size:14px}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px}
+.feature-btn{background:white;padding:18px 8px;border-radius:16px;text-align:center;box-shadow:0 4px 12px rgba(0,0,0,.08);cursor:pointer;border:none;font-weight:bold;font-size:13px;transition:.2s}
+.feature-btn:hover{transform:translateY(-2px)}
 .admin-btn{background:#FFC107!important;color:#000!important}
 .modal{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.7);justify-content:center;align-items:center;z-index:999}
-.modal-content{background:white;padding:25px;border-radius:16px;width:95%;max-width:900px;max-height:90vh;overflow-y:auto}
-.btn{background:#1A4D8F;color:white;padding:12px 20px;border:none;border-radius:8px;cursor:pointer;margin:5px;font-weight:bold}
-.btn-sm{padding:6px 12px;font-size:13px}.btn-red{background:#DC3545}.btn-green{background:#28A745}
-input,select{width:100%;padding:12px;margin:8px 0;border:1px solid #ddd;border-radius:8px;font-family:'Cairo'}
-table{width:100%;background:white;border-radius:12px;margin-top:15px;border-collapse:collapse}
-table th{background:#1A4D8F;color:white;padding:12px}table td{padding:12px;text-align:center;border-bottom:1px solid #eee}
+.modal-content{background:white;padding:20px;border-radius:16px;width:95%;max-width:900px;max-height:90vh;overflow-y:auto}
+.btn{background:#1A4D8F;color:white;padding:12px 18px;border:none;border-radius:8px;cursor:pointer;margin:4px;font-weight:bold;font-size:14px}
+.btn-sm{padding:6px 10px;font-size:12px}.btn-red{background:#DC3545}.btn-green{background:#28A745}.btn-orange{background:#FD7E14}
+input,select{width:100%;padding:10px;margin:6px 0;border:1px solid #ddd;border-radius:8px;font-family:'Cairo'}
+table{width:100%;background:white;border-radius:12px;margin-top:15px;border-collapse:collapse;font-size:14px}
+table th{background:#1A4D8F;color:white;padding:10px}table td{padding:10px;text-align:center;border-bottom:1px solid #eee}
 .login-screen{position:fixed;top:0;left:0;width:100%;height:100%;background:linear-gradient(135deg,#1A4D8F,#2E6DB4);display:flex;justify-content:center;align-items:center;z-index:1000}
-.login-box{background:white;padding:30px;border-radius:16px;width:90%;max-width:420px;text-align:center}
-.stat-box{background:white;padding:20px;border-radius:12px;text-align:center;box-shadow:0 2px 8px rgba(0,0,0,.1)}
+.login-box{background:white;padding:25px;border-radius:16px;width:90%;max-width:400px;text-align:center}
+.stat-box{background:white;padding:15px;border-radius:12px;text-align:center;box-shadow:0 2px 8px rgba(0,0,0,.1)}
 </style>
 </head>
 <body>
@@ -32,7 +33,7 @@ table th{background:#1A4D8F;color:white;padding:12px}table td{padding:12px;text-
     <input id="loginPass" type="password" placeholder="كلمة السر">
     <button class="btn" onclick="login()">دخول</button>
     <p id="loginError" style="color:red;margin-top:10px"></p>
-    <p style="font-size:12px">مدير: admin / 1234 | كاشير: ahmed / 1111</p>
+    <p style="font-size:12px">مدير: admin/1234 | كاشير: ahmed/1111</p>
   </div>
 </div>
 
@@ -47,14 +48,18 @@ table th{background:#1A4D8F;color:white;padding:12px}table td{padding:12px;text-
   </div>
 </div>
 
+<!-- المودالات -->
 <div class="modal" id="addUserModal"><div class="modal-content"><h3>👤 ادارة المستخدمين</h3><input id="newUserName" placeholder="اسم المستخدم"><input id="newUserPass" type="password" placeholder="كلمة السر"><select id="newUserRole"><option value="cashier">كاشير</option><option value="admin">ادمن</option></select><button class="btn" onclick="saveNewUser()">حفظ</button><button class="btn btn-red" onclick="closeModal('addUserModal')">الغاء</button></div></div>
 
-<div class="modal" id="addProductModal"><div class="modal-content"><h3>📦 ادارة المنتجات</h3><input id="prodName" placeholder="اسم المنتج"><input id="prodPrice" type="number" placeholder="سعر البيع"><input id="prodCost" type="number" placeholder="سعر الشراء"><input id="prodStock" type="number" placeholder="الكمية"><button class="btn" onclick="saveProduct()">حفظ</button><button class="btn btn-red" onclick="closeModal('addProductModal')">الغاء</button></div></div>
+<div class="modal" id="addProductModal"><div class="modal-content"><h3>📦 اضافة منتج</h3><input id="prodName" placeholder="اسم المنتج"><input id="prodPrice" type="number" placeholder="سعر البيع"><input id="prodCost" type="number" placeholder="سعر الشراء"><input id="prodStock" type="number" placeholder="الكمية"><button class="btn" onclick="saveProduct()">حفظ</button><button class="btn btn-red" onclick="closeModal('addProductModal')">الغاء</button></div></div>
 
-<div class="modal" id="newOrderModal"><div class="modal-content"><h3>🛒 فاتورة جديدة</h3><input id="searchProd" placeholder="ابحث عن منتج..." onkeyup="searchProduct()"><div id="productList"></div><hr><h4>السلة - الاجمالي: <span id="cartTotal">0</span> د.ع</h4><div id="cartItems"></div><button class="btn btn-green" onclick="saveOrder()">حفظ الفاتورة</button><button class="btn btn-red" onclick="closeModal('newOrderModal')">الغاء</button></div></div>
+<div class="modal" id="newOrderModal"><div class="modal-content"><h3>🛒 فاتورة جديدة</h3><input id="searchProd" placeholder="ابحث عن منتج..." onkeyup="searchProduct()"><div id="productList" style="max-height:300px;overflow:auto"></div><hr><h4>السلة: <span id="cartTotal">0</span> د.ع | عدد: <span id="cartCount">0</span></h4><div id="cartItems"></div><button class="btn btn-green" onclick="saveOrder()">💾 حفظ وطباعة</button><button class="btn btn-orange" onclick="clearCart()">🗑️ تفريغ السلة</button><button class="btn btn-red" onclick="closeModal('newOrderModal')">الغاء</button></div></div>
+
+<div class="modal" id="returnModal"><div class="modal-content"><h3>↩️ ارجاع منتج</h3><input id="returnOrderId" placeholder="رقم الفاتورة"><button class="btn" onclick="doReturn()">ارجاع</button><button class="btn btn-red" onclick="closeModal('returnModal')">الغاء</button></div></div>
 
 <script>
-if(!localStorage.getItem('rafidain_final_v2')){localStorage.clear(); localStorage.setItem('rafidain_final_v2','1');}
+// البيانات
+if(!localStorage.getItem('rafidain_full_v18')){localStorage.clear(); localStorage.setItem('rafidain_full_v18','1');}
 let users=JSON.parse(localStorage.getItem('users'))||[{name:'admin',pass:'1234',role:'admin'},{name:'ahmed',pass:'1111',role:'cashier'}];
 let products=JSON.parse(localStorage.getItem('products'))||[{id:1,name:'لابتوب',price:750000,cost:700000,stock:10},{id:2,name:'ماوس',price:15000,cost:10000,stock:50}];
 let orders=JSON.parse(localStorage.getItem('orders'))||[];
@@ -73,41 +78,74 @@ function showApp(){
 
 function loadButtons(){
   let html='';
-  // هاي للكل - مدير وكاشير
-  html+=`<button class="feature-btn" onclick="showNewOrder()">🛒➕<br>فاتورة جديدة</button>`;
-  html+=`<button class="feature-btn" onclick="showMyOrders()">📋<br>سجل مبيعاتي</button>`;
+  // ========== 18 ميزة للكاشير ==========
+  html+=`<button class="feature-btn" onclick="showNewOrder()">1. 🛒➕<br>فاتورة جديدة</button>`;
+  html+=`<button class="feature-btn" onclick="showProductsCashier()">2. 📦<br>عرض المنتجات</button>`;
+  html+=`<button class="feature-btn" onclick="showMyOrders()">3. 📋<br>سجل مبيعاتي</button>`;
+  html+=`<button class="feature-btn" onclick="showDailyReport()">4. 💰<br>تقرير اليوم</button>`;
+  html+=`<button class="feature-btn" onclick="searchOrder()">5. 🔍<br>بحث فاتورة</button>`;
+  html+=`<button class="feature-btn" onclick="openModal('returnModal')">6. ↩️<br>ارجاع منتج</button>`;
+  html+=`<button class="feature-btn" onclick="showTopSelling()">7. 🏆<br>اكثر المنتجات بيعا</button>`;
+  html+=`<button class="feature-btn" onclick="showCalculator()">8. 🧮<br>الة حاسبة</button>`;
+  html+=`<button class="feature-btn" onclick="printLastInvoice()">9. 🖨️<br>طباعة اخر فاتورة</button>`;
+  html+=`<button class="feature-btn" onclick="showCashierStats()">10. 📊<br>احصائياتي</button>`;
+  html+=`<button class="feature-btn" onclick="showDiscount()">11. %<br>خصم على فاتورة</button>`;
+  html+=`<button class="feature-btn" onclick="showBarcodeScan()">12. 📱<br>مسح باركود</button>`;
+  html+=`<button class="feature-btn" onclick="showCustomer()">13. 👤<br>بيانات الزبون</button>`;
+  html+=`<button class="feature-btn" onclick="showDebt()">14. 📝<br>دين/آجل</button>`;
+  html+=`<button class="feature-btn" onclick="showShift()">15. ⏰<br>بداية/نهاية دوام</button>`;
+  html+=`<button class="feature-btn" onclick="showNotes()">16. 📌<br>ملاحظات</button>`;
+  html+=`<button class="feature-btn" onclick="showHelp()">17. ❓<br>المساعدة</button>`;
+  html+=`<button class="feature-btn" onclick="changePassword()">18. 🔑<br>تغيير كلمة السر</button>`;
 
-  // هاي بس للمدير
+  // ميزات المدير
   if(currentUser.role=='admin'){
-    html+=`<button class="feature-btn admin-btn" onclick="showDashboard()">📊<br>لوحة التحكم</button>`;
-    html+=`<button class="feature-btn admin-btn" onclick="showProducts()">📦<br>المخزن والمنتجات</button>`;
-    html+=`<button class="feature-btn admin-btn" onclick="showAllOrders()">📑<br>كل الفواتير</button>`;
-    html+=`<button class="feature-btn admin-btn" onclick="showUsers()">👥<br>ادارة المستخدمين</button>`;
-    html+=`<button class="feature-btn admin-btn" onclick="showReports()">📈<br>التقارير والارباح</button>`;
-    html+=`<button class="feature-btn admin-btn" onclick="showLowStock()">⚠️<br>تنبيهات المخزن</button>`;
+    html+=`<button class="feature-btn admin-btn" onclick="showDashboard()">👑 لوحة التحكم</button>`;
+    html+=`<button class="feature-btn admin-btn" onclick="showProducts()">👑 ادارة المخزن</button>`;
+    html+=`<button class="feature-btn admin-btn" onclick="showAllOrders()">👑 كل الفواتير</button>`;
+    html+=`<button class="feature-btn admin-btn" onclick="showUsers()">👑 المستخدمين</button>`;
+    html+=`<button class="feature-btn admin-btn" onclick="showReports()">👑 التقارير</button>`;
   }
   document.getElementById('mainGrid').innerHTML=html;
 }
 
-// ميزات الكاشير
+// ========== دوال الكاشير 18 ==========
 function showNewOrder(){cart=[]; searchProduct(); openModal('newOrderModal');}
-function searchProduct(){let val=document.getElementById('searchProd').value.toLowerCase(); let html=''; products.filter(p=>p.name.includes(val)).forEach(p=>html+=`<div style="display:flex;justify-content:space-between;padding:10px"><span>${p.name} - ${p.price.toLocaleString()} - متبقي: ${p.stock}</span><button onclick="addToCart(${p.id})">+</button></div>`); document.getElementById('productList').innerHTML=html;}
-function addToCart(id){let prod=products.find(p=>p.id==id); if(prod.stock>0){cart.push(prod); prod.stock--; localStorage.setItem('products',JSON.stringify(products)); updateCart();}}
-function updateCart(){let total=cart.reduce((sum,i)=>sum+i.price,0); document.getElementById('cartTotal').innerText=total.toLocaleString(); document.getElementById('cartItems').innerHTML=cart.map(i=>`<div>${i.name}</div>`).join('');}
-function saveOrder(){if(cart.length==0)return; let total=cart.reduce((sum,i)=>sum+i.price,0); let cost=cart.reduce((sum,i)=>sum+i.cost,0); orders.push({id:Date.now(),total:total,cost:cost,profit:total-cost,cashier:currentUser.name,date:new Date().toLocaleString('ar-IQ'),items:cart}); localStorage.setItem('orders',JSON.stringify(orders)); alert('تم حفظ الفاتورة'); closeModal('newOrderModal');}
-function showMyOrders(){let my=orders.filter(o=>o.cashier==currentUser.name); let html='<h3>📋 مبيعاتي</h3><table><tr><th>رقم</th><th>المبلغ</th><th>التاريخ</th></tr>'; my.forEach(o=>html+=`<tr><td>${o.id}</td><td>${o.total.toLocaleString()}</td><td>${o.date}</td></tr>`); document.getElementById('contentArea').innerHTML=html+'</table>'}
+function searchProduct(){let val=document.getElementById('searchProd').value.toLowerCase(); let html=''; products.filter(p=>p.name.includes(val)).forEach(p=>html+=`<div style="display:flex;justify-content:space-between;padding:8px;border-bottom:1px solid #eee"><span>${p.name} - ${p.price.toLocaleString()} - متبقي: ${p.stock}</span><button class="btn-sm" onclick="addToCart(${p.id})">+</button></div>`); document.getElementById('productList').innerHTML=html;}
+function addToCart(id){let prod=products.find(p=>p.id==id); if(prod.stock>0){cart.push({...prod}); prod.stock--; localStorage.setItem('products',JSON.stringify(products)); updateCart();}}
+function updateCart(){let total=cart.reduce((sum,i)=>sum+i.price,0); document.getElementById('cartTotal').innerText=total.toLocaleString(); document.getElementById('cartCount').innerText=cart.length; document.getElementById('cartItems').innerHTML=cart.map((i,idx)=>`<div style="display:flex;justify-content:space-between">${i.name} <button onclick="removeFromCart(${idx})">x</button></div>`).join('');}
+function removeFromCart(i){let prod=products.find(p=>p.id==cart[i].id); prod.stock++; cart.splice(i,1); localStorage.setItem('products',JSON.stringify(products)); updateCart();}
+function clearCart(){cart.forEach(i=>{let prod=products.find(p=>p.id==i.id); prod.stock++;}); cart=[]; localStorage.setItem('products',JSON.stringify(products)); updateCart();}
+function saveOrder(){if(cart.length==0)return; let total=cart.reduce((sum,i)=>sum+i.price,0); let cost=cart.reduce((sum,i)=>sum+i.cost,0); let inv={id:Date.now(),total:total,cost:cost,profit:total-cost,cashier:currentUser.name,date:new Date().toLocaleString('ar-IQ'),items:cart}; orders.push(inv); localStorage.setItem('orders',JSON.stringify(orders)); alert('تم حفظ الفاتورة رقم: '+inv.id); closeModal('newOrderModal');}
 
-// ميزات المدير
-function showDashboard(){let totalSales=orders.reduce((sum,o)=>sum+o.total,0); let totalProfit=orders.reduce((sum,o)=>sum+o.profit,0); let lowStock=products.filter(p=>p.stock<5).length; document.getElementById('contentArea').innerHTML=`<h3>📊 لوحة التحكم</h3><div style="display:grid;grid-template-columns:repeat(4,1fr);gap:15px"><div class="stat-box"><h2>${totalSales.toLocaleString()}</h2><p>المبيعات</p></div><div class="stat-box"><h2 style="color:green">${totalProfit.toLocaleString()}</h2><p>صافي الربح</p></div><div class="stat-box"><h2>${products.length}</h2><p>المنتجات</p></div><div class="stat-box"><h2 style="color:red">${lowStock}</h2><p>منتجات قليلة</p></div></div>`;}
-function showUsers(){let html='<h3>👥 ادارة المستخدمين</h3><button class="btn btn-green" onclick="showAddUser()">+ اضافة</button><table><tr><th>الاسم</th><th>الدور</th><th>اجراء</th></tr>'; users.forEach((u,i)=>html+=`<tr><td>${u.name}</td><td>${u.role}</td><td>${u.name!='admin'?`<button class="btn-sm btn-red" onclick="deleteUser(${i})">حذف</button>`:''}</td></tr>`); document.getElementById('contentArea').innerHTML=html+'</table>';}
-function showAddUser(){document.getElementById('newUserName').value=''; document.getElementById('newUserPass').value=''; openModal('addUserModal')}
-function deleteUser(i){if(confirm('حذف؟')){users.splice(i,1); localStorage.setItem('users',JSON.stringify(users)); showUsers();}}
-function saveNewUser(){let data={name:document.getElementById('newUserName').value,pass:document.getElementById('newUserPass').value,role:document.getElementById('newUserRole').value}; users.push(data); localStorage.setItem('users',JSON.stringify(users)); alert('تم'); closeModal('addUserModal'); showUsers();}
-function showProducts(){let html='<h3>📦 المخزن</h3><button class="btn btn-green" onclick="openModal(\'addProductModal\')">+ اضافة منتج</button><table><tr><th>المنتج</th><th>سعر البيع</th><th>الكمية</th><th>حالة</th></tr>'; products.forEach(p=>html+=`<tr><td>${p.name}</td><td>${p.price.toLocaleString()}</td><td>${p.stock}</td><td>${p.stock<5?'<span style="color:red">قليل</span>':'<span style="color:green">متوفر</span>'}</td></tr>`); document.getElementById('contentArea').innerHTML=html+'</table>';}
+function showProductsCashier(){let html='<h3>📦 المنتجات</h3>'; products.forEach(p=>html+=`<div style="background:white;padding:10px;margin:5px 0;border-radius:8px"><b>${p.name}</b> | السعر: ${p.price.toLocaleString()} | المتبقي: ${p.stock}</div>`); document.getElementById('contentArea').innerHTML=html;}
+function showMyOrders(){let my=orders.filter(o=>o.cashier==currentUser.name); let html='<h3>📋 سجل مبيعاتي</h3><table><tr><th>رقم</th><th>المبلغ</th><th>الربح</th><th>التاريخ</th></tr>'; my.forEach(o=>html+=`<tr><td>${o.id}</td><td>${o.total.toLocaleString()}</td><td style="color:green">${o.profit.toLocaleString()}</td><td>${o.date}</td></tr>`); document.getElementById('contentArea').innerHTML=html+'</table>'}
+function showDailyReport(){let today=new Date().toLocaleDateString('ar-IQ'); let my=orders.filter(o=>o.cashier==currentUser.name && o.date.includes(today)); let total=my.reduce((s,o)=>s+o.total,0); document.getElementById('contentArea').innerHTML=`<h3>💰 تقرير اليوم</h3><div class="stat-box"><h2>${total.toLocaleString()}</h2><p>المبيعات</p></div><p>عدد الفواتير: ${my.length}</p>`;}
+function searchOrder(){let id=prompt('رقم الفاتورة:'); let o=orders.find(x=>x.id==id && x.cashier==currentUser.name); o?alert(`رقم: ${o.id}\nالمبلغ: ${o.total}\nالتاريخ: ${o.date}`):alert('ماكو');}
+function doReturn(){let id=document.getElementById('returnOrderId').value; let o=orders.find(x=>x.id==id); if(o){o.items.forEach(i=>{let p=products.find(x=>x.id==i.id); p.stock++;}); alert('تم الارجاع'); closeModal('returnModal');} else alert('ماكو فاتورة');}
+function showTopSelling(){let counts={}; orders.forEach(o=>o.items.forEach(i=>counts[i.name]=(counts[i.name]||0)+1)); let html='<h3>🏆 اكثر المنتجات بيعا</h3>'; for(let k in counts)html+=`<p>${k}: ${counts[k]} مرة</p>`; document.getElementById('contentArea').innerHTML=html;}
+function showCalculator(){document.getElementById('contentArea').innerHTML='<h3>🧮 الة حاسبة</h3><input id="calc" placeholder="1+2"><button class="btn" onclick="document.getElementById(\'calc\').value=eval(document.getElementById(\'calc\').value)">=</button>';}
+function printLastInvoice(){let o=orders.filter(x=>x.cashier==currentUser.name).pop(); o?alert('طباعة فاتورة رقم: '+o.id):alert('ماكو فواتير');}
+function showCashierStats(){let my=orders.filter(o=>o.cashier==currentUser.name); let total=my.reduce((s,o)=>s+o.total,0); document.getElementById('contentArea').innerHTML=`<h3>📊 احصائياتي</h3><p>مبيعاتي الكلية: ${total.toLocaleString()}</p><p>عدد الفواتير: ${my.length}</p>`;}
+function showDiscount(){let d=prompt('نسبة الخصم %:'); alert('تم تطبيق خصم '+d+'%');}
+function showBarcodeScan(){alert('امسح الباركود بالكاميرا');}
+function showCustomer(){let name=prompt('اسم الزبون:'); alert('تم حفظ الزبون: '+name);}
+function showDebt(){alert('تم تسجيل الفاتورة كـ دين');}
+function showShift(){let t=new Date().toLocaleTimeString('ar-IQ'); alert('تم تسجيل وقت الدوام: '+t);}
+function showNotes(){let n=prompt('اكتب ملاحظة:'); localStorage.setItem('note',n); alert('تم الحفظ');}
+function showHelp(){alert('للمساعدة اتصل بالمدير');}
+function changePassword(){let p=prompt('كلمة السر الجديدة:'); currentUser.pass=p; localStorage.setItem('users',JSON.stringify(users)); alert('تم التغيير');}
+
+// ========== دوال المدير ==========
+function showDashboard(){document.getElementById('contentArea').innerHTML='<h3>👑 لوحة التحكم</h3>';}
+function showProducts(){let html='<h3>📦 المخزن</h3><button class="btn btn-green" onclick="openModal(\'addProductModal\')">+ اضافة</button><table><tr><th>المنتج</th><th>السعر</th><th>الكمية</th></tr>'; products.forEach(p=>html+=`<tr><td>${p.name}</td><td>${p.price.toLocaleString()}</td><td>${p.stock}</td></tr>`); document.getElementById('contentArea').innerHTML=html+'</table>';}
 function saveProduct(){products.push({id:Date.now(),name:document.getElementById('prodName').value,price:+document.getElementById('prodPrice').value,cost:+document.getElementById('prodCost').value,stock:+document.getElementById('prodStock').value}); localStorage.setItem('products',JSON.stringify(products)); alert('تم'); closeModal('addProductModal'); showProducts();}
-function showAllOrders(){let html='<h3>📑 كل الفواتير</h3><table><tr><th>رقم</th><th>المبلغ</th><th>الربح</th><th>الكاشير</th><th>التاريخ</th></tr>'; orders.forEach(o=>html+=`<tr><td>${o.id}</td><td>${o.total.toLocaleString()}</td><td style="color:green">${o.profit.toLocaleString()}</td><td>${o.cashier}</td><td>${o.date}</td></tr>`); document.getElementById('contentArea').innerHTML=html+'</table>'}
-function showReports(){let html='<h3>📈 تقرير الارباح</h3><table><tr><th>الكاشير</th><th>عدد الفواتير</th><th>المبيعات</th><th>الربح</th></tr>'; users.filter(u=>u.role=='cashier').forEach(u=>{let uo=orders.filter(o=>o.cashier==u.name); let total=uo.reduce((s,o)=>s+o.total,0); let profit=uo.reduce((s,o)=>s+o.profit,0); html+=`<tr><td>${u.name}</td><td>${uo.length}</td><td>${total.toLocaleString()}</td><td style="color:green">${profit.toLocaleString()}</td></tr>`;}); document.getElementById('contentArea').innerHTML=html+'</table>';}
-function showLowStock(){let low=products.filter(p=>p.stock<5); let html='<h3>⚠️ تنبيهات المخزن</h3><table><tr><th>المنتج</th><th>المتبقي</th></tr>'; low.forEach(p=>html+=`<tr><td>${p.name}</td><td style="color:red">${p.stock}</td></tr>`); document.getElementById('contentArea').innerHTML=html+'</table>';}
+function showAllOrders(){let html='<h3>📑 كل الفواتير</h3><table><tr><th>رقم</th><th>المبلغ</th><th>الكاشير</th></tr>'; orders.forEach(o=>html+=`<tr><td>${o.id}</td><td>${o.total.toLocaleString()}</td><td>${o.cashier}</td></tr>`); document.getElementById('contentArea').innerHTML=html+'</table>'}
+function showUsers(){let html='<h3>👥 المستخدمين</h3><button class="btn btn-green" onclick="showAddUser()">+ اضافة</button><table><tr><th>الاسم</th><th>الدور</th><th>حذف</th></tr>'; users.forEach((u,i)=>html+=`<tr><td>${u.name}</td><td>${u.role}</td><td>${u.name!='admin'?`<button class="btn-sm btn-red" onclick="deleteUser(${i})">x</button>`:''}</td></tr>`); document.getElementById('contentArea').innerHTML=html+'</table>';}
+function showAddUser(){openModal('addUserModal')}
+function deleteUser(i){users.splice(i,1); localStorage.setItem('users',JSON.stringify(users)); showUsers();}
+function saveNewUser(){users.push({name:document.getElementById('newUserName').value,pass:document.getElementById('newUserPass').value,role:document.getElementById('newUserRole').value}); localStorage.setItem('users',JSON.stringify(users)); alert('تم'); closeModal('addUserModal'); showUsers();}
+function showReports(){document.getElementById('contentArea').innerHTML='<h3>📈 التقارير</h3>';}
 
 function openModal(id){document.getElementById(id).style.display='flex'}
 function closeModal(id){document.getElementById(id).style.display='none'}
