@@ -2,41 +2,54 @@
 <html lang="ar" dir="rtl">
 <head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>الرافدين ERP الكامل</title>
+<title>الرافدين للمبيعات</title>
+
+<!-- ايقونة التطبيق -->
+<link rel="icon" href="https://i.imgur.com/dzXyL0S.jpg">
+<link rel="apple-touch-icon" href="https://i.imgur.com/dzXyL0S.jpg">
+
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&display=swap" rel="stylesheet">
 <style>
 *{margin:0;padding:0;box-sizing:border-box}body{font-family:'Cairo';background:#F0F2F5}
-.header{background:linear-gradient(135deg,#1A4D8F,#2E6DB4);color:white;padding:15px;display:flex;justify-content:space-between;align-items:center;font-size:20px;font-weight:bold;position:sticky;top:0}
+.header{background:linear-gradient(135deg,#1A34DF,#2E5DB4);color:white;padding:10px 15px;display:flex;justify-content:space-between;align-items:center;font-size:18px;font-weight:bold;position:sticky;top:0;z-index:99}
+.logo-header{height:40px;border-radius:8px}
 .container{padding:20px;max-width:1400px;margin:auto}
 .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px}
-.feature-btn{background:white;padding:15px 8px;border-radius:16px;text-align:center;box-shadow:0 4px 12px rgba(0,0,0,.08);cursor:pointer;border:none;font-weight:bold;font-size:12px}
+.feature-btn{background:white;padding:15px 8px;border-radius:16px;text-align:center;box-shadow:0 4px 12px rgba(0,0,0,.08);cursor:pointer;border:none;font-weight:bold;font-size:12px;transition:0.2s}
+.feature-btn:hover{transform:translateY(-2px)}
 .admin-btn{background:#FFC107!important;color:#000!important}
 .modal{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.7);justify-content:center;align-items:center;z-index:999}
 .modal-content{background:white;padding:20px;border-radius:16px;width:95%;max-width:900px;max-height:90vh;overflow-y:auto}
-.btn{background:#1A4D8F;color:white;padding:12px 18px;border:none;border-radius:8px;cursor:pointer;margin:4px;font-weight:bold;font-size:14px}
+.btn{background:#1A34DF;color:white;padding:12px 18px;border:none;border-radius:8px;cursor:pointer;margin:4px;font-weight:bold;font-size:14px}
 .btn-sm{padding:6px 10px;font-size:12px}.btn-red{background:#DC3545}.btn-green{background:#28A745}.btn-orange{background:#FD7E14}
 input,select{width:100%;padding:10px;margin:6px 0;border:1px solid #ddd;border-radius:8px;font-family:'Cairo'}
 table{width:100%;background:white;border-radius:12px;margin-top:15px;border-collapse:collapse;font-size:14px}
-table th{background:#1A4D8F;color:white;padding:10px}table td{padding:10px;text-align:center;border-bottom:1px solid #eee}
-.login-screen{position:fixed;top:0;left:0;width:100%;height:100%;background:linear-gradient(135deg,#1A4D8F,#2E6DB4);display:flex;justify-content:center;align-items:center;z-index:1000}
+table th{background:#1A34DF;color:white;padding:10px}table td{padding:10px;text-align:center;border-bottom:1px solid #eee}
+.login-screen{position:fixed;top:0;left:0;width:100%;height:100%;background:linear-gradient(135deg,#1A34DF,#2E5DB4);display:flex;justify-content:center;align-items:center;z-index:1000}
 .login-box{background:white;padding:25px;border-radius:16px;width:90%;max-width:400px;text-align:center}
+.logo-login{width:180px;margin-bottom:15px;border-radius:12px}
 </style>
 </head>
 <body>
 
 <div class="login-screen" id="loginScreen">
   <div class="login-box">
-    <h2>🏦 الرافدين ERP</h2>
+    <img src="https://i.imgur.com/dzXyL0S.jpg" class="logo-login">
+    <h2>الرافدين للمبيعات</h2>
     <input id="loginUser" placeholder="اسم المستخدم">
     <input id="loginPass" type="password" placeholder="كلمة السر">
     <button class="btn" onclick="login()">دخول</button>
     <p id="loginError" style="color:red;margin-top:10px"></p>
+    <p style="font-size:12px;margin-top:10px">admin / 1234</p>
   </div>
 </div>
 
 <div id="mainApp" style="display:none">
   <div class="header">
-    <div>🏦 الرافدين ERP</div>
+    <div style="display:flex;align-items:center;gap:10px">
+      <img src="https://i.imgur.com/dzXyL0S.jpg" class="logo-header">
+      <span>الرافدين للمبيعات</span>
+    </div>
     <div><span id="currentUserSpan"></span> | <a href="#" onclick="logout()" style="color:white">خروج</a></div>
   </div>
   <div class="container">
@@ -46,15 +59,12 @@ table th{background:#1A4D8F;color:white;padding:10px}table td{padding:10px;text-
 </div>
 
 <div class="modal" id="addUserModal"><div class="modal-content"><h3 id="userModalTitle">👤 مستخدم</h3><input id="newUserName" placeholder="اسم المستخدم"><input id="newUserPass" type="password" placeholder="كلمة السر"><select id="newUserRole"><option value="cashier">كاشير</option><option value="admin">ادمن</option></select><button class="btn" onclick="saveNewUser()">حفظ</button><button class="btn btn-red" onclick="closeModal('addUserModal')">الغاء</button></div></div>
-
 <div class="modal" id="addProductModal"><div class="modal-content"><h3 id="prodModalTitle">📦 منتج</h3><input id="prodName" placeholder="اسم المنتج"><input id="prodPrice" type="number" placeholder="سعر البيع"><input id="prodCost" type="number" placeholder="سعر الشراء"><input id="prodStock" type="number" placeholder="الكمية"><button class="btn" onclick="saveProduct()">حفظ</button><button class="btn btn-red" onclick="closeModal('addProductModal')">الغاء</button></div></div>
-
 <div class="modal" id="newOrderModal"><div class="modal-content"><h3>🛒 فاتورة جديدة</h3><input id="searchProd" placeholder="ابحث..." onkeyup="searchProduct()"><div id="productList" style="max-height:300px;overflow:auto"></div><hr><h4>الاجمالي: <span id="cartTotal">0</span> د.ع</h4><div id="cartItems"></div><button class="btn btn-green" onclick="saveOrder()">حفظ</button><button class="btn btn-red" onclick="closeModal('newOrderModal')">الغاء</button></div></div>
-
 <div class="modal" id="editOrderModal"><div class="modal-content"><h3>✏️ تعديل فاتورة</h3><div id="editOrderContent"></div><button class="btn btn-green" onclick="saveEditOrder()">حفظ</button><button class="btn btn-red" onclick="closeModal('editOrderModal')">الغاء</button></div></div>
 
 <script>
-if(!localStorage.getItem('rafidain_18')){localStorage.clear(); localStorage.setItem('rafidain_18','1');}
+if(!localStorage.getItem('rafidain_full_v3')){localStorage.clear(); localStorage.setItem('rafidain_full_v3','1');}
 let users=JSON.parse(localStorage.getItem('users'))||[{name:'admin',pass:'1234',role:'admin'},{name:'ahmed',pass:'1111',role:'cashier'}];
 let products=JSON.parse(localStorage.getItem('products'))||[{id:1,name:'لابتوب',price:750000,cost:700000,stock:10}];
 let orders=JSON.parse(localStorage.getItem('orders'))||[];
@@ -62,18 +72,10 @@ let currentUser=null; let cart=[]; let editingOrderId=null; let editingProdId=nu
 
 window.onload=function(){if(localStorage.getItem('currentUser')){currentUser=JSON.parse(localStorage.getItem('currentUser')); showApp();}}
 
-function login(){let u=document.getElementById('loginUser').value.trim(); let p=document.getElementById('loginPass').value.trim(); let user=users.find(x=>x.name==u && x.pass==p); if(user){currentUser=user; localStorage.setItem('currentUser',JSON.stringify(user)); showApp();} else{document.getElementById('loginError').innerText='خطأ';}}
-
-function showApp(){
-  document.getElementById('loginScreen').style.display='none';
-  document.getElementById('mainApp').style.display='block';
-  document.getElementById('currentUserSpan').innerText = currentUser.name;
-  loadButtons();
-}
-
+function login(){let u=document.getElementById('loginUser').value.trim(); let p=document.getElementById('loginPass').value.trim(); let user=users.find(x=>x.name==u && x.pass==p); if(user){currentUser=user; localStorage.setItem('currentUser',JSON.stringify(user)); showApp();} else{document.getElementById('loginError').innerText='خطأ بالاسم او كلمة السر';}}
+function showApp(){document.getElementById('loginScreen').style.display='none';document.getElementById('mainApp').style.display='block';document.getElementById('currentUserSpan').innerText=currentUser.name;loadButtons();}
 function loadButtons(){
   let html='';
-  // ========== 18 ميزة للكاشير ==========
   html+=`<button class="feature-btn" onclick="showNewOrder()">1. 🛒<br>فاتورة جديدة</button>`;
   html+=`<button class="feature-btn" onclick="showProductsCashier()">2. 📦<br>عرض المنتجات</button>`;
   html+=`<button class="feature-btn" onclick="showMyOrders()">3. 📋<br>سجل مبيعاتي</button>`;
@@ -92,8 +94,6 @@ function loadButtons(){
   html+=`<button class="feature-btn" onclick="changePassword()">16. 🔑<br>تغيير كلمة سر</button>`;
   html+=`<button class="feature-btn" onclick="showLowStockCashier()">17. ⚠️<br>تنبيهات مخزن</button>`;
   html+=`<button class="feature-btn" onclick="showReceipt()">18. 🧾<br>عرض الفاتورة</button>`;
-
-  // ميزات المدير
   if(currentUser.role=='admin'){
     html+=`<button class="feature-btn admin-btn" onclick="showDashboard()">👑 لوحة التحكم</button>`;
     html+=`<button class="feature-btn admin-btn" onclick="showProducts()">👑 المخزن</button>`;
@@ -102,14 +102,11 @@ function loadButtons(){
   }
   document.getElementById('mainGrid').innerHTML=html;
 }
-
-// ========== دوال الكاشير 18 ==========
 function showNewOrder(){cart=[]; searchProduct(); openModal('newOrderModal');}
 function searchProduct(){let val=document.getElementById('searchProd').value.toLowerCase(); let html=''; products.filter(p=>p.name.includes(val)).forEach(p=>html+=`<div style="display:flex;justify-content:space-between;padding:8px"><span>${p.name} - ${p.price.toLocaleString()}</span><button class="btn-sm" onclick="addToCart(${p.id})">+</button></div>`); document.getElementById('productList').innerHTML=html;}
 function addToCart(id){let prod=products.find(p=>p.id==id); if(prod.stock>0){cart.push({...prod}); prod.stock--; localStorage.setItem('products',JSON.stringify(products)); updateCart();}}
 function updateCart(){let total=cart.reduce((sum,i)=>sum+i.price,0); document.getElementById('cartTotal').innerText=total.toLocaleString(); document.getElementById('cartItems').innerHTML=cart.map(i=>`<div>${i.name}</div>`).join('');}
-function saveOrder(){if(cart.length==0)return; let total=cart.reduce((sum,i)=>sum+i.price,0); let cost=cart.reduce((sum,i)=>sum+i.cost,0); orders.push({id:Date.now(),total:total,cost:cost,profit:total-cost,cashier:currentUser.name,date:new Date().toLocaleString('ar-IQ'),items:cart}); localStorage.setItem('orders',JSON.stringify(orders)); alert('تم رقم: '+orders[orders.length-1].id); closeModal('newOrderModal');}
-
+function saveOrder(){if(cart.length==0)return; let total=cart.reduce((sum,i)=>sum+i.price,0); let cost=cart.reduce((sum,i)=>sum+i.cost,0); orders.push({id:Date.now(),total:total,cost:cost,profit:total-cost,cashier:currentUser.name,date:new Date().toLocaleString('ar-IQ'),items:cart}); localStorage.setItem('orders',JSON.stringify(orders)); alert('تم الحفظ رقم: '+orders[orders.length-1].id); closeModal('newOrderModal');}
 function showProductsCashier(){let html='<h3>📦 المنتجات</h3>'; products.forEach(p=>html+=`<div style="background:white;padding:10px;margin:5px 0">${p.name} | ${p.price.toLocaleString()} | متبقي: ${p.stock}</div>`); document.getElementById('contentArea').innerHTML=html;}
 function showMyOrders(){let my=orders.filter(o=>o.cashier==currentUser.name); let html='<h3>📋 سجل مبيعاتي</h3><table><tr><th>رقم</th><th>المبلغ</th><th>التاريخ</th><th>اجراء</th></tr>'; my.forEach(o=>html+=`<tr><td>${o.id}</td><td>${o.total.toLocaleString()}</td><td>${o.date}</td><td><button class="btn-sm btn-red" onclick="deleteOrder(${o.id})">حذف</button></td></tr>`); document.getElementById('contentArea').innerHTML=html+'</table>'}
 function showDailyReport(){let today=new Date().toLocaleDateString('ar-IQ'); let my=orders.filter(o=>o.cashier==currentUser.name && o.date.includes(today)); let total=my.reduce((s,o)=>s+o.total,0); document.getElementById('contentArea').innerHTML=`<h3>💰 تقرير اليوم</h3><h2>${total.toLocaleString()}</h2>`;}
@@ -128,28 +125,23 @@ function changePassword(){let p=prompt('كلمة السر الجديدة:'); cur
 function showLowStockCashier(){let low=products.filter(p=>p.stock<5); let html='<h3>⚠️ تنبيهات</h3>'; low.forEach(p=>html+=`<p>${p.name}: ${p.stock}</p>`); document.getElementById('contentArea').innerHTML=html;}
 function showReceipt(){let o=orders.filter(x=>x.cashier==currentUser.name).pop(); o?alert(JSON.stringify(o)):alert('ماكو');}
 function deleteOrder(id){if(confirm('حذف؟')){let order=orders.find(o=>o.id==id); order.items.forEach(i=>{let p=products.find(x=>x.id==i.id); p.stock++;}); orders=orders.filter(o=>o.id!=id); localStorage.setItem('orders',JSON.stringify(orders)); localStorage.setItem('products',JSON.stringify(products)); showMyOrders();}}
-
-// ========== دوال المدير مع حذف وتعديل ==========
 function showDashboard(){document.getElementById('contentArea').innerHTML='<h3>📊 لوحة التحكم</h3>';}
 function showProducts(){let html='<h3>📦 المخزن</h3><button class="btn btn-green" onclick="showAddProduct()">+ اضافة</button><table><tr><th>المنتج</th><th>السعر</th><th>الكمية</th><th>اجراء</th></tr>'; products.forEach(p=>html+=`<tr><td>${p.name}</td><td>${p.price.toLocaleString()}</td><td>${p.stock}</td><td><button class="btn-sm btn-orange" onclick="editProduct(${p.id})">تعديل</button> <button class="btn-sm btn-red" onclick="deleteProduct(${p.id})">حذف</button></td></tr>`); document.getElementById('contentArea').innerHTML=html+'</table>';}
 function showAddProduct(){editingProdId=null; document.getElementById('prodModalTitle').innerText='اضافة'; document.getElementById('prodName').value=''; openModal('addProductModal')}
 function editProduct(id){editingProdId=id; let p=products.find(x=>x.id==id); document.getElementById('prodName').value=p.name; document.getElementById('prodPrice').value=p.price; document.getElementById('prodCost').value=p.cost; document.getElementById('prodStock').value=p.stock; openModal('addProductModal')}
 function deleteProduct(id){if(confirm('حذف؟')){products=products.filter(p=>p.id!=id); localStorage.setItem('products',JSON.stringify(products)); showProducts();}}
 function saveProduct(){let data={id:editingProdId||Date.now(),name:document.getElementById('prodName').value,price:+document.getElementById('prodPrice').value,cost:+document.getElementById('prodCost').value,stock:+document.getElementById('prodStock').value}; if(editingProdId){products[products.findIndex(p=>p.id==editingProdId)]=data;} else {products.push(data);} localStorage.setItem('products',JSON.stringify(products)); closeModal('addProductModal'); showProducts();}
-
 function showAllOrders(){let html='<h3>📑 الفواتير</h3><table><tr><th>رقم</th><th>المبلغ</th><th>الكاشير</th><th>اجراء</th></tr>'; orders.forEach(o=>html+=`<tr><td>${o.id}</td><td>${o.total.toLocaleString()}</td><td>${o.cashier}</td><td><button class="btn-sm btn-orange" onclick="editOrder(${o.id})">تعديل</button> <button class="btn-sm btn-red" onclick="deleteOrder(${o.id})">حذف</button></td></tr>`); document.getElementById('contentArea').innerHTML=html+'</table>'}
 function editOrder(id){editingOrderId=id; let order=orders.find(o=>o.id==id); cart=[...order.items]; document.getElementById('editOrderContent').innerHTML='<input id="searchProdEdit" onkeyup="searchProductEdit()"><div id="productListEdit"></div><h4>الاجمالي: <span id="editCartTotal">0</span></h4><div id="editCartItems"></div>'; updateEditCart(); openModal('editOrderModal');}
 function searchProductEdit(){let val=document.getElementById('searchProdEdit').value.toLowerCase(); let html=''; products.filter(p=>p.name.includes(val)).forEach(p=>html+=`<div><span>${p.name}</span><button onclick="addToEditCart(${p.id})">+</button></div>`); document.getElementById('productListEdit').innerHTML=html;}
 function addToEditCart(id){let prod=products.find(p=>p.id==id); cart.push({...prod}); updateEditCart();}
 function updateEditCart(){let total=cart.reduce((sum,i)=>sum+i.price,0); document.getElementById('editCartTotal').innerText=total.toLocaleString(); document.getElementById('editCartItems').innerHTML=cart.map(i=>`<div>${i.name}</div>`).join('');}
 function saveEditOrder(){let idx=orders.findIndex(o=>o.id==editingOrderId); let total=cart.reduce((sum,i)=>sum+i.price,0); orders[idx].total=total; orders[idx].items=cart; localStorage.setItem('orders',JSON.stringify(orders)); closeModal('editOrderModal'); showAllOrders();}
-
 function showUsers(){let html='<h3>👥 المستخدمين</h3><button class="btn btn-green" onclick="showAddUser()">+ اضافة</button><table><tr><th>الاسم</th><th>الدور</th><th>اجراء</th></tr>'; users.forEach((u,i)=>html+=`<tr><td>${u.name}</td><td>${u.role}</td><td>${u.name!='admin'?`<button class="btn-sm btn-orange" onclick="editUser(${i})">تعديل</button> <button class="btn-sm btn-red" onclick="deleteUser(${i})">حذف</button>`:''}</td></tr>`); document.getElementById('contentArea').innerHTML=html+'</table>';}
 function showAddUser(){editingUserId=null; document.getElementById('userModalTitle').innerText='اضافة'; document.getElementById('newUserName').value=''; openModal('addUserModal')}
 function editUser(i){editingUserId=i; document.getElementById('newUserName').value=users[i].name; document.getElementById('newUserPass').value=users[i].pass; document.getElementById('newUserRole').value=users[i].role; openModal('addUserModal')}
 function deleteUser(i){users.splice(i,1); localStorage.setItem('users',JSON.stringify(users)); showUsers();}
 function saveNewUser(){let data={name:document.getElementById('newUserName').value,pass:document.getElementById('newUserPass').value,role:document.getElementById('newUserRole').value}; if(editingUserId!==null){users[editingUserId]=data;} else {users.push(data);} localStorage.setItem('users',JSON.stringify(users)); closeModal('addUserModal'); showUsers();}
-
 function openModal(id){document.getElementById(id).style.display='flex'}
 function closeModal(id){document.getElementById(id).style.display='none'}
 function logout(){localStorage.removeItem('currentUser');location.reload()}
