@@ -1,79 +1,146 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
-<head><meta charset="UTF-8"><title>شاشة البيع</title><script src="https://cdn.tailwindcss.com"></script></head>
-<body class="bg-gray-100">
-<div class="bg-blue-600 text-white p-4 flex justify-between items-center">
-  <button onclick="logout()" class="bg-red-500 px-4 py-2 rounded font-bold">خروج</button>
-  <h1 class="text-2xl font-bold">شاشة البيع</h1>
-  <span>مرحبا: <b id="currentUser"></b></span>
-</div>
-<div class="container mx-auto p-4 md:grid md:grid-cols-2 gap-4">
-  <div class="bg-white p-4 rounded-lg shadow">
-    <h2 class="font-bold text-xl mb-3">مسح الباركود</h2>
-    <input id="barcodeInput" onkeyup="if(event.key === 'Enter') addByBarcode()" placeholder="امسح الباركود واضغط Enter" class="w-full p-4 mb-3 border-4 border-blue-500 rounded text-2xl text-center" autofocus>
-    <div id="lastItem" class="text-center text-green-600 font-bold h-8"></div>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>لوحة موظف المبيعات</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Cairo', sans-serif; background: #F5F7FA; color: #333; }
+    .header { background: linear-gradient(135deg, #1A4D8F, #2E6DB4); color: white; padding: 20px; text-align: center; font-size: 22px; font-weight: bold; }
+    .container { padding: 20px; max-width: 1000px; margin: auto; }
+    .stats { display: flex; gap: 15px; margin-bottom: 25px; flex-wrap: wrap; }
+    .stat-card { flex: 1; min-width: 160px; background: white; padding: 20px; border-radius: 16px; text-align: center; box-shadow: 0 4px 12px rgba(0,0,0,0.08); }
+    .stat-card h3 { font-size: 24px; margin: 8px 0; color: #1A4D8F; }
+    .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 15px; margin-bottom: 25px; }
+    .feature-btn { background: white; padding: 20px; border-radius: 16px; text-align: center; box-shadow: 0 4px 12px rgba(0,0,0,0.08); cursor: pointer; transition: 0.3s; border: none; font-family: 'Cairo'; }
+    .feature-btn:hover { transform: translateY(-5px); background: #1A4D8F; color: white; }
+    .feature-icon { font-size: 32px; margin-bottom: 8px; }
+    .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); justify-content: center; align-items: center; }
+    .modal-content { background: white; padding: 25px; border-radius: 16px; width: 90%; max-width: 500px; }
+    .modal-content input, .modal-content select { width: 100%; padding: 12px; margin: 10px 0; border: 1px solid #ddd; border-radius: 8px; font-family: 'Cairo'; }
+    .btn { background: #1A4D8F; color: white; padding: 12px 20px; border: none; border-radius: 8px; cursor: pointer; width: 100%; font-weight: bold; font-size: 16px; }
+    .btn-danger { background: #DC3545; }
+    table { width: 100%; background: white; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.08); }
+    table th { background: #1A4D8F; color: white; padding: 12px; }
+    table td { padding: 12px; text-align: center; border-bottom: 1px solid #eee; }
+  </style>
+</head>
+<body>
+  <div class="header">لوحة موظف المبيعات</div>
+  
+  <div class="container">
+    <!-- الاحصائيات -->
+    <div class="stats">
+      <div class="stat-card"><div class="feature-icon">📦</div><h3 id="totalOrders">0</h3><p>اجمالي الطلبات</p></div>
+      <div class="stat-card"><div class="feature-icon">💰</div><h3 id="totalRevenue">0 د.ع</h3><p>اجمالي الايراد</p></div>
+      <div class="stat-card"><div class="feature-icon">👥</div><h3 id="totalCustomers">0</h3><p>عدد العملاء</p></div>
+    </div>
+
+    <!-- الازرار -->
+    <div class="grid">
+      <button class="feature-btn" onclick="openModal('customerModal')"><div class="feature-icon">👤➕</div><div>عميل جديد</div></button>
+      <button class="feature-btn" onclick="openModal('orderModal')"><div class="feature-icon">🛒➕</div><div>طلب جديد</div></button>
+      <button class="feature-btn" onclick="showOrders()"><div class="feature-icon">📋</div><div>سجل الطلبات</div></button>
+      <button class="feature-btn" onclick="scanBarcode()"><div class="feature-icon">📷</div><div>مسح الباركود</div></button>
+      <button class="feature-btn" onclick="window.print()"><div class="feature-icon">🖨️</div><div>طباعة التقرير</div></button>
+      <button class="feature-btn" onclick="showDebts()"><div class="feature-icon">💳</div><div>ديون العملاء</div></button>
+      <button class="feature-btn" onclick="showReport()"><div class="feature-icon">📊</div><div>التقارير</div></button>
+      <button class="feature-btn" onclick="alert('لا توجد عروض حاليا')"><div class="feature-icon">🏷️</div><div>العروض</div></button>
+    </div>
+
+    <!-- جدول الطلبات -->
+    <div id="ordersTable"></div>
   </div>
-  <div class="bg-white p-4 rounded-lg shadow">
-    <h2 class="font-bold text-xl mb-3">الفاتورة</h2>
-    <div id="invoiceItems" class="space-y-2 h-80 overflow-y-auto mb-3"></div>
-    <p class="font-bold text-3xl text-center">المجموع: <span id="total">0</span> دينار</p>
-    <button onclick="completeSale()" class="w-full bg-green-600 text-white p-4 rounded font-bold text-xl mt-3">اتمام البيع</button>
+
+  <!-- مودال اضافة عميل -->
+  <div class="modal" id="customerModal">
+    <div class="modal-content">
+      <h3>اضافة عميل جديد</h3>
+      <input type="text" id="custName" placeholder="اسم العميل">
+      <input type="text" id="custPhone" placeholder="رقم الهاتف">
+      <input type="text" id="custAddress" placeholder="العنوان">
+      <button class="btn" onclick="addCustomer()">حفظ العميل</button>
+      <button class="btn btn-danger" onclick="closeModal('customerModal')" style="margin-top:10px">الغاء</button>
+    </div>
   </div>
-</div>
+
+  <!-- مودال اضافة طلب -->
+  <div class="modal" id="orderModal">
+    <div class="modal-content">
+      <h3>انشاء طلب جديد</h3>
+      <select id="orderCustomer"></select>
+      <input type="text" id="orderProduct" placeholder="اسم المنتج">
+      <input type="number" id="orderPrice" placeholder="السعر">
+      <input type="number" id="orderQty" placeholder="الكمية">
+      <button class="btn" onclick="addOrder()">حفظ الطلب</button>
+      <button class="btn btn-danger" onclick="closeModal('orderModal')" style="margin-top:10px">الغاء</button>
+    </div>
+  </div>
+
 <script>
-if(localStorage.getItem('loggedIn')!== 'true'){ window.location.href = 'index.html'; }
-document.getElementById('currentUser').innerText = localStorage.getItem('currentUser');
-let cart = []; let products = JSON.parse(localStorage.getItem('products')) || [];
+  let customers = JSON.parse(localStorage.getItem('customers')) || [];
+  let orders = JSON.parse(localStorage.getItem('orders')) || [];
 
-function addByBarcode(){
-  let barcode = document.getElementById('barcodeInput').value.trim();
-  if(!barcode) return;
-  let product = products.find(p => p.barcode === barcode);
-  if(!product) return alert('الباركود غير موجود');
-  if(product.qty <= 0) return alert('الكمية نفذت');
-  let item = cart.find(c => c.barcode === product.barcode);
-  if(item){ item.qty++; } else { cart.push({barcode: product.barcode, name: product.name, price: product.price, qty: 1}); }
-  product.qty--; localStorage.setItem('products', JSON.stringify(products));
-  document.getElementById('lastItem').innerText = `تم اضافة: ${product.name}`;
-  setTimeout(() => document.getElementById('lastItem').innerText = '', 1500);
-  updateInvoice(); document.getElementById('barcodeInput').value = ''; document.getElementById('barcodeInput').focus();
-}
+  function openModal(id){ document.getElementById(id).style.display = 'flex'; loadCustomersToSelect(); }
+  function closeModal(id){ document.getElementById(id).style.display = 'none'; }
 
-function removeFromCart(index){
-  let item = cart[index];
-  let product = products.find(p => p.barcode === item.barcode);
-  product.qty += item.qty; // نرجع الكمية للمخزن
-  cart.splice(index,1);
-  localStorage.setItem('products', JSON.stringify(products));
-  updateInvoice();
-}
+  function addCustomer(){
+    let name = document.getElementById('custName').value;
+    let phone = document.getElementById('custPhone').value;
+    if(!name || !phone) return alert('املأ الحقول');
+    customers.push({id: Date.now(), name, phone, address: document.getElementById('custAddress').value, debt: 0});
+    localStorage.setItem('customers', JSON.stringify(customers));
+    alert('تم اضافة العميل');
+    closeModal('customerModal');
+    updateStats();
+  }
 
-function updateInvoice(){
-  let list = document.getElementById('invoiceItems');
-  let total = 0;
-  list.innerHTML = '';
-  cart.forEach((item, i) => {
-    total += item.price * item.qty;
-    list.innerHTML += `<div class="flex justify-between items-center bg-gray-100 p-2 rounded">
-      <span>${item.name} x ${item.qty}</span>
-      <div><span class="font-bold">${item.price * item.qty} د</span>
-      <button onclick="removeFromCart(${i})" class="bg-red-500 text-white px-2 py-1 rounded mr-2">حذف</button></div>
-    </div>`;
-  });
-  document.getElementById('total').innerText = total;
-}
+  function addOrder(){
+    let customerId = document.getElementById('orderCustomer').value;
+    let product = document.getElementById('orderProduct').value;
+    let price = parseFloat(document.getElementById('orderPrice').value);
+    let qty = parseInt(document.getElementById('orderQty').value);
+    if(!customerId || !product || !price) return alert('املأ الحقول');
+    let total = price * qty;
+    orders.push({id: Date.now(), customerId, product, price, qty, total, date: new Date().toLocaleDateString('ar-IQ')});
+    localStorage.setItem('orders', JSON.stringify(orders));
+    alert('تم انشاء الطلب بمبلغ: ' + total + ' د.ع');
+    closeModal('orderModal');
+    updateStats();
+  }
 
-function completeSale(){
-  if(cart.length === 0) return alert('الفاتورة فارغة');
-  let sales = JSON.parse(localStorage.getItem('sales')) || [];
-  sales.push({date: new Date().toLocaleString('ar-IQ'), user: localStorage.getItem('currentUser'), items: cart, total: document.getElementById('total').innerText});
-  localStorage.setItem('sales', JSON.stringify(sales));
-  alert('تم حفظ البيع');
-  cart = [];
-  updateInvoice();
-}
+  function loadCustomersToSelect(){
+    let select = document.getElementById('orderCustomer');
+    select.innerHTML = '<option value="">اختر العميل</option>';
+    customers.forEach(c => select.innerHTML += `<option value="${c.id}">${c.name}</option>`);
+  }
 
-function logout(){ localStorage.removeItem('loggedIn'); localStorage.removeItem('currentUser'); window.location.href = 'index.html'; }
+  function showOrders(){
+    let html = '<h3>سجل الطلبات</h3><table><tr><th>العميل</th><th>المنتج</th><th>الكمية</th><th>المبلغ</th><th>التاريخ</th></tr>';
+    orders.forEach(o => {
+      let cust = customers.find(c => c.id == o.customerId);
+      html += `<tr><td>${cust ? cust.name : 'محذوف'}</td><td>${o.product}</td><td>${o.qty}</td><td>${o.total} د.ع</td><td>${o.date}</td></tr>`;
+    });
+    html += '</table>';
+    document.getElementById('ordersTable').innerHTML = html;
+  }
+
+  function showReport(){
+    let total = orders.reduce((sum, o) => sum + o.total, 0);
+    alert(`تقرير المبيعات\nعدد الطلبات: ${orders.length}\nالايراد الكلي: ${total} د.ع`);
+  }
+
+  function showDebts(){ alert('قسم الديون: قريبا'); }
+  function scanBarcode(){ alert('ميزة مسح الباركود: تحتاج كاميرا'); }
+
+  function updateStats(){
+    document.getElementById('totalOrders').innerText = orders.length;
+    document.getElementById('totalRevenue').innerText = orders.reduce((sum, o) => sum + o.total, 0) + ' د.ع';
+    document.getElementById('totalCustomers').innerText = customers.length;
+  }
+  updateStats();
 </script>
 </body>
 </html>
