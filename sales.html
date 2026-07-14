@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
   <title>لوحة موظف المبيعات</title>
   <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&display=swap" rel="stylesheet">
+  <script src="https://unpkg.com/html5-qrcode"></script>
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
     body { font-family: 'Cairo', sans-serif; background: #F5F7FA; }
@@ -12,15 +13,19 @@
     .stats { display: flex; gap: 15px; margin-bottom: 25px; flex-wrap: wrap; }
     .stat-card { flex: 1; min-width: 160px; background: white; padding: 20px; border-radius: 16px; text-align: center; box-shadow: 0 4px 12px rgba(0,0,0,0.08); }
     .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 15px; }
-    .feature-btn { background: white; padding: 20px; border-radius: 16px; text-align: center; box-shadow: 0 4px 12px rgba(0,0,0,0.08); cursor: pointer; border: none; font-family: 'Cairo'; font-weight: bold; }
+    .feature-btn { background: white; padding: 20px; border-radius: 16px; text-align: center; box-shadow: 0 4px 12px rgba(0,0,0,0.08); cursor: pointer; border: none; font-family: 'Cairo'; font-weight: bold; font-size: 15px; }
     .feature-btn:hover { background: #1A4D8F; color: white; }
-    .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); justify-content: center; align-items: center; }
-    .modal-content { background: white; padding: 25px; border-radius: 16px; width: 90%; max-width: 500px; }
-    .btn { background: #1A4D8F; color: white; padding: 12px; border: none; border-radius: 8px; cursor: pointer; width: 100%; margin-top: 8px; }
+    .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); justify-content: center; align-items: center; z-index: 999; }
+    .modal-content { background: white; padding: 25px; border-radius: 16px; width: 90%; max-width: 550px; max-height: 90vh; overflow-y: auto; }
+    .btn { background: #1A4D8F; color: white; padding: 12px; border: none; border-radius: 8px; cursor: pointer; width: 100%; margin-top: 8px; font-weight: bold; }
+    table { width: 100%; background: white; border-radius: 12px; margin-top: 15px; }
+    table th { background: #1A4D8F; color: white; padding: 10px; }
+    table td { padding: 10px; text-align: center; border-bottom: 1px solid #eee; }
+    #reader { width: 100%; }
   </style>
 </head>
 <body>
-  <div class="header">لوحة موظف المبيعات - 10 خدمات</div>
+  <div class="header">لوحة موظف المبيعات</div>
   
   <div class="container">
     <div class="stats">
@@ -30,62 +35,97 @@
       <div class="stat-card"><h3 id="totalDebt">0 د.ع</h3><p>💳 الديون</p></div>
     </div>
 
-    <!-- 10 ازرار -->
     <div class="grid">
       <button class="feature-btn" onclick="openModal('customerModal')">👤➕<br>عميل جديد</button>
       <button class="feature-btn" onclick="openModal('orderModal')">🛒➕<br>طلب جديد</button>
       <button class="feature-btn" onclick="showOrders()">📋<br>سجل الطلبات</button>
-      <button class="feature-btn" onclick="scanBarcode()">📷<br>مسح الباركود</button>
+      <button class="feature-btn" onclick="startScanner()">📷<br>مسح الباركود</button>
       <button class="feature-btn" onclick="printInvoice()">🖨️<br>طباعة فاتورة</button>
       <button class="feature-btn" onclick="showDebts()">💳<br>ديون العملاء</button>
       <button class="feature-btn" onclick="showReport()">📊<br>التقارير</button>
       <button class="feature-btn" onclick="showOffers()">🏷️<br>العروض</button>
-      <button class="feature-btn" onclick="showProducts()">📦<br>ادارة المنتجات</button>
+      <button class="feature-btn" onclick="openModal('productModal')">📦<br>ادارة المنتجات</button>
       <button class="feature-btn" onclick="backupData()">☁️<br>نسخ احتياطي</button>
     </div>
 
     <div id="contentArea" style="margin-top:20px"></div>
   </div>
 
-  <!-- المودالات -->
-  <div class="modal" id="customerModal"><div class="modal-content"><h3>عميل جديد</h3><input id="custName" placeholder="الاسم"><input id="custPhone" placeholder="الهاتف"><button class="btn" onclick="addCustomer()">حفظ</button><button class="btn" style="background:#DC3545" onclick="closeModal('customerModal')">الغاء</button></div></div>
-  <div class="modal" id="orderModal"><div class="modal-content"><h3>طلب جديد</h3><select id="orderCustomer"></select><input id="orderProduct" placeholder="المنتج"><input id="orderPrice" type="number" placeholder="السعر"><button class="btn" onclick="addOrder()">حفظ</button><button class="btn" style="background:#DC3545" onclick="closeModal('orderModal')">الغاء</button></div></div>
+  <!-- مودالات -->
+  <div class="modal" id="customerModal"><div class="modal-content"><h3>عميل جديد</h3><input id="custName" placeholder="الاسم"><input id="custPhone" placeholder="الهاتف"><input id="custAddress" placeholder="العنوان"><button class="btn" onclick="addCustomer()">حفظ</button><button class="btn" style="background:#DC3545" onclick="closeModal('customerModal')">الغاء</button></div></div>
+  
+  <div class="modal" id="orderModal"><div class="modal-content"><h3>طلب جديد</h3><select id="orderCustomer"></select><input id="orderProduct" placeholder="المنتج"><input id="orderPrice" type="number" placeholder="السعر"><input id="orderQty" type="number" placeholder="الكمية" value="1"><select id="orderStatus"><option value="نقدي">نقدي</option><option value="دين">دين</option></select><button class="btn" onclick="addOrder()">حفظ</button><button class="btn" style="background:#DC3545" onclick="closeModal('orderModal')">الغاء</button></div></div>
+
+  <div class="modal" id="productModal"><div class="modal-content"><h3>اضافة منتج</h3><input id="prodCode" placeholder="كود الباركود"><input id="prodName" placeholder="اسم المنتج"><input id="prodPrice" type="number" placeholder="السعر"><button class="btn" onclick="addProduct()">حفظ المنتج</button><button class="btn" style="background:#DC3545" onclick="closeModal('productModal')">الغاء</button></div></div>
+
+  <div class="modal" id="scannerModal"><div class="modal-content"><h3>مسح الباركود بالكامرة</h3><div id="reader"></div><p id="scanResult"></p><button class="btn" style="background:#DC3545" onclick="stopScanner()">ايقاف الكامرة</button></div></div>
 
 <script>
   let customers = JSON.parse(localStorage.getItem('customers')) || [];
   let orders = JSON.parse(localStorage.getItem('orders')) || [];
-  let products = JSON.parse(localStorage.getItem('products')) || [{id:1,name:'لابتوب',price:1200000}];
+  let products = JSON.parse(localStorage.getItem('products')) || [{code:'123',name:'لابتوب',price:1200000},{code:'456',name:'موبايل',price:800000}];
+  let html5QrCode;
 
   function openModal(id){ document.getElementById(id).style.display='flex'; loadCustomers(); }
   function closeModal(id){ document.getElementById(id).style.display='none'; }
   
   function addCustomer(){
-    customers.push({id:Date.now(), name:custName.value, phone:custPhone.value, debt:0});
-    localStorage.setItem('customers',JSON.stringify(customers)); alert('تم'); closeModal('customerModal'); updateStats();
+    if(!custName.value) return alert('اكتب الاسم');
+    customers.push({id:Date.now(), name:custName.value, phone:custPhone.value, address:custAddress.value, debt:0});
+    localStorage.setItem('customers',JSON.stringify(customers)); alert('تم اضافة العميل'); closeModal('customerModal'); updateStats();
+  }
+  function addProduct(){
+    if(!prodCode.value) return alert('اكتب الكود');
+    products.push({code:prodCode.value, name:prodName.value, price:+prodPrice.value});
+    localStorage.setItem('products',JSON.stringify(products)); alert('تم اضافة المنتج'); closeModal('productModal');
   }
   function addOrder(){
-    orders.push({id:Date.now(), customerId:orderCustomer.value, product:orderProduct.value, total:orderPrice.value});
-    localStorage.setItem('orders',JSON.stringify(orders)); alert('تم'); closeModal('orderModal'); updateStats();
+    let total = orderPrice.value * orderQty.value;
+    orders.push({id:Date.now(), customerId:orderCustomer.value, product:orderProduct.value, price:orderPrice.value, qty:orderQty.value, total, status:orderStatus.value, date:new Date().toLocaleDateString('ar-IQ')});
+    if(orderStatus.value=='دين'){ let c=customers.find(x=>x.id==orderCustomer.value); c.debt+= +total; }
+    localStorage.setItem('orders',JSON.stringify(orders)); localStorage.setItem('customers',JSON.stringify(customers));
+    alert('تم انشاء الطلب: '+total+' د.ع'); closeModal('orderModal'); updateStats();
   }
   function loadCustomers(){
-    orderCustomer.innerHTML='<option>اختر</option>';
+    orderCustomer.innerHTML='<option value="">اختر العميل</option>';
     customers.forEach(c=>orderCustomer.innerHTML+=`<option value="${c.id}">${c.name}</option>`);
   }
   function showOrders(){
-    let html='<h3>سجل الطلبات</h3><table width="100%" border="1"><tr><th>المنتج</th><th>المبلغ</th></tr>';
-    orders.forEach(o=>html+=`<tr><td>${o.product}</td><td>${o.total} د.ع</td></tr>`); html+='</table>';
-    contentArea.innerHTML=html;
+    let html='<h3>سجل الطلبات</h3><table><tr><th>العميل</th><th>المنتج</th><th>الكمية</th><th>المبلغ</th><th>الحالة</th></tr>';
+    orders.forEach(o=>{ let c=customers.find(x=>x.id==o.customerId); html+=`<tr><td>${c?c.name:'-'}</td><td>${o.product}</td><td>${o.qty}</td><td>${o.total} د.ع</td><td>${o.status}</td></tr>`; });
+    contentArea.innerHTML=html+'</table>';
   }
   function showDebts(){
-    let html='<h3>الديون</h3>'; customers.filter(c=>c.debt>0).forEach(c=>html+=`<p>${c.name}: ${c.debt} د.ع</p>`);
-    contentArea.innerHTML=html;
+    let html='<h3>ديون العملاء</h3><table><tr><th>الاسم</th><th>الهاتف</th><th>المبلغ</th></tr>';
+    customers.filter(c=>c.debt>0).forEach(c=>html+=`<tr><td>${c.name}</td><td>${c.phone}</td><td style="color:red">${c.debt} د.ع</td></tr>`);
+    contentArea.innerHTML=html+'</table>';
   }
-  function showReport(){ alert(`الطلبات: ${orders.length}\nالايراد: ${orders.reduce((s,o)=>s+ +o.total,0)}`); }
-  function showOffers(){ contentArea.innerHTML='<h3>خصم 10% فوق المليون</h3>'; }
-  function scanBarcode(){ let code=prompt('ادخل كود المنتج'); let p=products.find(x=>x.id==code); alert(p?p.name+' - '+p.price:'غير موجود'); }
-  function printInvoice(){ window.print(); }
-  function showProducts(){ let html='<h3>المنتجات</h3>'; products.forEach(p=>html+=`<p>${p.name} - ${p.price} د.ع</p>`); contentArea.innerHTML=html; }
-  function backupData(){ let data=JSON.stringify({customers,orders}); localStorage.setItem('backup',data); alert('تم النسخ الاحتياطي'); }
+  function showReport(){
+    let total=orders.reduce((s,o)=>s+ +o.total,0);
+    contentArea.innerHTML=`<h3>التقرير</h3><p>عدد الطلبات: ${orders.length}</p><p>الايراد: ${total} د.ع</p><p>عدد العملاء: ${customers.length}</p>`;
+  }
+  function showOffers(){ contentArea.innerHTML='<h3>العروض</h3><p>1. خصم 10% فوق المليون</p><p>2. توصيل مجاني</p><p>3. قطعة ثانية بنصف السعر</p>'; }
+  function showProducts(){ let html='<h3>المنتجات</h3><table><tr><th>الكود</th><th>الاسم</th><th>السعر</th></tr>'; products.forEach(p=>html+=`<tr><td>${p.code}</td><td>${p.name}</td><td>${p.price} د.ع</td></tr>`); contentArea.innerHTML=html+'</table>'; }
+  function backupData(){ let data=JSON.stringify({customers,orders,products}); localStorage.setItem('backup',data); alert('تم حفظ النسخة الاحتياطية'); }
+  function printInvoice(){ if(orders.length==0) return alert('لا توجد طلبات'); window.print(); }
+
+  // الكامرة
+  function startScanner(){
+    openModal('scannerModal');
+    html5QrCode = new Html5Qrcode("reader");
+    html5QrCode.start({ facingMode: "environment" }, { fps: 10 }, (code)=>{
+      let p = products.find(x=>x.code==code);
+      document.getElementById('scanResult').innerHTML = p ? `<b>تم العثور:</b> ${p.name} - ${p.price} د.ع` : `<b style="color:red">الكود ${code} غير موجود</b>`;
+      orderProduct.value = p ? p.name : '';
+      orderPrice.value = p ? p.price : '';
+      setTimeout(()=>stopScanner(), 2000);
+    });
+  }
+  function stopScanner(){
+    if(html5QrCode){ html5QrCode.stop(); }
+    closeModal('scannerModal');
+  }
+
   function updateStats(){
     totalOrders.innerText=orders.length;
     totalRevenue.innerText=orders.reduce((s,o)=>s+ +o.total,0)+' د.ع';
