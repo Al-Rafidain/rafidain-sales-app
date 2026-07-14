@@ -4,6 +4,10 @@
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>الرافدين للمبيعات</title>
 
+<!-- PWA - ضفتلك هذني السطرين -->
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#1A34DF">
+
 <!-- ايقونة التطبيق -->
 <link rel="icon" href="https://cdn-icons-png.flaticon.com/512/263/263115.png">
 <link rel="apple-touch-icon" href="https://cdn-icons-png.flaticon.com/512/263/263115.png">
@@ -64,6 +68,11 @@ table th{background:#1A34DF;color:white;padding:10px}table td{padding:10px;text-
 <div class="modal" id="editOrderModal"><div class="modal-content"><h3>✏️ تعديل فاتورة</h3><div id="editOrderContent"></div><button class="btn btn-green" onclick="saveEditOrder()">حفظ</button><button class="btn btn-red" onclick="closeModal('editOrderModal')">الغاء</button></div></div>
 
 <script>
+// تسجيل Service Worker - ضفتلك هاي
+if('serviceWorker' in navigator){
+  navigator.serviceWorker.register('sw.js');
+}
+
 if(!localStorage.getItem('rafidain_full_v3')){localStorage.clear(); localStorage.setItem('rafidain_full_v3','1');}
 let users=JSON.parse(localStorage.getItem('users'))||[{name:'admin',pass:'1234',role:'admin'},{name:'ahmed',pass:'1111',role:'cashier'}];
 let products=JSON.parse(localStorage.getItem('products'))||[{id:1,name:'لابتوب',price:750000,cost:700000,stock:10}];
