@@ -8,35 +8,39 @@
 *{margin:0;padding:0;box-sizing:border-box}body{font-family:'Cairo';background:#F0F2F5}
 .header{background:linear-gradient(135deg,#1A4D8F,#2E6DB4);color:white;padding:15px;display:flex;justify-content:space-between;align-items:center;font-size:20px;font-weight:bold}
 .container{padding:20px;max-width:1400px;margin:auto}
-.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px}
-.feature-btn{background:white;padding:15px 8px;border-radius:16px;text-align:center;box-shadow:0 4px 12px rgba(0,0,0,.08);cursor:pointer;border:none;font-family:'Cairo';font-weight:bold;font-size:13px}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px}
+.feature-btn{background:white;padding:18px 10px;border-radius:16px;text-align:center;box-shadow:0 4px 12px rgba(0,0,0,.08);cursor:pointer;border:none;font-family:'Cairo';font-weight:bold;font-size:14px;transition:.2s}
+.feature-btn:hover{transform:translateY(-2px)}
 .admin-btn{background:#FFC107!important;color:#000!important}
 .modal{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.7);justify-content:center;align-items:center;z-index:999}
-.modal-content{background:white;padding:25px;border-radius:16px;width:95%;max-width:600px}
-.btn{background:#1A4D8F;color:white;padding:12px;border:none;border-radius:8px;cursor:pointer;width:100%;margin-top:8px;font-weight:bold}
-input,select{width:100%;padding:10px;margin:6px 0;border:1px solid #ddd;border-radius:8px;font-family:'Cairo'}
-.login-screen{position:fixed;top:0;left:0;width:100%;height:100%;background:#1A4D8F;display:flex;justify-content:center;align-items:center;z-index:1000}
-.login-box{background:white;padding:30px;border-radius:16px;width:90%;max-width:450px;text-align:center;box-shadow:0 10px 30px rgba(0,0,0,.2)}
-.login-box h2{color:#1A4D8F;margin-bottom:15px}
-.login-box input{margin-bottom:12px}
+.modal-content{background:white;padding:25px;border-radius:16px;width:95%;max-width:500px}
+.btn{background:#1A4D8F;color:white;padding:12px;border:none;border-radius:8px;cursor:pointer;width:100%;margin-top:8px;font-weight:bold;font-size:16px}
+input,select{width:100%;padding:12px;margin:8px 0;border:1px solid #ddd;border-radius:8px;font-family:'Cairo';font-size:15px}
+table{width:100%;background:white;border-radius:12px;margin-top:15px;border-collapse:collapse;overflow:hidden}
+table th{background:#1A4D8F;color:white;padding:12px}
+table td{padding:12px;text-align:center;border-bottom:1px solid #eee}
+.login-screen{position:fixed;top:0;left:0;width:100%;height:100%;background:linear-gradient(135deg,#1A4D8F,#2E6DB4);display:flex;justify-content:center;align-items:center;z-index:1000}
+.login-box{background:white;padding:30px;border-radius:16px;width:90%;max-width:420px;text-align:center;box-shadow:0 10px 30px rgba(0,0,0,.2)}
+.login-box h2{color:#1A4D8F;margin-bottom:20px}
 </style>
 </head>
 <body>
 
 <div class="login-screen" id="loginScreen">
   <div class="login-box">
-    <h2>الرافدين للمبيعات 🏦</h2>
+    <h2>🏦 الرافدين للمبيعات</h2>
     <input id="loginUser" placeholder="اسم المستخدم">
     <input id="loginPass" type="password" placeholder="كلمة السر">
     <button class="btn" onclick="login()">دخول</button>
     <p id="loginError" style="color:red;margin-top:10px"></p>
+    <p style="margin-top:15px;font-size:12px;color:#666">المستخدم الافتراضي: admin | 1234</p>
   </div>
 </div>
 
 <div id="mainApp" style="display:none">
   <div class="header">
     <div>🏦 الرافدين للمبيعات</div>
-    <div><span id="currentUserSpan"></span> | <a href="#" onclick="logout()" style="color:white">خروج</a></div>
+    <div><span id="currentUserSpan"></span> | <a href="#" onclick="logout()" style="color:white;text-decoration:none">خروج</a></div>
   </div>
   <div class="container">
     <div class="grid" id="mainGrid"></div>
@@ -47,6 +51,12 @@ input,select{width:100%;padding:10px;margin:6px 0;border:1px solid #ddd;border-r
 <div class="modal" id="addUserModal"><div class="modal-content"><h3>اضافة مستخدم جديد</h3><input id="newUserName" placeholder="اسم المستخدم"><input id="newUserPass" type="password" placeholder="كلمة السر"><select id="newUserRole"><option value="cashier">كاشير</option><option value="admin">ادمن</option></select><button class="btn" onclick="saveNewUser()">حفظ</button><button class="btn" style="background:#DC3545" onclick="closeModal('addUserModal')">الغاء</button></div></div>
 
 <script>
+// اول ما يفتح نمسح البيانات القديمة اللي تخرب الدخول
+if(!localStorage.getItem('rafidain_v8')){
+  localStorage.clear();
+  localStorage.setItem('rafidain_v8','1');
+}
+
 let users=JSON.parse(localStorage.getItem('users'))||[{name:'admin',pass:'1234',role:'admin'}];
 let orders=JSON.parse(localStorage.getItem('orders'))||[];
 let currentUser=null;
@@ -59,12 +69,13 @@ window.onload=function(){
 }
 
 function login(){
-  let u=document.getElementById('loginUser').value;
-  let p=document.getElementById('loginPass').value;
+  let u=document.getElementById('loginUser').value.trim();
+  let p=document.getElementById('loginPass').value.trim();
   let user=users.find(x=>x.name==u && x.pass==p);
   if(user){
     currentUser=user;
     localStorage.setItem('currentUser',JSON.stringify(user));
+    localStorage.setItem('users',JSON.stringify(users));
     showApp();
   } else {
     document.getElementById('loginError').innerText='اسم او كلمة سر خطأ';
@@ -80,11 +91,10 @@ function showApp(){
 
 function loadButtons(){
   let html='';
-  html+=`<button class="feature-btn" onclick="alert('طلب جديد')">🛒➕<br>طلب جديد</button>`;
-  html+=`<button class="feature-btn" onclick="alert('المنتجات')">📦<br>المنتجات</button>`;
+  html+=`<button class="feature-btn" onclick="alert('قريباً: طلب جديد')">🛒➕<br>طلب جديد</button>`;
+  html+=`<button class="feature-btn" onclick="alert('قريباً: المنتجات')">📦<br>المنتجات</button>`;
   html+=`<button class="feature-btn" onclick="showOrders()">📋<br>سجل الطلبات</button>`;
   
-  // هذا الشرط مهم: بس الادمن يشوف الازرار
   if(currentUser.role=='admin'){
     html+=`<button class="feature-btn admin-btn" onclick="showAdminPanel()">👑<br>لوحة الادارة</button>`;
     html+=`<button class="feature-btn admin-btn" onclick="showAddUser()">👤➕<br>اضافة مستخدم</button>`;
@@ -93,23 +103,29 @@ function loadButtons(){
 }
 
 function showAdminPanel(){
-  let html='<h3>👑 لوحة الادارة</h3><table style="width:100%;background:white;border-radius:12px"><tr style="background:#1A4D8F;color:white"><th>المستخدم</th><th>الدور</th><th>الطلبات</th></tr>';
-  users.forEach(u=>{let cOrders=orders.filter(o=>o.cashier==u.name);html+=`<tr><td style="padding:10px;text-align:center">${u.name}</td><td style="padding:10px;text-align:center">${u.role}</td><td style="padding:10px;text-align:center">${cOrders.length}</td></tr>`});
+  let html='<h3>👑 لوحة الادارة</h3><table><tr><th>المستخدم</th><th>الدور</th><th>عدد الطلبات</th></tr>';
+  users.forEach(u=>{let cOrders=orders.filter(o=>o.cashier==u.name);html+=`<tr><td>${u.name}</td><td>${u.role}</td><td>${cOrders.length}</td></tr>`});
   document.getElementById('contentArea').innerHTML=html+'</table>';
 }
 
 function showOrders(){
-  let html='<h3>📋 سجل الطلبات</h3><table style="width:100%;background:white"><tr><th>رقم</th><th>المبلغ</th><th>الكاشير</th></tr>';
-  orders.forEach(o=>html+=`<tr><td>${o.id}</td><td>${o.total} د.ع</td><td>${o.cashier}</td></tr>`);
+  if(orders.length==0){document.getElementById('contentArea').innerHTML='<h3>لا توجد طلبات بعد</h3>';return;}
+  let html='<h3>📋 سجل الطلبات</h3><table><tr><th>رقم الفاتورة</th><th>المبلغ</th><th>الكاشير</th><th>التاريخ</th></tr>';
+  orders.forEach(o=>html+=`<tr><td>${o.id}</td><td>${o.total} د.ع</td><td>${o.cashier}</td><td>${o.date}</td></tr>`);
   document.getElementById('contentArea').innerHTML=html+'</table>'
 }
 
 function showAddUser(){openModal('addUserModal')}
 function saveNewUser(){
-  users.push({name:document.getElementById('newUserName').value,pass:document.getElementById('newUserPass').value,role:document.getElementById('newUserRole').value});
+  let name=document.getElementById('newUserName').value.trim();
+  let pass=document.getElementById('newUserPass').value.trim();
+  if(name==''||pass==''){alert('املأ كل الحقول');return;}
+  users.push({name:name,pass:pass,role:document.getElementById('newUserRole').value});
   localStorage.setItem('users',JSON.stringify(users));
-  alert('تمت اضافة المستخدم');
+  alert('تمت اضافة المستخدم: '+name);
   closeModal('addUserModal');
+  document.getElementById('newUserName').value='';
+  document.getElementById('newUserPass').value='';
 }
 function openModal(id){document.getElementById(id).style.display='flex'}
 function closeModal(id){document.getElementById(id).style.display='none'}
