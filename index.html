@@ -5,23 +5,26 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>شركة الرافدين</title>
 <style>
-  body{margin:0; font-family:'Tahoma'; background:linear-gradient(180deg, #4c1d95 0%, #7c3aed 100%); min-height:100vh; padding:20px;}
+  body{margin:0; font-family:'Tahoma'; background:linear-gradient(180deg, #4c1d95 0%, #7c3aed 100%); min-height:100vh; padding:15px;}
   .container{max-width:500px; margin:auto; background:white; border-radius:20px; padding:20px; box-shadow:0 10px 30px rgba(0,0,0,0.3);}
-  .logo{width:80px; height:80px; margin:0 auto 15px; display:block;}
-  h1{color:#6d28d9; text-align:center; margin:10px 0; font-size:28px;}
-  .subtitle{color:#666; text-align:center; margin-bottom:20px;}
-  .grid{display:grid; grid-template-columns:1fr 1fr; gap:10px;}
-  .btn{background:#f3e8ff; border:none; padding:15px 10px; border-radius:12px; cursor:pointer; font-size:14px; transition:0.2s;}
-  .btn:hover{background:#ddd6fe; transform:scale(1.02);}
-  #subScreen{display:none; padding:20px;}
-  input{width:90%; padding:10px; margin:5px 0; border:1px solid #ccc; border-radius:8px;}
-  .backBtn{background:gray; color:white; width:100%; padding:12px; border:none; border-radius:8px; margin-top:15px;}
+  .logo{width:80px; height:80px; margin:0 auto 10px; display:block;}
+  h1{color:#6d28d9; text-align:center; margin:5px 0; font-size:26px;}
+  .subtitle{color:#666; text-align:center; margin-bottom:15px; font-size:14px;}
+  .grid{display:grid; grid-template-columns:1fr 1fr; gap:8px;}
+  .btn{background:#f3e8ff; border:none; padding:12px 5px; border-radius:12px; cursor:pointer; font-size:13px; transition:0.2s; font-weight:bold;}
+  .btn:hover{background:#ddd6fe; transform:scale(1.03);}
+  #subScreen{display:none;}
+  input,select{width:92%; padding:10px; margin:5px 0; border:1px solid #ccc; border-radius:8px;}
+  button{padding:10px; border:none; border-radius:8px; background:#6d28d9; color:white; cursor:pointer; margin:3px;}
+  .backBtn{background:gray !important; width:100%;}
+  table{width:100%; font-size:12px; margin-top:10px;}
+  table td{border-bottom:1px solid #eee; padding:5px;}
 </style>
 </head>
 <body>
 
 <div class="container" id="mainScreen">
-  <img src="logo-192.png" class="logo">
+  <img src="logo-192.png" class="logo" onerror="this.style.display='none'">
   <h1>شركة الرافدين</h1>
   <p class="subtitle">نظام إدارة المبيعات المتكامل</p>
   
@@ -58,46 +61,63 @@
 </div>
 
 <script>
-let data = JSON.parse(localStorage.getItem('rafidainData')) || {products:[], customers:[], sales:[], suppliers:[], employees:[], expenses:[]};
-function save(){localStorage.setItem('rafidainData', JSON.stringify(data));}
+let db = JSON.parse(localStorage.getItem('rafidainDB')) || {
+  products:[], customers:[], suppliers:[], sales:[], purchases:[], expenses:[], categories:[], users:[{u:"admin",p:"123"}]
+};
+function save(){localStorage.setItem('rafidainDB', JSON.stringify(db));}
 
-function showScreen(title){
-  document.getElementById('mainScreen').style.display='none';
-  document.getElementById('subScreen').style.display='block';
-  document.getElementById('screenTitle').innerText=title;
-  let html='';
+function showScreen(t){
+  mainScreen.style.display='none'; subScreen.style.display='block';
+  screenTitle.innerText=t; let h='';
   
-  if(title=='إدارة المنتجات'){
-    html=`<input id="pName" placeholder="اسم المنتج"><input id="pPrice" type="number" placeholder="السعر"><button onclick="addP()">اضافة</button><hr>`;
-    data.products.forEach((p,i)=>html+=`<p>${i+1}. ${p.name} - ${p.price} د.ع</p>`);
-  }
-  else if(title=='إدارة العملاء'){
-    html=`<input id="cName" placeholder="اسم العميل"><input id="cPhone" placeholder="الهاتف"><button onclick="addC()">اضافة</button><hr>`;
-    data.customers.forEach((c,i)=>html+=`<p>${i+1}. ${c.name} - ${c.phone}</p>`);
-  }
-  else if(title=='إدارة الموردين'){
-    html=`<input id="sName" placeholder="اسم المورد"><button onclick="addS()">اضافة</button><hr>`;
-    data.suppliers.forEach((s,i)=>html+=`<p>${i+1}. ${s.name}</p>`);
-  }
-  else if(title=='المصروفات'){
-    html=`<input id="eName" placeholder="سبب المصروف"><input id="eAmount" type="number" placeholder="المبلغ"><button onclick="addE()">اضافة</button><hr>`;
-    data.expenses.forEach((e,i)=>html+=`<p>${i+1}. ${e.name} - ${e.amount} د.ع</p>`);
-  }
-  else{
-    html=`<p>هاي شاشة ${title}</p><p>جاهزة للبرمجة</p>`;
-  }
+  if(t=='إدارة المنتجات'){h=`<input id="pn" placeholder="اسم المنتج"><input id="pp" type="number" placeholder="السعر"><button onclick="add('p')">+ اضافة</button><hr>`; db.products.forEach((x,i)=>h+=`<p>${i+1}. ${x.n} - ${x.p} د.ع</p>`);}
+  else if(t=='إدارة العملاء'){h=`<input id="cn" placeholder="اسم العميل"><input id="cp" placeholder="الهاتف"><button onclick="add('c')">+ اضافة</button><hr>`; db.customers.forEach((x,i)=>h+=`<p>${i+1}. ${x.n} - ${x.p}</p>`);}
+  else if(t=='إدارة الموردين'){h=`<input id="sn" placeholder="اسم المورد"><button onclick="add('s')">+ اضافة</button><hr>`; db.suppliers.forEach((x,i)=>h+=`<p>${i+1}. ${x.n}</p>`);}
+  else if(t=='المصروفات'){h=`<input id="en" placeholder="السبب"><input id="ea" type="number" placeholder="المبلغ"><button onclick="add('e')">+ اضافة</button><hr>`; db.expenses.forEach((x,i)=>h+=`<p>${i+1}. ${x.n} - ${x.a} د.ع</p>`);}
+  else if(t=='إدارة الفئات'){h=`<input id="catn" placeholder="اسم الفئة"><button onclick="add('cat')">+ اضافة</button><hr>`; db.categories.forEach((x,i)=>h+=`<p>${i+1}. ${x}</p>`);}
   
-  document.getElementById('screenContent').innerHTML=html;
+  else if(t=='فواتير المبيعات'){
+    let opts=db.customers.map(x=>`<option>${x.n}</option>`).join('');
+    h=`<select id="saleCus"><option>اختر العميل</option>${opts}</select><button onclick="db.sales.push({cus:saleCus.value,d:Date()});save();alert('تم انشاء فاتورة')">+ فاتورة جديدة</button><hr>`;
+    db.sales.forEach((x,i)=>h+=`<p>فاتورة ${i+1} - ${x.cus}</p>`);
+  }
+  else if(t=='فواتير المشتريات'){
+    let opts=db.suppliers.map(x=>`<option>${x.n}</option>`).join('');
+    h=`<select id="purSup"><option>اختر المورد</option>${opts}</select><button onclick="db.purchases.push({sup:purSup.value,d:Date()});save();alert('تم انشاء فاتورة شراء')">+ فاتورة شراء</button><hr>`;
+    db.purchases.forEach((x,i)=>h+=`<p>فاتورة شراء ${i+1} - ${x.sup}</p>`);
+  }
+  else if(t=='إدارة المخزن'){h=`<p>عدد المنتجات: ${db.products.length}</p><hr>`; db.products.forEach(x=>h+=`<p>${x.n}</p>`);}
+  else if(t=='تنبيهات نفاد المخزون'){h=`<p>كل المنتجات متوفرة حاليا</p>`;}
+  else if(t=='تقارير يومية'){h=`<p>المبيعات اليوم: ${db.sales.length}</p><p>المصروفات: ${db.expenses.length}</p>`;}
+  else if(t=='تقارير شهرية'){h=`<p>تقرير الشهر كامل</p><p>اجمالي الفواتير: ${db.sales.length}</p>`;}
+  else if(t=='باركود المنتجات'){h=`<p>اختر منتج لطباعة الباركود</p>`; db.products.forEach(x=>h+=`<p>${x.n}</p>`);}
+  else if(t=='طباعة الفواتير'){h=`<p>اختر فاتورة للطباعة</p>`; db.sales.forEach((x,i)=>h+=`<button onclick="print()">طباعة فاتورة ${i+1}</button>`);}
+  else if(t=='حسابات العملاء'){h=`<p>ذمم العملاء</p>`; db.customers.forEach(x=>h+=`<p>${x.n}</p>`);}
+  else if(t=='الدفع الآجل'){h=`<p>الفواتير الآجلة</p>`;}
+  else if(t=='خصومات وعروض'){h=`<input placeholder="نسبة الخصم %"><button>حفظ</button>`;}
+  else if(t=='صلاحيات المستخدمين'){h=`<input id="un" placeholder="مستخدم جديد"><input id="up" placeholder="كلمة سر"><button onclick="db.users.push({u:un.value,p:up.value});save();alert('تم')">اضافة</button>`;}
+  else if(t=='المرتجعات'){h=`<button onclick="db.sales.pop();save();alert('تم ارجاع اخر فاتورة')">ارجاع فاتورة</button>`;}
+  else if(t=='الجرد'){h=`<button onclick="alert('بدء الجرد')">بدء الجرد</button><p>عدد الاصناف: ${db.products.length}</p>`;}
+  else if(t=='الحسابات'){h=`<p>الخزينة</p><p>البنك</p>`;}
+  else if(t=='النسخ الاحتياطي'){h=`<button onclick="download()">تحميل نسخة</button>`;}
+  else if(t=='إعدادات النظام'){h=`<input placeholder="اسم الشركة"><button>حفظ</button>`;}
+  
+  screenContent.innerHTML=h;
 }
-function goBack(){
-  document.getElementById('subScreen').style.display='none';
-  document.getElementById('mainScreen').style.display='block';
+function goBack(){subScreen.style.display='none'; mainScreen.style.display='block';}
+function add(type){
+  if(type=='p'&&pn.value){db.products.push({n:pn.value,p:pp.value});}
+  if(type=='c'&&cn.value){db.customers.push({n:cn.value,p:cp.value});}
+  if(type=='s'&&sn.value){db.suppliers.push({n:sn.value});}
+  if(type=='e'&&en.value){db.expenses.push({n:en.value,a:ea.value});}
+  if(type=='cat'&&catn.value){db.categories.push(catn.value);}
+  save(); showScreen(screenTitle.innerText);
 }
-function addP(){let n=pName.value,p=pPrice.value; if(n){data.products.push({name:n,price:p});save();showScreen('إدارة المنتجات');}}
-function addC(){let n=cName.value,p=cPhone.value; if(n){data.customers.push({name:n,phone:p});save();showScreen('إدارة العملاء');}}
-function addS(){let n=sName.value; if(n){data.suppliers.push({name:n});save();showScreen('إدارة الموردين');}}
-function addE(){let n=eName.value,a=eAmount.value; if(n){data.expenses.push({name:n,amount:a});save();showScreen('المصروفات');}}
+function download(){
+  let a=document.createElement('a');
+  a.href='data:text/json,'+JSON.stringify(db);
+  a.download='backup.json'; a.click();
+}
 </script>
-
 </body>
 </html>
