@@ -8,16 +8,20 @@
   "theme_color": "#6d28d9",
   "orientation": "portrait",
   "scope": "/rafidain-sales-app/",
+  "lang": "ar",
+  "dir": "rtl",
   "icons": [
     {
       "src": "https://al-rafidain.github.io/rafidain-sales-app/icon-192.png",
       "sizes": "192x192",
-      "type": "image/png"
+      "type": "image/png",
+      "purpose": "any maskable"
     },
     {
       "src": "https://al-rafidain.github.io/rafidain-sales-app/icon-512.png",
       "sizes": "512x512",
-      "type": "image/png"
+      "type": "image/png",
+      "purpose": "any maskable"
     }
   ]
 }
