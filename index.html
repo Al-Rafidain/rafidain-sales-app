@@ -1,116 +1,75 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-<title>شركة الرافدين</title>
-<meta name="theme-color" content="#6d28d9">
-<style>
-  *{box-sizing:border-box}
-  body{margin:0; font-family:'Tahoma'; background:linear-gradient(180deg, #4c1d95 0%, #7c3aed 100%); min-height:100vh; padding:15px;}
- .container{max-width:500px; margin:auto; background:white; border-radius:20px; padding:20px; box-shadow:0 10px 30px rgba(0,0,0,0.3);}
- .logo{width:80px; height:80px; margin:0 auto 10px; display:block;}
-  h1{color:#6d28d9; text-align:center; margin:5px 0; font-size:26px;}
- .subtitle{color:#666; text-align:center; margin-bottom:15px; font-size:14px;}
- .grid{display:grid; grid-template-columns:1fr 1fr; gap:10px;}
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>شركة الرافدين للمبيعات</title>
+  
+  <!-- PWA -->
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#6d28d9">
+  <link rel="icon" href="icon-192.png">
+  <meta name="apple-mobile-web-app-capable" content="yes">
 
- .btn{
-    background:#6d28d9; color:white; border:none; padding:14px 5px;
-    border-radius:12px; cursor:pointer; font-size:13px; transition:0.2s;
-    font-weight:bold; box-shadow: 0 3px 6px rgba(0,0,0,0.15); width:100%;
-  }
- .btn:active{background:#5b21b6; transform:scale(0.96);}
-
-  #subScreen{display:none;}
-  input,select{width:92%; padding:10px; margin:5px 0; border:1px solid #ccc; border-radius:8px; font-size:14px;}
-  button{padding:10px 15px; border:none; border-radius:8px; background:#6d28d9; color:white; cursor:pointer; margin:3px; font-weight:bold;}
- .backBtn{background:#64748b!important; width:100%; font-size:16px;}
-  hr{border:none; border-top:1px solid #eee; margin:10px 0;}
-  p{margin:5px 0; font-size:14px;}
-</style>
+  <style>
+    *{margin:0;padding:0;box-sizing:border-box;font-family:'Segoe UI', Tahoma, sans-serif}
+    body{background:linear-gradient(135deg,#4c1d95,#6d28d9);color:#fff;min-height:100vh;padding:20px}
+    .container{max-width:1100px;margin:0 auto}
+    header{text-align:center;margin-bottom:30px}
+    header h1{font-size:28px;margin-bottom:10px}
+    header p{opacity:0.9}
+    .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:15px}
+    .btn{
+      background:#fff;color:#4c1d95;text-decoration:none;
+      padding:18px 10px;border-radius:15px;text-align:center;
+      font-weight:bold;font-size:15px;
+      box-shadow:0 4px 15px rgba(0,0,0,0.2);
+      transition:0.3s;display:block
+    }
+    .btn:hover{transform:translateY(-3px);background:#f3e8ff}
+  </style>
 </head>
 <body>
+  <div class="container">
+    <header>
+      <h1>🏢 شركة الرافدين للمبيعات</h1>
+      <p>نظام ادارة المبيعات والمنتجات</p>
+    </header>
 
-<div class="container" id="mainScreen">
-  <h1>شركة الرافدين</h1>
-  <p class="subtitle">نظام إدارة المبيعات المتكامل</p>
-  <div class="grid" id="btnGrid"></div>
-</div>
+    <div class="grid">
+      <!-- 22 زر -->
+      <a href="dashboard.html" class="btn">📊 لوحة التحكم</a>
+      <a href="sales.html" class="btn">💰 المبيعات</a>
+      <a href="add-product.html" class="btn">➕ اضافة منتج</a>
+      <a href="products.html" class="btn">📦 المنتجات</a>
+      <a href="new-invoice.html" class="btn">🧾 فاتورة جديدة</a>
+      <a href="invoices.html" class="btn">📑 الفواتير</a>
+      <a href="customers.html" class="btn">👥 الزبائن</a>
+      <a href="suppliers.html" class="btn">🚚 الموردين</a>
+      <a href="reports.html" class="btn">📈 التقارير</a>
+      <a href="reports-sales.html" class="btn">📊 تقرير المبيعات</a>
+      <a href="reports-stock.html" class="btn">📦 تقرير المخزن</a>
+      <a href="reports-debt.html" class="btn">💳 الديون</a>
+      <a href="stock.html" class="btn">🏬 المخزن</a>
+      <a href="offers.html" class="btn">🎁 العروض</a>
+      <a href="returns.html" class="btn">↩️ المرتجعات</a>
+      <a href="expenses.html" class="btn">💸 المصروفات</a>
+      <a href="users.html" class="btn">👤 المستخدمين</a>
+      <a href="admin.html" class="btn">⚙️ الاعدادات</a>
+      <a href="backup.html" class="btn">💾 النسخ الاحتياطي</a>
+      <a href="notifications.html" class="btn">🔔 الاشعارات</a>
+      <a href="help.html" class="btn">❓ المساعدة</a>
+      <a href="about.html" class="btn">ℹ️ حول النظام</a>
+    </div>
+  </div>
 
-<div class="container" id="subScreen">
-  <h2 id="screenTitle" style="color:#6d28d9; text-align:center;"></h2>
-  <div id="screenContent"></div>
-  <button class="backBtn" id="backBtn">رجوع للقائمة الرئيسية</button>
-</div>
-
-<script>
-let db = JSON.parse(localStorage.getItem('rafidainDB')) || {
-  products:[], customers:[], suppliers:[], sales:[], purchases:[], expenses:[], categories:[], users:[{u:"admin",p:"123"}]
-};
-function save(){localStorage.setItem('rafidainDB', JSON.stringify(db));}
-
-const screens = {
- 1: {t:"1. إدارة العملاء", h:()=>`<input id="cn" placeholder="اسم العميل"><input id="cp" placeholder="رقم الهاتف"><button id="addC">+ اضافة عميل</button><hr>` + db.customers.map((x,i)=>`<p>${i+1}. ${x.n} - ${x.p}</p>`).join('')},
- 2: {t:"2. إدارة المنتجات", h:()=>`<input id="pn" placeholder="اسم المنتج"><input id="pp" type="number" placeholder="السعر"><button id="addP">+ اضافة منتج</button><hr>` + db.products.map((x,i)=>`<p>${i+1}. ${x.n} - ${x.p} د.ع</p>`).join('')},
- 3: {t:"3. فواتير المبيعات", h:()=>`<button id="newSale">+ انشاء فاتورة جديدة</button><hr>` + db.sales.map((x,i)=>`<p>فاتورة ${i+1} - ${x.d}</p>`).join('')},
- 4: {t:"4. المرتجعات", h:()=>`<button id="ret">ارجاع اخر فاتورة</button><hr><p>عدد الفواتير: ${db.sales.length}</p>`},
- 5: {t:"5. تقارير يومية", h:()=>`<p>المبيعات اليوم: ${db.sales.length}</p><p>المصروفات اليوم: ${db.expenses.length}</p>`},
- 6: {t:"6. تقارير شهرية", h:()=>`<p>اجمالي الفواتير: ${db.sales.length}</p><p>اجمالي المنتجات: ${db.products.length}</p>`},
- 7: {t:"7. إدارة المخزن", h:()=>`<p>عدد الاصناف: ${db.products.length}</p><hr>` + db.products.map(x=>`<p>${x.n}</p>`).join('')},
- 8: {t:"8. تنبيهات نفاد المخزون", h:()=>`<p>كل المنتجات متوفرة حاليا ✅</p>`},
- 9: {t:"9. باركود المنتجات", h:()=>`<p>اختر منتج لطباعة الباركود</p>` + db.products.map(x=>`<p>${x.n}</p>`).join('')},
-10: {t:"10. طباعة الفواتير", h:()=>`<button onclick="print()">طباعة الصفحة</button><hr>` + db.sales.map((x,i)=>`<p>فاتورة ${i+1}</p>`).join('')},
-11: {t:"11. حسابات العملاء", h:()=>`<p>كشف حساب العملاء</p>` + db.customers.map(x=>`<p>${x.n}</p>`).join('')},
-12: {t:"12. الدفع الآجل", h:()=>`<p>الفواتير الآجلة</p><p>لا توجد فواتير آجلة</p>`},
-13: {t:"13. خصومات وعروض", h:()=>`<input placeholder="نسبة الخصم %"><button>حفظ الخصم</button>`},
-14: {t:"14. صلاحيات المستخدمين", h:()=>`<input id="un" placeholder="اسم المستخدم"><input id="up" type="password" placeholder="كلمة السر"><button id="addU">اضافة مستخدم</button><hr>` + db.users.map(x=>`<p>${x.u}</p>`).join('')},
-15: {t:"15. إدارة الموردين", h:()=>`<input id="sn" placeholder="اسم المورد"><button id="addS">+ اضافة مورد</button><hr>` + db.suppliers.map((x,i)=>`<p>${i+1}. ${x.n}</p>`).join('')},
-16: {t:"16. فواتير المشتريات", h:()=>`<button id="newPur">+ فاتورة شراء جديدة</button><hr>` + db.purchases.map((x,i)=>`<p>فاتورة شراء ${i+1}</p>`).join('')},
-17: {t:"17. المصروفات", h:()=>`<input id="en" placeholder="سبب المصروف"><input id="ea" type="number" placeholder="المبلغ"><button id="addE">+ اضافة مصروف</button><hr>` + db.expenses.map((x,i)=>`<p>${i+1}. ${x.n} - ${x.a} د.ع</p>`).join('')},
-18: {t:"18. الجرد", h:()=>`<button onclick="alert('تم بدء الجرد')">بدء الجرد</button><p>عدد الاصناف: ${db.products.length}</p>`},
-19: {t:"19. الحسابات", h:()=>`<p>الخزينة</p><p>البنك</p><p>اجمالي المبيعات: ${db.sales.length}</p>`},
-20: {t:"20. إدارة الفئات", h:()=>`<input id="catn" placeholder="اسم الفئة"><button id="addCat">+ اضافة فئة</button><hr>` + db.categories.map((x,i)=>`<p>${i+1}. ${x}</p>`).join('')},
-21: {t:"21. النسخ الاحتياطي", h:()=>`<button id="down">تحميل نسخة احتياطية</button><button onclick="localStorage.clear();alert('تم مسح البيانات')">مسح البيانات</button>`},
-22: {t:"22. إعدادات النظام", h:()=>`<input placeholder="اسم الشركة"><input placeholder="عنوان الشركة"><button>حفظ الاعدادات</button>`},
-}
-
-function showScreen(id){
-  document.getElementById('mainScreen').style.display='none';
-  document.getElementById('subScreen').style.display='block';
-  document.getElementById('screenTitle').innerText=screens[id].t;
-  document.getElementById('screenContent').innerHTML=screens[id].h();
-
-  // ربط الازرار
-  if(document.getElementById('addC')) document.getElementById('addC').onclick=()=>{if(cn.value){db.customers.push({n:cn.value,p:cp.value});save();showScreen(1);}};
-  if(document.getElementById('addP')) document.getElementById('addP').onclick=()=>{if(pn.value){db.products.push({n:pn.value,p:pp.value});save();showScreen(2);}};
-  if(document.getElementById('addS')) document.getElementById('addS').onclick=()=>{if(sn.value){db.suppliers.push({n:sn.value});save();showScreen(15);}};
-  if(document.getElementById('addE')) document.getElementById('addE').onclick=()=>{if(en.value){db.expenses.push({n:en.value,a:ea.value});save();showScreen(17);}};
-  if(document.getElementById('addCat')) document.getElementById('addCat').onclick=()=>{if(catn.value){db.categories.push(catn.value);save();showScreen(20);}};
-  if(document.getElementById('addU')) document.getElementById('addU').onclick=()=>{if(un.value){db.users.push({u:un.value,p:up.value});save();alert('تمت الاضافة');showScreen(14);}};
-  if(document.getElementById('newSale')) document.getElementById('newSale').onclick=()=>{db.sales.push({d:new Date().toLocaleDateString('ar-IQ')});save();alert('تم انشاء فاتورة');showScreen(3);};
-  if(document.getElementById('newPur')) document.getElementById('newPur').onclick=()=>{db.purchases.push({d:new Date().toLocaleDateString('ar-IQ')});save();alert('تم');showScreen(16);};
-  if(document.getElementById('ret')) document.getElementById('ret').onclick=()=>{db.sales.pop();save();alert('تم الارجاع');showScreen(4);};
-  if(document.getElementById('down')) document.getElementById('down').onclick=()=>{let a=document.createElement('a');a.href='data:text/json,'+encodeURIComponent(JSON.stringify(db));a.download='backup.json';a.click();};
-}
-
-function goBack(){
-  document.getElementById('subScreen').style.display='none';
-  document.getElementById('mainScreen').style.display='block';
-}
-
-// نسوي كل الازرار الـ 22 بالـ JS
-document.addEventListener('DOMContentLoaded', function(){
-  const btnNames = Object.keys(screens);
-  const grid = document.getElementById('btnGrid');
-  btnNames.forEach(id=>{
-    let b = document.createElement('button');
-    b.className = 'btn';
-    b.innerText = screens[id].t;
-    b.onclick = ()=>showScreen(id);
-    grid.appendChild(b);
-  });
-  document.getElementById('backBtn').onclick = goBack;
-});
-</script>
+  <!-- Service Worker -->
+  <script>
+    if('serviceWorker' in navigator){
+      navigator.serviceWorker.register('sw.js')
+      .then(reg => console.log('Service Worker Registered'))
+      .catch(err => console.log('SW Error', err));
+    }
+  </script>
 </body>
 </html>
