@@ -10,13 +10,30 @@
   .logo{width:80px; height:80px; margin:0 auto 10px; display:block;}
   h1{color:#6d28d9; text-align:center; margin:5px 0; font-size:26px;}
   .subtitle{color:#666; text-align:center; margin-bottom:15px; font-size:14px;}
-  .grid{display:grid; grid-template-columns:1fr 1fr; gap:8px;}
-  .btn{background:#f3e8ff; border:none; padding:12px 5px; border-radius:12px; cursor:pointer; font-size:13px; transition:0.2s; font-weight:bold;}
-  .btn:hover{background:#ddd6fe; transform:scale(1.03);}
+  .grid{display:grid; grid-template-columns:1fr 1fr; gap:10px;}
+  
+  /* تعديل لون الازرار */
+  .btn{
+    background:#6d28d9; /* بنفسجي غامق */
+    color:white; /* كتابة بيضاء */
+    border:none; 
+    padding:14px 5px; 
+    border-radius:12px; 
+    cursor:pointer; 
+    font-size:13px; 
+    transition:0.2s; 
+    font-weight:bold;
+    box-shadow: 0 3px 6px rgba(0,0,0,0.15);
+  }
+  .btn:hover{
+    background:#5b21b6; /* يغمق من توقف عليه */
+    transform:scale(1.03);
+  }
+  
   #subScreen{display:none;}
   input,select{width:92%; padding:10px; margin:5px 0; border:1px solid #ccc; border-radius:8px;}
   button{padding:10px; border:none; border-radius:8px; background:#6d28d9; color:white; cursor:pointer; margin:3px;}
-  .backBtn{background:gray !important; width:100%;}
+  .backBtn{background:#64748b !important; width:100%; font-weight:bold;}
   table{width:100%; font-size:12px; margin-top:10px;}
   table td{border-bottom:1px solid #eee; padding:5px;}
 </style>
