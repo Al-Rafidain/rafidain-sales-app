@@ -1,7 +1,7 @@
 {
-  "name": "الرافدين",
+  "name": "الرافدين - نظام المبيعات",
   "short_name": "الرافدين",
-  "description": "نظام مبيعات شركة الرافدين",
+  "description": "نظام إدارة مبيعات شركة الرافدين 22 ميزة",
   "start_url": "./",
   "display": "standalone",
   "background_color": "#ffffff",
