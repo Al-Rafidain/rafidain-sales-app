@@ -1,87 +1,103 @@
 <!DOCTYPE html>
-<html dir="rtl" lang="ar">
+<html lang="ar" dir="rtl">
 <head>
-  <meta charset="UTF-8">
-  <title>شركة الرافدين</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <style>
-    body{background:#7c3aed;margin:0;font-family:'Cairo',sans-serif}
-    .container{background:#fff;border-radius:20px 20px 0 0;padding:20px;margin-top:50px;min-height:100vh}
-    .logo{text-align:center;margin:-70px 0 20px}
-    .logo img{width:80px;height:80px;border-radius:20px;box-shadow:0 4px 10px rgba(0,0,0,.2)}
-    h1{text-align:center;color:#4c1d95;font-size:24px;margin:10px 0}
-    p{text-align:center;color:#666;margin-bottom:30px}
-    .grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-    .btn{background:#f3f0ff;border:none;padding:15px;border-radius:12px;font-size:14px;cursor:pointer;width:100%}
-    .btn:active{background:#ddd6fe}
-    .page{display:none}
-    .page.active{display:block}
-    .back{margin-bottom:15px;padding:10px 20px;background:#7c3aed;color:#fff;border:none;border-radius:8px;cursor:pointer}
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>شركة الرافدين</title>
+<style>
+  body{margin:0; font-family:'Tahoma'; background:linear-gradient(180deg, #4c1d95 0%, #7c3aed 100%); min-height:100vh; padding:20px;}
+  .container{max-width:500px; margin:auto; background:white; border-radius:20px; padding:20px; box-shadow:0 10px 30px rgba(0,0,0,0.3);}
+  .logo{width:80px; height:80px; margin:0 auto 15px; display:block;}
+  h1{color:#6d28d9; text-align:center; margin:10px 0; font-size:28px;}
+  .subtitle{color:#666; text-align:center; margin-bottom:20px;}
+  .grid{display:grid; grid-template-columns:1fr 1fr; gap:10px;}
+  .btn{background:#f3e8ff; border:none; padding:15px 10px; border-radius:12px; cursor:pointer; font-size:14px; transition:0.2s;}
+  .btn:hover{background:#ddd6fe; transform:scale(1.02);}
+  #subScreen{display:none; padding:20px;}
+  input{width:90%; padding:10px; margin:5px 0; border:1px solid #ccc; border-radius:8px;}
+  .backBtn{background:gray; color:white; width:100%; padding:12px; border:none; border-radius:8px; margin-top:15px;}
+</style>
 </head>
 <body>
-  <!-- الصفحة الرئيسية -->
-  <div id="home" class="page active">
-    <div class="container">
-      <div class="logo"><img src="logo-192.png" alt="الرافدين"></div>
-      <h1>شركة الرافدين</h1>
-      <p>نظام إدارة المبيعات المتكامل</p>
-      <div class="grid">
-        <button class="btn" onclick="showPage('customers')">1. إدارة العملاء</button>
-        <button class="btn" onclick="showPage('products')">2. إدارة المنتجات</button>
-        <button class="btn" onclick="showPage('invoices')">3. فواتير المبيعات</button>
-        <button class="btn" onclick="showPage('returns')">4. المرجعات</button>
-        <button class="btn" onclick="showPage('daily')">5. تقارير يومية</button>
-        <button class="btn" onclick="showPage('monthly')">6. تقارير شهرية</button>
-        <button class="btn" onclick="showPage('stock')">7. إدارة المخزن</button>
-        <button class="btn" onclick="showPage('alerts')">8. تنبيهات نفاد المخزون</button>
-        <button class="btn" onclick="showPage('barcode')">9. باركود المنتجات</button>
-        <button class="btn" onclick="showPage('print')">10. طباعة الفواتير</button>
-        <button class="btn" onclick="showPage('accounts')">11. حسابات العملاء</button>
-        <button class="btn" onclick="showPage('credit')">12. الدفع الآجل</button>
-        <button class="btn" onclick="showPage('offers')">13. خصومات وعروض</button>
-        <button class="btn" onclick="showPage('users')">14. صلاحيات المستخدمين</button>
-        <button class="btn" onclick="showPage('backup')">15. نسخ احتياطي</button>
-        <button class="btn" onclick="showPage('search')">16. بحث سريع</button>
-        <button class="btn" onclick="showPage('offline')">17. يعمل بدون انترنت</button>
-        <button class="btn" onclick="showPage('sync')">18. مزامنة تلقائية</button>
-        <button class="btn" onclick="showPage('arabic')">19. واجهة عربية</button>
-        <button class="btn" onclick="showPage('support')">20. دعم فني</button>
-        <button class="btn" onclick="showPage('security')">21. امان عالي</button>
-        <button class="btn" onclick="showPage('updates')">22. تحديثات مستمرة</button>
-      </div>
-    </div>
+
+<div class="container" id="mainScreen">
+  <img src="logo-192.png" class="logo">
+  <h1>شركة الرافدين</h1>
+  <p class="subtitle">نظام إدارة المبيعات المتكامل</p>
+  
+  <div class="grid">
+    <button class="btn" onclick="showScreen('إدارة العملاء')">1. إدارة العملاء</button>
+    <button class="btn" onclick="showScreen('إدارة المنتجات')">2. إدارة المنتجات</button>
+    <button class="btn" onclick="showScreen('فواتير المبيعات')">3. فواتير المبيعات</button>
+    <button class="btn" onclick="showScreen('المرتجعات')">4. المرتجعات</button>
+    <button class="btn" onclick="showScreen('تقارير يومية')">5. تقارير يومية</button>
+    <button class="btn" onclick="showScreen('تقارير شهرية')">6. تقارير شهرية</button>
+    <button class="btn" onclick="showScreen('إدارة المخزن')">7. إدارة المخزن</button>
+    <button class="btn" onclick="showScreen('تنبيهات نفاد المخزون')">8. تنبيهات نفاد المخزون</button>
+    <button class="btn" onclick="showScreen('باركود المنتجات')">9. باركود المنتجات</button>
+    <button class="btn" onclick="showScreen('طباعة الفواتير')">10. طباعة الفواتير</button>
+    <button class="btn" onclick="showScreen('حسابات العملاء')">11. حسابات العملاء</button>
+    <button class="btn" onclick="showScreen('الدفع الآجل')">12. الدفع الآجل</button>
+    <button class="btn" onclick="showScreen('خصومات وعروض')">13. خصومات وعروض</button>
+    <button class="btn" onclick="showScreen('صلاحيات المستخدمين')">14. صلاحيات المستخدمين</button>
+    <button class="btn" onclick="showScreen('إدارة الموردين')">15. إدارة الموردين</button>
+    <button class="btn" onclick="showScreen('فواتير المشتريات')">16. فواتير المشتريات</button>
+    <button class="btn" onclick="showScreen('المصروفات')">17. المصروفات</button>
+    <button class="btn" onclick="showScreen('الجرد')">18. الجرد</button>
+    <button class="btn" onclick="showScreen('الحسابات')">19. الحسابات</button>
+    <button class="btn" onclick="showScreen('إدارة الفئات')">20. إدارة الفئات</button>
+    <button class="btn" onclick="showScreen('النسخ الاحتياطي')">21. النسخ الاحتياطي</button>
+    <button class="btn" onclick="showScreen('إعدادات النظام')">22. إعدادات النظام</button>
   </div>
+</div>
 
-  <!-- صفحات الاقسام -->
-  <div id="customers" class="page"><div class="container"><button class="back" onclick="showPage('home')">← رجوع</button><h2>إدارة العملاء</h2><p>هنا تضيف وتعدل بيانات العملاء</p></div></div>
-  <div id="products" class="page"><div class="container"><button class="back" onclick="showPage('home')">← رجوع</button><h2>إدارة المنتجات</h2><p>هنا تضيف المنتجات والاسعار</p></div></div>
-  <div id="invoices" class="page"><div class="container"><button class="back" onclick="showPage('home')">← رجوع</button><h2>فواتير المبيعات</h2><p>هنا تسوي فواتير جديدة</p></div></div>
-  <div id="returns" class="page"><div class="container"><button class="back" onclick="showPage('home')">← رجوع</button><h2>المرجعات</h2><p>هنا تسجل مرجعات البضاعة</p></div></div>
-  <div id="daily" class="page"><div class="container"><button class="back" onclick="showPage('home')">← رجوع</button><h2>تقارير يومية</h2><p>تقرير المبيعات اليومية</p></div></div>
-  <div id="monthly" class="page"><div class="container"><button class="back" onclick="showPage('home')">← رجوع</button><h2>تقارير شهرية</h2><p>تقرير المبيعات الشهرية</p></div></div>
-  <div id="stock" class="page"><div class="container"><button class="back" onclick="showPage('home')">← رجوع</button><h2>إدارة المخزن</h2><p>متابعة كميات المخزن</p></div></div>
-  <div id="alerts" class="page"><div class="container"><button class="back" onclick="showPage('home')">← رجوع</button><h2>تنبيهات نفاد المخزون</h2><p>المنتجات اللي قربت تخلص</p></div></div>
-  <div id="barcode" class="page"><div class="container"><button class="back" onclick="showPage('home')">← رجوع</button><h2>باركود المنتجات</h2><p>طباعة ومسح الباركود</p></div></div>
-  <div id="print" class="page"><div class="container"><button class="back" onclick="showPage('home')">← رجوع</button><h2>طباعة الفواتير</h2><p>طباعة الفواتير للزبون</p></div></div>
-  <div id="accounts" class="page"><div class="container"><button class="back" onclick="showPage('home')">← رجوع</button><h2>حسابات العملاء</h2><p>ديون ومدفوعات العملاء</p></div></div>
-  <div id="credit" class="page"><div class="container"><button class="back" onclick="showPage('home')">← رجوع</button><h2>الدفع الآجل</h2><p>إدارة المبيعات الآجلة</p></div></div>
-  <div id="offers" class="page"><div class="container"><button class="back" onclick="showPage('home')">← رجوع</button><h2>خصومات وعروض</h2><p>إنشاء العروض والخصومات</p></div></div>
-  <div id="users" class="page"><div class="container"><button class="back" onclick="showPage('home')">← رجوع</button><h2>صلاحيات المستخدمين</h2><p>التحكم بصلاحيات الموظفين</p></div></div>
-  <div id="backup" class="page"><div class="container"><button class="back" onclick="showPage('home')">← رجوع</button><h2>نسخ احتياطي</h2><p>نسخ البيانات واسترجاعها</p></div></div>
-  <div id="search" class="page"><div class="container"><button class="back" onclick="showPage('home')">← رجوع</button><h2>بحث سريع</h2><p>ابحث عن منتج او عميل</p></div></div>
-  <div id="offline" class="page"><div class="container"><button class="back" onclick="showPage('home')">← رجوع</button><h2>يعمل بدون انترنت</h2><p>النظام يشتغل اوفلاين</p></div></div>
-  <div id="sync" class="page"><div class="container"><button class="back" onclick="showPage('home')">← رجوع</button><h2>مزامنة تلقائية</h2><p>مزامنة البيانات مع السيرفر</p></div></div>
-  <div id="arabic" class="page"><div class="container"><button class="back" onclick="showPage('home')">← رجوع</button><h2>واجهة عربية</h2><p>النظام يدعم اللغة العربية</p></div></div>
-  <div id="support" class="page"><div class="container"><button class="back" onclick="showPage('home')">← رجوع</button><h2>دعم فني</h2><p>رقم الدعم: 0770XXXXXXX</p></div></div>
-  <div id="security" class="page"><div class="container"><button class="back" onclick="showPage('home')">← رجوع</button><h2>امان عالي</h2><p>حماية البيانات بكلمة سر</p></div></div>
-  <div id="updates" class="page"><div class="container"><button class="back" onclick="showPage('home')">← رجوع</button><h2>تحديثات مستمرة</h2><p>اخر تحديث: 2026</p></div></div>
+<div class="container" id="subScreen">
+  <h2 id="screenTitle" style="color:#6d28d9; text-align:center;"></h2>
+  <div id="screenContent"></div>
+  <button class="backBtn" onclick="goBack()">رجوع للقائمة</button>
+</div>
 
-  <script>
-    function showPage(id){
-      document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-      document.getElementById(id).classList.add('active');
-    }
-  </script>
+<script>
+let data = JSON.parse(localStorage.getItem('rafidainData')) || {products:[], customers:[], sales:[], suppliers:[], employees:[], expenses:[]};
+function save(){localStorage.setItem('rafidainData', JSON.stringify(data));}
+
+function showScreen(title){
+  document.getElementById('mainScreen').style.display='none';
+  document.getElementById('subScreen').style.display='block';
+  document.getElementById('screenTitle').innerText=title;
+  let html='';
+  
+  if(title=='إدارة المنتجات'){
+    html=`<input id="pName" placeholder="اسم المنتج"><input id="pPrice" type="number" placeholder="السعر"><button onclick="addP()">اضافة</button><hr>`;
+    data.products.forEach((p,i)=>html+=`<p>${i+1}. ${p.name} - ${p.price} د.ع</p>`);
+  }
+  else if(title=='إدارة العملاء'){
+    html=`<input id="cName" placeholder="اسم العميل"><input id="cPhone" placeholder="الهاتف"><button onclick="addC()">اضافة</button><hr>`;
+    data.customers.forEach((c,i)=>html+=`<p>${i+1}. ${c.name} - ${c.phone}</p>`);
+  }
+  else if(title=='إدارة الموردين'){
+    html=`<input id="sName" placeholder="اسم المورد"><button onclick="addS()">اضافة</button><hr>`;
+    data.suppliers.forEach((s,i)=>html+=`<p>${i+1}. ${s.name}</p>`);
+  }
+  else if(title=='المصروفات'){
+    html=`<input id="eName" placeholder="سبب المصروف"><input id="eAmount" type="number" placeholder="المبلغ"><button onclick="addE()">اضافة</button><hr>`;
+    data.expenses.forEach((e,i)=>html+=`<p>${i+1}. ${e.name} - ${e.amount} د.ع</p>`);
+  }
+  else{
+    html=`<p>هاي شاشة ${title}</p><p>جاهزة للبرمجة</p>`;
+  }
+  
+  document.getElementById('screenContent').innerHTML=html;
+}
+function goBack(){
+  document.getElementById('subScreen').style.display='none';
+  document.getElementById('mainScreen').style.display='block';
+}
+function addP(){let n=pName.value,p=pPrice.value; if(n){data.products.push({name:n,price:p});save();showScreen('إدارة المنتجات');}}
+function addC(){let n=cName.value,p=cPhone.value; if(n){data.customers.push({name:n,phone:p});save();showScreen('إدارة العملاء');}}
+function addS(){let n=sName.value; if(n){data.suppliers.push({name:n});save();showScreen('إدارة الموردين');}}
+function addE(){let n=eName.value,a=eAmount.value; if(n){data.expenses.push({name:n,amount:a});save();showScreen('المصروفات');}}
+</script>
+
 </body>
 </html>
