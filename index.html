@@ -4,6 +4,12 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>شركة الرافدين</title>
+
+<!-- هاي 3 اسطر مال PWA ضفتهن -->
+<link rel="manifest" href="manifest.json">
+<link rel="icon" href="logo-192.png">
+<meta name="theme-color" content="#6d28d9">
+
 <style>
   body{margin:0; font-family:'Tahoma'; background:linear-gradient(180deg, #4c1d95 0%, #7c3aed 100%); min-height:100vh; padding:15px;}
   .container{max-width:500px; margin:auto; background:white; border-radius:20px; padding:20px; box-shadow:0 10px 30px rgba(0,0,0,0.3);}
@@ -12,10 +18,9 @@
   .subtitle{color:#666; text-align:center; margin-bottom:15px; font-size:14px;}
   .grid{display:grid; grid-template-columns:1fr 1fr; gap:10px;}
   
-  /* تعديل لون الازرار */
   .btn{
-    background:#6d28d9; /* بنفسجي غامق */
-    color:white; /* كتابة بيضاء */
+    background:#6d28d9;
+    color:white;
     border:none; 
     padding:14px 5px; 
     border-radius:12px; 
@@ -26,7 +31,7 @@
     box-shadow: 0 3px 6px rgba(0,0,0,0.15);
   }
   .btn:hover{
-    background:#5b21b6; /* يغمق من توقف عليه */
+    background:#5b21b6;
     transform:scale(1.03);
   }
   
@@ -134,6 +139,11 @@ function download(){
   let a=document.createElement('a');
   a.href='data:text/json,'+JSON.stringify(db);
   a.download='backup.json'; a.click();
+}
+
+// تسجيل Service Worker للـ PWA
+if('serviceWorker' in navigator){
+  navigator.serviceWorker.register('sw.js');
 }
 </script>
 </body>
