@@ -9,7 +9,6 @@
   <link rel="manifest" href="manifest.json">
   <meta name="theme-color" content="#6d28d9">
   <link rel="icon" href="icon-192.png">
-  <meta name="apple-mobile-web-app-capable" content="yes">
 
   <style>
     *{margin:0;padding:0;box-sizing:border-box;font-family:'Segoe UI', Tahoma, sans-serif}
@@ -17,16 +16,18 @@
     .container{max-width:1100px;margin:0 auto}
     header{text-align:center;margin-bottom:30px}
     header h1{font-size:28px;margin-bottom:10px}
-    header p{opacity:0.9}
     .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:15px}
     .btn{
-      background:#fff;color:#4c1d95;text-decoration:none;
+      background:#fff;color:#4c1d95;border:none;cursor:pointer;
       padding:18px 10px;border-radius:15px;text-align:center;
       font-weight:bold;font-size:15px;
       box-shadow:0 4px 15px rgba(0,0,0,0.2);
-      transition:0.3s;display:block
+      transition:0.3s;display:block;width:100%
     }
     .btn:hover{transform:translateY(-3px);background:#f3e8ff}
+    .page{display:none;padding:20px;background:#fff;color:#4c1d95;border-radius:20px;margin-top:20px;min-height:400px}
+    .page.active{display:block}
+    .back-btn{background:#6d28d9;color:#fff;padding:10px 20px;border:none;border-radius:10px;margin-bottom:15px;cursor:pointer}
   </style>
 </head>
 <body>
@@ -36,39 +37,69 @@
       <p>نظام ادارة المبيعات والمنتجات</p>
     </header>
 
-    <div class="grid">
-      <!-- 22 زر -->
-      <a href="dashboard.html" class="btn">📊 لوحة التحكم</a>
-      <a href="sales.html" class="btn">💰 المبيعات</a>
-      <a href="add-product.html" class="btn">➕ اضافة منتج</a>
-      <a href="products.html" class="btn">📦 المنتجات</a>
-      <a href="new-invoice.html" class="btn">🧾 فاتورة جديدة</a>
-      <a href="invoices.html" class="btn">📑 الفواتير</a>
-      <a href="customers.html" class="btn">👥 الزبائن</a>
-      <a href="suppliers.html" class="btn">🚚 الموردين</a>
-      <a href="reports.html" class="btn">📈 التقارير</a>
-      <a href="reports-sales.html" class="btn">📊 تقرير المبيعات</a>
-      <a href="reports-stock.html" class="btn">📦 تقرير المخزن</a>
-      <a href="reports-debt.html" class="btn">💳 الديون</a>
-      <a href="stock.html" class="btn">🏬 المخزن</a>
-      <a href="offers.html" class="btn">🎁 العروض</a>
-      <a href="returns.html" class="btn">↩️ المرتجعات</a>
-      <a href="expenses.html" class="btn">💸 المصروفات</a>
-      <a href="users.html" class="btn">👤 المستخدمين</a>
-      <a href="admin.html" class="btn">⚙️ الاعدادات</a>
-      <a href="backup.html" class="btn">💾 النسخ الاحتياطي</a>
-      <a href="notifications.html" class="btn">🔔 الاشعارات</a>
-      <a href="help.html" class="btn">❓ المساعدة</a>
-      <a href="about.html" class="btn">ℹ️ حول النظام</a>
+    <!-- الصفحة الرئيسية - الازرار -->
+    <div id="home" class="page active">
+      <div class="grid">
+        <button onclick="showPage('dashboard')" class="btn">📊 لوحة التحكم</button>
+        <button onclick="showPage('sales')" class="btn">💰 المبيعات</button>
+        <button onclick="showPage('add-product')" class="btn">➕ اضافة منتج</button>
+        <button onclick="showPage('products')" class="btn">📦 المنتجات</button>
+        <button onclick="showPage('new-invoice')" class="btn">🧾 فاتورة جديدة</button>
+        <button onclick="showPage('invoices')" class="btn">📑 الفواتير</button>
+        <button onclick="showPage('customers')" class="btn">👥 الزبائن</button>
+        <button onclick="showPage('suppliers')" class="btn">🚚 الموردين</button>
+        <button onclick="showPage('reports')" class="btn">📈 التقارير</button>
+        <button onclick="showPage('reports-sales')" class="btn">📊 تقرير المبيعات</button>
+        <button onclick="showPage('reports-stock')" class="btn">📦 تقرير المخزن</button>
+        <button onclick="showPage('reports-debt')" class="btn">💳 الديون</button>
+        <button onclick="showPage('stock')" class="btn">🏬 المخزن</button>
+        <button onclick="showPage('offers')" class="btn">🎁 العروض</button>
+        <button onclick="showPage('returns')" class="btn">↩️ المرتجعات</button>
+        <button onclick="showPage('expenses')" class="btn">💸 المصروفات</button>
+        <button onclick="showPage('users')" class="btn">👤 المستخدمين</button>
+        <button onclick="showPage('admin')" class="btn">⚙️ الاعدادات</button>
+        <button onclick="showPage('backup')" class="btn">💾 النسخ الاحتياطي</button>
+        <button onclick="showPage('notifications')" class="btn">🔔 الاشعارات</button>
+        <button onclick="showPage('help')" class="btn">❓ المساعدة</button>
+        <button onclick="showPage('about')" class="btn">ℹ️ حول النظام</button>
+      </div>
     </div>
+
+    <!-- صفحات الـ 22 زر - كلهم بملف واحد -->
+    <div id="dashboard" class="page"><button onclick="showPage('home')" class="back-btn">رجوع</button><h2>📊 لوحة التحكم</h2><p>هنا احصائيات المبيعات</p></div>
+    <div id="sales" class="page"><button onclick="showPage('home')" class="back-btn">رجوع</button><h2>💰 المبيعات</h2><p>قائمة المبيعات</p></div>
+    <div id="add-product" class="page"><button onclick="showPage('home')" class="back-btn">رجوع</button><h2>➕ اضافة منتج</h2><p>نموذج اضافة منتج جديد</p></div>
+    <div id="products" class="page"><button onclick="showPage('home')" class="back-btn">رجوع</button><h2>📦 المنتجات</h2><p>قائمة المنتجات</p></div>
+    <div id="new-invoice" class="page"><button onclick="showPage('home')" class="back-btn">رجوع</button><h2>🧾 فاتورة جديدة</h2><p>انشاء فاتورة</p></div>
+    <div id="invoices" class="page"><button onclick="showPage('home')" class="back-btn">رجوع</button><h2>📑 الفواتير</h2><p>كل الفواتير</p></div>
+    <div id="customers" class="page"><button onclick="showPage('home')" class="back-btn">رجوع</button><h2>👥 الزبائن</h2><p>بيانات الزبائن</p></div>
+    <div id="suppliers" class="page"><button onclick="showPage('home')" class="back-btn">رجوع</button><h2>🚚 الموردين</h2><p>بيانات الموردين</p></div>
+    <div id="reports" class="page"><button onclick="showPage('home')" class="back-btn">رجوع</button><h2>📈 التقارير</h2><p>التقارير العامة</p></div>
+    <div id="reports-sales" class="page"><button onclick="showPage('home')" class="back-btn">رجوع</button><h2>📊 تقرير المبيعات</h2><p>تقرير مفصل</p></div>
+    <div id="reports-stock" class="page"><button onclick="showPage('home')" class="back-btn">رجوع</button><h2>📦 تقرير المخزن</h2><p>حالة المخزن</p></div>
+    <div id="reports-debt" class="page"><button onclick="showPage('home')" class="back-btn">رجوع</button><h2>💳 الديون</h2><p>الديون المستحقة</p></div>
+    <div id="stock" class="page"><button onclick="showPage('home')" class="back-btn">رجوع</button><h2>🏬 المخزن</h2><p>ادارة المخزن</p></div>
+    <div id="offers" class="page"><button onclick="showPage('home')" class="back-btn">رجوع</button><h2>🎁 العروض</h2><p>العروض المتاحة</p></div>
+    <div id="returns" class="page"><button onclick="showPage('home')" class="back-btn">رجوع</button><h2>↩️ المرتجعات</h2><p>المرتجعات</p></div>
+    <div id="expenses" class="page"><button onclick="showPage('home')" class="back-btn">رجوع</button><h2>💸 المصروفات</h2><p>المصروفات</p></div>
+    <div id="users" class="page"><button onclick="showPage('home')" class="back-btn">رجوع</button><h2>👤 المستخدمين</h2><p>ادارة المستخدمين</p></div>
+    <div id="admin" class="page"><button onclick="showPage('home')" class="back-btn">رجوع</button><h2>⚙️ الاعدادات</h2><p>اعدادات النظام</p></div>
+    <div id="backup" class="page"><button onclick="showPage('home')" class="back-btn">رجوع</button><h2>💾 النسخ الاحتياطي</h2><p>نسخ البيانات</p></div>
+    <div id="notifications" class="page"><button onclick="showPage('home')" class="back-btn">رجوع</button><h2>🔔 الاشعارات</h2><p>الاشعارات</p></div>
+    <div id="help" class="page"><button onclick="showPage('home')" class="back-btn">رجوع</button><h2>❓ المساعدة</h2><p>دليل الاستخدام</p></div>
+    <div id="about" class="page"><button onclick="showPage('home')" class="back-btn">رجوع</button><h2>ℹ️ حول النظام</h2><p>شركة الرافدين v1.0</p></div>
   </div>
 
-  <!-- Service Worker -->
   <script>
+    function showPage(pageId){
+      document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+      document.getElementById(pageId).classList.add('active');
+      window.scrollTo(0,0);
+    }
+    
+    // Service Worker
     if('serviceWorker' in navigator){
-      navigator.serviceWorker.register('sw.js')
-      .then(reg => console.log('Service Worker Registered'))
-      .catch(err => console.log('SW Error', err));
+      navigator.serviceWorker.register('sw.js');
     }
   </script>
 </body>
