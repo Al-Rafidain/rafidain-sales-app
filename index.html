@@ -1,106 +1,140 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>شركة الرافدين للمبيعات</title>
-  
-  <!-- PWA -->
-  <link rel="manifest" href="manifest.json">
-  <meta name="theme-color" content="#6d28d9">
-  <link rel="icon" href="icon-192.png">
-
-  <style>
-    *{margin:0;padding:0;box-sizing:border-box;font-family:'Segoe UI', Tahoma, sans-serif}
-    body{background:linear-gradient(135deg,#4c1d95,#6d28d9);color:#fff;min-height:100vh;padding:20px}
-    .container{max-width:1100px;margin:0 auto}
-    header{text-align:center;margin-bottom:30px}
-    header h1{font-size:28px;margin-bottom:10px}
-    .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:15px}
-    .btn{
-      background:#fff;color:#4c1d95;border:none;cursor:pointer;
-      padding:18px 10px;border-radius:15px;text-align:center;
-      font-weight:bold;font-size:15px;
-      box-shadow:0 4px 15px rgba(0,0,0,0.2);
-      transition:0.3s;display:block;width:100%
-    }
-    .btn:hover{transform:translateY(-3px);background:#f3e8ff}
-    .page{display:none;padding:20px;background:#fff;color:#4c1d95;border-radius:20px;margin-top:20px;min-height:400px}
-    .page.active{display:block}
-    .back-btn{background:#6d28d9;color:#fff;padding:10px 20px;border:none;border-radius:10px;margin-bottom:15px;cursor:pointer}
-  </style>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>شركة الرافدين</title>
+<link rel="manifest" href="manifest.json"><meta name="theme-color" content="#6d28d9">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:tahoma}
+body{background:linear-gradient(135deg,#4c1d95,#6d28d9);color:#fff;padding:15px}
+.container{max-width:1000px;margin:0 auto}
+h1{text-align:center;margin:15px 0}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px}
+.btn{background:#fff;color:#4c1d95;border:none;padding:14px;border-radius:12px;font-weight:bold;cursor:pointer;font-size:14px}
+.page{display:none;background:#fff;color:#333;border-radius:15px;padding:20px;margin-top:15px;min-height:500px}
+.page.active{display:block}
+input,select,textarea{width:100%;padding:10px;margin:8px 0;border:1px solid #ccc;border-radius:8px}
+.back{background:#6d28d9;color:#fff;padding:8px 15px;border:none;border-radius:8px;margin-bottom:10px;cursor:pointer}
+table{width:100%;border-collapse:collapse;margin-top:10px;font-size:13px}
+th,td{border:1px solid #ddd;padding:8px;text-align:center}
+th{background:#6d28d9;color:#fff}
+.add{background:#10b981;color:#fff}
+.del{background:#ef4444;color:#fff;font-size:12px;padding:4px 8px}
+</style>
 </head>
 <body>
-  <div class="container">
-    <header>
-      <h1>🏢 شركة الرافدين للمبيعات</h1>
-      <p>نظام ادارة المبيعات والمنتجات</p>
-    </header>
+<div class="container">
+  <h1>🏢 شركة الرافدين للمبيعات</h1>
 
-    <!-- الصفحة الرئيسية - الازرار -->
-    <div id="home" class="page active">
-      <div class="grid">
-        <button onclick="showPage('dashboard')" class="btn">📊 لوحة التحكم</button>
-        <button onclick="showPage('sales')" class="btn">💰 المبيعات</button>
-        <button onclick="showPage('add-product')" class="btn">➕ اضافة منتج</button>
-        <button onclick="showPage('products')" class="btn">📦 المنتجات</button>
-        <button onclick="showPage('new-invoice')" class="btn">🧾 فاتورة جديدة</button>
-        <button onclick="showPage('invoices')" class="btn">📑 الفواتير</button>
-        <button onclick="showPage('customers')" class="btn">👥 الزبائن</button>
-        <button onclick="showPage('suppliers')" class="btn">🚚 الموردين</button>
-        <button onclick="showPage('reports')" class="btn">📈 التقارير</button>
-        <button onclick="showPage('reports-sales')" class="btn">📊 تقرير المبيعات</button>
-        <button onclick="showPage('reports-stock')" class="btn">📦 تقرير المخزن</button>
-        <button onclick="showPage('reports-debt')" class="btn">💳 الديون</button>
-        <button onclick="showPage('stock')" class="btn">🏬 المخزن</button>
-        <button onclick="showPage('offers')" class="btn">🎁 العروض</button>
-        <button onclick="showPage('returns')" class="btn">↩️ المرتجعات</button>
-        <button onclick="showPage('expenses')" class="btn">💸 المصروفات</button>
-        <button onclick="showPage('users')" class="btn">👤 المستخدمين</button>
-        <button onclick="showPage('admin')" class="btn">⚙️ الاعدادات</button>
-        <button onclick="showPage('backup')" class="btn">💾 النسخ الاحتياطي</button>
-        <button onclick="showPage('notifications')" class="btn">🔔 الاشعارات</button>
-        <button onclick="showPage('help')" class="btn">❓ المساعدة</button>
-        <button onclick="showPage('about')" class="btn">ℹ️ حول النظام</button>
-      </div>
+  <div id="home" class="page active">
+    <div class="grid">
+      <button onclick="show('dashboard')" class="btn">📊 لوحة التحكم</button>
+      <button onclick="show('sales')" class="btn">💰 المبيعات</button>
+      <button onclick="show('add-product')" class="btn">➕ اضافة منتج</button>
+      <button onclick="show('products')" class="btn">📦 المنتجات</button>
+      <button onclick="show('new-invoice')" class="btn">🧾 فاتورة جديدة</button>
+      <button onclick="show('invoices')" class="btn">📑 الفواتير</button>
+      <button onclick="show('customers')" class="btn">👥 الزبائن</button>
+      <button onclick="show('suppliers')" class="btn">🚚 الموردين</button>
+      <button onclick="show('reports')" class="btn">📈 التقارير</button>
+      <button onclick="show('reports-sales')" class="btn">📊 تقرير المبيعات</button>
+      <button onclick="show('reports-stock')" class="btn">📦 تقرير المخزن</button>
+      <button onclick="show('reports-debt')" class="btn">💳 الديون</button>
+      <button onclick="show('stock')" class="btn">🏬 المخزن</button>
+      <button onclick="show('offers')" class="btn">🎁 العروض</button>
+      <button onclick="show('returns')" class="btn">↩️ المرتجعات</button>
+      <button onclick="show('expenses')" class="btn">💸 المصروفات</button>
+      <button onclick="show('users')" class="btn">👤 المستخدمين</button>
+      <button onclick="show('admin')" class="btn">⚙️ الاعدادات</button>
+      <button onclick="show('backup')" class="btn">💾 النسخ الاحتياطي</button>
+      <button onclick="show('notifications')" class="btn">🔔 الاشعارات</button>
+      <button onclick="show('help')" class="btn">❓ المساعدة</button>
+      <button onclick="show('about')" class="btn">ℹ️ حول النظام</button>
     </div>
-
-    <!-- صفحات الـ 22 زر - كلهم بملف واحد -->
-    <div id="dashboard" class="page"><button onclick="showPage('home')" class="back-btn">رجوع</button><h2>📊 لوحة التحكم</h2><p>هنا احصائيات المبيعات</p></div>
-    <div id="sales" class="page"><button onclick="showPage('home')" class="back-btn">رجوع</button><h2>💰 المبيعات</h2><p>قائمة المبيعات</p></div>
-    <div id="add-product" class="page"><button onclick="showPage('home')" class="back-btn">رجوع</button><h2>➕ اضافة منتج</h2><p>نموذج اضافة منتج جديد</p></div>
-    <div id="products" class="page"><button onclick="showPage('home')" class="back-btn">رجوع</button><h2>📦 المنتجات</h2><p>قائمة المنتجات</p></div>
-    <div id="new-invoice" class="page"><button onclick="showPage('home')" class="back-btn">رجوع</button><h2>🧾 فاتورة جديدة</h2><p>انشاء فاتورة</p></div>
-    <div id="invoices" class="page"><button onclick="showPage('home')" class="back-btn">رجوع</button><h2>📑 الفواتير</h2><p>كل الفواتير</p></div>
-    <div id="customers" class="page"><button onclick="showPage('home')" class="back-btn">رجوع</button><h2>👥 الزبائن</h2><p>بيانات الزبائن</p></div>
-    <div id="suppliers" class="page"><button onclick="showPage('home')" class="back-btn">رجوع</button><h2>🚚 الموردين</h2><p>بيانات الموردين</p></div>
-    <div id="reports" class="page"><button onclick="showPage('home')" class="back-btn">رجوع</button><h2>📈 التقارير</h2><p>التقارير العامة</p></div>
-    <div id="reports-sales" class="page"><button onclick="showPage('home')" class="back-btn">رجوع</button><h2>📊 تقرير المبيعات</h2><p>تقرير مفصل</p></div>
-    <div id="reports-stock" class="page"><button onclick="showPage('home')" class="back-btn">رجوع</button><h2>📦 تقرير المخزن</h2><p>حالة المخزن</p></div>
-    <div id="reports-debt" class="page"><button onclick="showPage('home')" class="back-btn">رجوع</button><h2>💳 الديون</h2><p>الديون المستحقة</p></div>
-    <div id="stock" class="page"><button onclick="showPage('home')" class="back-btn">رجوع</button><h2>🏬 المخزن</h2><p>ادارة المخزن</p></div>
-    <div id="offers" class="page"><button onclick="showPage('home')" class="back-btn">رجوع</button><h2>🎁 العروض</h2><p>العروض المتاحة</p></div>
-    <div id="returns" class="page"><button onclick="showPage('home')" class="back-btn">رجوع</button><h2>↩️ المرتجعات</h2><p>المرتجعات</p></div>
-    <div id="expenses" class="page"><button onclick="showPage('home')" class="back-btn">رجوع</button><h2>💸 المصروفات</h2><p>المصروفات</p></div>
-    <div id="users" class="page"><button onclick="showPage('home')" class="back-btn">رجوع</button><h2>👤 المستخدمين</h2><p>ادارة المستخدمين</p></div>
-    <div id="admin" class="page"><button onclick="showPage('home')" class="back-btn">رجوع</button><h2>⚙️ الاعدادات</h2><p>اعدادات النظام</p></div>
-    <div id="backup" class="page"><button onclick="showPage('home')" class="back-btn">رجوع</button><h2>💾 النسخ الاحتياطي</h2><p>نسخ البيانات</p></div>
-    <div id="notifications" class="page"><button onclick="showPage('home')" class="back-btn">رجوع</button><h2>🔔 الاشعارات</h2><p>الاشعارات</p></div>
-    <div id="help" class="page"><button onclick="showPage('home')" class="back-btn">رجوع</button><h2>❓ المساعدة</h2><p>دليل الاستخدام</p></div>
-    <div id="about" class="page"><button onclick="showPage('home')" class="back-btn">رجوع</button><h2>ℹ️ حول النظام</h2><p>شركة الرافدين v1.0</p></div>
   </div>
 
-  <script>
-    function showPage(pageId){
-      document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-      document.getElementById(pageId).classList.add('active');
-      window.scrollTo(0,0);
-    }
-    
-    // Service Worker
-    if('serviceWorker' in navigator){
-      navigator.serviceWorker.register('sw.js');
-    }
-  </script>
+  <!-- كل الصفحات هنا -->
+  <div id="dashboard" class="page"><button onclick="show('home')" class="back">رجوع</button><h2>📊 لوحة التحكم</h2><div id="dashStats"></div></div>
+
+  <div id="products" class="page"><button onclick="show('home')" class="back">رجوع</button><h2>📦 المنتجات</h2><table id="productsTable"></table></div>
+  <div id="add-product" class="page"><button onclick="show('home')" class="back">رجوع</button><h2>➕ اضافة منتج</h2><input id="pName" placeholder="اسم المنتج"><input id="pPrice" type="number" placeholder="السعر"><input id="pStock" type="number" placeholder="الكمية"><button onclick="addProduct()" class="btn add">حفظ المنتج</button></div>
+
+  <div id="customers" class="page"><button onclick="show('home')" class="back">رجوع</button><h2>👥 الزبائن</h2><table id="customersTable"></table></div>
+  <div id="suppliers" class="page"><button onclick="show('home')" class="back">رجوع</button><h2>🚚 الموردين</h2><input id="sName" placeholder="اسم المورد"><input id="sPhone" placeholder="الهاتف"><button onclick="addSupplier()" class="btn add">حفظ المورد</button><table id="suppliersTable"></table></div>
+
+  <div id="new-invoice" class="page"><button onclick="show('home')" class="back">رجوع</button><h2>🧾 فاتورة جديدة</h2><select id="invCustomer"></select><select id="invProduct"></select><input id="invQty" type="number" value="1" placeholder="الكمية"><button onclick="addInvoice()" class="btn add">انشاء فاتورة</button></div>
+  <div id="invoices" class="page"><button onclick="show('home')" class="back">رجوع</button><h2>📑 الفواتير</h2><table id="invoicesTable"></table></div>
+
+  <div id="sales" class="page"><button onclick="show('home')" class="back">رجوع</button><h2>💰 المبيعات</h2><div id="salesList"></div></div>
+  <div id="stock" class="page"><button onclick="show('home')" class="back">رجوع</button><h2>🏬 المخزن</h2><table id="stockTable"></table></div>
+
+  <div id="reports" class="page"><button onclick="show('home')" class="back">رجوع</button><h2>📈 التقارير</h2><button onclick="show('reports-sales')" class="btn">تقرير المبيعات</button><button onclick="show('reports-stock')" class="btn">تقرير المخزن</button><button onclick="show('reports-debt')" class="btn">تقرير الديون</button></div>
+  <div id="reports-sales" class="page"><button onclick="show('reports')" class="back">رجوع</button><h2>📊 تقرير المبيعات</h2><div id="reportSales"></div></div>
+  <div id="reports-stock" class="page"><button onclick="show('reports')" class="back">رجوع</button><h2>📦 تقرير المخزن</h2><div id="reportStock"></div></div>
+  <div id="reports-debt" class="page"><button onclick="show('reports')" class="back">رجوع</button><h2>💳 الديون</h2><div id="reportDebt"></div></div>
+
+  <div id="offers" class="page"><button onclick="show('home')" class="back">رجوع</button><h2>🎁 العروض</h2><input id="offName" placeholder="اسم العرض"><button onclick="addOffer()" class="btn add">اضافة عرض</button><ul id="offersList"></ul></div>
+  <div id="returns" class="page"><button onclick="show('home')" class="back">رجوع</button><h2>↩️ المرتجعات</h2><textarea id="retNote" placeholder="سبب المرتجع"></textarea><button onclick="addReturn()" class="btn add">حفظ المرتجع</button></div>
+  <div id="expenses" class="page"><button onclick="show('home')" class="back">رجوع</button><h2>💸 المصروفات</h2><input id="expName" placeholder="نوع المصروف"><input id="expAmount" type="number" placeholder="المبلغ"><button onclick="addExpense()" class="btn add">اضافة</button><table id="expensesTable"></table></div>
+
+  <div id="users" class="page"><button onclick="show('home')" class="back">رجوع</button><h2>👤 المستخدمين</h2><input id="uName" placeholder="اسم المستخدم"><button onclick="addUser()" class="btn add">اضافة</button><ul id="usersList"></ul></div>
+  <div id="admin" class="page"><button onclick="show('home')" class="back">رجوع</button><h2>⚙️ الاعدادات</h2><p>اسم الشركة: شركة الرافدين</p></div>
+  <div id="backup" class="page"><button onclick="show('home')" class="back">رجوع</button><h2>💾 النسخ الاحتياطي</h2><button onclick="exportData()" class="btn">تصدير البيانات</button></div>
+  <div id="notifications" class="page"><button onclick="show('home')" class="back">رجوع</button><h2>🔔 الاشعارات</h2><div id="notifList">لا توجد اشعارات</div></div>
+  <div id="help" class="page"><button onclick="show('home')" class="back">رجوع</button><h2>❓ المساعدة</h2><p>استخدم الازرار للتنقل واضافة البيانات</p></div>
+  <div id="about" class="page"><button onclick="show('home')" class="back">رجوع</button><h2>ℹ️ حول النظام</h2><p>نظام شركة الرافدين v1.0</p></div>
+
+</div>
+
+<script>
+function show(id){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  loadAll();
+}
+
+// قاعدة البيانات
+let DB = JSON.parse(localStorage.getItem('rafidainDB')||'{"products":[],"customers":[],"suppliers":[],"invoices":[],"expenses":[],"users":[],"offers":[],"returns":[]}');
+function saveDB(){localStorage.setItem('rafidainDB',JSON.stringify(DB));}
+
+function addProduct(){DB.products.push({id:Date.now(),name:pName.value,price:pPrice.value,stock:pStock.value});saveDB();pName.value='';pPrice.value='';pStock.value='';alert('تم الحفظ')}
+function addCustomer(){DB.customers.push({id:Date.now(),name:cName.value,phone:cPhone.value});saveDB();}
+function addSupplier(){DB.suppliers.push({id:Date.now(),name:sName.value,phone:sPhone.value});saveDB();sName.value='';sPhone.value='';}
+function addInvoice(){DB.invoices.push({id:Date.now(),customer:invCustomer.value,product:invProduct.value,qty:invQty.value});saveDB();alert('تمت الفاتورة')}
+function addExpense(){DB.expenses.push({id:Date.now(),name:expName.value,amount:expAmount.value});saveDB();expName.value='';expAmount.value='';}
+function addUser(){DB.users.push({id:Date.now(),name:uName.value});saveDB();uName.value='';}
+function addOffer(){DB.offers.push({id:Date.now(),name:offName.value});saveDB();offName.value='';}
+function addReturn(){DB.returns.push({id:Date.now(),note:retNote.value});saveDB();retNote.value='';}
+function exportData(){let data=JSON.stringify(DB);let blob=new Blob([data],{type:'json'});let a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='backup.json';a.click();}
+
+function loadAll(){
+  // المنتجات
+  productsTable.innerHTML='<tr><th>الاسم</th><th>السعر</th><th>الكمية</th></tr>'+DB.products.map(p=>`<tr><td>${p.name}</td><td>${p.price}</td><td>${p.stock}</td></tr>`).join('');
+  stockTable.innerHTML=productsTable.innerHTML;
+  // الزبائن
+  customersTable.innerHTML='<tr><th>الاسم</th><th>الهاتف</th></tr>'+DB.customers.map(c=>`<tr><td>${c.name}</td><td>${c.phone}</td></tr>`).join('');
+  // الموردين
+  suppliersTable.innerHTML='<tr><th>الاسم</th><th>الهاتف</th></tr>'+DB.suppliers.map(s=>`<tr><td>${s.name}</td><td>${s.phone}</td></tr>`).join('');
+  // الفواتير
+  invoicesTable.innerHTML='<tr><th>الزبون</th><th>المنتج</th><th>الكمية</th></tr>'+DB.invoices.map(i=>`<tr><td>${i.customer}</td><td>${i.product}</td><td>${i.qty}</td></tr>`).join('');
+  // المصروفات
+  expensesTable.innerHTML='<tr><th>النوع</th><th>المبلغ</th></tr>'+DB.expenses.map(e=>`<tr><td>${e.name}</td><td>${e.amount}</td></tr>`).join('');
+  // المستخدمين
+  usersList.innerHTML=DB.users.map(u=>`<li>${u.name}</li>`).join('');
+  // العروض
+  offersList.innerHTML=DB.offers.map(o=>`<li>${o.name}</li>`).join('');
+  // الدروب داون
+  invCustomer.innerHTML=DB.customers.map(c=>`<option>${c.name}</option>`).join('');
+  invProduct.innerHTML=DB.products.map(p=>`<option>${p.name}</option>`).join('');
+  // الاحصائيات
+  dashStats.innerHTML=`<p>عدد المنتجات: ${DB.products.length}</p><p>عدد الزبائن: ${DB.customers.length}</p><p>عدد الفواتير: ${DB.invoices.length}</p>`;
+  // التقارير
+  reportSales.innerHTML=`اجمالي الفواتير: ${DB.invoices.length}`;
+  reportStock.innerHTML=`اجمالي المنتجات: ${DB.products.length}`;
+  reportDebt.innerHTML=`لا توجد ديون مسجلة`;
+}
+
+if('serviceWorker' in navigator){navigator.serviceWorker.register('sw.js');}
+</script>
 </body>
 </html>
