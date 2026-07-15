@@ -1,116 +1,59 @@
 <!DOCTYPE html>
-<html lang="ar" dir="rtl">
+<html dir="rtl" lang="ar">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-  <title>الرافدين - نظام المبيعات</title>
-  
-  <!-- PWA -->
-  <link rel="manifest" href="manifest.json">
-  <meta name="theme-color" content="#5b3fd6">
-  <meta name="background-color" content="#ffffff">
-  <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <meta name="apple-mobile-web-app-title" content="الرافدين">
-  <link rel="icon" href="logo-192.png" type="image/png">
-  <link rel="apple-touch-icon" href="logo-512.png">
-
+  <title>شركة الرافدين</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-    body {
-      font-family: 'Segoe UI', Tahoma, sans-serif;
-      background: linear-gradient(135deg, #5b3fd6 0%, #8b5cf6 100%);
-      color: #fff;
-      min-height: 100vh;
-      padding: 20px;
-    }
-    .container {
-      max-width: 600px;
-      margin: auto;
-      background: #fff;
-      color: #333;
-      border-radius: 20px;
-      padding: 25px;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.2);
-    }
-    .logo {
-      width: 80px;
-      height: 80px;
-      margin: 0 auto 15px;
-      display: block;
-    }
-    h1 { color: #5b3fd6; text-align: center; margin-bottom: 10px; }
-    .features {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 10px;
-      margin-top: 20px;
-    }
-    .feature {
-      background: #f3f0ff;
-      padding: 10px;
-      border-radius: 10px;
-      font-size: 14px;
-      text-align: center;
-    }
-    button {
-      width: 100%;
-      padding: 15px;
-      background: #5b3fd6;
-      color: #fff;
-      border: none;
-      border-radius: 12px;
-      font-size: 16px;
-      margin-top: 20px;
-      cursor: pointer;
-    }
+    body{background:#7c3aed;margin:0;font-family:'Cairo',sans-serif}
+    .container{background:#fff;border-radius:20px 20px 0 0;padding:20px;margin-top:50px}
+    .logo{text-align:center;margin:-70px 0 20px}
+    .logo img{width:80px;height:80px;border-radius:20px;box-shadow:0 4px 10px rgba(0,0,0,.2)}
+    h1{text-align:center;color:#4c1d95;font-size:24px;margin:10px 0}
+    p{text-align:center;color:#666;margin-bottom:30px}
+    .grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+    .btn{background:#f3f0ff;border:none;padding:15px;border-radius:12px;font-size:14px;cursor:pointer}
+    .btn:active{background:#ddd6fe}
   </style>
 </head>
 <body>
   <div class="container">
-    <img src="logo-512.png" alt="الرافدين" class="logo">
-    <h1>شركة الرافدين</h1>
-    <p style="text-align:center; color:#666;">نظام إدارة المبيعات المتكامل</p>
-
-    <div class="features">
-      <div class="feature">1. إدارة العملاء</div>
-      <div class="feature">2. إدارة المنتجات</div>
-      <div class="feature">3. فواتير المبيعات</div>
-      <div class="feature">4. المرتجعات</div>
-      <div class="feature">5. تقارير يومية</div>
-      <div class="feature">6. تقارير شهرية</div>
-      <div class="feature">7. إدارة المخزن</div>
-      <div class="feature">8. تنبيهات نفاد المخزون</div>
-      <div class="feature">9. باركود المنتجات</div>
-      <div class="feature">10. طباعة الفواتير</div>
-      <div class="feature">11. حسابات العملاء</div>
-      <div class="feature">12. الدفع الآجل</div>
-      <div class="feature">13. خصومات وعروض</div>
-      <div class="feature">14. صلاحيات المستخدمين</div>
-      <div class="feature">15. نسخ احتياطي</div>
-      <div class="feature">16. بحث سريع</div>
-      <div class="feature">17. يعمل بدون انترنت</div>
-      <div class="feature">18. مزامنة تلقائية</div>
-      <div class="feature">19. واجهة عربية</div>
-      <div class="feature">20. دعم فني</div>
-      <div class="feature">21. امان عالي</div>
-      <div class="feature">22. تحديثات مستمرة</div>
+    <div class="logo">
+      <img src="logo-192.png" alt="الرافدين">
     </div>
-
-    <button onclick="alert('مرحبا بك في الرافدين')">ابدأ الان</button>
+    <h1>شركة الرافدين</h1>
+    <p>نظام إدارة المبيعات المتكامل</p>
+    
+    <div class="grid">
+      <button class="btn" onclick="openPage('customers')">1. إدارة العملاء</button>
+      <button class="btn" onclick="openPage('products')">2. إدارة المنتجات</button>
+      <button class="btn" onclick="openPage('invoices')">3. فواتير المبيعات</button>
+      <button class="btn" onclick="openPage('returns')">4. المرجعات</button>
+      <button class="btn" onclick="openPage('daily')">5. تقارير يومية</button>
+      <button class="btn" onclick="openPage('monthly')">6. تقارير شهرية</button>
+      <button class="btn" onclick="openPage('stock')">7. إدارة المخزن</button>
+      <button class="btn" onclick="openPage('alerts')">8. تنبيهات نفاد المخزون</button>
+      <button class="btn" onclick="openPage('barcode')">9. باركود المنتجات</button>
+      <button class="btn" onclick="openPage('print')">10. طباعة الفواتير</button>
+      <button class="btn" onclick="openPage('accounts')">11. حسابات العملاء</button>
+      <button class="btn" onclick="openPage('credit')">12. الدفع الآجل</button>
+      <button class="btn" onclick="openPage('offers')">13. خصومات وعروض</button>
+      <button class="btn" onclick="openPage('users')">14. صلاحيات المستخدمين</button>
+      <button class="btn" onclick="openPage('backup')">15. نسخ احتياطي</button>
+      <button class="btn" onclick="openPage('search')">16. بحث سريع</button>
+      <button class="btn" onclick="openPage('offline')">17. يعمل بدون انترنت</button>
+      <button class="btn" onclick="openPage('sync')">18. مزامنة تلقائية</button>
+      <button class="btn" onclick="openPage('arabic')">19. واجهة عربية</button>
+      <button class="btn" onclick="openPage('support')">20. دعم فني</button>
+      <button class="btn" onclick="openPage('security')">21. امان عالي</button>
+      <button class="btn" onclick="openPage('updates')">22. تحديثات مستمرة</button>
+    </div>
   </div>
 
   <script>
-    // تسجيل Service Worker للعمل بدون نت
-    if ('serviceWorker' in navigator) {
-      navigator.serviceWorker.register('sw.js');
+    function openPage(page){
+      window.location.href = page + '.html';
     }
-    
-    // تنبيه تثبيت التطبيق
-    let deferredPrompt;
-    window.addEventListener('beforeinstallprompt', (e) => {
-      deferredPrompt = e;
-    });
   </script>
 </body>
 </html>
