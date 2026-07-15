@@ -1,12 +1,11 @@
 {
-  "name": "نظام مبيعات الرافدين 22 ميزة",
+  "name": "شركة الرافدين - نظام المبيعات",
   "short_name": "الرافدين",
-  "description": "نظام إدارة مبيعات شركة الرافدين 22 ميزة",
-  "start_url": "/rafidain-sales-app/index.html",
+  "description": "نظام إدارة المبيعات المتكامل لشركة الرافدين",
+  "start_url": "./index.html",
   "display": "standalone",
-  "background_color": "#ffffff",
-  "theme_color": "#1e3a8a",
-  "orientation": "portrait",
+  "background_color": "#4c1d95",
+  "theme_color": "#6d28d9",
   "icons": [
     {
       "src": "logo-192.png",
@@ -14,7 +13,7 @@
       "type": "image/png"
     },
     {
-      "src": "logo-512.png", 
+      "src": "logo-512.png",
       "sizes": "512x512",
       "type": "image/png"
     }
