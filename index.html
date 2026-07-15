@@ -4,141 +4,117 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>شركة الرافدين</title>
-
-<link rel="manifest" href="manifest.json">
-<link rel="icon" href="logo-192.png">
+<link rel="manifest" href="./manifest.json">
 <meta name="theme-color" content="#6d28d9">
-
 <style>
-  body{margin:0; font-family:'Tahoma'; background:linear-gradient(180deg, #4c1d95 0%, #7c3aed 100%); min-height:100vh; padding:15px;}
-  .container{max-width:500px; margin:auto; background:white; border-radius:20px; padding:20px; box-shadow:0 10px 30px rgba(0,0,0,0.3);}
-  .logo{width:80px; height:80px; margin:0 auto 10px; display:block;}
-  h1{color:#6d28d9; text-align:center; margin:5px 0; font-size:26px;}
-  .subtitle{color:#666; text-align:center; margin-bottom:15px; font-size:14px;}
-  .grid{display:grid; grid-template-columns:1fr 1fr; gap:10px;}
-  
-  .btn{
-    background:#6d28d9;
-    color:white;
-    border:none; 
-    padding:14px 5px; 
-    border-radius:12px; 
-    cursor:pointer; 
-    font-size:13px; 
-    transition:0.2s; 
-    font-weight:bold;
-    box-shadow: 0 3px 6px rgba(0,0,0,0.15);
-  }
-  .btn:hover{
-    background:#5b21b6;
-    transform:scale(1.03);
-  }
-  
+  body{margin:0; font-family:Tahoma; background:linear-gradient(180deg, #4c1d95 0%, #7c3aed 100%); min-height:100vh; padding:15px;}
+ .container{max-width:500px; margin:auto; background:white; border-radius:20px; padding:20px; box-shadow:0 10px 30px rgba(0,0,0,0.3);}
+  h1{color:#6d28d9; text-align:center; margin:5px 0;}
+ .grid{display:grid; grid-template-columns:1fr 1fr; gap:10px;}
+ .btn{background:#6d28d9; color:white; border:none; padding:14px 5px; border-radius:12px; cursor:pointer; font-size:13px; font-weight:bold;}
+ .btn:active{background:#5b21b6; transform:scale(0.97);}
   #subScreen{display:none;}
-  input,select{width:92%; padding:10px; margin:5px 0; border:1px solid #ccc; border-radius:8px;}
-  button{padding:10px; border:none; border-radius:8px; background:#6d28d9; color:white; cursor:pointer; margin:3px;}
-  .backBtn{background:#64748b !important; width:100%; font-weight:bold;}
-  table{width:100%; font-size:12px; margin-top:10px;}
-  table td{border-bottom:1px solid #eee; padding:5px;}
+  input{width:92%; padding:10px; margin:5px 0; border:1px solid #ccc; border-radius:8px;}
+ .backBtn{background:#64748b; width:100%; padding:12px; color:white; border:none; border-radius:8px; margin-top:10px; font-weight:bold;}
 </style>
 </head>
 <body>
 
 <div class="container" id="mainScreen">
-  <img src="logo-192.png" class="logo" onerror="this.style.display='none'">
   <h1>شركة الرافدين</h1>
-  <p class="subtitle">نظام إدارة المبيعات المتكامل</p>
-  
   <div class="grid">
-    <button class="btn" onclick="showScreen('إدارة العملاء')">1. إدارة العملاء</button>
-    <button class="btn" onclick="showScreen('إدارة المنتجات')">2. إدارة المنتجات</button>
-    <button class="btn" onclick="showScreen('فواتير المبيعات')">3. فواتير المبيعات</button>
-    <button class="btn" onclick="showScreen('المرتجعات')">4. المرتجعات</button>
-    <button class="btn" onclick="showScreen('تقارير يومية')">5. تقارير يومية</button>
-    <button class="btn" onclick="showScreen('تقارير شهرية')">6. تقارير شهرية</button>
-    <button class="btn" onclick="showScreen('إدارة المخزن')">7. إدارة المخزن</button>
-    <button class="btn" onclick="showScreen('تنبيهات نفاد المخزون')">8. تنبيهات نفاد المخزون</button>
-    <button class="btn" onclick="showScreen('باركود المنتجات')">9. باركود المنتجات</button>
-    <button class="btn" onclick="showScreen('طباعة الفواتير')">10. طباعة الفواتير</button>
-    <button class="btn" onclick="showScreen('حسابات العملاء')">11. حسابات العملاء</button>
-    <button class="btn" onclick="showScreen('الدفع الآجل')">12. الدفع الآجل</button>
-    <button class="btn" onclick="showScreen('خصومات وعروض')">13. خصومات وعروض</button>
-    <button class="btn" onclick="showScreen('صلاحيات المستخدمين')">14. صلاحيات المستخدمين</button>
-    <button class="btn" onclick="showScreen('إدارة الموردين')">15. إدارة الموردين</button>
-    <button class="btn" onclick="showScreen('فواتير المشتريات')">16. فواتير المشتريات</button>
-    <button class="btn" onclick="showScreen('المصروفات')">17. المصروفات</button>
-    <button class="btn" onclick="showScreen('الجرد')">18. الجرد</button>
-    <button class="btn" onclick="showScreen('الحسابات')">19. الحسابات</button>
-    <button class="btn" onclick="showScreen('إدارة الفئات')">20. إدارة الفئات</button>
-    <button class="btn" onclick="showScreen('النسخ الاحتياطي')">21. النسخ الاحتياطي</button>
-    <button class="btn" onclick="showScreen('إعدادات النظام')">22. إعدادات النظام</button>
+    <button class="btn" data-id="1">1. إدارة العملاء</button>
+    <button class="btn" data-id="2">2. إدارة المنتجات</button>
+    <button class="btn" data-id="3">3. فواتير المبيعات</button>
+    <button class="btn" data-id="4">4. المرتجعات</button>
+    <button class="btn" data-id="5">5. تقارير يومية</button>
+    <button class="btn" data-id="6">6. تقارير شهرية</button>
+    <button class="btn" data-id="7">7. إدارة المخزن</button>
+    <button class="btn" data-id="8">8. تنبيهات المخزون</button>
+    <button class="btn" data-id="9">9. باركود المنتجات</button>
+    <button class="btn" data-id="10">10. طباعة الفواتير</button>
+    <button class="btn" data-id="11">11. حسابات العملاء</button>
+    <button class="btn" data-id="12">12. الدفع الآجل</button>
+    <button class="btn" data-id="13">13. خصومات وعروض</button>
+    <button class="btn" data-id="14">14. صلاحيات المستخدمين</button>
+    <button class="btn" data-id="15">15. إدارة الموردين</button>
+    <button class="btn" data-id="16">16. فواتير المشتريات</button>
+    <button class="btn" data-id="17">17. المصروفات</button>
+    <button class="btn" data-id="18">18. الجرد</button>
+    <button class="btn" data-id="19">19. الحسابات</button>
+    <button class="btn" data-id="20">20. إدارة الفئات</button>
+    <button class="btn" data-id="21">21. النسخ الاحتياطي</button>
+    <button class="btn" data-id="22">22. إعدادات النظام</button>
   </div>
 </div>
 
 <div class="container" id="subScreen">
   <h2 id="screenTitle" style="color:#6d28d9; text-align:center;"></h2>
   <div id="screenContent"></div>
-  <button class="backBtn" onclick="goBack()">رجوع للقائمة</button>
+  <button class="backBtn" id="backBtn">رجوع للقائمة</button>
 </div>
 
 <script>
-let db = JSON.parse(localStorage.getItem('rafidainDB')) || {
-  products:[], customers:[], suppliers:[], sales:[], purchases:[], expenses:[], categories:[], users:[{u:"admin",p:"123"}]
-};
+let db = JSON.parse(localStorage.getItem('rafidainDB')) || {products:[], customers:[], suppliers:[], sales:[], purchases:[], expenses:[], categories:[], users:[{u:"admin",p:"123"}]};
 function save(){localStorage.setItem('rafidainDB', JSON.stringify(db));}
 
-function showScreen(t){
-  mainScreen.style.display='none'; subScreen.style.display='block';
-  screenTitle.innerText=t; let h='';
-  
-  if(t=='إدارة المنتجات'){h=`<input id="pn" placeholder="اسم المنتج"><input id="pp" type="number" placeholder="السعر"><button onclick="add('p')">+ اضافة</button><hr>`; db.products.forEach((x,i)=>h+=`<p>${i+1}. ${x.n} - ${x.p} د.ع</p>`);}
-  else if(t=='إدارة العملاء'){h=`<input id="cn" placeholder="اسم العميل"><input id="cp" placeholder="الهاتف"><button onclick="add('c')">+ اضافة</button><hr>`; db.customers.forEach((x,i)=>h+=`<p>${i+1}. ${x.n} - ${x.p}</p>`);}
-  else if(t=='إدارة الموردين'){h=`<input id="sn" placeholder="اسم المورد"><button onclick="add('s')">+ اضافة</button><hr>`; db.suppliers.forEach((x,i)=>h+=`<p>${i+1}. ${x.n}</p>`);}
-  else if(t=='المصروفات'){h=`<input id="en" placeholder="السبب"><input id="ea" type="number" placeholder="المبلغ"><button onclick="add('e')">+ اضافة</button><hr>`; db.expenses.forEach((x,i)=>h+=`<p>${i+1}. ${x.n} - ${x.a} د.ع</p>`);}
-  else if(t=='إدارة الفئات'){h=`<input id="catn" placeholder="اسم الفئة"><button onclick="add('cat')">+ اضافة</button><hr>`; db.categories.forEach((x,i)=>h+=`<p>${i+1}. ${x}</p>`);}
-  
-  else if(t=='فواتير المبيعات'){
-    let opts=db.customers.map(x=>`<option>${x.n}</option>`).join('');
-    h=`<select id="saleCus"><option>اختر العميل</option>${opts}</select><button onclick="db.sales.push({cus:saleCus.value,d:Date()});save();alert('تم انشاء فاتورة')">+ فاتورة جديدة</button><hr>`;
-    db.sales.forEach((x,i)=>h+=`<p>فاتورة ${i+1} - ${x.cus}</p>`);
-  }
-  else if(t=='فواتير المشتريات'){
-    let opts=db.suppliers.map(x=>`<option>${x.n}</option>`).join('');
-    h=`<select id="purSup"><option>اختر المورد</option>${opts}</select><button onclick="db.purchases.push({sup:purSup.value,d:Date()});save();alert('تم انشاء فاتورة شراء')">+ فاتورة شراء</button><hr>`;
-    db.purchases.forEach((x,i)=>h+=`<p>فاتورة شراء ${i+1} - ${x.sup}</p>`);
-  }
-  else if(t=='إدارة المخزن'){h=`<p>عدد المنتجات: ${db.products.length}</p><hr>`; db.products.forEach(x=>h+=`<p>${x.n}</p>`);}
-  else if(t=='تنبيهات نفاد المخزون'){h=`<p>كل المنتجات متوفرة حاليا</p>`;}
-  else if(t=='تقارير يومية'){h=`<p>المبيعات اليوم: ${db.sales.length}</p><p>المصروفات: ${db.expenses.length}</p>`;}
-  else if(t=='تقارير شهرية'){h=`<p>تقرير الشهر كامل</p><p>اجمالي الفواتير: ${db.sales.length}</p>`;}
-  else if(t=='باركود المنتجات'){h=`<p>اختر منتج لطباعة الباركود</p>`; db.products.forEach(x=>h+=`<p>${x.n}</p>`);}
-  else if(t=='طباعة الفواتير'){h=`<p>اختر فاتورة للطباعة</p>`; db.sales.forEach((x,i)=>h+=`<button onclick="print()">طباعة فاتورة ${i+1}</button>`);}
-  else if(t=='حسابات العملاء'){h=`<p>ذمم العملاء</p>`; db.customers.forEach(x=>h+=`<p>${x.n}</p>`);}
-  else if(t=='الدفع الآجل'){h=`<p>الفواتير الآجلة</p>`;}
-  else if(t=='خصومات وعروض'){h=`<input placeholder="نسبة الخصم %"><button>حفظ</button>`;}
-  else if(t=='صلاحيات المستخدمين'){h=`<input id="un" placeholder="مستخدم جديد"><input id="up" placeholder="كلمة سر"><button onclick="db.users.push({u:un.value,p:up.value});save();alert('تم')">اضافة</button>`;}
-  else if(t=='المرتجعات'){h=`<button onclick="db.sales.pop();save();alert('تم ارجاع اخر فاتورة')">ارجاع فاتورة</button>`;}
-  else if(t=='الجرد'){h=`<button onclick="alert('بدء الجرد')">بدء الجرد</button><p>عدد الاصناف: ${db.products.length}</p>`;}
-  else if(t=='الحسابات'){h=`<p>الخزينة</p><p>البنك</p>`;}
-  else if(t=='النسخ الاحتياطي'){h=`<button onclick="download()">تحميل نسخة</button>`;}
-  else if(t=='إعدادات النظام'){h=`<input placeholder="اسم الشركة"><button>حفظ</button>`;}
-  
-  screenContent.innerHTML=h;
+const screens = {
+ 1: {t:"إدارة العملاء", h:`<input id="cn" placeholder="اسم العميل"><input id="cp" placeholder="الهاتف"><button id="addC">+ اضافة</button><hr>`},
+ 2: {t:"إدارة المنتجات", h:`<input id="pn" placeholder="اسم المنتج"><input id="pp" type="number" placeholder="السعر"><button id="addP">+ اضافة</button><hr>`},
+  3: {t:"فواتير المبيعات", h:`<button id="newSale">+ فاتورة جديدة</button><hr>`},
+ 4: {t:"المرتجعات", h:`<button id="ret">ارجاع اخر فاتورة</button>`},
+  5: {t:"تقارير يومية", h:`<p>المبيعات: ${db.sales.length}</p>`},
+  6: {t:"تقارير شهرية", h:`<p>تقرير الشهر</p>`},
+  7: {t:"إدارة المخزن", h:`<p>عدد المنتجات: ${db.products.length}</p>`},
+ 8: {t:"تنبيهات المخزون", h:`<p>المخزون سليم</p>`},
+ 9: {t:"باركود المنتجات", h:`<p>طباعة باركود</p>`},
+  10:{t:"طباعة الفواتير", h:`<button onclick="print()">طباعة</button>`},
+  11:{t:"حسابات العملاء", h:`<p>ذمم العملاء</p>`},
+  12:{t:"الدفع الآجل", h:`<p>الفواتير الآجلة</p>`},
+  13:{t:"خصومات وعروض", h:`<input placeholder="نسبة الخصم"><button>حفظ</button>`},
+  14:{t:"صلاحيات المستخدمين", h:`<input id="un" placeholder="مستخدم"><input id="up" placeholder="كلمة سر"><button id="addU">اضافة</button>`},
+  15:{t:"إدارة الموردين", h:`<input id="sn" placeholder="اسم المورد"><button id="addS">+ اضافة</button><hr>`},
+ 16:{t:"فواتير المشتريات", h:`<button id="newPur">+ فاتورة شراء</button><hr>`},
+  17:{t:"المصروفات", h:`<input id="en" placeholder="السبب"><input id="ea" type="number" placeholder="المبلغ"><button id="addE">+ اضافة</button><hr>`},
+  18:{t:"الجرد", h:`<button>بدء الجرد</button>`},
+ 19:{t:"الحسابات", h:`<p>الخزينة والبنك</p>`},
+  20:{t:"إدارة الفئات", h:`<input id="catn" placeholder="اسم الفئة"><button id="addCat">+ اضافة</button><hr>`},
+  21:{t:"النسخ الاحتياطي", h:`<button id="down">تحميل نسخة</button>`},
+  22:{t:"إعدادات النظام", h:`<input placeholder="اسم الشركة"><button>حفظ</button>`},
 }
-function goBack(){subScreen.style.display='none'; mainScreen.style.display='block';}
-function add(type){
-  if(type=='p'&&pn.value){db.products.push({n:pn.value,p:pp.value});}
-  if(type=='c'&&cn.value){db.customers.push({n:cn.value,p:cp.value});}
-  if(type=='s'&&sn.value){db.suppliers.push({n:sn.value});}
-  if(type=='e'&&en.value){db.expenses.push({n:en.value,a:ea.value});}
-  if(type=='cat'&&catn.value){db.categories.push(catn.value);}
-  save(); showScreen(screenTitle.innerText);
+
+function showScreen(id){
+  document.getElementById('mainScreen').style.display='none';
+  document.getElementById('subScreen').style.display='block';
+  document.getElementById('screenTitle').innerText=screens[id].t;
+  document.getElementById('screenContent').innerHTML=screens[id].h;
+
+  // ربط الازرار الداخلية
+  if(document.getElementById('addC')) document.getElementById('addC').onclick=()=>{if(cn.value){db.customers.push({n:cn.value,p:cp.value});save();showScreen(1);}};
+  if(document.getElementById('addP')) document.getElementById('addP').onclick=()=>{if(pn.value){db.products.push({n:pn.value,p:pp.value});save();showScreen(2);}};
+  if(document.getElementById('addS')) document.getElementById('addS').onclick=()=>{if(sn.value){db.suppliers.push({n:sn.value});save();showScreen(15);}};
+  if(document.getElementById('addE')) document.getElementById('addE').onclick=()=>{if(en.value){db.expenses.push({n:en.value,a:ea.value});save();showScreen(17);}};
+  if(document.getElementById('addCat')) document.getElementById('addCat').onclick=()=>{if(catn.value){db.categories.push(catn.value);save();showScreen(20);}};
+  if(document.getElementById('addU')) document.getElementById('addU').onclick=()=>{if(un.value){db.users.push({u:un.value,p:up.value});save();alert('تم');}};
+  if(document.getElementById('newSale')) document.getElementById('newSale').onclick=()=>{db.sales.push({d:Date()});save();alert('تم انشاء فاتورة');showScreen(3);};
+  if(document.getElementById('newPur')) document.getElementById('newPur').onclick=()=>{db.purchases.push({d:Date()});save();alert('تم');showScreen(16);};
+  if(document.getElementById('ret')) document.getElementById('ret').onclick=()=>{db.sales.pop();save();alert('تم الارجاع');};
+  if(document.getElementById('down')) document.getElementById('down').onclick=()=>{let a=document.createElement('a');a.href='data:text/json,'+JSON.stringify(db);a.download='backup.json';a.click();};
 }
-function download(){
-  let a=document.createElement('a');
-  a.href='data:text/json,'+JSON.stringify(db);
-  a.download='backup.json'; a.click();
+
+function goBack(){
+  document.getElementById('subScreen').style.display='none';
+  document.getElementById('mainScreen').style.display='block';
 }
+
+document.addEventListener('DOMContentLoaded', function(){
+  document.querySelectorAll('.btn').forEach(btn => {
+    btn.addEventListener('click', function(){
+      showScreen(this.getAttribute('data-id'));
+    });
+  });
+  document.getElementById('backBtn').addEventListener('click', goBack);
+});
 </script>
 </body>
 </html>
