@@ -2,7 +2,7 @@
 <html lang="ar" dir="rtl">
 <head>
 <meta charset="UTF-8">
-<title>الرافدين v5.9</title>
+<title>الرافدين v5.9.2</title>
 <style>
 *{margin:0;padding:0;box-sizing:border-box;font-family:tahoma}
 body{background:#1e40af;color:#fff;padding:10px;min-height:100vh}
@@ -11,7 +11,7 @@ body{background:#1e40af;color:#fff;padding:10px;min-height:100vh}
 .btn{background:#fff;color:#1e40af;padding:15px;border:none;border-radius:10px;font-weight:bold;cursor:pointer;font-size:14px}
 .page{display:none;background:#fff;color:#000;padding:20px;border-radius:15px;margin-top:15px}
 .page.active{display:block}
-input,select{width:100%;padding:10px;margin:8px 0;border:1px solid #ccc;border-radius:8px}
+input,select{width:100%;padding:10px;margin:8px 0;border:1px solid #ccc;border-radius:8px;font-size:16px}
 table{width:100%;border-collapse:collapse;margin-top:10px}
 th,td{border:1px solid #ddd;padding:8px;text-align:center}
 th{background:#3b82f6;color:#fff}
@@ -21,13 +21,13 @@ button{cursor:pointer;border:none;border-radius:6px}
 .edit{background:#2563eb;color:#fff;padding:6px 12px}
 .back{background:#64748b;color:#fff;padding:8px 15px;margin-bottom:10px}
 .login-box{background:#fff;color:#000;padding:30px;border-radius:15px;max-width:400px;margin:100px auto}
-.prod-btn{background:#bfdbfe;color:#1e40af;margin:5px;padding:10px;border-radius:8px;width:110px}
+.prod-btn{background:#bfdbfe;color:#1e40af;margin:5px;padding:10px;border-radius:8px;width:120px;display:inline-block}
 </style>
 </head>
 <body>
 <div class="top">
 <b>🏢 شركة الرافدين للمبيعات - <span id="place">الفرع الرئيسي</span></b>
-<span>v5.9 - <span id="user"></span></span>
+<span>v5.9.2 - <span id="user"></span></span>
 </div>
 
 <div id="login" class="page active">
@@ -68,7 +68,6 @@ button{cursor:pointer;border:none;border-radius:6px}
 <button onclick="doLogout()" class="del" style="width:100%;margin-top:15px">تسجيل خروج</button>
 </div>
 
-<!-- صفحة الفاتورة الجديدة -->
 <div id="new" class="page"><button onclick="show('home')" class="back">رجوع</button>
 <h3>🧾 فاتورة جديدة</h3>
 <label>اختر الزبون:</label><select id="inv_cus"></select>
@@ -78,8 +77,7 @@ button{cursor:pointer;border:none;border-radius:6px}
 <button onclick="saveInv()" class="add">حفظ الفاتورة</button>
 </div>
 
-<!-- باقي الصفحات -->
-<div id="pos" class="page"><button onclick="show('home')" class="back">رجوع</button><h3>🛒 نقاط البيع</h3><select id="pos_cus"></select><div id="pos_prods"></div><div id="pos_cart"></div><h3>الاجمالي: <span id="pos_total">0</span></h3><button onclick="savePos()" class="add">حفظ</button></div>
+<div id="pos" class="page"><button onclick="show('home')" class="back">رجوع</button><h3>🛒 نقاط البيع</h3><label>الزبون:</label><select id="pos_cus"></select><div id="pos_prods"></div><div id="pos_cart"></div><h3>الاجمالي: <span id="pos_total">0</span></h3><button onclick="savePos()" class="add">حفظ</button></div>
 <div id="products" class="page"><button onclick="show('home')" class="back">رجوع</button><h3>📦 المنتجات</h3><table id="tbl_p"></table></div>
 <div id="addp" class="page"><button onclick="show('home')" class="back">رجوع</button><h3>➕ اضافة منتج</h3><input id="p_id" type="hidden"><input id="p_name" placeholder="اسم المنتج"><input id="p_price" type="number" placeholder="السعر"><input id="p_qty" type="number" placeholder="الكمية"><button onclick="saveProduct()" class="add">حفظ</button></div>
 <div id="customers" class="page"><button onclick="show('home')" class="back">رجوع</button><h3>👥 الزبائن</h3><table id="tbl_c"></table></div>
@@ -96,7 +94,7 @@ button{cursor:pointer;border:none;border-radius:6px}
 <div id="stock" class="page"><button onclick="show('home')" class="back">رجوع</button><h3>🏬 المخزن</h3><div id="tbl_st"></div></div>
 <div id="sales" class="page"><button onclick="show('home')" class="back">رجوع</button><h3>💰 المبيعات</h3><div id="tbl_sa"></div></div>
 <div id="reports" class="page"><button onclick="show('home')" class="back">رجوع</button><h3>📈 التقارير</h3><div id="tbl_re"></div></div>
-<div id="settings" class="page"><button onclick="show('home')" class="back">رجوع</button><h3>⚙️ الاعدادات</h3><input id="set_place" placeholder="اسم المكان"><button onclick="saveSettings()" class="add">حفظ</button></div>
+<div id="settings" class="page"><button onclick="show('home')" class="back">رجوع</button><h3>⚙️ الاعدادات</h3><label>اسم المكان:</label><input id="set_place" placeholder="اسم المكان"><button onclick="saveSettings()" class="add">حفظ</button></div>
 <div id="users" class="page"><button onclick="show('home')" class="back">رجوع</button><h3>👤 المستخدمين</h3><table id="tbl_u"></table></div>
 <div id="addu" class="page"><button onclick="show('home')" class="back">رجوع</button><h3>➕ اضافة مستخدم</h3><input id="u_id" type="hidden"><input id="u_name" placeholder="اسم المستخدم"><input id="u_pass" placeholder="كلمة السر"><button onclick="saveUser()" class="add">حفظ</button></div>
 <div id="dashboard" class="page"><button onclick="show('home')" class="back">رجوع</button><h3>📊 لوحة التحكم</h3><div id="dash"></div></div>
@@ -105,14 +103,14 @@ button{cursor:pointer;border:none;border-radius:6px}
 <script>
 let CURRENT_USER="";
 let CART_POS=[], CART_INV=[];
-let DB = JSON.parse(localStorage.getItem('rafidain59') || '{"products":[],"customers":[],"suppliers":[],"employees":[],"expenses":[],"purchases":[],"invoices":[],"users":[{"id":1,"name":"admin","pass":"1234"}],"settings":{"place":"الفرع الرئيسي"}}');
+let DB = JSON.parse(localStorage.getItem('rafidain592') || '{"products":[],"customers":[],"suppliers":[],"employees":[],"expenses":[],"purchases":[],"invoices":[],"users":[{"id":1,"name":"admin","pass":"1234"}],"settings":{"place":"الفرع الرئيسي"}}');
 
 function show(id){
   document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
   document.getElementById(id).classList.add('active');
   render();
 }
-function saveDB(){localStorage.setItem('rafidain59',JSON.stringify(DB));}
+function saveDB(){localStorage.setItem('rafidain592',JSON.stringify(DB));}
 
 function doLogin(){
   let u = DB.users.find(x=>x.name==document.getElementById('logUser').value && x.pass==document.getElementById('logPass').value);
@@ -125,32 +123,56 @@ function doLogin(){
 }
 function doLogout(){CURRENT_USER="";location.reload();}
 
-function saveData(type){
-  let id = document.getElementById(type+'_id').value;
-  let obj = {id: id? +id : Date.now()};
-  if(type=='products'){obj.name=p_name.value; obj.price=p_price.value; obj.qty=p_qty.value;}
-  if(type=='customers'){obj.name=c_name.value; obj.phone=c_phone.value;}
-  if(type=='suppliers'){obj.name=s_name.value; obj.phone=s_phone.value;}
-  if(type=='employees'){obj.name=e_name.value; obj.salary=e_salary.value;}
-  if(type=='expenses'){obj.type=ex_type.value; obj.amount=ex_amount.value;}
-  if(type=='purchases'){obj.supplier=pu_supplier.value; obj.amount=pu_amount.value;}
-  if(type=='users'){obj.name=u_name.value; obj.pass=u_pass.value;}
-
-  if(id){DB[type] = DB[type].map(x=>x.id==+id?obj:x)}
-  else{DB[type].push(obj)}
-  saveDB();
-  document.getElementById(type+'_id').value='';
-  render(); alert('تم الحفظ');
+function saveProduct(){
+  let id = p_id.value;
+  let obj = {id: id? +id : Date.now(), name:p_name.value, price:p_price.value, qty:p_qty.value};
+  if(id){DB.products = DB.products.map(x=>x.id==+id?obj:x)} else {DB.products.push(obj)}
+  p_id.value=''; p_name.value=''; p_price.value=''; p_qty.value='';
+  saveDB(); render(); alert('تم حفظ المنتج');
 }
-
-function saveProduct(){saveData('products')}
-function saveCustomer(){saveData('customers')}
-function saveSupplier(){saveData('suppliers')}
-function saveEmployee(){saveData('employees')}
-function saveExpense(){saveData('expenses')}
-function savePurchase(){saveData('purchases')}
-function saveUser(){saveData('users')}
-function saveSettings(){DB.settings.place=set_place.value;saveDB();place.innerText=set_place.value;alert('تم')}
+function saveCustomer(){
+  let id = c_id.value;
+  let obj = {id: id? +id : Date.now(), name:c_name.value, phone:c_phone.value};
+  if(id){DB.customers = DB.customers.map(x=>x.id==+id?obj:x)} else {DB.customers.push(obj)}
+  c_id.value=''; c_name.value=''; c_phone.value='';
+  saveDB(); render(); alert('تم حفظ الزبون');
+}
+function saveSupplier(){
+  let id = s_id.value;
+  let obj = {id: id? +id : Date.now(), name:s_name.value, phone:s_phone.value};
+  if(id){DB.suppliers = DB.suppliers.map(x=>x.id==+id?obj:x)} else {DB.suppliers.push(obj)}
+  s_id.value=''; s_name.value=''; s_phone.value='';
+  saveDB(); render(); alert('تم حفظ المورد');
+}
+function saveEmployee(){
+  let id = e_id.value;
+  let obj = {id: id? +id : Date.now(), name:e_name.value, salary:e_salary.value};
+  if(id){DB.employees = DB.employees.map(x=>x.id==+id?obj:x)} else {DB.employees.push(obj)}
+  e_id.value=''; e_name.value=''; e_salary.value='';
+  saveDB(); render(); alert('تم حفظ الموظف');
+}
+function saveExpense(){
+  let id = ex_id.value;
+  let obj = {id: id? +id : Date.now(), type:ex_type.value, amount:ex_amount.value};
+  if(id){DB.expenses = DB.expenses.map(x=>x.id==+id?obj:x)} else {DB.expenses.push(obj)}
+  ex_id.value=''; ex_type.value=''; ex_amount.value='';
+  saveDB(); render(); alert('تم حفظ المصروف');
+}
+function savePurchase(){
+  let id = pu_id.value;
+  let obj = {id: id? +id : Date.now(), supplier:pu_supplier.value, amount:pu_amount.value};
+  if(id){DB.purchases = DB.purchases.map(x=>x.id==+id?obj:x)} else {DB.purchases.push(obj)}
+  pu_id.value=''; pu_supplier.value=''; pu_amount.value='';
+  saveDB(); render(); alert('تم حفظ الشراء');
+}
+function saveUser(){
+  let id = u_id.value;
+  let obj = {id: id? +id : Date.now(), name:u_name.value, pass:u_pass.value};
+  if(id){DB.users = DB.users.map(x=>x.id==+id?obj:x)} else {DB.users.push(obj)}
+  u_id.value=''; u_name.value=''; u_pass.value='';
+  saveDB(); render(); alert('تم حفظ المستخدم');
+}
+function saveSettings(){DB.settings.place=set_place.value;saveDB();place.innerText=set_place.value;alert('تم حفظ الاعدادات')}
 
 function edit(type,id){
   let x = DB[type].find(z=>z.id==id);
@@ -161,8 +183,8 @@ function edit(type,id){
 function del(type,id){if(confirm('متأكد من الحذف؟')){DB[type]=DB[type].filter(x=>x.id!=id);saveDB();render();}}
 
 function addToPos(p){CART_POS.push(p);updatePos()}
-function updatePos(){pos_cart.innerHTML=CART_POS.map((x,i)=>`${x.name} ${x.price} <button onclick="CART_POS.splice(${i},1);updatePos()">X</button>`).join('<br>');pos_total.innerText=CART_POS.reduce((a,b)=>a+ +b.price,0)}
-function savePos(){if(!CART_POS.length)return;DB.invoices.push({id:Date.now(),date:new Date().toLocaleString('ar-IQ'),user:CURRENT_USER,customer:pos_cus.value,total:pos_total.innerText});CART_POS=[];updatePos();saveDB();alert('تم')}
+function updatePos(){pos_cart.innerHTML=CART_POS.map((x,i)=>`${x.name} - ${x.price} <button onclick="CART_POS.splice(${i},1);updatePos()">X</button>`).join('<br>');pos_total.innerText=CART_POS.reduce((a,b)=>a+ +b.price,0)}
+function savePos(){if(!CART_POS.length)return;DB.invoices.push({id:Date.now(),date:new Date().toLocaleString('ar-IQ'),user:CURRENT_USER,customer:pos_cus.value,total:pos_total.innerText});CART_POS=[];updatePos();saveDB();alert('تم حفظ الفاتورة')}
 
 function addToInv(p){CART_INV.push(p);updateInv()}
 function updateInv(){inv_cart.innerHTML=CART_INV.map((x,i)=>`${x.name} - ${x.price} <button onclick="CART_INV.splice(${i},1);updateInv()">حذف</button>`).join('<br>');inv_total.innerText=CART_INV.reduce((a,b)=>a+ +b.price,0)}
