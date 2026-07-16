@@ -1,167 +1,165 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>الرافدين v5.7</title>
+<meta charset="UTF-8">
+<title>الرافدين v5.8.1</title>
 <style>
-*{margin:0;padding:0;box-sizing:border-box;font-family:tahoma}
-body{background:linear-gradient(135deg,#1e3a8a,#3b82f6);color:#fff;padding:15px}
-body.dark{background:#0f172a}
-.top{display:flex;justify-content:space-between;background:#0004;padding:12px;border-radius:10px;margin-bottom:15px}
-.grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
-.btn{background:#fff;color:#1e3a8a;border:none;padding:15px;border-radius:12px;font-weight:bold;cursor:pointer}
-.page{display:none;background:#fff;color:#000;border-radius:15px;padding:20px;margin-top:15px}
-body.dark.page{background:#1e293b;color:#fff}
+body{font-family:tahoma;background:#1e40af;color:#fff;padding:10px}
+.top{background:#0005;padding:10px;border-radius:10px;margin-bottom:10px}
+.grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.btn{background:#fff;color:#1e40af;padding:12px;border:none;border-radius:8px;font-weight:bold;cursor:pointer}
+.page{display:none;background:#fff;color:#000;padding:15px;border-radius:10px;margin-top:10px}
 .page.active{display:block}
-input,select{width:100%;padding:10px;margin:8px 0;border:1px solid #ccc;border-radius:8px}
-body.dark input,body.dark select{background:#334155;color:#fff}
-table{width:100%;border-collapse:collapse;margin-top:10px}
-th,td{border:1px solid #ddd;padding:8px;text-align:center}
+input,select{width:100%;padding:8px;margin:5px 0}
+table{width:100%;border-collapse:collapse}
+th,td{border:1px solid #ccc;padding:6px;text-align:center}
 th{background:#3b82f6;color:#fff}
-.edit{background:#2563eb;color:#fff;border:0;padding:6px 12px;border-radius:5px}
-.del{background:#dc2626;color:#fff;border:0;padding:6px 12px;border-radius:5px}
-.add{background:#16a34a;color:#fff;border:0;padding:10px 20px;border-radius:8px}
-.back{background:#64748b;color:#fff;padding:8px 15px;border:none;border-radius:8px;margin-bottom:10px}
-.login{background:#fff;color:#000;padding:30px;border-radius:15px;max-width:400px;margin:100px auto}
-.prod-btn{background:#dbeafe;color:#1e3a8a;padding:10px;margin:5px;border:none;border-radius:8px;width:120px}
+button{cursor:pointer;padding:6px 10px;border:none;border-radius:5px}
+.add{background:#16a34a;color:#fff}
+.del{background:#dc2626;color:#fff}
+.edit{background:#2563eb;color:#fff}
+.back{background:#64748b;color:#fff}
+.prod{background:#bfdbfe;color:#1e40af;margin:3px;width:120px}
 </style>
 </head>
 <body>
 <div class="top">
-  <h2>🏢 شركة الرافدين للمبيعات - <span id="placeName">الفرع الرئيسي</span></h2>
-  <div>v5.7 - <span id="userNow"></span> <button onclick="toggleDark()">🌙</button></div>
+<b>شركة الرافدين للمبيعات - <span id="place">الفرع الرئيسي</span></b>
+<span>v5.8.1 - <span id="user"></span></span>
 </div>
 
 <div id="login" class="page active">
-  <div class="login">
-    <h2>تسجيل الدخول</h2>
-    <input id="logUser" value="admin">
-    <input id="logPass" type="password" value="1234">
-    <button onclick="doLogin()" class="add" style="width:100%">دخول</button>
-  </div>
+<h2>تسجيل دخول</h2>
+<input id="u" value="admin"><input id="p" type="password" value="1234">
+<button onclick="login()" class="add">دخول</button>
 </div>
 
 <div id="app" style="display:none">
-  <div id="home" class="page active">
-    <div class="grid">
-      <button onclick="show('dashboard')" class="btn">📊 لوحة التحكم</button>
-      <button onclick="show('pos')" class="btn">🛒 نقاط البيع</button>
-      <button onclick="show('sales')" class="btn">💰 المبيعات</button>
-      <button onclick="show('add-product')" class="btn">➕ اضافة منتج</button>
-      <button onclick="show('products')" class="btn">📦 المنتجات</button>
-      <button onclick="show('new-invoice')" class="btn">🧾 فاتورة جديدة</button>
-      <button onclick="show('invoices')" class="btn">📑 الفواتير</button>
-      <button onclick="show('add-customer')" class="btn">➕ اضافة زبون</button>
-      <button onclick="show('customers')" class="btn">👥 الزبائن</button>
-      <button onclick="show('add-supplier')" class="btn">➕ اضافة مورد</button>
-      <button onclick="show('suppliers')" class="btn">🚚 الموردين</button>
-      <button onclick="show('purchase')" class="btn">📥 فواتير الشراء</button>
-      <button onclick="show('reports')" class="btn">📈 التقارير</button>
-      <button onclick="show('cashier')" class="btn">💵 الخزنة</button>
-      <button onclick="show('employees')" class="btn">👔 الموظفين</button>
-      <button onclick="show('stock')" class="btn">🏬 المخزن</button>
-      <button onclick="show('offers')" class="btn">🎁 العروض</button>
-      <button onclick="show('returns')" class="btn">↩️ المرتجعات</button>
-      <button onclick="show('expenses')" class="btn">💸 المصروفات</button>
-      <button onclick="show('users')" class="btn">👤 المستخدمين</button>
-      <button onclick="show('settings')" class="btn">⚙️ الاعدادات</button>
-      <button onclick="show('backup')" class="btn">💾 النسخ الاحتياطي</button>
-    </div>
-    <button onclick="doLogout()" class="del" style="width:100%;margin-top:15px">تسجيل خروج</button>
-  </div>
+<div id="home" class="page active">
+<div class="grid">
+<button onclick="go('dashboard')" class="btn">📊 لوحة</button>
+<button onclick="go('pos')" class="btn">🛒 نقاط البيع</button>
+<button onclick="go('new')" class="btn">🧾 فاتورة جديدة</button>
+<button onclick="go('products')" class="btn">📦 منتجات</button>
+<button onclick="go('addp')" class="btn">➕ اضافة منتج</button>
+<button onclick="go('customers')" class="btn">👥 زبائن</button>
+<button onclick="go('addc')" class="btn">➕ اضافة زبون</button>
+<button onclick="go('invoices')" class="btn">📑 فواتير</button>
+<button onclick="go('suppliers')" class="btn">🚚 موردين</button>
+<button onclick="go('adds')" class="btn">➕ اضافة مورد</button>
+<button onclick="go('employees')" class="btn">👔 موظفين</button>
+<button onclick="go('adde')" class="btn">➕ اضافة موظف</button>
+<button onclick="go('expenses')" class="btn">💸 مصروفات</button>
+<button onclick="go('addex')" class="btn">➕ اضافة مصروف</button>
+<button onclick="go('stock')" class="btn">🏬 مخزن</button>
+<button onclick="go('sales')" class="btn">💰 مبيعات</button>
+<button onclick="go('purchase')" class="btn">📥 شراء</button>
+<button onclick="go('addpu')" class="btn">➕ اضافة شراء</button>
+<button onclick="go('reports')" class="btn">📈 تقارير</button>
+<button onclick="go('settings')" class="btn">⚙️ اعدادات</button>
+<button onclick="go('users')" class="btn">👤 مستخدمين</button>
+<button onclick="go('addu')" class="btn">➕ اضافة مستخدم</button>
+</div>
+<button onclick="logout()" class="del" style="width:100%;margin-top:10px">خروج</button>
+</div>
 
-  <!-- صفحة الفاتورة الجديدة - تبيع مباشرة -->
-  <div id="new-invoice" class="page">
-    <button onclick="show('home')" class="back">رجوع</button>
-    <h3>🧾 فاتورة جديدة</h3>
-    <label>اختر الزبون:</label>
-    <select id="invCustomer"></select>
+<div id="new" class="page"><button onclick="go('home')" class="back">رجوع</button>
+<h3>فاتورة جديدة</h3>
+زبون: <select id="inv_cus"></select>
+<h4>المنتجات:</h4><div id="inv_prods"></div>
+<h4>السلة:</h4><div id="inv_cart"></div>
+<h3>المجموع: <span id="inv_total">0</span></h3>
+<button onclick="save_inv()" class="add">حفظ الفاتورة</button>
+</div>
 
-    <h4>المنتجات:</h4>
-    <div id="invProducts"></div>
+<div id="pos" class="page"><button onclick="go('home')" class="back">رجوع</button>
+<h3>نقاط البيع</h3>
+زبون: <select id="pos_cus"></select>
+<div id="pos_prods"></div>
+<div id="pos_cart"></div>
+<h3>المجموع: <span id="pos_total">0</span></h3>
+<button onclick="save_pos()" class="add">حفظ</button>
+</div>
 
-    <h4>السلة:</h4>
-    <div id="invCart"></div>
+<div id="products" class="page"><button onclick="go('home')" class="back">رجوع</button><h3>المنتجات</h3><table id="t_p"></table></div>
+<div id="addp" class="page"><button onclick="go('home')" class="back">رجوع</button><h3>اضافة منتج</h3><input id="p_id" type="hidden"><input id="p_name" placeholder="اسم المنتج"><input id="p_price" placeholder="السعر"><input id="p_qty" placeholder="الكمية"><button onclick="save_p()" class="add">حفظ</button></div>
 
-    <h3>الاجمالي: <span id="invTotal">0</span></h3>
-    <button onclick="saveInvoice()" class="add">حفظ الفاتورة وطباعة</button>
-  </div>
+<div id="customers" class="page"><button onclick="go('home')" class="back">رجوع</button><h3>الزبائن</h3><table id="t_c"></table></div>
+<div id="addc" class="page"><button onclick="go('home')" class="back">رجوع</button><h3>اضافة زبون</h3><input id="c_id" type="hidden"><input id="c_name" placeholder="اسم الزبون"><input id="c_phone" placeholder="الهاتف"><button onclick="save_c()" class="add">حفظ</button></div>
 
-  <div id="pos" class="page"><button onclick="show('home')" class="back">رجوع</button><h3>🛒 نقاط البيع</h3><select id="posCustomer"></select><div id="cart"></div><h4>الاجمالي: <span id="total">0</span></h4><button onclick="makeInvoice()" class="add">انشاء فاتورة</button><div id="posProducts"></div></div>
+<div id="invoices" class="page"><button onclick="go('home')" class="back">رجوع</button><h3>الفواتير</h3><div id="t_i"></div></div>
 
-  <!-- باقي الصفحات -->
-  <div id="products" class="page"><button onclick="show('home')" class="back">رجوع</button><h3>📦 المنتجات</h3><table id="tblP"></table></div>
-  <div id="add-product" class="page"><button onclick="show('home')" class="back">رجوع</button><h3>➕ اضافة منتج</h3><input id="p_id" type="hidden"><input id="p_name" placeholder="اسم المنتج"><input id="p_price" type="number" placeholder="السعر"><input id="p_qty" type="number" placeholder="الكمية"><button onclick="saveProduct()" class="add">حفظ</button></div>
-  <div id="customers" class="page"><button onclick="show('home')" class="back">رجوع</button><h3>👥 الزبائن</h3><table id="tblC"></table></div>
-  <div id="add-customer" class="page"><button onclick="show('home')" class="back">رجوع</button><h3>➕ اضافة زبون</h3><input id="c_id" type="hidden"><input id="c_name" placeholder="اسم الزبون"><input id="c_phone" placeholder="رقم الهاتف"><button onclick="saveCustomer()" class="add">حفظ</button></div>
-  <div id="suppliers" class="page"><button onclick="show('home')" class="back">رجوع</button><h3>🚚 الموردين</h3><table id="tblS"></table></div>
-  <div id="add-supplier" class="page"><button onclick="show('home')" class="back">رجوع</button><h3>➕ اضافة مورد</h3><input id="s_id" type="hidden"><input id="s_name" placeholder="اسم المورد"><input id="s_phone" placeholder="رقم الهاتف"><button onclick="saveSupplier()" class="add">حفظ</button></div>
-  <div id="users" class="page"><button onclick="show('home')" class="back">رجوع</button><h3>👤 المستخدمين</h3><table id="tblU"></table><input id="u_id" type="hidden"><input id="u_name" placeholder="اسم المستخدم"><input id="u_pass" placeholder="كلمة السر"><button onclick="saveUser()" class="add">حفظ</button></div>
-  <div id="employees" class="page"><button onclick="show('home')" class="back">رجوع</button><h3>👔 الموظفين</h3><table id="tblE"></table><input id="e_id" type="hidden"><input id="e_name" placeholder="اسم الموظف"><input id="e_salary" type="number" placeholder="الراتب"><button onclick="saveEmp()" class="add">حفظ</button></div>
-  <div id="expenses" class="page"><button onclick="show('home')" class="back">رجوع</button><h3>💸 المصروفات</h3><table id="tblEx"></table><input id="ex_id" type="hidden"><input id="ex_type" placeholder="نوع المصروف"><input id="ex_amount" type="number" placeholder="المبلغ"><button onclick="saveExp()" class="add">حفظ</button></div>
-  <div id="invoices" class="page"><button onclick="show('home')" class="back">رجوع</button><h3>📑 الفواتير</h3><div id="tblI"></div></div>
-  <div id="purchase" class="page"><button onclick="show('home')" class="back">رجوع</button><h3>📥 فواتير الشراء</h3><table id="tblPu"></table><input id="pu_id" type="hidden"><input id="pu_supplier" placeholder="اسم المورد"><input id="pu_total" type="number" placeholder="المبلغ"><button onclick="savePurchase()" class="add">حفظ</button></div>
-  <div id="stock" class="page"><button onclick="show('home')" class="back">رجوع</button><h3>🏬 المخزن</h3><table id="tblSt"></table></div>
-  <div id="settings" class="page"><button onclick="show('home')" class="back">رجوع</button><h3>⚙️ الاعدادات</h3><input id="setPlace" placeholder="اسم المكان / الفرع"><button onclick="saveSettings()" class="add">حفظ</button></div>
-  <div id="dashboard" class="page"><button onclick="show('home')" class="back">رجوع</button><h3>📊 لوحة التحكم</h3><div id="dashData"></div></div>
-  <div id="sales" class="page"><button onclick="show('home')" class="back">رجوع</button><h3>💰 المبيعات</h3><table id="tblSales"></table></div>
-  <div id="reports" class="page"><button onclick="show('home')" class="back">رجوع</button><h3>📈 التقارير</h3><div id="reportData"></div></div>
-  <div id="cashier" class="page"><button onclick="show('home')" class="back">رجوع</button><h3>💵 الخزنة</h3><div id="cashData"></div></div>
-  <div id="offers" class="page"><button onclick="show('home')" class="back">رجوع</button><h3>🎁 العروض</h3><table id="tblOf"></table><input id="of_id" type="hidden"><input id="of_name" placeholder="اسم العرض"><button onclick="saveOffer()" class="add">حفظ</button></div>
-  <div id="returns" class="page"><button onclick="show('home')" class="back">رجوع</button><h3>↩️ المرتجعات</h3><table id="tblRt"></table><input id="rt_id" type="hidden"><input id="rt_reason" placeholder="سبب الاسترجاع"><button onclick="saveReturn()" class="add">حفظ</button></div>
-  <div id="backup" class="page"><button onclick="show('home')" class="back">رجوع</button><h3>💾 النسخ الاحتياطي</h3><button onclick="backup()" class="btn">تصدير البيانات</button></div>
+<div id="suppliers" class="page"><button onclick="go('home')" class="back">رجوع</button><h3>الموردين</h3><table id="t_s"></table></div>
+<div id="adds" class="page"><button onclick="go('home')" class="back">رجوع</button><h3>اضافة مورد</h3><input id="s_id" type="hidden"><input id="s_name" placeholder="اسم المورد"><input id="s_phone" placeholder="الهاتف"><button onclick="save_s()" class="add">حفظ</button></div>
+
+<div id="employees" class="page"><button onclick="go('home')" class="back">رجوع</button><h3>الموظفين</h3><table id="t_e"></table></div>
+<div id="adde" class="page"><button onclick="go('home')" class="back">رجوع</button><h3>اضافة موظف</h3><input id="e_id" type="hidden"><input id="e_name" placeholder="اسم الموظف"><input id="e_salary" placeholder="الراتب"><button onclick="save_e()" class="add">حفظ</button></div>
+
+<div id="expenses" class="page"><button onclick="go('home')" class="back">رجوع</button><h3>المصروفات</h3><table id="t_ex"></table></div>
+<div id="addex" class="page"><button onclick="go('home')" class="back">رجوع</button><h3>اضافة مصروف</h3><input id="ex_id" type="hidden"><input id="ex_type" placeholder="النوع"><input id="ex_amount" placeholder="المبلغ"><button onclick="save_ex()" class="add">حفظ</button></div>
+
+<div id="purchase" class="page"><button onclick="go('home')" class="back">رجوع</button><h3>الشراء</h3><table id="t_pu"></table></div>
+<div id="addpu" class="page"><button onclick="go('home')" class="back">رجوع</button><h3>اضافة فاتورة شراء</h3><input id="pu_id" type="hidden"><input id="pu_supplier" placeholder="المورد"><input id="pu_amount" placeholder="المبلغ"><button onclick="save_pu()" class="add">حفظ</button></div>
+
+<div id="stock" class="page"><button onclick="go('home')" class="back">رجوع</button><h3>المخزن</h3><div id="t_st"></div></div>
+<div id="sales" class="page"><button onclick="go('home')" class="back">رجوع</button><h3>المبيعات</h3><div id="t_sa"></div></div>
+<div id="reports" class="page"><button onclick="go('home')" class="back">رجوع</button><h3>التقارير</h3><div id="t_re"></div></div>
+<div id="settings" class="page"><button onclick="go('home')" class="back">رجوع</button><h3>الاعدادات</h3><input id="set_place" placeholder="اسم المكان"><button onclick="save_set()" class="add">حفظ</button></div>
+<div id="users" class="page"><button onclick="go('home')" class="back">رجوع</button><h3>المستخدمين</h3><table id="t_u"></table></div>
+<div id="addu" class="page"><button onclick="go('home')" class="back">رجوع</button><h3>اضافة مستخدم</h3><input id="u_id" type="hidden"><input id="u_name" placeholder="الاسم"><input id="u_pass" placeholder="كلمة السر"><button onclick="save_u()" class="add">حفظ</button></div>
+<div id="dashboard" class="page"><button onclick="go('home')" class="back">رجوع</button><h3>لوحة التحكم</h3><div id="dash"></div></div>
+
 </div>
 
 <script>
-let CURRENT_USER="";let CART=[];let INVCART=[];
-let DB=JSON.parse(localStorage.getItem('rafidain57')||'{"products":[],"customers":[],"suppliers":[],"users":[{"id":1,"name":"admin","pass":"1234"}],"employees":[],"invoices":[],"expenses":[],"purchases":[],"offers":[],"returns":[],"settings":{"place":"الفرع الرئيسي","dark":0}}');
+let USER="",CART_POS=[],CART_INV=[];
+let D=JSON.parse(localStorage.getItem('d581')||'{"products":[],"customers":[],"suppliers":[],"employees":[],"expenses":[],"purchases":[],"invoices":[],"users":[{"id":1,"name":"admin","pass":"1234"}],"settings":{"place":"الفرع الرئيسي"}}');
 
-function show(id){document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));document.getElementById(id).classList.add('active');render();}
-function saveDB(){localStorage.setItem('rafidain57',JSON.stringify(DB));}
+function go(x){document.querySelectorAll('.page').forEach(z=>z.classList.remove('active'));document.getElementById(x).classList.add('active');draw();}
+function save(){localStorage.setItem('d581',JSON.stringify(D));}
 
-function doLogin(){let u=DB.users.find(x=>x.name==logUser.value&&x.pass==logPass.value);if(!u){alert('خطأ');return;}CURRENT_USER=u.name;login.style.display='none';app.style.display='block';userNow.innerText=u.name;if(DB.settings.dark)document.body.classList.add('dark');show('home');}
-function doLogout(){CURRENT_USER="";location.reload();}
+function login(){let f=D.users.find(z=>z.name==u.value&&z.pass==p.value);if(!f){alert('خطأ');return}USER=f.name;login.style.display='none';app.style.display='block';user.innerText=USER;go('home')}
+function logout(){USER="";location.reload()}
 
-function saveData(type,prefix){let id=document.getElementById(prefix+'_id').value;let obj={id:id?+id:Date.now()};for(let key in obj)if(key!='id')obj[key]=document.getElementById(prefix+'_'+key).value;if(id){DB[type]=DB[type].map(x=>x.id==+id?obj:x)}else{DB[type].push(obj)}saveDB();document.getElementById(prefix+'_id').value='';render();alert('تم');}
+function add(t,o){if(o.id){D[t]=D[t].map(z=>z.id==o.id?o:z)}else{o.id=Date.now();D[t].push(o)}save();draw();alert('تم')}
+function del(t,id){if(confirm('حذف؟')){D[t]=D[t].filter(z=>z.id!=id);save();draw()}}
+function ed(t,pref,id){let x=D[t].find(z=>z.id==id);document.getElementById(pref+'_id').value=x.id;document.getElementById(pref+'_name').value=x.name;document.getElementById(pref+'_price').value=x.price;document.getElementById(pref+'_qty').value=x.qty;go('addp')}
 
-function saveProduct(){saveData('products','p')}function saveCustomer(){saveData('customers','c')}function saveSupplier(){saveData('suppliers','s')}function saveUser(){saveData('users','u')}function saveEmp(){saveData('employees','e')}function saveExp(){saveData('expenses','ex')}function savePurchase(){saveData('purchases','pu')}function saveOffer(){saveData('offers','of')}function saveReturn(){saveData('returns','rt')}
-function saveSettings(){DB.settings.place=setPlace.value;saveDB();placeName.innerText=setPlace.value;alert('تم');}
+function save_p(){add('products',{id:+p_id.value,name:p_name.value,price:p_price.value,qty:p_qty.value});p_id.value=p_name.value=p_price.value=p_qty.value=''}
+function save_c(){add('customers',{id:+c_id.value,name:c_name.value,phone:c_phone.value});c_id.value=c_name.value=c_phone.value=''}
+function save_s(){add('suppliers',{id:+s_id.value,name:s_name.value,phone:s_phone.value});s_id.value=s_name.value=s_phone.value=''}
+function save_e(){add('employees',{id:+e_id.value,name:e_name.value,salary:e_salary.value});e_id.value=e_name.value=e_salary.value=''}
+function save_ex(){add('expenses',{id:+ex_id.value,type:ex_type.value,amount:ex_amount.value});ex_id.value=ex_type.value=ex_amount.value=''}
+function save_pu(){add('purchases',{id:+pu_id.value,supplier:pu_supplier.value,amount:pu_amount.value});pu_id.value=pu_supplier.value=pu_amount.value=''}
+function save_u(){add('users',{id:+u_id.value,name:u_name.value,pass:u_pass.value});u_id.value=u_name.value=u_pass.value=''}
+function save_set(){D.settings.place=set_place.value;save();place.innerText=set_place.value;alert('تم')}
 
-function edit(type,prefix,id){let x=DB[type].find(z=>z.id==id);document.getElementById(prefix+'_id').value=x.id;for(let k in x)if(k!='id')document.getElementById(prefix+'_'+k).value=x[k];show('add-'+type.slice(0,-1))}
-function del(type,id){if(confirm('متأكد؟')){DB[type]=DB[type].filter(x=>x.id!=id);saveDB();render();}}
+function add_pos(p){CART_POS.push(p);up_pos()}
+function up_pos(){pos_cart.innerHTML=CART_POS.map((x,i)=>`${x.name} ${x.price} <button onclick="CART_POS.splice(${i},1);up_pos()">X</button>`).join('<br>');pos_total.innerText=CART_POS.reduce((a,b)=>a+ +b.price,0)}
+function save_pos(){if(!CART_POS.length)return;D.invoices.push({id:Date.now(),date:new Date().toLocaleString('ar-IQ'),user:USER,customer:pos_cus.value,total:pos_total.innerText});CART_POS=[];up_pos();save();alert('تم')}
 
-function addToCart(p){CART.push(p);updateCart();}
-function updateCart(){cart.innerHTML=CART.map((c,i)=>`${c.name} ${c.price} <button onclick="CART.splice(${i},1);updateCart()">X</button>`).join('<br>');total.innerText=CART.reduce((a,b)=>a+ +b.price,0);}
-function makeInvoice(){if(!CART.length)return;DB.invoices.push({id:Date.now(),date:new Date().toLocaleString('ar-IQ'),user:CURRENT_USER,customer:posCustomer.value,total:total.innerText});CART=[];updateCart();saveDB();alert('تم حفظ الفاتورة');}
+function add_inv(p){CART_INV.push(p);up_inv()}
+function up_inv(){inv_cart.innerHTML=CART_INV.map((x,i)=>`${x.name} - ${x.price} <button onclick="CART_INV.splice(${i},1);up_inv()">حذف</button>`).join('<br>');inv_total.innerText=CART_INV.reduce((a,b)=>a+ +b.price,0)}
+function save_inv(){if(!CART_INV.length){alert('السلة فارغة');return}D.invoices.push({id:Date.now(),date:new Date().toLocaleString('ar-IQ'),user:USER,customer:inv_cus.value,total:inv_total.innerText});CART_INV=[];up_inv();save();alert('تم حفظ الفاتورة')}
 
-function addToInvCart(p){INVCART.push(p);updateInvCart();}
-function updateInvCart(){invCart.innerHTML=INVCART.map((c,i)=>`${c.name} - ${c.price} <button onclick="INVCART.splice(${i},1);updateInvCart()">حذف</button>`).join('<br>');invTotal.innerText=INVCART.reduce((a,b)=>a+ +b.price,0);}
-function saveInvoice(){if(!INVCART.length){alert('السلة فارغة');return;}DB.invoices.push({id:Date.now(),date:new Date().toLocaleString('ar-IQ'),user:CURRENT_USER,customer:invCustomer.value,total:invTotal.innerText,items:INVCART});INVCART=[];updateInvCart();saveDB();alert('تم حفظ الفاتورة بنجاح');}
-
-function toggleDark(){DB.settings.dark=!DB.settings.dark;document.body.classList.toggle('dark');saveDB();}
-function backup(){let a=document.createElement('a');a.href=URL.createObjectURL(new Blob([JSON.stringify(DB)]));a.download='backup.json';a.click();}
-
-function render(){
-placeName.innerText=DB.settings.place;setPlace.value=DB.settings.place;
-tblP.innerHTML='<tr><th>الاسم</th><th>السعر</th><th>الكمية</th><th></th></tr>'+DB.products.map(x=>`<tr><td>${x.name}</td><td>${x.price}</td><td>${x.qty}</td><td><button class="edit" onclick="edit('products','p',${x.id})">تعديل</button><button class="del" onclick="del('products',${x.id})">حذف</button></td></tr>`).join('');
-tblC.innerHTML='<tr><th>الاسم</th><th>الهاتف</th><th></th></tr>'+DB.customers.map(x=>`<tr><td>${x.name}</td><td>${x.phone}</td><td><button class="edit" onclick="edit('customers','c',${x.id})">تعديل</button><button class="del" onclick="del('customers',${x.id})">حذف</button></td></tr>`).join('');
-tblS.innerHTML='<tr><th>الاسم</th><th>الهاتف</th><th></th></tr>'+DB.suppliers.map(x=>`<tr><td>${x.name}</td><td>${x.phone}</td><td><button class="edit" onclick="edit('suppliers','s',${x.id})">تعديل</button><button class="del" onclick="del('suppliers',${x.id})">حذف</button></td></tr>`).join('');
-tblU.innerHTML='<tr><th>الاسم</th><th></th></tr>'+DB.users.map(x=>`<tr><td>${x.name}</td><td><button class="edit" onclick="edit('users','u',${x.id})">تعديل</button><button class="del" onclick="del('users',${x.id})">حذف</button></td></tr>`).join('');
-tblE.innerHTML='<tr><th>الاسم</th><th>الراتب</th><th></th></tr>'+DB.employees.map(x=>`<tr><td>${x.name}</td><td>${x.salary}</td><td><button class="edit" onclick="edit('employees','e',${x.id})">تعديل</button><button class="del" onclick="del('employees',${x.id})">حذف</button></td></tr>`).join('');
-tblEx.innerHTML='<tr><th>النوع</th><th>المبلغ</th><th></th></tr>'+DB.expenses.map(x=>`<tr><td>${x.type}</td><td>${x.amount}</td><td><button class="edit" onclick="edit('expenses','ex',${x.id})">تعديل</button><button class="del" onclick="del('expenses',${x.id})">حذف</button></td></tr>`).join('');
-tblPu.innerHTML='<tr><th>المورد</th><th>المبلغ</th><th></th></tr>'+DB.purchases.map(x=>`<tr><td>${x.supplier}</td><td>${x.total}</td><td><button class="edit" onclick="edit('purchases','pu',${x.id})">تعديل</button><button class="del" onclick="del('purchases',${x.id})">حذف</button></td></tr>`).join('');
-tblOf.innerHTML='<tr><th>اسم العرض</th><th></th></tr>'+DB.offers.map(x=>`<tr><td>${x.name}</td><td><button class="edit" onclick="edit('offers','of',${x.id})">تعديل</button><button class="del" onclick="del('offers',${x.id})">حذف</button></td></tr>`).join('');
-tblRt.innerHTML='<tr><th>السبب</th><th></th></tr>'+DB.returns.map(x=>`<tr><td>${x.reason}</td><td><button class="edit" onclick="edit('returns','rt',${x.id})">تعديل</button><button class="del" onclick="del('returns',${x.id})">حذف</button></td></tr>`).join('');
-tblI.innerHTML=DB.invoices.map(x=>`<div style="border:1px solid #ccc;padding:10px;margin:8px"><b>رقم: ${x.id}</b><br>الموظف: ${x.user}<br>الزبون: ${x.customer}<br>التاريخ: ${x.date}<br>المبلغ: ${x.total}<br><button class="del" onclick="del('invoices',${x.id})">حذف</button></div>`).join('');
-tblSt.innerHTML='<tr><th>المنتج</th><th>الكمية</th></tr>'+DB.products.map(x=>`<tr><td>${x.name}</td><td>${x.qty}</td></tr>`).join('');
-tblSales.innerHTML='<tr><th>التاريخ</th><th>المبلغ</th></tr>'+DB.invoices.map(x=>`<tr><td>${x.date}</td><td>${x.total}</td></tr>`).join('');
-reportData.innerHTML=`<h4>المنتجات: ${DB.products.length}</h4><h4>الفواتير: ${DB.invoices.length}</h4>`;
-cashData.innerHTML=`<h4>المبيعات: ${DB.invoices.reduce((a,b)=>a+ +b.total,0)}</h4>`;
-posProducts.innerHTML=DB.products.map(p=>`<button class="prod-btn" onclick='addToCart(${JSON.stringify(p)})'>${p.name}<br>${p.price}</button>`).join('');
-posCustomer.innerHTML='<option>نقدي</option>'+DB.customers.map(c=>`<option>${c.name}</option>`).join('');
-invProducts.innerHTML=DB.products.map(p=>`<button class="prod-btn" onclick='addToInvCart(${JSON.stringify(p)})'>${p.name}<br>${p.price}</button>`).join('');
-invCustomer.innerHTML='<option>نقدي</option>'+DB.customers.map(c=>`<option>${c.name}</option>`).join('');
-dashData.innerHTML=`<h4>المنتجات: ${DB.products.length}</h4><h4>الزبائن: ${DB.customers.length}</h4>`;
+function draw(){
+place.innerText=D.settings.place;set_place.value=D.settings.place;
+t_p.innerHTML='<tr><th>الاسم</th><th>السعر</th><th>كمية</th><th></th></tr>'+D.products.map(x=>`<tr><td>${x.name}</td><td>${x.price}</td><td>${x.qty}</td><td><button class="edit" onclick="ed('products','p',${x.id})">تعديل</button><button class="del" onclick="del('products',${x.id})">حذف</button></td></tr>`).join('');
+t_c.innerHTML='<tr><th>الاسم</th><th>هاتف</th><th></th></tr>'+D.customers.map(x=>`<tr><td>${x.name}</td><td>${x.phone}</td><td><button class="edit" onclick="ed('customers','c',${x.id})">تعديل</button><button class="del" onclick="del('customers',${x.id})">حذف</button></td></tr>`).join('');
+t_s.innerHTML='<tr><th>الاسم</th><th>هاتف</th><th></th></tr>'+D.suppliers.map(x=>`<tr><td>${x.name}</td><td>${x.phone}</td><td><button class="edit" onclick="ed('suppliers','s',${x.id})">تعديل</button><button class="del" onclick="del('suppliers',${x.id})">حذف</button></td></tr>`).join('');
+t_e.innerHTML='<tr><th>الاسم</th><th>راتب</th><th></th></tr>'+D.employees.map(x=>`<tr><td>${x.name}</td><td>${x.salary}</td><td><button class="edit" onclick="ed('employees','e',${x.id})">تعديل</button><button class="del" onclick="del('employees',${x.id})">حذف</button></td></tr>`).join('');
+t_ex.innerHTML='<tr><th>النوع</th><th>مبلغ</th><th></th></tr>'+D.expenses.map(x=>`<tr><td>${x.type}</td><td>${x.amount}</td><td><button class="edit" onclick="ed('expenses','ex',${x.id})">تعديل</button><button class="del" onclick="del('expenses',${x.id})">حذف</button></td></tr>`).join('');
+t_pu.innerHTML='<tr><th>المورد</th><th>مبلغ</th><th></th></tr>'+D.purchases.map(x=>`<tr><td>${x.supplier}</td><td>${x.amount}</td><td><button class="edit" onclick="ed('purchases','pu',${x.id})">تعديل</button><button class="del" onclick="del('purchases',${x.id})">حذف</button></td></tr>`).join('');
+t_u.innerHTML='<tr><th>الاسم</th><th></th></tr>'+D.users.map(x=>`<tr><td>${x.name}</td><td><button class="edit" onclick="ed('users','u',${x.id})">تعديل</button><button class="del" onclick="del('users',${x.id})">حذف</button></td></tr>`).join('');
+t_i.innerHTML=D.invoices.map(x=>`<div style="border:1px solid #ccc;padding:5px;margin:3px">رقم:${x.id}<br>موظف:${x.user}<br>زبون:${x.customer}<br>تاريخ:${x.date}<br>مبلغ:${x.total}<br><button class="del" onclick="del('invoices',${x.id})">حذف</button></div>`).join('');
+t_st.innerHTML='<tr><th>منتج</th><th>كمية</th></tr>'+D.products.map(x=>`<tr><td>${x.name}</td><td>${x.qty}</td></tr>`).join('');
+t_sa.innerHTML='<tr><th>تاريخ</th><th>مبلغ</th></tr>'+D.invoices.map(x=>`<tr><td>${x.date}</td><td>${x.total}</td></tr>`).join('');
+t_re.innerHTML=`منتجات:${D.products.length} فواتير:${D.invoices.length}`;
+dash.innerHTML=`منتجات:${D.products.length} زبائن:${D.customers.length} فواتير:${D.invoices.length}`;
+pos_prods.innerHTML=D.products.map(p=>`<button class="prod" onclick='add_pos(${JSON.stringify(p)})'>${p.name}<br>${p.price}</button>`).join('');
+pos_cus.innerHTML='<option>نقدي</option>'+D.customers.map(c=>`<option>${c.name}</option>`).join('');
+inv_prods.innerHTML=D.products.map(p=>`<button class="prod" onclick='add_inv(${JSON.stringify(p)})'>${p.name}<br>${p.price}</button>`).join('');
+inv_cus.innerHTML='<option>نقدي</option>'+D.customers.map(c=>`<option>${c.name}</option>`).join('');
 }
 </script>
 </body>
