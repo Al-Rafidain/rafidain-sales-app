@@ -1,27 +1,9 @@
 {
-  "name": "شركة الرافدين للمبيعات",
+  "name": "شركة الرافدين v3",
   "short_name": "الرافدين",
-  "description": "نظام ادارة المبيعات والمنتجات لشركة الرافدين",
-  "start_url": "/rafidain-sales-app/?v=33",
+  "start_url": "/rafidain-sales-app/?v=38",
   "display": "standalone",
-  "background_color": "#4c1d95",
+  "background_color": "#6d28d9",
   "theme_color": "#6d28d9",
-  "orientation": "portrait",
-  "scope": "/rafidain-sales-app/",
-  "lang": "ar",
-  "dir": "rtl",
-  "icons": [
-    {
-      "src": "https://al-rafidain.github.io/rafidain-sales-app/icon-192.png",
-      "sizes": "192x192",
-      "type": "image/png",
-      "purpose": "any maskable"
-    },
-    {
-      "src": "https://al-rafidain.github.io/rafidain-sales-app/icon-512.png",
-      "sizes": "512x512",
-      "type": "image/png",
-      "purpose": "any maskable"
-    }
-  ]
+  "icons": [{"src":"icon-192.png","sizes":"192x192","type":"image/png"}]
 }
