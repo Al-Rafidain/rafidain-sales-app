@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>الرافدين v5.0</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:tahoma}
+body{background:#6d28d9;color:#fff;padding:15px}
+body.dark{background:#111827;color:#eee}
+.topbar{display:flex;justify-content:space-between;align-items:center;margin-bottom:15px}
+.ver{font-size:12px;background:#0004;padding:5px 10px;border-radius:8px}
+.container{max-width:1100px;margin:0 auto}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px}
+.btn{background:#fff;color:#6d28d9;border:none;padding:14px;border-radius:12px;font-weight:bold;cursor:pointer}
+.page{display:none;background:#fff;color:#333;border-radius:15px;padding:20px;margin-top:15px}
+body.dark.page{background:#1f2937;color:#eee}
+.page.active{display:block}
+input,select{width:100%;padding:10px;margin:8px 0;border:1px solid #ccc;border-radius:8px}
+body.dark input,body.dark select{background:#374151;color:#fff}
+table{width:100%;border-collapse:collapse;margin-top:10px}
+th,td{border:1px solid #ddd;padding:8px;text-align:center}
+th{background:#6d28d9;color:#fff}
+.add{background:#10b981;color:#fff}.edit{background:#3b82f6;color:#fff}.del{background:#ef4444;color:#fff}
+.login-box{background:#fff;color:#333;padding:30px;border-radius:15px;max-width:400px;margin:100px auto}
+body.dark.login-box{background:#1f2937;color:#eee}
+</style>
+</head>
+<body>
+<div class="container">
+<div class="topbar">
+  <h1>🏢 <span id="companyTitle">الرافدين</span></h1>
+  <div class="ver">نسخة v5.0 - <span id="currentUser"></span></div>
+</div>
+
+<div id="login" class="page active">
+  <div class="login-box">
+    <h2>تسجيل دخول</h2>
+    <input id="loginUser" value="admin">
+    <input id="loginPass" type="password" value="1234">
+    <button onclick="login()" class="btn add">دخول</button>
+  </div>
+</div>
+
+<div id="app" style="display:none">
+  <div id="home" class="page active">
+    <div class="grid">
+      <button onclick="show('products')" class="btn">📦 المنتجات</button>
+      <button onclick="show('customers')" class="btn">👥 الزبائن</button>
+      <button onclick="show('suppliers')" class="btn">🚚 الموردين</button>
+      <button onclick="show('invoices')" class="btn">📑 الفواتير</button>
+      <button onclick="show('employees')" class="btn">👔 الموظفين</button>
+      <button onclick="show('expenses')" class="btn">💸 المصروفات</button>
+      <button onclick="show('users')" class="btn">👤 المستخدمين</button>
+      <button onclick="show('admin')" class="btn">⚙️ النظام</button>
+    </div>
+    <button onclick="logout()" class="btn del" style="width:100%;margin-top:10px">خروج</button>
+  </div>
+
+  <div id="products" class="page"><button onclick="show('home')" class="btn">رجوع</button><h2>المنتجات</h2>
+    <input id="pId" type="hidden"><input id="pName" placeholder="اسم المنتج"><input id="pPrice" placeholder="السعر">
+    <button onclick="save('products')" class="btn add">حفظ</button>
+    <table id="tbl-products"></table>
+  </div>
+
+  <div id="customers" class="page"><button onclick="show('home')" class="btn">رجوع</button><h2>الزبائن</h2>
+    <input id="cId" type="hidden"><input id="cName" placeholder="اسم الزبون"><input id="cPhone" placeholder="الهاتف">
+    <button onclick="save('customers')" class="btn add">حفظ</button>
+    <table id="tbl-customers"></table>
+  </div>
+
+  <div id="users" class="page"><button onclick="show('home')" class="btn">رجوع</button><h2>المستخدمين</h2>
+    <input id="uId" type="hidden"><input id="uName" placeholder="الاسم"><input id="uPass" placeholder="كلمة السر">
+    <button onclick="save('users')" class="btn add">حفظ</button>
+    <table id="tbl-users"></table>
+  </div>
+
+  <div id="admin" class="page"><button onclick="show('home')" class="btn">رجوع</button><h2>⚙️ النظام</h2>
+    <p>اسم الشركة: <input id="compName"></p>
+    <button onclick="toggleDark()" class="btn">🌙 تشغيل الوضع الداكن</button>
+    <button onclick="saveSettings()" class="btn add">حفظ</button>
+  </div>
+</div>
+</div>
+
+<script>
+let DB=JSON.parse(localStorage.getItem('rafidain_v5')||'{"products":[],"customers":[],"users":[{"id":1,"name":"admin","pass":"1234"}],"settings":{"company":"الرافدين","dark":false}}');
+function show(id){document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));document.getElementById(id).classList.add('active');load();}
+function saveDB(){localStorage.setItem('rafidain_v5',JSON.stringify(DB));}
+function login(){let u=DB.users.find(x=>x.name==loginUser.value&&x.pass==loginPass.value);if(!u){alert('خطأ');return;}
+document.getElementById('login').style.display='none';document.getElementById('app').style.display='block';currentUser.innerText=u.name;if(DB.settings.dark)document.body.classList.add('dark');show('home');}
+function logout(){location.reload();}
+function save(type){let id=window[type[0]+'Id'].value;let data={id:id?parseInt(id):Date.now()};
+if(type=='products'){data.name=pName.value;data.price=pPrice.value;}
+if(type=='customers'){data.name=cName.value;data.phone=cPhone.value;}
+if(type=='users'){data.name=uName.value;data.pass=uPass.value;}
+if(id){DB[type]=DB[type].map(x=>x.id==data.id?data:x)}else{DB[type].push(data)}
+saveDB();clear();load();alert('تم الحفظ');}
+function edit(type,id){let item=DB[type].find(x=>x.id==id);
+if(type=='products'){pId.value=item.id;pName.value=item.name;pPrice.value=item.price;show('products')}
+if(type=='customers'){cId.value=item.id;cName.value=item.name;cPhone.value=item.phone;show('customers')}
+if(type=='users'){uId.value=item.id;uName.value=item.name;uPass.value=item.pass;show('users')}}
+function del(type,id){if(confirm('حذف؟')){DB[type]=DB[type].filter(x=>x.id!=id);saveDB();load();}}
+function toggleDark(){DB.settings.dark=!DB.settings.dark;document.body.classList.toggle('dark');saveDB();}
+function saveSettings(){DB.settings.company=compName.value;saveDB();companyTitle.innerText=compName.value;}
+function clear(){document.querySelectorAll('input[type=hidden]').forEach(i=>i.value='');document.querySelectorAll('input[type=text],input[type=number]').forEach(i=>i.value='');}
+function load(){
+companyTitle.innerText=DB.settings.company;compName.value=DB.settings.company;
+tbl-products.innerHTML='<tr><th>الاسم</th><th>السعر</th><th>تعديل</th><th>حذف</th></tr>'+DB.products.map(p=>`<tr><td>${p.name}</td><td>${p.price}</td><td><button class="edit" onclick="edit('products',${p.id})">تعديل</button></td><td><button class="del" onclick="del('products',${p.id})">حذف</button></td></tr>`).join('');
+tbl-customers.innerHTML='<tr><th>الاسم</th><th>الهاتف</th><th>تعديل</th><th>حذف</th></tr>'+DB.customers.map(c=>`<tr><td>${c.name}</td><td>${c.phone}</td><td><button class="edit" onclick="edit('customers',${c.id})">تعديل</button></td><td><button class="del" onclick="del('customers',${c.id})">حذف</button></td></tr>`).join('');
+tbl-users.innerHTML='<tr><th>الاسم</th><th>تعديل</th><th>حذف</th></tr>'+DB.users.map(u=>`<tr><td>${u.name}</td><td><button class="edit" onclick="edit('users',${u.id})">تعديل</button></td><td><button class="del" onclick="del('users',${u.id})">حذف</button></td></tr>`).join('');
+}
+</script>
+</body>
+</html>
