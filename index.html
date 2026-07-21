@@ -2,166 +2,183 @@
 <html lang="ar" dir="rtl">
 <head>
 <meta charset="UTF-8">
-<title>شركة الرافدين للمبيعات v6.0 Pro</title>
+<title>شركة الرافدين للمبيعات v6.4 Pro</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&display=swap" rel="stylesheet">
 <style>
 *{box-sizing:border-box;font-family:'Cairo',sans-serif}
-body{background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);margin:0;padding:20px;min-height:100vh}
-.box{background:#fff;max-width:900px;margin:20px auto;padding:25px;border-radius:15px;box-shadow:0 10px 40px rgba(0,0,0,0.2)}
-input,button,select{width:100%;padding:12px;margin:8px 0;border:1px solid #ddd;border-radius:8px;font-size:15px}
-button{background:#667eea;color:#fff;border:none;cursor:pointer;font-weight:700}
-button:hover{background:#5563d6}
-.grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
-.grid button{background:#f8f9fa;color:#333;border:1px solid #e0e0e0}
-.grid button:hover{background:#667eea;color:#fff}
-.header{background:#667eea;color:#fff;padding:15px;border-radius:10px;margin-bottom:20px;text-align:center}
+body{background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);margin:0;padding:10px;min-height:100vh}
+.box{background:#fff;max-width:600px;margin:10px auto;padding:15px;border-radius:20px;box-shadow:0 10px 40px rgba(0,0,0,0.2)}
+.header{background:#5b7cff;color:#fff;padding:15px;border-radius:15px;margin-bottom:15px;text-align:center;font-size:20px;font-weight:700}
+input,button,select{width:100%;padding:10px;margin:6px 0;border:1px solid #ddd;border-radius:8px;font-size:14px}
+button{cursor:pointer;font-weight:700;border:none}
+.btn-add{background:#5b7cff;color:#fff}
+.btn-save{background:#28a745;color:#fff}
+.btn-renew{background:#ff9800;color:#fff}
+.btn-logout{background:#e63946;color:#fff}
+.grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.card{background:#f8f9fa;color:#333;border:1px solid #e0e0e0;border-radius:12px;padding:10px 5px;text-align:center;font-size:12px;font-weight:600}
+.card:hover{background:#5b7cff;color:#fff}
 .hidden{display:none}
-.user-card{background:#f1f1f1;padding:10px;border-radius:8px;margin:5px 0;display:flex;justify-content:space-between}
+.user-card{background:#f1f1f1;padding:12px;border-radius:12px;margin:8px 0;font-size:13px;display:flex;justify-content:space-between;align-items:center}
+.badge{padding:3px 8px;border-radius:6px;color:#fff;font-size:11px}
+.badge.monthly{background:#ff9800}.badge.yearly{background:#4caf50}.badge.permanent{background:#2196f3}.badge.expired{background:#f44336}
 </style>
 </head>
 <body>
 
-<!-- 1. شاشة تسجيل الدخول -->
+<!-- 1. تسجيل الدخول -->
 <div class="box" id="loginScreen">
-  <div class="header"><h2>تسجيل الدخول - الرافدين v6.0 Pro</h2></div>
+  <div class="header">تسجيل الدخول - الرافدين v6.4</div>
   <input type="text" id="username" placeholder="اسم المستخدم">
   <input type="password" id="password" placeholder="كلمة السر">
-  <button onclick="login()">دخول</button>
+  <button class="btn-add" onclick="login()">دخول</button>
   <p id="loginError" style="color:red;text-align:center"></p>
 </div>
 
-<!-- 2. شاشة الادمن -->
+<!-- 2. الادمن -->
 <div class="box hidden" id="adminScreen">
-  <div class="header"><h2>لوحة تحكم الادمن</h2></div>
+  <div class="header">لوحة تحكم الادمن</div>
   <h3>اضافة مستخدم جديد</h3>
   <input type="text" id="newUser" placeholder="اسم المستخدم للزبون">
   <input type="password" id="newPass" placeholder="كلمة السر">
   <input type="text" id="storeName" placeholder="اسم المحل">
-  <button onclick="addUser()">+ اضافة مستخدم</button>
-  <hr>
-  <h3>قائمة المستخدمين</h3>
-  <div id="userList"></div>
-  <button onclick="logout()" style="background:#dc3545">تسجيل خروج</button>
+  <select id="subType">
+    <option value="monthly">شهري - 30 يوم</option>
+    <option value="yearly">سنوي - 365 يوم</option>
+    <option value="permanent">دائمي</option>
+  </select>
+  <button class="btn-add" onclick="addUser()">+ اضافة مستخدم</button>
+  <hr><h3>قائمة المستخدمين</h3><div id="userList"></div>
+  <button class="btn-logout" onclick="logout()">تسجيل خروج</button>
 </div>
 
-<!-- 3. شاشة البرنامج الرئيسية - 22 زر -->
+<!-- 3. البرنامج الرئيسي -->
 <div class="box hidden" id="mainApp">
-  <div class="header"><h2 id="welcomeStore">شركة الرافدين للمبيعات</h2></div>
-  
-  <div class="grid">
-    <button onclick="alert('المنتجات')">المنتجات</button>
-    <button onclick="alert('فاتورة جديدة')">فاتورة جديدة</button>
-    <button onclick="alert('نقطة البيع')">نقطة البيع</button>
-    <button onclick="showAdmin()" id="adminBtn">لوحة التحكم</button>
-    
-    <button onclick="alert('الفواتير')">الفواتير</button>
-    <button onclick="alert('اضافة زبون')">اضافة زبون</button>
-    <button onclick="alert('الزبائن')">الزبائن</button>
-    <button onclick="alert('اضافة مخزن')">اضافة مخزن</button>
-    
-    <button onclick="alert('اضافة موظف')">اضافة موظف</button>
-    <button onclick="alert('الموظفين')">الموظفين</button>
-    <button onclick="alert('اضافة مورد')">اضافة مورد</button>
-    <button onclick="alert('الموردين')">الموردين</button>
-    
-    <button onclick="alert('المصروفات')">المصروفات</button>
-    <button onclick="alert('الايرادات')">الايرادات</button>
-    <button onclick="alert('التقارير')">التقارير</button>
-    <button onclick="alert('الجرد')">الجرد</button>
-    
-    <button onclick="alert('النسخ الاحتياطي')">النسخ الاحتياطي</button>
-    <button onclick="alert('الاعدادات')">الاعدادات</button>
-    <button onclick="alert('الدعم الفني')">الدعم الفني</button>
-    <button onclick="logout()" style="background:#dc3545">تسجيل خروج</button>
+  <div class="header" id="welcomeStore">ماركت</div>
+  <div class="grid" id="menuGrid">
+    <button class="card" onclick="showPage('products')">المنتجات</button>
+    <button class="card" onclick="showPage('invoice')">فاتورة جديدة</button>
+    <button class="card" onclick="showPage('pos')">نقطة البيع</button>
+    <button class="card" onclick="showPage('invoices')">الفواتير</button>
+    <button class="card" onclick="showPage('addCustomer')">اضافة زبون</button>
+    <button class="card" onclick="showPage('customers')">الزبائن</button>
+    <button class="card" onclick="showPage('addStore')">اضافة مخزن</button>
+    <button class="card" onclick="showPage('addEmployee')">اضافة موظف</button>
+    <button class="card" onclick="showPage('employees')">الموظفين</button>
+    <button class="card" onclick="showPage('addSupplier')">اضافة مورد</button>
+    <button class="card" onclick="showPage('suppliers')">الموردين</button>
+    <button class="card" onclick="showPage('expenses')">المصروفات</button>
+    <button class="card" onclick="showPage('income')">الايرادات</button>
+    <button class="card" onclick="showPage('reports')">التقارير</button>
+    <button class="card" onclick="showPage('inventory')">الجرد</button>
+    <button class="card" onclick="showPage('backup')">النسخ الاحتياطي</button>
+    <button class="card" style="background:#5b7cff;color:#fff" onclick="showAdmin()" id="adminBtn">الاعدادات</button>
+    <button class="card" onclick="showPage('settings')">الاعدادات</button>
+    <button class="card" onclick="showPage('support')">الدعم الفني</button>
+    <button class="card" style="background:#e63946;color:#fff" onclick="logout()">تسجيل خروج</button>
   </div>
+  <div id="pageContent" class="hidden"></div>
+</div>
+
+<!-- شاشة انتهاء الاشتراك -->
+<div class="box hidden" id="expiredScreen">
+  <div class="header" style="background:#f44336">انتهى الاشتراك</div>
+  <p style="text-align:center">اشتراكك انتهى. الرجاء التواصل مع الادمن للتجديد</p>
+  <button class="btn-logout" onclick="logout()">تسجيل خروج</button>
 </div>
 
 <script>
-// تحميل المستخدمين من التخزين
 let users = JSON.parse(localStorage.getItem('rafidain_users_v6')) || [
-  {username:"admin", password:"admin123", store:"شركة الرافدين - الادمن", role:"admin"}
+  {username:"admin", password:"admin123", store:"الادمن", role:"admin", subType:"permanent", startDate: new Date().toISOString()}
 ];
-
+let data = JSON.parse(localStorage.getItem('rafidain_data')) || {products:[],customers:[],invoices:[]};
+function saveData(){localStorage.setItem('rafidain_data', JSON.stringify(data))}
 function saveUsers(){localStorage.setItem('rafidain_users_v6', JSON.stringify(users))}
+
+function checkSubscription(user){
+  if(user.role=="admin" || user.subType=="permanent") return true;
+  let start = new Date(user.startDate);
+  let now = new Date();
+  let diffDays = Math.floor((now - start) / (1000*60*60*24));
+  if(user.subType=="monthly" && diffDays > 30) return false;
+  if(user.subType=="yearly" && diffDays > 365) return false;
+  return true;
+}
+
+function getDaysLeft(user){
+  if(user.subType=="permanent") return "دائمي";
+  let start = new Date(user.startDate);
+  let now = new Date();
+  let diffDays = Math.floor((now - start) / (1000*60*60*24));
+  let total = user.subType=="monthly"? 30 : 365;
+  let left = total - diffDays;
+  return left > 0? left + " يوم" : "منتهي";
+}
 
 function login(){
   let u=document.getElementById('username').value.trim();
   let p=document.getElementById('password').value.trim();
   let user = users.find(x=>x.username==u && x.password==p);
   if(user){
+    if(!checkSubscription(user)){
+      document.getElementById('loginScreen').classList.add('hidden');
+      document.getElementById('expiredScreen').classList.remove('hidden');
+      return;
+    }
     localStorage.setItem('currentUser_v6', JSON.stringify(user));
     document.getElementById('loginScreen').classList.add('hidden');
-    if(user.role=="admin"){
-      showAdminPanel();
-      document.getElementById('adminBtn').classList.remove('hidden');
-    }else{
-      document.getElementById('adminBtn').classList.add('hidden');
-      document.getElementById('welcomeStore').innerText=user.store;
+    if(user.role=="admin"){showAdminPanel();}else{
+      document.getElementById('welcomeStore').innerText=user.store + " - " + getDaysLeft(user);
       document.getElementById('mainApp').classList.remove('hidden');
     }
-  }else{
-    document.getElementById('loginError').innerText="❌ اسم المستخدم او كلمة السر خطأ";
-  }
-}
-
-function showAdminPanel(){
-  document.getElementById('adminScreen').classList.remove('hidden');
-  loadUserList();
-}
-
-function showAdmin(){
-  let user=JSON.parse(localStorage.getItem('currentUser_v6'));
-  if(user.role=="admin"){showAdminPanel()} else {alert("ما عندك صلاحية")}
+  }else{document.getElementById('loginError').innerText="❌ خطأ"}
 }
 
 function addUser(){
   let u=document.getElementById('newUser').value.trim();
   let p=document.getElementById('newPass').value.trim();
   let s=document.getElementById('storeName').value.trim();
+  let sub=document.getElementById('subType').value;
   if(!u||!p||!s){alert("املأ كل الحقول");return}
-  if(users.find(x=>x.username==u)){alert("اسم المستخدم موجود");return}
-  users.push({username:u,password:p,store:s,role:"user"});
+  users.push({username:u,password:p,store:s,role:"user",subType:sub,startDate:new Date().toISOString()});
   saveUsers();
-  document.getElementById('newUser').value="";
-  document.getElementById('newPass').value="";
-  document.getElementById('storeName').value="";
-  alert("✅ تمت اضافة المستخدم بنجاح");
+  alert("✅ تمت الاضافة");
+  loadUserList();
+}
+
+function renewUser(index){
+  let user = users.filter(x=>x.role=="user")[index];
+  user.startDate = new Date().toISOString(); // نجدد من اليوم
+  saveUsers();
+  alert("✅ تم تجديد اشتراك " + user.store);
   loadUserList();
 }
 
 function loadUserList(){
   let html="";
   users.filter(x=>x.role=="user").forEach((u,i)=>{
-    html+=`<div class="user-card"><span><b>${u.store}</b><br>${u.username} / ${u.password}</span><button onclick="deleteUser(${i})" style="background:red;width:auto">حذف</button></div>`
+    let badgeClass = u.subType=="monthly"?"monthly":u.subType=="yearly"?"yearly":"permanent";
+    let badgeText = u.subType=="monthly"?"شهري":u.subType=="yearly"?"سنوي":"دائمي";
+    html+=`<div class="user-card">
+      <div>
+        <b>${u.store}</b> <span class="badge ${badgeClass}">${badgeText}</span><br>
+        ${u.username} / ${u.password}<br>
+        متبقي: ${getDaysLeft(u)}
+      </div>
+      ${u.subType!="permanent"? `<button class="btn-renew" onclick="renewUser(${i})">تجديد</button>` : ''}
+      </div>`
   });
-  document.getElementById('userList').innerHTML=html || "<p>لا يوجد مستخدمين</p>";
+  document.getElementById('userList').innerHTML=html || "<p>لا يوجد</p>";
 }
 
-function deleteUser(index){
-  if(confirm("متأكد تريد تحذف هذا المستخدم؟")){
-    users.splice(index+1,1); // +1 لان اول واحد هو الادمن
-    saveUsers();
-    loadUserList();
-  }
-}
+function showAdminPanel(){document.getElementById('adminScreen').classList.remove('hidden'); loadUserList();}
+function showAdmin(){let user=JSON.parse(localStorage.getItem('currentUser_v6')); if(user.role=="admin"){showAdminPanel()} else {alert("ما عندك صلاحية")}}
+function showPage(page){document.getElementById('menuGrid').classList.add('hidden'); document.getElementById('pageContent').classList.remove('hidden'); document.getElementById('pageContent').innerHTML = `<button onclick="backToMenu()" style="background:#6c757d;color:#fff;margin-bottom:10px">رجوع</button><h3>${page}</h3>`;}
+function backToMenu(){document.getElementById('menuGrid').classList.remove('hidden'); document.getElementById('pageContent').classList.add('hidden')}
+function logout(){localStorage.removeItem('currentUser_v6'); location.reload();}
 
-function logout(){
-  localStorage.removeItem('currentUser_v6');
-  location.reload();
-}
-
-// فحص اذا اكو مستخدم مسجل دخول
-window.onload=function(){
-  let user=JSON.parse(localStorage.getItem('currentUser_v6'));
-  if(user){
-    document.getElementById('loginScreen').classList.add('hidden');
-    if(user.role=="admin"){showAdminPanel()}else{
-      document.getElementById('welcomeStore').innerText=user.store;
-      document.getElementById('mainApp').classList.remove('hidden');
-    }
-  }
-}
+window.onload=function(){let user=JSON.parse(localStorage.getItem('currentUser_v6')); if(user){document.getElementById('loginScreen').classList.add('hidden'); if(user.role=="admin"){showAdminPanel()}else{document.getElementById('welcomeStore').innerText=user.store + " - " + getDaysLeft(user); document.getElementById('mainApp').classList.remove('hidden');}}}
 </script>
 </body>
 </html>
