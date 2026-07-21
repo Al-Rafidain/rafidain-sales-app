@@ -2,24 +2,23 @@
 <html lang="ar" dir="rtl">
 <head>
 <meta charset="UTF-8">
-<title>شركة الرافدين للمبيعات v8.1</title>
+<title>شركة الرافدين للمبيعات v8.2</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&display=swap" rel="stylesheet">
 <style>
 *{box-sizing:border-box;font-family:'Cairo',sans-serif}
 body{background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);margin:0;padding:10px;min-height:100vh}
 .box{background:#fff;max-width:500px;margin:10px auto;padding:15px;border-radius:20px;box-shadow:0 10px 40px rgba(0,0,0,0.2)}
-.header-main{background:#fff;color:#5b7cff;padding:15px;border-radius:15px;margin-bottom:10px;text-align:center;font-size:20px;font-weight:700;border:2px solid #5b7cff}
-.sub-status{background:#fff3cd;color:#856404;padding:10px;border-radius:10px;margin-bottom:15px;text-align:center;font-size:13px;font-weight:700;border:1px solid #ffeeba}
+.header-main{background:#fff;color:#5b7cff;padding:15px;border-radius:15px;margin-bottom:15px;text-align:center;font-size:20px;font-weight:700;border:2px solid #5b7cff}
 .header{background:#5b7cff;color:#fff;padding:12px;border-radius:12px;margin-bottom:10px;text-align:center;font-size:18px;font-weight:700}
 input,button,select,textarea{width:100%;padding:10px;margin:6px 0;border:1px solid #ddd;border-radius:8px;font-size:14px}
 button{cursor:pointer;font-weight:700;border:none}
 .btn-add{background:#5b7cff;color:#fff}.btn-save{background:#28a745;color:#fff}
 .btn-edit{background:#17a2b8;color:#fff}.btn-delete{background:#dc3545;color:#fff}
 .btn-renew{background:#ff9800;color:#fff;width:48%}.btn-back{background:#6c757d;color:#fff}
-.btn-status{background:#ffc107;color:#000}.btn-whatsapp{background:#25D366;color:#fff}
+.btn-whatsapp{background:#25D366;color:#fff}.btn-print{background:#17a2b8;color:#fff}
 .grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
-.card{background:#fff;color:#333;border:1px solid #ddd;border-radius:12px;padding:12px 5px;text-align:center;font-size:11px;font-weight:700;box-shadow:0 2px 5px rgba(0,0,0,0.1)}
+.card{background:#fff;color:#333;border:1px solid #ddd;border-radius:12px;padding:12px 5px;text-align:center;font-size:11px;font-weight:700;box-shadow:0 2px 5px rgba(0,0,0,0.1);min-height:60px}
 .card:hover{background:#5b7cff;color:#fff}
 .card.red{background:#e63946;color:#fff}
 .card.disabled{background:#ccc;color:#888;cursor:not-allowed}
@@ -29,6 +28,9 @@ button{cursor:pointer;font-weight:700;border:none}
 .btn-row button{width:32%}
 .badge{padding:3px 8px;border-radius:6px;color:#fff;font-size:11px}
 .badge.monthly{background:#ff9800}.badge.yearly{background:#4caf50}.badge.permanent{background:#2196f3}
+table{width:100%;border-collapse:collapse;font-size:12px;margin-top:10px}
+table td,table th{border:1px solid #ddd;padding:6px;text-align:center}
+.cart-item{display:flex;justify-content:space-between;background:#f8f9fa;padding:8px;border-radius:8px;margin:5px 0}
 </style>
 </head>
 <body>
@@ -57,7 +59,6 @@ button{cursor:pointer;font-weight:700;border:none}
 <!-- 3. البرنامج الرئيسي -->
 <div class="box hidden" id="mainApp">
   <div class="header-main" id="welcomeStore">اسم المحل</div>
-  <div class="sub-status hidden" id="subStatus">متبقي: 30 يوم</div>
 
   <div class="grid" id="menuGrid">
     <button class="card" onclick="showPage('products')">المنتجات</button>
@@ -76,9 +77,9 @@ button{cursor:pointer;font-weight:700;border:none}
     <button class="card" onclick="showPage('reports')">التقارير</button>
     <button class="card" onclick="showPage('inventory')">الجرد</button>
     <button class="card" onclick="showPage('backup')">النسخ الاحتياطي</button>
-    <button class="card btn-status" onclick="showSubscriptionStatus()">حالة الاشتراك</button> <!-- الزر الجديد -->
     <button class="card" onclick="showPage('settings')">الاعدادات</button>
     <button class="card" onclick="showPage('support')">الدعم الفني</button>
+    <button class="card" onclick="showSubscriptionStatus()">حالة الاشتراك</button>
     <button class="card red" onclick="logout()">تسجيل خروج</button>
   </div>
   <div id="pageContent" class="hidden"></div>
@@ -94,87 +95,225 @@ function saveData(){localStorage.setItem('rafidain_data_v8', JSON.stringify(data
 function saveUsers(){localStorage.setItem('rafidain_users_v8', JSON.stringify(users))}
 
 function getDaysLeft(user){
-  if(user.subType=="permanent") return {text:"دائمي", color:"#2196f3"};
+  if(user.subType=="permanent") return "دائمي";
   let start = new Date(user.startDate); let now = new Date();
   let diffDays = Math.floor((now - start) / (1000*60*60*24));
   let total = user.subType=="monthly"? 30 : 365;
   let left = total - diffDays;
-  if(left <= 0) return {text:"منتهي", color:"#dc3545"};
-  if(left <= 5) return {text:`متبقي ${left} يوم`, color:"#dc3545"};
-  if(left <= 10) return {text:`متبقي ${left} يوم`, color:"#ff9800"};
-  return {text:`متبقي ${left} يوم`, color:"#28a745"};
+  return left > 0? left : 0;
 }
 
 function login(){
   let u=username.value.trim(); let p=password.value.trim();
   let user = users.find(x=>x.username==u && x.password==p);
   if(user){
-    if(user.role!="admin" && getDaysLeft(user).text=="منتهي"){alert("انتهى اشتراكك");return;}
+    if(user.role!="admin" && getDaysLeft(user)==0){alert("انتهى اشتراكك");return;}
     currentUser = user;
     localStorage.setItem('currentUser_v8', JSON.stringify(user));
     loginScreen.classList.add('hidden');
     if(user.role=="admin"){
       showAdminPanel();
-      document.getElementById('adminBtn').classList.remove('disabled');
-      document.getElementById('adminBtn').onclick = showAdmin;
     }else{
-      welcomeStore.innerText=user.store; // بس اسم المحل بدون ايام
-      let status = getDaysLeft(user);
-      document.getElementById('subStatus').innerText = status.text;
-      document.getElementById('subStatus').style.color = status.color;
-      document.getElementById('subStatus').classList.remove('hidden');
+      welcomeStore.innerText=user.store; // بس الاسم
       mainApp.classList.remove('hidden');
     }
   }else{loginError.innerText="❌ خطأ"}
 }
 
 function showSubscriptionStatus(){
-  let status = getDaysLeft(currentUser);
-  let msg = `حالة الاشتراك: ${status.text}\n\n`;
-  if(currentUser.subType=="monthly") msg += "نوع الاشتراك: شهري";
-  if(currentUser.subType=="yearly") msg += "نوع الاشتراك: سنوي";
-  if(currentUser.subType=="permanent") msg += "نوع الاشتراك: دائمي";
+  let days = getDaysLeft(currentUser);
+  let msg = `حالة الاشتراك\n\n`;
+  if(currentUser.subType=="monthly") msg += `النوع: شهري\nالمتبقي: ${days} يوم`;
+  if(currentUser.subType=="yearly") msg += `النوع: سنوي\nالمتبقي: ${days} يوم`;
+  if(currentUser.subType=="permanent") msg += `النوع: دائمي`;
   alert(msg);
 }
 
-// باقي الدوال نفسها بدون تغيير
 function showPage(page){
   if(page=='settings' && currentUser.role!="admin"){alert("❌ للادمن فقط");return;}
   menuGrid.classList.add('hidden'); pageContent.classList.remove('hidden');
   let html = '<button class="btn-back no-print" onclick="backToMenu()">رجوع</button>';
 
+  // 1. المنتجات
   if(page=='products'){
     html += `<div class="header">المنتجات</div>
     <input id="pName" placeholder="اسم المنتج"><input id="pPrice" type="number" placeholder="سعر البيع">
     <input id="pCost" type="number" placeholder="سعر الشراء"><input id="pQty" type="number" placeholder="الكمية">
-    <button class="btn-save" id="pBtn" onclick="saveProduct()">حفظ المنتج</button>`;
-    data.products.forEach((p,i)=>html+=`<div class="item-card"><b>${p.name}</b> - السعر: ${p.price} - الكمية: ${p.qty}
+    <button class="btn-save" id="pBtn" onclick="saveProduct()">حفظ المنتج</button><hr>`;
+    data.products.forEach((p,i)=>html+=`<div class="item-card"><b>${p.name}</b><br>سعر: ${p.price} | شراء: ${p.cost} | كمية: ${p.qty}
       <div class="btn-row"><button class="btn-edit" onclick="editItem('products',${i})">تعديل</button><button class="btn-delete" onclick="deleteItem('products',${i})">حذف</button></div></div>`);
   }
-  if(page=='customers'){html += `<div class="header">الزبائن</div>`; data.customers.forEach((c,i)=>html+=`<div class="item-card"><b>${c.name}</b> - ${c.phone}<div class="btn-row"><button class="btn-edit" onclick="editItem('customers',${i})">تعديل</button><button class="btn-delete" onclick="deleteItem('customers',${i})">حذف</button></div></div>`);}
-  if(page=='addCustomer'){html += `<div class="header">اضافة زبون</div><input id="cName" placeholder="اسم الزبون"><input id="cPhone" placeholder="رقم الهاتف"><button class="btn-save" id="cBtn" onclick="saveCustomer()">حفظ</button>`;}
-  if(page=='support'){html += `<div class="header">الدعم الفني</div><button class="btn-whatsapp" onclick="window.open('https://wa.me/9647825280650','_blank')">واتساب: 07825280650</button>`;}
-  //... باقي الصفحات كلها موجودة بنفس الكود السابق
 
-  pageContent.innerHTML = html;
+  // 2. الزبائن
+  if(page=='customers'){
+    html += `<div class="header">الزبائن</div><hr>`;
+    data.customers.forEach((c,i)=>html+=`<div class="item-card"><b>${c.name}</b><br>الهاتف: ${c.phone}
+      <div class="btn-row"><button class="btn-edit" onclick="editItem('customers',${i})">تعديل</button><button class="btn-delete" onclick="deleteItem('customers',${i})">حذف</button></div></div>`);
+  }
+  if(page=='addCustomer'){
+    html += `<div class="header">اضافة زبون</div>
+    <input id="cName" placeholder="اسم الزبون"><input id="cPhone" placeholder="رقم الهاتف">
+    <button class="btn-save" id="cBtn" onclick="saveCustomer()">حفظ</button>`;
+  }
+
+  // 3. الموظفين
+  if(page=='employees'){
+    html += `<div class="header">الموظفين</div><hr>`;
+    data.employees.forEach((e,i)=>html+=`<div class="item-card"><b>${e.name}</b><br>الراتب: ${e.salary}
+      <div class="btn-row"><button class="btn-edit" onclick="editItem('employees',${i})">تعديل</button><button class="btn-delete" onclick="deleteItem('employees',${i})">حذف</button></div></div>`);
+  }
+  if(page=='addEmployee'){
+    html += `<div class="header">اضافة موظف</div>
+    <input id="eName" placeholder="اسم الموظف"><input id="eSalary" type="number" placeholder="الراتب">
+    <button class="btn-save" id="eBtn" onclick="saveEmployee()">حفظ</button>`;
+  }
+
+  // 4. الموردين
+  if(page=='suppliers'){
+    html += `<div class="header">الموردين</div><hr>`;
+    data.suppliers.forEach((s,i)=>html+=`<div class="item-card"><b>${s.name}</b><br>الهاتف: ${s.phone}
+      <div class="btn-row"><button class="btn-edit" onclick="editItem('suppliers',${i})">تعديل</button><button class="btn-delete" onclick="deleteItem('suppliers',${i})">حذف</button></div></div>`);
+  }
+  if(page=='addSupplier'){
+    html += `<div class="header">اضافة مورد</div>
+    <input id="sName" placeholder="اسم المورد"><input id="sPhone" placeholder="الهاتف">
+    <button class="btn-save" id="sBtn" onclick="saveSupplier()">حفظ</button>`;
+  }
+
+  // 5. المخازن
+  if(page=='addStore'){
+    html += `<div class="header">اضافة مخزن</div>
+    <input id="stName" placeholder="اسم المخزن">
+    <button class="btn-save" onclick="saveStore()">حفظ</button><hr>`;
+    data.stores.forEach((st,i)=>html+=`<div class="item-card"><b>${st.name}</b>
+      <div class="btn-row"><button class="btn-delete" onclick="deleteItem('stores',${i})">حذف</button></div></div>`);
+  }
+
+  // 6. المصروفات
+  if(page=='expenses'){
+    html += `<div class="header">المصروفات</div>
+    <input id="exDesc" placeholder="البيان"><input id="exAmount" type="number" placeholder="المبلغ">
+    <button class="btn-save" onclick="saveExpense()">حفظ</button><hr>`;
+    data.expenses.forEach((ex,i)=>html+=`<div class="item-card"><b>${ex.desc}</b> - ${ex.amount} د.ع
+      <div class="btn-row"><button class="btn-delete" onclick="deleteItem('expenses',${i})">حذف</button></div></div>`);
+  }
+
+  // 7. نقطة البيع
+  if(page=='pos'){
+    html += `<div class="header">نقطة البيع</div>
+    <select id="posCustomer"><option>زبون عادي</option>`;
+    data.customers.forEach(c=>html+=`<option>${c.name}</option>`); html+=`</select><hr>`;
+    html += `<table><tr><th>المنتج</th><th>السعر</th><th></th></tr>`;
+    data.products.forEach(p=>html+=`<tr><td>${p.name}</td><td>${p.price}</td><td><button onclick="addToCart('${p.name}',${p.price})">+</button></td></tr>`); html+='</table>';
+    html += `<h4>السلة</h4><div id="cart"></div><h3 id="total">الاجمالي: 0</h3>
+    <button class="btn-save" onclick="checkout()">اصدار الفاتورة</button><button class="btn-print" onclick="window.print()">طباعة</button>`;
+  }
+
+  // 8. الفواتير
+  if(page=='invoices'){
+    html += `<div class="header">الفواتير</div><hr><table><tr><th>رقم</th><th>الزبون</th><th>المبلغ</th><th>التاريخ</th><th>حذف</th></tr>`;
+    data.invoices.forEach((i,idx)=>html+=`<tr><td>${idx+1}</td><td>${i.customer}</td><td>${i.total}</td><td>${i.date}</td><td><button class="btn-delete" onclick="deleteItem('invoices',${idx})">X</button></td></tr>`); html+='</table>';
+  }
+
+  // 9. فاتورة جديدة
+  if(page=='invoice'){
+    html += `<div class="header">فاتورة جديدة</div>
+    <select id="invCustomer"><option>اختر الزبون</option>`;
+    data.customers.forEach(c=>html+=`<option>${c.name}</option>`); html+=`</select>
+    <input id="invTotal" type="number" placeholder="المبلغ الكلي">
+    <button class="btn-save" onclick="saveInvoice()">اصدار الفاتورة</button>`;
+  }
+
+  // 10. الايرادات
+  if(page=='income'){
+    let sales = data.invoices.reduce((a,b)=>a+b.total*1,0);
+    let exp = data.expenses.reduce((a,b)=>a+b.amount*1,0);
+    html += `<div class="header">الايرادات</div><h3>المبيعات: ${sales} د.ع</h3><h3>المصروفات: ${exp} د.ع</h3><h3 style="color:green">الصافي: ${sales-exp} د.ع</h3>`;
+  }
+
+  // 11. التقارير
+  if(page=='reports'){
+    html += `<div class="header">التقارير</div>
+    <p>عدد المنتجات: ${data.products.length}</p>
+    <p>عدد الزبائن: ${data.customers.length}</p>
+    <p>عدد الموظفين: ${data.employees.length}</p>
+    <p>عدد الموردين: ${data.suppliers.length}</p>
+    <p>عدد الفواتير: ${data.invoices.length}</p>
+    <p>اجمالي المبيعات: ${data.invoices.reduce((a,b)=>a+b.total*1,0)} د.ع</p>`;
+  }
+
+  // 12. الجرد
+  if(page=='inventory'){
+    html += `<div class="header">الجرد</div><hr><table><tr><th>المنتج</th><th>الكمية</th><th>قيمة المخزون</th></tr>`;
+    data.products.forEach(p=>html+=`<tr><td>${p.name}</td><td>${p.qty}</td><td>${p.qty*p.cost}</td></tr>`); html+='</table>';
+  }
+
+  // 13. النسخ الاحتياطي
+  if(page=='backup'){
+    html += `<div class="header">النسخ الاحتياطي</div>
+    <button class="btn-save" onclick="downloadBackup()">تحميل نسخة</button>
+    <input type="file" id="uploadFile"><button class="btn-add" onclick="uploadBackup()">استرجاع نسخة</button>`;
+  }
+
+  // 14. الاعدادات
+  if(page=='settings'){
+    html += `<div class="header">الاعدادات</div>
+    <input id="setStore" placeholder="اسم المحل" value="${currentUser.store}">
+    <button class="btn-save" onclick="saveSettings()">حفظ</button>`;
+  }
+
+  // 15. الدعم الفني
+  if(page=='support'){
+    html += `<div class="header">الدعم الفني</div>
+    <p style="text-align:center;font-size:16px">شركة الرافدين للمبيعات</p>
+    <button class="btn-whatsapp" onclick="window.open('https://wa.me/9647825280650','_blank')">واتساب: 07825280650</button>
+    <button class="btn-add" onclick="window.open('tel:07825280650')">اتصال: 07825280650</button>`;
+  }
+
+  pageContent.innerHTML = html; updateCart();
 }
 
-// دوال الحفظ
-function saveProduct(){let obj = {name:pName.value,price:pPrice.value,cost:pCost.value,qty:pQty.value}; if(editIndex>-1){data.products[editIndex]=obj; editIndex=-1; pBtn.innerText="حفظ المنتج";} else{data.products.push(obj);} saveData(); showPage('products'); pName.value='';pPrice.value='';pCost.value='';pQty.value='';}
-function saveCustomer(){let obj = {name:cName.value,phone:cPhone.value}; if(editIndex>-1){data.customers[editIndex]=obj; editIndex=-1; cBtn.innerText="حفظ";} else{data.customers.push(obj);} saveData(); showPage('customers'); cName.value='';cPhone.value='';}
-function editItem(type,index){editIndex=index; editType=type; let item = data[type][index]; if(type=='products'){showPage('products'); pName.value=item.name; pPrice.value=item.price; pCost.value=item.cost; pQty.value=item.qty; pBtn.innerText="تعديل وحفظ";} if(type=='customers'){showPage('addCustomer'); cName.value=item.name; cPhone.value=item.phone; cBtn.innerText="تعديل وحفظ";}}
+// دوال الحفظ والتعديل
+function saveProduct(){if(!pName.value||!pPrice.value){alert("كمل البيانات");return} let obj = {name:pName.value,price:pPrice.value,cost:pCost.value,qty:pQty.value}; if(editIndex>-1){data.products[editIndex]=obj; editIndex=-1; pBtn.innerText="حفظ المنتج";} else{data.products.push(obj);} saveData(); showPage('products');}
+function saveCustomer(){if(!cName.value){alert("دخل الاسم");return} let obj = {name:cName.value,phone:cPhone.value}; if(editIndex>-1){data.customers[editIndex]=obj; editIndex=-1; cBtn.innerText="حفظ";} else{data.customers.push(obj);} saveData(); showPage('customers');}
+function saveEmployee(){if(!eName.value){alert("دخل الاسم");return} let obj = {name:eName.value,salary:eSalary.value}; if(editIndex>-1){data.employees[editIndex]=obj; editIndex=-1; eBtn.innerText="حفظ";} else{data.employees.push(obj);} saveData(); showPage('employees');}
+function saveSupplier(){if(!sName.value){alert("دخل الاسم");return} let obj = {name:sName.value,phone:sPhone.value}; if(editIndex>-1){data.suppliers[editIndex]=obj; editIndex=-1; sBtn.innerText="حفظ";} else{data.suppliers.push(obj);} saveData(); showPage('suppliers');}
+function saveStore(){if(stName.value){data.stores.push({name:stName.value}); saveData(); showPage('addStore'); stName.value=''}}
+function saveExpense(){if(exDesc.value&&exAmount.value){data.expenses.push({desc:exDesc.value,amount:exAmount.value}); saveData(); showPage('expenses'); exDesc.value='';exAmount.value=''}}
+function saveInvoice(){if(invCustomer.value&&invTotal.value){data.invoices.push({customer:invCustomer.value,total:invTotal.value,date:new Date().toLocaleDateString('ar')}); saveData(); alert('تم'); showPage('invoices')}}
+function saveSettings(){currentUser.store=setStore.value; saveUsers(); alert('تم الحفظ');}
+
+function editItem(type,index){editIndex=index; editType=type; let item = data[type][index]; if(type=='products'){showPage('products'); pName.value=item.name; pPrice.value=item.price; pCost.value=item.cost; pQty.value=item.qty; pBtn.innerText="تعديل وحفظ";} if(type=='customers'){showPage('addCustomer'); cName.value=item.name; cPhone.value=item.phone; cBtn.innerText="تعديل وحفظ";} if(type=='employees'){showPage('addEmployee'); eName.value=item.name; eSalary.value=item.salary; eBtn.innerText="تعديل وحفظ";} if(type=='suppliers'){showPage('addSupplier'); sName.value=item.name; sPhone.value=item.phone; sBtn.innerText="تعديل وحفظ";}}
 function deleteItem(type,index){if(confirm("متأكد من الحذف؟")){data[type].splice(index,1); saveData(); showPage(type)}}
+
+// نقطة البيع
+function addToCart(name,price){cart.push({name,price}); updateCart()}
+function updateCart(){
+  let c = document.getElementById('cart'); if(!c) return;
+  c.innerHTML = ''; let total=0;
+  cart.forEach((item,i)=>{total+=item.price*1; c.innerHTML+=`<div class="cart-item">${item.name} - ${item.price} <button onclick="cart.splice(${i},1);updateCart()">X</button></div>`});
+  document.getElementById('total').innerText = 'الاجمالي: ' + total;
+}
+function checkout(){
+  let customer = posCustomer.value; let total = cart.reduce((a,b)=>a+b.price*1,0);
+  if(cart.length==0){alert("السلة فارغة");return}
+  data.invoices.push({customer,total,date:new Date().toLocaleDateString('ar')});
+  cart.forEach(item=>{let p = data.products.find(x=>x.name==item.name); if(p) p.qty--;});
+  saveData(); cart=[]; alert("تم اصدار الفاتورة"); showPage('invoices');
+}
+
+function downloadBackup(){let blob = new Blob([JSON.stringify(data)], {type: 'application/json'}); let a = document.createElement('a'); a.href=URL.createObjectURL(blob); a.download='backup.json'; a.click()}
+function uploadBackup(){let file = uploadFile.files[0]; let reader = new FileReader(); reader.onload = e => {data=JSON.parse(e.target.result); saveData(); alert('تم الاسترجاع')}; reader.readAsText(file)}
 
 // الادمن
 function addUser(){if(newUser.value&&newPass.value&&storeName.value){users.push({username:newUser.value,password:newPass.value,store:storeName.value,role:"user",subType:subType.value,startDate:new Date().toISOString()}); saveUsers(); alert("✅ تمت"); loadUserList();}}
-function loadUserList(){let html=""; let userOnly = users.filter(x=>x.role=="user"); userOnly.forEach((u,i)=>{let badgeClass = u.subType=="monthly"?"monthly":u.subType=="yearly"?"yearly":"permanent"; let badgeText = u.subType=="monthly"?"شهري":u.subType=="yearly"?"سنوي":"دائمي"; let status = getDaysLeft(u); html+=`<div class="user-card"><b>${u.store}</b> <span class="badge ${badgeClass}">${badgeText}</span><br>${u.username} / ${u.password}<br>الحالة: <span style="color:${status.color}">${status.text}</span><div class="btn-row">${u.subType!="permanent"? `<button class="btn-renew" onclick="renewUser(${i})">تجديد</button>` : '<div style="width:48%"></div>'}<button class="btn-delete" onclick="deleteUser(${i})">حذف</button></div></div>`}); userList.innerHTML=html || "<p>لا يوجد</p>";}
+function loadUserList(){let html=""; let userOnly = users.filter(x=>x.role=="user"); userOnly.forEach((u,i)=>{let badgeClass = u.subType=="monthly"?"monthly":u.subType=="yearly"?"yearly":"permanent"; let badgeText = u.subType=="monthly"?"شهري":u.subType=="yearly"?"سنوي":"دائمي"; html+=`<div class="user-card"><b>${u.store}</b> <span class="badge ${badgeClass}">${badgeText}</span><br>${u.username} / ${u.password}<div class="btn-row">${u.subType!="permanent"? `<button class="btn-renew" onclick="renewUser(${i})">تجديد</button>` : '<div style="width:48%"></div>'}<button class="btn-delete" onclick="deleteUser(${i})">حذف</button></div></div>`}); userList.innerHTML=html || "<p>لا يوجد</p>";}
 function renewUser(index){let user = users.filter(x=>x.role=="user")[index]; user.startDate = new Date().toISOString(); saveUsers(); alert("✅ تم التجديد"); loadUserList();}
 function deleteUser(index){if(confirm("متأكد؟")){let userOnly = users.filter(x=>x.role=="user"); let realIndex = users.indexOf(userOnly[index]); users.splice(realIndex,1); saveUsers(); alert("✅ تم الحذف"); loadUserList();}}
 function showAdminPanel(){adminScreen.classList.remove('hidden'); loadUserList();}
-function showAdmin(){showAdminPanel()}
 function backToMenu(){if(!adminScreen.classList.contains('hidden')){adminScreen.classList.add('hidden'); loginScreen.classList.remove('hidden');} else{menuGrid.classList.remove('hidden'); pageContent.classList.add('hidden')}}
 function logout(){localStorage.removeItem('currentUser_v8'); currentUser=null; location.reload();}
-window.onload=function(){let user=JSON.parse(localStorage.getItem('currentUser_v8')); if(user){currentUser=user; loginScreen.classList.add('hidden'); if(user.role=="admin"){showAdminPanel();}else{welcomeStore.innerText=user.store; let status = getDaysLeft(user); document.getElementById('subStatus').innerText = status.text; document.getElementById('subStatus').style.color = status.color; document.getElementById('subStatus').classList.remove('hidden'); mainApp.classList.remove('hidden');}}}
+window.onload=function(){let user=JSON.parse(localStorage.getItem('currentUser_v8')); if(user){currentUser=user; loginScreen.classList.add('hidden'); if(user.role=="admin"){showAdminPanel();}else{welcomeStore.innerText=user.store; mainApp.classList.remove('hidden');}}}
 </script>
 </body>
 </html>
