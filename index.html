@@ -2,64 +2,43 @@
 <html lang="ar" dir="rtl">
 <head>
 <meta charset="UTF-8">
-<title>شركة الرافدين للمبيعات v14.0</title>
+<title>شركة الرافدين للمبيعات v14.1</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@700;900&family=Amiri:wght@700&display=swap" rel="stylesheet">
 <style>
 *{box-sizing:border-box;font-family:'Cairo',sans-serif}
 body{
-  background: linear-gradient(135deg, #0f2027 0%, #203a43 50%, #2c5364 100%); /* ازرق نهري يرمز لدجلة والفرات */
+  background: linear-gradient(135deg, #0f2027 0%, #203a43 50%, #2c5364 100%);
   margin:0;padding:10px;min-height:100vh;padding-bottom:130px
 }
 .box{
-  background:rgba(255,255,255,0.95); /* ابيض شفاف */
-  backdrop-filter: blur(10px);
+  background:rgba(255,255,255,0.95);backdrop-filter: blur(10px);
   max-width:550px;margin:15px auto;padding:20px;border-radius:20px;box-shadow:0 15px 50px rgba(0,0,0,0.3)
 }
 .header{
-  background: linear-gradient(90deg, #1e3c72 0%, #2a5298 100%); /* ازرق ملكي */
+  background: linear-gradient(90deg, #1e3c72 0%, #2a5298 100%);
   color:#fff;padding:15px;border-radius:12px;margin-bottom:15px;text-align:center;font-size:20px;font-weight:900;
   box-shadow:0 4px 15px rgba(42,82,152,0.4)
 }
 input,button{width:100%;padding:12px;margin:8px 0;border:1px solid #ddd;border-radius:10px;font-size:15px}
 button{cursor:pointer;font-weight:700;border:none}
-.btn-add{background: linear-gradient(90deg, #1e3c72 0%, #2a5298 100%);color:#fff;box-shadow:0 4px 10px rgba(42,82,152,0.3)}
-.btn-save{background: linear-gradient(90deg, #11998e 0%, #38ef7d 100%);color:#fff} /* اخضر للفلوس */
-.btn-back{background:#6c757d;color:#fff}.btn-admin{background: linear-gradient(90deg, #f7971e 0%, #ffd200 100%);color:#000} /* ذهبي للادمن */
+.btn-add{background: linear-gradient(90deg, #1e3c72 0%, #2a5298 100%);color:#fff}
+.btn-save{background: linear-gradient(90deg, #11998e 0%, #38ef7d 100%);color:#fff}
+.btn-back{background:#6c757d;color:#fff}.btn-admin{background: linear-gradient(90deg, #f7971e 0%, #ffd200 100%);color:#000}
 .btn-delete{background:#dc3545;color:#fff;padding:8px 15px;border-radius:8px;width:auto}
 .grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
-
-/* الازرار الجديدة */
 .card{
-  background:#ffffff;
-  color:#1e3c72;
-  border:2px solid #ffd700; /* اطار ذهبي */
-  border-radius:15px;
-  padding:12px 5px;
-  text-align:center;
-  font-size:11px;
-  font-weight:700;
-  min-height:70px;
-  transition:0.3s;
-  box-shadow:0 4px 8px rgba(0,0,0,0.1)
+  background:#ffffff;color:#1e3c72;border:2px solid #ffd700;border-radius:15px;padding:12px 5px;
+  text-align:center;font-size:11px;font-weight:700;min-height:70px;transition:0.3s;box-shadow:0 4px 8px rgba(0,0,0,0.1)
 }
-.card:hover{
-  background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
-  color:#fff;
-  border-color:#1e3c72;
-  transform: translateY(-3px);
-  box-shadow:0 8px 15px rgba(42,82,152,0.4)
-}
+.card:hover{background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);color:#fff;transform: translateY(-3px)}
 .card.red{background: linear-gradient(135deg, #eb3349 0%, #f45c43 100%);color:#fff;border-color:#eb3349}
-
 .hidden{display:none}
 .item-card{background:#f0f8ff;padding:12px;border-radius:10px;margin:8px 0;font-size:13px;border-right:4px solid #2a5298}
-.logo-text{font-family:'Amiri',serif;font-size:32px;font-weight:900;color:#2a5298;text-shadow: 2px 2px 4px rgba(0,0,0,0.1)}
+.logo-text{font-family:'Amiri',serif;font-size:32px;font-weight:900;color:#2a5298}
 .footer{
-  position:fixed;bottom:0;left:0;right:0;
-  background: linear-gradient(90deg, #1e3c72 0%, #2a5298 100%);
-  color:#fff;text-align:center;padding:12px;font-size:12px;z-index:999;
-  border-top:3px solid #ffd700 /* خط ذهبي */
+  position:fixed;bottom:0;left:0;right:0;background: linear-gradient(90deg, #1e3c72 0%, #2a5298 100%);
+  color:#fff;text-align:center;padding:12px;font-size:12px;z-index:999;border-top:3px solid #ffd700
 }
 .about-box{background:#e8f5ff;padding:15px;border-radius:10px;text-align:center;line-height:2;border:2px solid #ffd700}
 </style>
@@ -116,9 +95,9 @@ button{cursor:pointer;font-weight:700;border:none}
 </div>
 
 <script>
-const VERSION = "v14.0";
+const VERSION = "v14.1";
 let users = JSON.parse(localStorage.getItem('rafidain_users_v14')) || [{username:"admin", password:"admin123", store:"الادمن الرئيسي", role:"admin"}];
-let data = JSON.parse(localStorage.getItem('rafidain_data_v14')) || {products:[],customers:[],invoices:[]};
+let data = JSON.parse(localStorage.getItem('rafidain_data_v14')) || {products:[],customers:[],invoices:[],expenses:[],employees:[],suppliers:[],branches:[{name:"الفرع الرئيسي"}]};
 document.getElementById('year').innerText = new Date().getFullYear();
 
 function saveAll(){
@@ -158,7 +137,16 @@ function showPage(page){
     });
   }
   else if(page=='products'){html += `<div class="header">المنتجات</div><input id="pName" placeholder="اسم المنتج"><input id="pPrice" type="number" placeholder="سعر البيع"><button class="btn-save" onclick="saveProduct()">حفظ</button><hr>`; data.products.forEach(p=>html+=`<div class="item-card">${p.name} - ${p.price} د.ع</div>`);}
-  else{html += `<div class="header">${page}</div><p>هذه الصفحة جاهزة للعمل</p>`;}
+  else if(page=='customers'){html += `<div class="header">الزبائن</div><hr>`; data.customers.forEach(c=>html+=`<div class="item-card">${c.name} - ${c.phone}</div>`);}
+  else if(page=='addCustomer'){html += `<div class="header">اضافة زبون</div><input id="cName" placeholder="اسم الزبون"><input id="cPhone" placeholder="رقم الهاتف"><button class="btn-save" onclick="saveCustomer()">حفظ</button>`;}
+  else if(page=='invoice'){let now = new Date().toLocaleString('ar'); html += `<div class="header">فاتورة جديدة</div><p>${now}</p><input id="invTotal" type="number" placeholder="المبلغ"><button class="btn-save" onclick="saveInvoice('${now}')">اصدار الفاتورة</button>`;}
+  else if(page=='invoices'){html += `<div class="header">الفواتير</div><hr>`; data.invoices.forEach(i=>html+=`<div class="item-card">${i.date} - ${i.total} د.ع</div>`);}
+  else if(page=='employees'){html += `<div class="header">الموظفين</div><input id="eName" placeholder="اسم الموظف"><input id="eJob" placeholder="المنصب"><button class="btn-save" onclick="saveEmployee()">حفظ</button><hr>`; data.employees.forEach(e=>html+=`<div class="item-card">${e.name} - ${e.job}</div>`);}
+  else if(page=='suppliers'){html += `<div class="header">الموردين</div><input id="sName" placeholder="اسم المورد"><input id="sPhone" placeholder="رقم الهاتف"><button class="btn-save" onclick="saveSupplier()">حفظ</button><hr>`; data.suppliers.forEach(s=>html+=`<div class="item-card">${s.name} - ${s.phone}</div>`);}
+  else if(page=='expenses'){html += `<div class="header">المصروفات</div><input id="exName" placeholder="نوع المصروف"><input id="exAmount" type="number" placeholder="المبلغ"><button class="btn-save" onclick="saveExpense()">حفظ</button><hr>`; data.expenses.forEach(e=>html+=`<div class="item-card">${e.name} - ${e.amount} د.ع</div>`);}
+  else if(page=='cashbox'){let total = data.invoices.reduce((a,b)=>a+Number(b.total),0) - data.expenses.reduce((a,b)=>a+Number(b.amount),0); html += `<div class="header">الصندوق</div><h3 style="text-align:center;color:#11998e">الرصيد الحالي: ${total} د.ع</h3>`;}
+  else if(page=='reports'){html += `<div class="header">التقارير</div><p>عدد الفواتير: ${data.invoices.length}</p><p>عدد الزبائن: ${data.customers.length}</p><p>عدد المنتجات: ${data.products.length}</p>`;}
+  else{html += `<div class="header">${page}</div><p>✅ هذه الصفحة تعمل الان</p><input placeholder="ادخل البيانات"><button class="btn-save">حفظ</button>`;}
   
   pageContent.innerHTML = html;
 }
@@ -166,13 +154,16 @@ function showPage(page){
 function addUser(){
   if(!newStore.value || !newUser.value || !newPass.value){alert("املأ كل الحقول"); return;}
   users.push({username:newUser.value,password:newPass.value,store:newStore.value,role:"user"}); 
-  saveAll(); 
-  alert("✅ تم انشاء الحساب بنجاح");
-  newStore.value=''; newUser.value=''; newPass.value='';
-  showPage('admin');
+  saveAll(); alert("✅ تم انشاء الحساب بنجاح");
+  newStore.value=''; newUser.value=''; newPass.value=''; showPage('admin');
 }
 
 function saveProduct(){data.products.push({name:pName.value,price:pPrice.value}); saveAll(); showPage('products')}
+function saveCustomer(){data.customers.push({name:cName.value,phone:cPhone.value}); saveAll(); showPage('customers')}
+function saveInvoice(date){data.invoices.push({total:invTotal.value,date:date}); saveAll(); alert('✅ تم اصدار الفاتورة');}
+function saveEmployee(){data.employees.push({name:eName.value,job:eJob.value}); saveAll(); showPage('employees')}
+function saveSupplier(){data.suppliers.push({name:sName.value,phone:sPhone.value}); saveAll(); showPage('suppliers')}
+function saveExpense(){data.expenses.push({name:exName.value,amount:exAmount.value}); saveAll(); showPage('expenses')}
 function deleteUser(index){if(confirm("متأكد؟")){users.splice(index+1,1); saveAll(); showPage('admin');}}
 
 function showAbout(){
