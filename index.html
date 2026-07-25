@@ -10,29 +10,68 @@
 * {box-sizing: border-box; margin: 0; padding: 0;}
 body {font-family: 'Tahoma'; background: linear-gradient(135deg, #0a1a3a 0%, #0066ff 100%); color: white; text-align: center; padding: 15px;}
 .container {max-width: 500px; margin: auto;}
-h1 {color: #00ccff; margin-bottom: 10px;}
-.card {background: rgba(0,0,0,0.3); padding: 20px; border-radius: 15px; margin: 15px 0;}
-.points {font-size: 40px; color: #00ff88; font-weight: bold;}
-.timer {font-size: 18px; color: #ffcc00; margin: 10px 0;}
-button {background: #0066ff; color: white; border: none; padding: 12px 20px; font-size: 16px; border-radius: 10px; cursor: pointer; margin: 5px; width: 90%;}
+h1 {color: #00ccff; margin-bottom: 10px; font-size: 28px;}
+.card {background: rgba(0,0,0,0.3); padding: 20px; border-radius: 20px; margin: 15px 0;}
+.points {font-size: 36px; color: #00ff88; font-weight: bold; margin: 10px 0;}
+
+/* الساعة الدائرية */
+.circle-timer {
+    width: 200px; height: 200px; margin: 20px auto; position: relative;
+}
+svg {transform: rotate(-90deg);}
+.circle-bg {fill: none; stroke: #333; stroke-width: 12;}
+.circle-progress {
+    fill: none; stroke: #00ff88; stroke-width: 12;
+    stroke-linecap: round; transition: stroke-dashoffset 1s linear;
+}
+.timer-text {
+    position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+    font-size: 22px; color: #ffcc00; font-weight: bold;
+}
+.timer-label {font-size: 12px; color: #aaa;}
+
+button {
+    background: #0066ff; color: white; border: none; 
+    padding: 15px 20px; font-size: 18px; border-radius: 12px; 
+    cursor: pointer; margin: 10px 0; width: 100%; font-weight: bold;
+}
 button:disabled {background: #555; cursor: not-allowed;}
-.shop-item {background: rgba(255,255,255,0.1); padding: 15px; border-radius: 10px; margin: 10px 0; text-align: right;}
+.shop-item {
+    background: rgba(255,255,255,0.1); padding: 15px;
+    border-radius: 12px; margin: 10px 0; text-align: right;
+}
 </style>
 </head>
 <body>
 <div class="container">
     <h1>الرافدين</h1>
+    
     <div class="card">
         <h2>رصيدك</h2>
         <div class="points" id="points">0</div>
+        
+        <!-- الساعة الدائرية -->
+        <div class="circle-timer">
+            <svg width="200" height="200">
+                <circle class="circle-bg" cx="100" cy="100" r="90"></circle>
+                <circle class="circle-progress" id="progress" cx="100" cy="100" r="90"
+                stroke-dasharray="565.48" stroke-dashoffset="565.48"></circle>
+            </svg>
+            <div>
+                <div class="timer-text" id="timer">23:59:59</div>
+                <div class="timer-label">الوقت المتبقي</div>
+            </div>
+        </div>
+
         <button id="collectBtn" onclick="collect()">اجمع النقاط</button>
-        <div class="timer" id="timer">جاري الحساب...</div>
     </div>
+
     <div class="card">
         <h2>متجر العدادات</h2>
         <div id="shop"></div>
     </div>
 </div>
+
 <script>
 let data = JSON.parse(localStorage.getItem('rafidainData')) || {points: 0, lastCollect: 0, rate: 100, level: 1};
 const shopItems = [
@@ -44,34 +83,84 @@ const shopItems = [
     {level: 6, rate: 1000, price: 10000, name: "عداد 1000 نقطة"},
     {level: 7, rate: 2000, price: 20000, name: "عداد 2000 نقطة"}
 ];
+
+const circumference = 2 * Math.PI * 90; // محيط الدائرة
+
 function save() {localStorage.setItem('rafidainData', JSON.stringify(data));}
+
+function formatTime(ms) {
+    let totalSeconds = Math.floor(ms / 1000);
+    let hours = Math.floor(totalSeconds / 3600);
+    let minutes = Math.floor((totalSeconds % 3600) / 60);
+    let seconds = totalSeconds % 60;
+    return `${hours.toString().padStart(2,'0')}:${minutes.toString().padStart(2,'0')}:${seconds.toString().padStart(2,'0')}`;
+}
+
 function updateUI() {
     document.getElementById('points').innerText = data.points;
-    let now = Date.now(); let timeLeft = 24*60*60*1000 - (now - data.lastCollect);
+    
+    let now = Date.now();
+    let timeLeft = 24*60*60*1000 - (now - data.lastCollect);
+    if(timeLeft < 0) timeLeft = 0;
+    
+    // تحديث النص
+    document.getElementById('timer').innerText = formatTime(timeLeft);
+    
+    // تحديث الدائرة - تمشي عكس عقارب الساعة
+    let progress = 1 - (timeLeft / (24*60*60*1000));
+    let offset = circumference - (progress * circumference);
+    document.getElementById('progress').style.strokeDashoffset = offset;
+    
+    // الزر
     if(timeLeft <= 0) {
         document.getElementById('collectBtn').disabled = false;
         document.getElementById('collectBtn').innerText = `اجمع ${data.rate} نقطة`;
-        document.getElementById('timer').innerText = "جاهز للجمع!";
+        document.getElementById('progress').style.stroke = '#00ff88';
     } else {
         document.getElementById('collectBtn').disabled = true;
-        let hours = Math.floor(timeLeft / (1000*60*60)); let mins = Math.floor((timeLeft % (1000*60*60)) / (1000*60));
-        document.getElementById('timer').innerText = `الوقت المتبقي: ${hours}س ${mins}د`;
+        document.getElementById('collectBtn').innerText = "انتظر حتى يكتمل";
+        document.getElementById('progress').style.stroke = '#ffcc00';
     }
-    let shopHTML = ""; shopItems.forEach(item => {
-        let canBuy = data.points >= item.price && data.level < item.level; let owned = data.level >= item.level;
-        shopHTML += `<div class="shop-item"><b>${item.name}</b><br>السعر: ${item.price} نقطة<br><button onclick="buy(${item.level})" ${!canBuy || owned ? 'disabled' : ''}>${owned ? 'مملوك' : 'شراء'}</button></div>`;
-    }); document.getElementById('shop').innerHTML = shopHTML;
+    
+    // بناء المتجر
+    let shopHTML = "";
+    shopItems.forEach(item => {
+        let canBuy = data.points >= item.price && data.level < item.level;
+        let owned = data.level >= item.level;
+        shopHTML += `
+        <div class="shop-item">
+            <b>${item.name}</b><br>
+            السعر: ${item.price} نقطة<br>
+            <button onclick="buy(${item.level})" ${!canBuy || owned ? 'disabled' : ''}>
+                ${owned ? 'مملوك' : 'شراء'}
+            </button>
+        </div>`;
+    });
+    document.getElementById('shop').innerHTML = shopHTML;
 }
+
 function collect() {
-    data.points += data.rate; data.lastCollect = Date.now(); save(); updateUI(); if(navigator.vibrate) navigator.vibrate(100);
+    data.points += data.rate;
+    data.lastCollect = Date.now();
+    save();
+    updateUI();
+    if(navigator.vibrate) navigator.vibrate(100);
 }
+
 function buy(level) {
     let item = shopItems.find(i => i.level === level);
     if(data.points >= item.price && data.level < level) {
-        data.points -= item.price; data.level = level; data.rate = item.rate; save(); updateUI(); alert(`تم شراء ${item.name} بنجاح!`);
+        data.points -= item.price;
+        data.level = level;
+        data.rate = item.rate;
+        save();
+        updateUI();
+        alert(`تم شراء ${item.name} بنجاح!`);
     }
 }
-setInterval(updateUI, 1000); updateUI();
+
+setInterval(updateUI, 1000); // تحديث كل ثانية
+updateUI();
 </script>
 </body>
 </html>
