@@ -4,34 +4,32 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>الرافدين</title>
-<meta name="theme-color" content="#0066ff">
 <style>
 * {box-sizing: border-box; margin: 0; padding: 0;}
-body {font-family: 'Tahoma'; background: linear-gradient(135deg, #0a1a3a 0%, #0066ff 100%); color: white; padding-bottom: 70px;}
+body {font-family: 'Tahoma'; background: linear-gradient(135deg, #0a1a3a 0%, #0066ff 100%); color: white; padding-bottom: 80px;}
 .container {max-width: 500px; margin: auto; padding: 15px;}
-h1 {color: #00ccff; text-align: center; margin-bottom: 10px; font-size: 32px;}
-.card {background: rgba(0,0,0,0.3); padding: 20px; border-radius: 20px; margin: 15px 0;}
+h1 {color: #00ccff; text-align: center; margin: 10px 0; font-size: 30px;}
+.card {background: rgba(0,0,0,0.35); padding: 20px; border-radius: 20px; margin: 15px 0;}
 .points {font-size: 36px; color: #00ff88; font-weight: bold; text-align: center; margin: 10px 0;}
-.circle-timer {width: 200px; height: 200px; margin: 20px auto; position: relative;}
+.circle-timer {width: 200px; height: 200px; margin: 15px auto; position: relative;}
 svg {transform: rotate(-90deg);}
 .circle-bg {fill: none; stroke: #333; stroke-width: 12;}
 .circle-progress {fill: none; stroke: #00ff88; stroke-width: 12; stroke-linecap: round; transition: stroke-dashoffset 1s linear;}
-.timer-text {position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); font-size: 22px; color: #ffcc00; font-weight: bold;}
-button {background: #0066ff; color: white; border: none; padding: 15px 20px; font-size: 16px; border-radius: 12px; cursor: pointer; margin: 5px 0; width: 100%; font-weight: bold;}
-button:disabled {background: #555; color: #aaa; cursor: not-allowed;}
-.shop-item,.task-item {background: rgba(255,255,255,0.1); padding: 15px; border-radius: 12px; margin: 10px 0; text-align: right; display: flex; justify-content: space-between; align-items: center;}
-.task-item button {width: 90px; padding: 8px;}
+.timer-text {position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); font-size: 20px; color: #ffcc00; font-weight: bold;}
+button {background: #0066ff; color: white; border: none; padding: 14px; font-size: 16px; border-radius: 12px; cursor: pointer; margin: 6px 0; width: 100%; font-weight: bold;}
+button:disabled {background: #555; color: #aaa;}
+.shop-item,.task-item {background: rgba(255,255,255,0.1); padding: 12px; border-radius: 12px; margin: 8px 0; display: flex; justify-content: space-between; align-items: center; text-align: right;}
+.task-item button {width: 80px; padding: 8px;}
 .input {width: 100%; padding: 12px; border-radius: 10px; border: none; margin: 10px 0; background: #222; color: white; text-align: center;}
-.wheel {width: 250px; height: 250px; border-radius: 50%; margin: 20px auto; border: 8px solid #ffcc00; display: flex; align-items: center; justify-content: center; font-size: 20px; background: conic-gradient(#0066ff 0deg 60deg, #00ff88 60deg 120deg, #ff0066 120deg 180deg, #ffcc00 180deg 240deg, #9900ff 240deg 300deg, #00ccff 300deg 360deg); transition: transform 4s cubic-bezier(.17,.67,.83,.67);}
-.board {display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; width: 280px; height: 280px; margin: 20px auto;}
-.cell {background: rgba(255,255,255,0.15); border-radius: 15px; font-size: 50px; font-weight: bold; display: flex; align-items: center; justify-content: center; cursor: pointer; height: 90px;}
-.cell:hover {background: rgba(255,255,255,0.25);}
-.nav {position: fixed; bottom: 0; left: 0; right: 0; background: #0a1a3a; display: flex; justify-content: space-around; padding: 10px 0; border-top: 1px solid #0066ff; z-index: 999;}
+.wheel {width: 240px; height: 240px; border-radius: 50%; margin: 15px auto; border: 8px solid #ffcc00; display: flex; align-items: center; justify-content: center; font-size: 18px; background: conic-gradient(#0066ff 0deg 60deg, #00ff88 60deg 120deg, #ff0066 120deg 180deg, #ffcc00 180deg 240deg, #9900ff 240deg 300deg, #00ccff 300deg 360deg); transition: transform 4s cubic-bezier(.17,.67,.83,.67);}
+.board {display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; width: 260px; height: 260px; margin: 15px auto;}
+.cell {background: rgba(255,255,255,0.15); border-radius: 12px; font-size: 45px; font-weight: bold; display: flex; align-items: center; justify-content: center; cursor: pointer;}
+.nav {position: fixed; bottom: 0; left: 0; right: 0; background: #0a1a3a; display: flex; justify-content: space-around; padding: 8px 0; border-top: 2px solid #0066ff;}
 .nav button {background: none; font-size: 11px; padding: 5px; width: auto;}
 .nav button.active {color: #00ccff;}
 .page {display: none;}
 .page.active {display: block;}
-.fly-money {position: fixed; font-size: 24px; color: #00ff88; animation: fly 1s forwards; pointer-events: none; z-index: 9999;}
+.fly {position: fixed; font-size: 24px; color: #00ff88; animation: fly 1s forwards; pointer-events: none;}
 @keyframes fly {0%{opacity:1; transform:translateY(0)} 100%{opacity:0; transform:translateY(-100px)}}
 </style>
 </head>
@@ -42,13 +40,13 @@ button:disabled {background: #555; color: #aaa; cursor: not-allowed;}
     <div id="page-home" class="page active">
         <div class="card">
             <h2 style="text-align:center">رصيدك</h2>
-            <div class="points" id="points">0</div>
+            <div class="points" id="points">1000</div>
             <div class="circle-timer">
                 <svg width="200" height="200">
                     <circle class="circle-bg" cx="100" cy="100" r="90"></circle>
                     <circle class="circle-progress" id="progress" cx="100" cy="100" r="90" stroke-dasharray="565.48" stroke-dashoffset="565.48"></circle>
                 </svg>
-                <div class="timer-text" id="timer">23:59:59</div>
+                <div class="timer-text" id="timer">00:00:00</div>
             </div>
             <button id="collectBtn" onclick="collect()">اجمع النقاط</button>
         </div>
@@ -82,7 +80,7 @@ button:disabled {background: #555; color: #aaa; cursor: not-allowed;}
     <div id="page-withdraw" class="page">
         <div class="card">
             <h2 style="text-align:center">السحب</h2>
-            <p>اقل سحب: 100000 نقطة = 10$</p>
+            <p style="text-align:center">اقل سحب: 100000 نقطة = 10$</p>
             <input type="text" id="withdrawInfo" class="input" placeholder="رقمك او الايميل">
             <button onclick="withdraw()">طلب سحب</button>
         </div>
@@ -91,7 +89,6 @@ button:disabled {background: #555; color: #aaa; cursor: not-allowed;}
     <div id="page-profile" class="page">
         <div class="card">
             <h2 style="text-align:center">البروفايل</h2>
-            <button onclick="alert('تحتاج استضافة')">ربط حساب كوكل</button>
             <div style="margin-top:15px">
                 <label>رمز الاحالة الخاص بك:</label>
                 <input type="text" id="refCode" class="input" readonly>
@@ -101,14 +98,14 @@ button:disabled {background: #555; color: #aaa; cursor: not-allowed;}
             <div style="margin-top:15px">
                 <label>ادخل رمز احالة:</label>
                 <input type="text" id="enterRef" class="input" placeholder="ادخل الرقم هنا">
-                <button onclick="useRef()">تفعيل الرمز</button>
+                <button onclick="useRef()">تفعيل الرمز +500 نقطة</button>
             </div>
         </div>
     </div>
 
     <div id="page-xo" class="page">
         <div class="card">
-            <h2 style="text-align:center">XO ضد الذكاء الاصطناعي</h2>
+            <h2 style="text-align:center">XO ضد البوت</h2>
             <div class="board" id="board"></div>
             <p id="xoStatus" style="text-align:center">دورك X</p>
             <button onclick="showPage('wheel')">رجوع</button>
@@ -125,228 +122,115 @@ button:disabled {background: #555; color: #aaa; cursor: not-allowed;}
     <button onclick="showPage('profile')" id="nav-profile">البروفايل</button>
 </div>
 
-<audio id="cashSound" src="https://www.soundjay.com/mechanical/sounds/coin-drop-1.mp3"></audio>
-
 <script>
-let userId = localStorage.getItem('userId') || "1";
+let userId = localStorage.getItem('userId') || Date.now();
 localStorage.setItem('userId', userId);
 
-let data = JSON.parse(localStorage.getItem('rafidainData_'+userId)) || {
-    points: 1000, lastCollect: 0, rate: 100, level: 1,
-    refCode: userId,
+let data = JSON.parse(localStorage.getItem('rafidain_'+userId)) || {
+    points: 1000, lastCollect: 0, rate: 100, level: 1, refCode: userId,
     referredBy: null, dailyTasks: [], lastTaskReset: 0,
     stats: {collects: 0, spent: 0, spins: 0, xoGames: 0}
 };
 
 const shopItems = [
-    {level: 1, rate: 100, price: 1000, name: "عداد 100 نقطة"},
-    {level: 2, rate: 200, price: 2000, name: "عداد 200 نقطة"},
-    {level: 3, rate: 300, price: 3000, name: "عداد 300 نقطة"},
-    {level: 4, rate: 400, price: 4000, name: "عداد 400 نقطة"},
-    {level: 5, rate: 500, price: 5000, name: "عداد 500 نقطة"},
-    {level: 6, rate: 1000, price: 10000, name: "عداد 1000 نقطة"},
-    {level: 7, rate: 2000, price: 20000, name: "عداد 2000 نقطة"},
-    {level: 8, rate: 3000, price: 30000, name: "عداد 3000 نقطة"},
-    {level: 9, rate: 4000, price: 40000, name: "عداد 4000 نقطة"},
-    {level: 10, rate: 5000, price: 50000, name: "عداد 5000 نقطة"}
+    {level: 1, rate: 100, price: 1000}, {level: 2, rate: 200, price: 2000},
+    {level: 3, rate: 300, price: 3000}, {level: 4, rate: 400, price: 4000},
+    {level: 5, rate: 500, price: 5000}, {level: 6, rate: 1000, price: 10000},
+    {level: 7, rate: 2000, price: 20000}, {level: 8, rate: 3000, price: 30000},
+    {level: 9, rate: 4000, price: 40000}, {level: 10, rate: 5000, price: 50000}
 ];
-
 const wheelPrizes = [50, 100, 200, 500, 1000, 2000, 5000];
 const allTasks = [
     {id: 'login', text: 'سجل دخول يومي', reward: 200},
     {id: 'collect3', text: 'اجمع النقاط 3 مرات', reward: 300},
-    {id: 'spend1000', text: 'اصرف 1000 نقطة بالمتجر', reward: 250},
-    {id: 'spin1', text: 'لف العجلة مرة وحدة', reward: 150},
-    {id: 'playxo', text: 'العب XO مرة وحدة', reward: 200},
-    {id: 'share', text: 'شارك رمزك', reward: 300},
+    {id: 'spend1000', text: 'اصرف 1000 نقطة', reward: 250},
+    {id: 'spin1', text: 'لف العجلة مرة', reward: 150},
+    {id: 'playxo', text: 'العب XO مرة', reward: 200},
     {id: 'reach5k', text: 'اوصل 5000 نقطة', reward: 500},
 ];
-
 const circumference = 2 * Math.PI * 90;
 let board = Array(9).fill('');
-let xoGameOver = false;
+let xoOver = false;
 
-function save() {localStorage.setItem('rafidainData_'+userId, JSON.stringify(data));}
-
-function showPage(page) {
-    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-    document.querySelectorAll('.nav button').forEach(b => b.classList.remove('active'));
-    document.getElementById('page-'+page).classList.add('active');
-    document.getElementById('nav-'+page).classList.add('active');
+function save(){localStorage.setItem('rafidain_'+userId, JSON.stringify(data));}
+function showPage(p){
+    document.querySelectorAll('.page').forEach(x=>x.classList.remove('active'));
+    document.querySelectorAll('.nav button').forEach(x=>x.classList.remove('active'));
+    document.getElementById('page-'+p).classList.add('active');
+    document.getElementById('nav-'+p).classList.add('active');
 }
+function fmt(ms){let s=Math.floor(ms/1000); let h=Math.floor(s/3600); let m=Math.floor((s%3600)/60); let sec=s%60; return `${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}:${String(sec).padStart(2,'0')}`}
+function fly(){let d=document.createElement('div'); d.className='fly'; d.innerText='+'+data.rate; d.style.left=Math.random()*80+10+'%'; d.style.top='40%'; document.body.appendChild(d); setTimeout(()=>d.remove(),1000);}
 
-function formatTime(ms) {
-    let totalSeconds = Math.floor(ms / 1000);
-    let h = Math.floor(totalSeconds / 3600); let m = Math.floor((totalSeconds % 3600) / 60); let s = totalSeconds % 60;
-    return `${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
-}
-
-function flyMoney() {
-    let el = document.createElement('div'); el.className = 'fly-money'; el.innerText = '+'+data.rate;
-    el.style.left = Math.random()*80+10+'%'; el.style.top = '50%'; document.body.appendChild(el);
-    setTimeout(()=>el.remove(), 1000);
-}
-
-function updateUI() {
+function update(){
     document.getElementById('points').innerText = data.points.toLocaleString();
-    document.getElementById('refCode').value = data.refCode + (data.refCode=="1"? " 👑 المطور" : "");
+    document.getElementById('refCode').value = data.refCode;
 
-    let now = Date.now();
-    let timeLeft = 24*60*60*1000 - (now - data.lastCollect);
-    if(timeLeft < 0) timeLeft = 0;
-    document.getElementById('timer').innerText = formatTime(timeLeft);
-    let progress = 1 - (timeLeft / (24*60*60*1000));
-    let offset = circumference - (progress * circumference);
-    document.getElementById('progress').style.strokeDashoffset = offset;
-    document.getElementById('collectBtn').disabled = timeLeft > 0;
-    document.getElementById('collectBtn').innerText = timeLeft <= 0? `اجمع ${data.rate.toLocaleString()} نقطة` : "انتظر حتى يكتمل";
+    let left = 86400000 - (Date.now() - data.lastCollect);
+    if(left<0) left=0;
+    document.getElementById('timer').innerText = fmt(left);
+    document.getElementById('progress').style.strokeDashoffset = circumference - ((1-left/86400000)*circumference);
+    document.getElementById('collectBtn').disabled = left>0;
+    document.getElementById('collectBtn').innerText = left<=0? `اجمع ${data.rate.toLocaleString()} نقطة` : "انتظر";
 
-    document.getElementById('spinBtn').disabled = data.points < 50;
-    document.getElementById('xoBtn').disabled = data.points < 50;
+    document.getElementById('spinBtn').disabled = data.points<50;
+    document.getElementById('xoBtn').disabled = data.points<50;
 
-    if(now - data.lastTaskReset > 24*60*60*1000 || data.dailyTasks.length === 0) {
-        let shuffled = [...allTasks].sort(() => 0.5 - Math.random());
-        data.dailyTasks = shuffled.slice(0, 3).map(t => ({...t, done: 0}));
-        data.lastTaskReset = now;
+    if(Date.now()-data.lastTaskReset>86400000 ||!data.dailyTasks.length){
+        data.dailyTasks = [...allTasks].sort(()=>0.5-Math.random()).slice(0,3).map(t=>({...t,done:0}));
+        data.lastTaskReset=Date.now();
     }
-
-    data.dailyTasks.forEach(task => {
-        if(!task.done){
-            if(task.id === 'collect3' && data.stats.collects >= 3) task.done = 1;
-            if(task.id === 'spend1000' && data.stats.spent >= 1000) task.done = 1;
-            if(task.id === 'spin1' && data.stats.spins >= 1) task.done = 1;
-            if(task.id === 'playxo' && data.stats.xoGames >= 1) task.done = 1;
-            if(task.id === 'reach5k' && data.points >= 5000) task.done = 1;
+    data.dailyTasks.forEach(t=>{
+        if(!t.done){
+            if(t.id==='collect3'&&data.stats.collects>=3)t.done=1;
+            if(t.id==='spend1000'&&data.stats.spent>=1000)t.done=1;
+            if(t.id==='spin1'&&data.stats.spins>=1)t.done=1;
+            if(t.id==='playxo'&&data.stats.xoGames>=1)t.done=1;
+            if(t.id==='reach5k'&&data.points>=5000)t.done=1;
         }
     });
+    document.getElementById('tasks').innerHTML = data.dailyTasks.map(t=>`
+        <div class="task-item"><span>${t.text}</span><button onclick="claim('${t.id}')" ${t.done?'disabled':''}>${t.done?'تم':'+t.reward}</button></div>`).join('');
 
-    let tasksHTML = '';
-    data.dailyTasks.forEach(task => {
-        tasksHTML += `<div class="task-item"><span>${task.text}</span><button onclick="claimTask('${task.id}')" ${task.done?'disabled':''}>${task.done?'تم':'+task.reward}</button></div>`;
-    });
-    document.getElementById('tasks').innerHTML = tasksHTML;
-
-    let shopHTML = "";
-    shopItems.forEach(item => {
-        let canBuy = data.points >= item.price;
-        shopHTML += `<div class="shop-item"><div><b>${item.name}</b><br>السعر: ${item.price.toLocaleString()} نقطة</div><button onclick="buy(${item.level})" ${!canBuy? 'disabled' : ''}>شراء</button></div>`;
-    });
-    document.getElementById('shop').innerHTML = shopHTML;
+    document.getElementById('shop').innerHTML = shopItems.map(i=>`
+        <div class="shop-item"><div><b>عداد ${i.rate} نقطة</b><br>${i.price.toLocaleString()} نقطة</div>
+        <button onclick="buy(${i.level})" ${data.points<i.price?'disabled':''}>شراء</button></div>`).join('');
 }
 
-function collect() {
-    data.points += data.rate;
-    data.lastCollect = Date.now();
-    data.stats.collects++;
-    save(); updateUI();
-    document.getElementById('cashSound').play(); flyMoney();
-    if(navigator.vibrate) navigator.vibrate(100);
+function collect(){
+    data.points+=data.rate; data.lastCollect=Date.now(); data.stats.collects++;
+    save(); update(); fly();
 }
-
-function buy(level) {
-    let item = shopItems.find(i => i.level === level);
-    if(data.points >= item.price) {
-        data.points -= item.price;
-        data.stats.spent += item.price;
-        data.level = level;
-        data.rate = item.rate;
-        save(); updateUI();
-        alert(`تم شراء ${item.name} بنجاح!`);
-    }
+function buy(l){
+    let i=shopItems.find(x=>x.level===l);
+    if(data.points>=i.price){data.points-=i.price; data.stats.spent+=i.price; data.rate=i.rate; data.level=l; save(); update(); alert('تم شراء عداد '+i.rate)}
 }
-
-function spinWheel() {
-    if(data.points < 50) {alert("تحتاج 50 نقطة"); return;}
-    data.points -= 50;
-    data.stats.spins++;
-    let prize = wheelPrizes[Math.floor(Math.random()*wheelPrizes.length)];
-    let deg = 360*5 + Math.random()*360;
-    document.getElementById('wheel').style.transform = `rotate(${deg}deg)`;
-    setTimeout(()=>{
-        data.points += prize; save(); updateUI();
-        alert(`مبروك! ربحت ${prize.toLocaleString()} نقطة`);
-    }, 4000);
+function spinWheel(){
+    if(data.points<50)return; data.points-=50; data.stats.spins++;
+    let prize=wheelPrizes[Math.floor(Math.random()*7)];
+    document.getElementById('wheel').style.transform=`rotate(${1800+Math.random()*360}deg)`;
+    setTimeout(()=>{data.points+=prize; save(); update(); alert('ربحت '+prize.toLocaleString())},4000);
 }
-
-function startXO() {
-    if(data.points < 50) {alert("تحتاج 50 نقطة"); return;}
-    data.points -= 50;
-    data.stats.xoGames++;
-    save(); updateUI();
-    board = Array(9).fill(''); xoGameOver = false;
-    renderBoard(); showPage('xo');
+function startXO(){
+    if(data.points<50)return; data.points-=50; data.stats.xoGames++; save(); update();
+    board=Array(9).fill(''); xoOver=false; renderXO(); showPage('xo');
 }
-
-function renderBoard() {
-    let html = ''; board.forEach((cell, i) => {
-        html += `<div class="cell" onclick="makeMove(${i})">${cell}</div>`;
-    });
-    document.getElementById('board').innerHTML = html;
+function renderXO(){document.getElementById('board').innerHTML=board.map((c,i)=>`<div class="cell" onclick="xo(${i})">${c}</div>`).join('')}
+function xo(i){
+    if(board[i]||xoOver)return; board[i]='X'; renderXO();
+    if(win('X')){endXO('win');return;} if(!board.includes('')){endXO('draw');return;}
+    setTimeout(()=>{let e=board.map((v,j)=>v?'':j).filter(x=>x!==''); board[e[Math.floor(Math.random()*e.length)]]='O'; renderXO(); if(win('O'))endXO('lose'); if(!board.includes(''))endXO('draw'); document.getElementById('xoStatus').innerText='دورك X'},500);
 }
+function win(p){return [[0,1,2],[3,4,5],[6,7,8],[0,3,6],[1,4,7],[2,5,8],[0,4,8],[2,4,6]].some(c=>c.every(i=>board[i]===p))}
+function endXO(r){xoOver=true; let prize=[50,100,200,500,1000][Math.floor(Math.random()*5)];
+    if(r==='win'){data.points+=prize; document.getElementById('xoStatus').innerText=`فزت! +${prize}`}
+    else{document.getElementById('xoStatus').innerText=r==='draw'?'تعادل':'خسرت'} save(); update();}
+function claim(id){let t=data.dailyTasks.find(x=>x.id===id); if(t&&!t.done){data.points+=t.reward; t.done=1; save(); update();}}
+function withdraw(){if(data.points<100000){alert('تحتاج 100000');return;} if(!document.getElementById('withdrawInfo').value){alert('دخل معلومات');return;} alert('تم ارسال الطلب')}
+function useRef(){let c=document.getElementById('enterRef').value; if(data.referredBy){alert('مفعل من قبل');return;} if(c){data.referredBy=c; data.points+=500; save(); update(); alert('تم +500 نقطة')}}
+function copyRef(){navigator.clipboard.writeText(data.refCode); alert('تم النسخ')}
 
-function makeMove(i) {
-    if(board[i] || xoGameOver) return;
-    board[i] = 'X'; renderBoard();
-    if(checkWinner('X')) {endGame('win'); return;}
-    if(board.every(c => c)) {endGame('draw'); return;}
-    document.getElementById('xoStatus').innerText = "دور الذكاء الاصطناعي O";
-    setTimeout(aiMove, 500);
-}
-
-function aiMove() {
-    let empty = board.map((v,i) => v===''?i:null).filter(v=>v!==null);
-    let move = empty[Math.floor(Math.random()*empty.length)];
-    board[move] = 'O'; renderBoard();
-    if(checkWinner('O')) {endGame('lose'); return;}
-    if(board.every(c => c)) {endGame('draw'); return;}
-    document.getElementById('xoStatus').innerText = "دورك X";
-}
-
-function checkWinner(p) {
-    const wins = [[0,1,2],[3,4,5],[6,7,8],[0,3,6],[1,4,7],[2,5,8],[0,4,8],[2,4,6]];
-    return wins.some(combo => combo.every(i => board[i]===p));
-}
-
-function endGame(result) {
-    xoGameOver = true;
-    let prizes = [50, 100, 200, 500, 1000, 2000, 5000];
-    if(result === 'win') {
-        let prize = prizes[Math.floor(Math.random()*prizes.length)];
-        data.points += prize; save(); updateUI();
-        document.getElementById('xoStatus').innerText = `فزت! ربحت ${prize.toLocaleString()} نقطة`;
-    } else {
-        document.getElementById('xoStatus').innerText = result==='draw'? "تعادل! خسرت 50 نقطة" : "خسرت! خسرت 50 نقطة";
-    }
-}
-
-function claimTask(id) {
-    let task = data.dailyTasks.find(t => t.id === id);
-    if(!task || task.done) return;
-    data.points += task.reward;
-    task.done = 1;
-    save();
-    updateUI();
-}
-
-function withdraw() {
-    if(data.points < 100000) {alert("تحتاج 100000 نقطة"); return;}
-    let info = document.getElementById('withdrawInfo').value;
-    if(!info) {alert("دخل معلومات السحب"); return;}
-    alert(`تم ارسال طلب السحب: ${info}`);
-}
-
-function useRef() {
-    let code = document.getElementById('enterRef').value;
-    if(data.referredBy) {alert("استخدمت رمز من قبل"); return;}
-    if(code && code!= data.refCode) {
-        data.referredBy = code; data.points += 500; save(); updateUI();
-        alert(`تم تفعيل الرمز! حصلت 500 نقطة`);
-    }
-}
-
-function copyRef() {navigator.clipboard.writeText(data.refCode); alert("تم نسخ الرمز: " + data.refCode);}
-
-setInterval(updateUI, 1000); updateUI();
+setInterval(update,1000); update();
 </script>
 </body>
 </html>
