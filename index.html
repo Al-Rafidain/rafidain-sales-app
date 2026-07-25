@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>الرافدين</title>
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#0066ff">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<link rel="apple-touch-icon" href="icon-192.png">
+
+<style>
+* {box-sizing: border-box; margin: 0; padding: 0;}
+body {
+    font-family: 'Tahoma', sans-serif;
+    background: linear-gradient(135deg, #0a1a3a 0%, #0066ff 100%);
+    color: white;
+    text-align: center;
+    min-height: 100vh;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+.container {
+    background: rgba(0,0,0,0.3);
+    padding: 30px;
+    border-radius: 20px;
+    backdrop-filter: blur(10px);
+    width: 100%;
+    max-width: 400px;
+}
+h1 {
+    color: #00ccff;
+    font-size: 28px;
+    margin-bottom: 10px;
+}
+.subtitle {
+    color: #aaa;
+    font-size: 14px;
+    margin-bottom: 30px;
+}
+#counter {
+    font-size: 80px;
+    font-weight: bold;
+    margin: 30px 0;
+    color: #00ff88;
+    text-shadow: 0 0 20px rgba(0,255,136,0.5);
+}
+.buttons {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+button {
+    background: #0066ff;
+    color: white;
+    border: none;
+    padding: 15px 25px;
+    font-size: 20px;
+    border-radius: 15px;
+    cursor: pointer;
+    transition: 0.2s;
+    flex: 1;
+    min-width: 90px;
+    font-weight: bold;
+}
+button:hover {
+    background: #0055dd;
+    transform: scale(1.05);
+}
+button:active {
+    transform: scale(0.95);
+}
+.btn-reset {
+    background: #ff4444;
+    width: 100%;
+    margin-top: 10px;
+}
+.btn-reset:hover {
+    background: #dd3333;
+}
+.footer {
+    margin-top: 30px;
+    font-size: 12px;
+    color: #888;
+}
+</style>
+</head>
+<body>
+<div class="container">
+    <h1>الرافدين</h1>
+    <p class="subtitle">تطبيق عد سهل وسريع</p>
+    
+    <div id="counter">0</div>
+    
+    <div class="buttons">
+        <button onclick="decrease()">-</button>
+        <button onclick="increase()">+</button>
+    </div>
+    
+    <button class="btn-reset" onclick="reset()">تصفير العداد</button>
+    
+    <p class="footer">يتم الحفظ تلقائياً</p>
+</div>
+
+<script>
+let count = parseInt(localStorage.getItem('rafidainCounter')) || 0;
+document.getElementById('counter').innerText = count;
+
+function increase(){
+    count++;
+    update();
+}
+
+function decrease(){
+    if(count > 0) {
+        count--;
+        update();
+    }
+}
+
+function reset(){
+    if(confirm('متأكد تريد تصفر العداد؟')) {
+        count = 0;
+        update();
+    }
+}
+
+function update(){
+    document.getElementById('counter').innerText = count;
+    localStorage.setItem('rafidainCounter', count);
+    if(navigator.vibrate) {
+        navigator.vibrate(50);
+    }
+}
+
+if('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('sw.js');
+}
+</script>
+</body>
+</html>
