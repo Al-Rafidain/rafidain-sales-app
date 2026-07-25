@@ -8,24 +8,24 @@
 * {margin:0;padding:0;box-sizing:border-box}
 body {font-family: Tahoma; background: linear-gradient(135deg,#0a1a3a,#0066ff); color:white; padding-bottom:80px}
 .container {max-width:500px;margin:auto;padding:15px}
-h1 {text-align:center;color:#00ccff;margin:10px 0}
+h1 {text-align:center;color:#00ccff;margin:10px 0;font-size:28px}
 .card {background:rgba(0,0,0,0.4);padding:20px;border-radius:20px;margin:15px 0}
-.points {font-size:40px;color:#00ff88;text-align:center;font-weight:bold}
+.points {font-size:40px;color:#00ff88;text-align:center;font-weight:bold;margin:10px 0}
 .circle {width:200px;height:200px;margin:15px auto;position:relative}
 svg {transform:rotate(-90deg)}
 .bg {fill:none;stroke:#333;stroke-width:12}
 .prog {fill:none;stroke:#00ff88;stroke-width:12;stroke-linecap:round}
 .time {position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-size:20px;color:#ff0;font-weight:bold}
-button {background:#0066ff;color:white;border:none;padding:15px;width:100%;border-radius:12px;font-size:16px;margin:5px 0;cursor:pointer}
-button:disabled {background:#555}
-.shop div,.task div {background:rgba(255,255,255,0.1);padding:12px;margin:8px 0;border-radius:12px;display:flex;justify-content:space-between}
+button {background:#0066ff;color:white;border:none;padding:15px;width:100%;border-radius:12px;font-size:16px;margin:5px 0;cursor:pointer;font-weight:bold}
+button:disabled {background:#555;color:#aaa}
+.shop div,.task div {background:rgba(255,255,255,0.1);padding:12px;margin:8px 0;border-radius:12px;display:flex;justify-content:space-between;align-items:center;text-align:right}
+.shop button,.task button {width:80px;padding:8px}
 .nav {position:fixed;bottom:0;left:0;right:0;background:#0a1a3a;display:flex;border-top:2px solid #06f}
-.nav button {flex:1;background:none;font-size:12px;padding:10px}
-.nav.active {color:#00ccff}
+.nav button {flex:1;background:none;font-size:12px;padding:10px;color:white;border:none}
+.wheel {width:230px;height:230px;border-radius:50%;margin:15px auto;border:8px solid #ff0;background:conic-gradient(#06f 0 60deg,#0f8 60deg 120deg,#f06 120deg 180deg,#ff0 180deg 240deg,#90f 240deg 300deg,#0cf 300deg 360deg);display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:bold;transition:4s cubic-bezier(.17,.67,.83,.67)}
+.board {display:grid;grid-template-columns:repeat(3,1fr);gap:8px;width:260px;margin:15px auto}
+.cell {background:rgba(255,255,255,0.15);height:80px;border-radius:12px;font-size:40px;display:flex;align-items:center;justify-content:center;cursor:pointer;font-weight:bold}
 .page {display:none}.page.active{display:block}
-.wheel {width:230px;height:230px;border-radius:50%;margin:15px auto;border:8px solid #ff0;background:conic-gradient(#06f 0 60deg,#0f8 60deg 120deg,#f06 120deg 180deg,#ff0 180deg 240deg,#90f 240deg 300deg,#0cf 300deg 360deg);display:flex;align-items:center;justify-content:center;transition:4s}
-.board {display:grid;grid-template-columns:repeat(3,1fr);gap:8px;width:250px;margin:15px auto}
-.cell {background:rgba(255,255,255,0.15);height:80px;border-radius:12px;font-size:40px;display:flex;align-items:center;justify-content:center}
 </style>
 </head>
 <body>
@@ -49,7 +49,8 @@ button:disabled {background:#555}
 
 <div id="games" class="page">
 <div class="card">
-<h2 style="text-align:center">العاب - كل لعبة 50 نقطة</h2>
+<h2 style="text-align:center">العاب</h2>
+<p style="text-align:center;color:#ff0">كل لعبة = 50 نقطة</p>
 <div class="wheel" id="wheel">لف</div>
 <button id="spin" onclick="spin()">عجلة الحظ</button>
 <button id="xo" onclick="startXO()">لعبة XO</button>
@@ -72,9 +73,9 @@ button:disabled {background:#555}
 
 <div id="xoPage" class="page">
 <div class="card">
-<h2 style="text-align:center">XO</h2>
+<h2 style="text-align:center">XO ضد البوت</h2>
 <div id="board" class="board"></div>
-<p id="xoText" style="text-align:center">دورك</p>
+<p id="xoText" style="text-align:center;font-size:18px;color:#ff0">دورك X</p>
 <button onclick="go('games')">رجوع</button>
 </div>
 </div>
@@ -82,29 +83,37 @@ button:disabled {background:#555}
 </div>
 
 <div class="nav">
-<button onclick="go('home')" class="active">العداد</button>
+<button onclick="go('home')">العداد</button>
 <button onclick="go('games')">العاب</button>
 <button onclick="go('tasks')">مهام</button>
 <button onclick="go('shop')">متجر</button>
 </div>
 
 <script>
-let points = 1000;
-let rate = 100;
-let lastCollect = 0;
-let board = [];
+// 1. نحمل البيانات من التخزين اول ما نفتح
+let data = JSON.parse(localStorage.getItem('rafidain')) || {
+    points: 1000,
+    rate: 100,
+    lastCollect: 0
+};
+
+let board = Array(9).fill('');
 let circum = 2 * Math.PI * 90;
+let gameOver = false;
+
+// 2. دالة الحفظ
+function save(){
+    localStorage.setItem('rafidain', JSON.stringify(data));
+}
 
 function go(p){
 document.querySelectorAll('.page').forEach(x=>x.classList.remove('active'));
-document.querySelectorAll('.nav button').forEach(x=>x.classList.remove('active'));
 document.getElementById(p).classList.add('active');
-event.target.classList.add('active');
 }
 
 function update(){
-document.getElementById('points').innerText = points.toLocaleString();
-let left = 86400000 - (Date.now() - lastCollect);
+document.getElementById('points').innerText = data.points.toLocaleString();
+let left = 86400000 - (Date.now() - data.lastCollect);
 if(left<0) left=0;
 let h = Math.floor(left/3600000);
 let m = Math.floor((left%3600000)/60000);
@@ -112,47 +121,59 @@ let s = Math.floor((left%60000)/1000);
 document.getElementById('time').innerText = `${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
 document.getElementById('prog').style.strokeDashoffset = circum - ((1-left/86400000)*circum);
 document.getElementById('collect').disabled = left>0;
-document.getElementById('collect').innerText = left<=0? `اجمع ${rate} نقطة` : 'انتظر';
-document.getElementById('spin').disabled = points<50;
-document.getElementById('xo').disabled = points<50;
+document.getElementById('collect').innerText = left<=0? `اجمع ${data.rate} نقطة` : 'انتظر';
+document.getElementById('spin').disabled = data.points<50;
+document.getElementById('xo').disabled = data.points<50;
 
 let shop='';
 for(let i=1;i<=10;i++){
-shop+=`<div><span>عداد ${i*100} نقطة</span><button onclick="buy(${i*100},${i*1000})" ${points<i*1000?'disabled':''}>${i*1000}</button></div>`
+let r = i*100;
+let p = i*1000;
+shop+=`<div><div><b>عداد ${r} نقطة</b><br>${p.toLocaleString()} نقطة</div><button onclick="buy(${r},${p})" ${data.points<p?'disabled':''}>شراء</button></div>`
 }
 document.getElementById('shopList').innerHTML=shop;
 
 let tasks='';
-tasks+=`<div><span>اجمع 3 مرات</span><button onclick="alert('+300')">+300</button></div>`;
-tasks+=`<div><span>اصرف 1000</span><button onclick="alert('+250')">+250</button></div>`;
-tasks+=`<div><span>لف العجلة</span><button onclick="alert('+150')">+150</button></div>`;
+tasks+=`<div><span>اجمع 3 مرات</span><button onclick="alert('+300 نقطة')">+300</button></div>`;
+tasks+=`<div><span>اصرف 1000 نقطة</span><button onclick="alert('+250 نقطة')">+250</button></div>`;
+tasks+=`<div><span>لف العجلة مرة</span><button onclick="alert('+150 نقطة')">+150</button></div>`;
 document.getElementById('taskList').innerHTML=tasks;
 }
 
 function collect(){
-points+=rate;
-lastCollect=Date.now();
+data.points+=data.rate;
+data.lastCollect=Date.now();
+save(); // نحفظ
 update();
 }
 
 function buy(r,p){
-if(points>=p){points-=p; rate=r; update(); alert('تم شراء عداد '+r)}
+if(data.points>=p){
+    data.points-=p;
+    data.rate=r;
+    save(); // نحفظ
+    update();
+    alert('تم شراء عداد '+r+' نقطة')
+}
 }
 
 function spin(){
-if(points<50)return;
-points-=50;
+if(data.points<50)return;
+data.points-=50;
+save();
 let prize=[50,100,200,500,1000][Math.floor(Math.random()*5)];
 document.getElementById('wheel').style.transform=`rotate(${1800+Math.random()*360}deg)`;
-setTimeout(()=>{points+=prize; update(); alert('ربحت '+prize)},4000);
+setTimeout(()=>{data.points+=prize; save(); update(); alert('ربحت '+prize.toLocaleString()+' نقطة')},4000);
 update();
 }
 
 function startXO(){
-if(points<50)return;
-points-=50; update();
+if(data.points<50)return;
+data.points-=50; save(); update();
 board=Array(9).fill('');
+gameOver=false;
 renderXO();
+document.getElementById('xoText').innerText='دورك X';
 go('xoPage');
 }
 
@@ -163,15 +184,51 @@ document.getElementById('board').innerHTML=h;
 }
 
 function play(i){
-if(board[i])return;
+if(board[i] || gameOver) return;
 board[i]='X';
-let empty=board.map((v,j)=>v?'':j).filter(x=>x!=='');
-if(empty.length>0) board[empty[0]]='O';
 renderXO();
+
+if(checkWin('X')){
+gameOver=true;
+document.getElementById('xoText').innerText='فزت! +1000 نقطة';
+data.points+=1000;
+save();
+update();
+return;
+}
+if(!board.includes('')){
+gameOver=true;
+document.getElementById('xoText').innerText='تعادل';
+return;
+}
+
+document.getElementById('xoText').innerText='دور البوت O';
+setTimeout(()=>{
+let empty=board.map((v,j)=>v?'':j).filter(x=>x!=='');
+board[empty[Math.floor(Math.random()*empty.length)]]='O';
+renderXO();
+
+if(checkWin('O')){
+gameOver=true;
+document.getElementById('xoText').innerText='خسرت';
+return;
+}
+if(!board.includes('')){
+gameOver=true;
+document.getElementById('xoText').innerText='تعادل';
+return;
+}
+document.getElementById('xoText').innerText='دورك X';
+},500);
+}
+
+function checkWin(p){
+const wins=[[0,1,2],[3,4,5],[6,7,8],[0,3,6],[1,4,7],[2,5,8],[0,4,8],[2,4,6]];
+return wins.some(c=>c.every(i=>board[i]===p));
 }
 
 setInterval(update,1000);
-update();
+update(); // اول ما تفتح يحمل البيانات المحفوظة
 </script>
 </body>
 </html>
