@@ -4,7 +4,6 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>الرافدين</title>
-<link rel="manifest" href="manifest.json">
 <meta name="theme-color" content="#0066ff">
 <style>
 * {box-sizing: border-box; margin: 0; padding: 0;}
@@ -19,20 +18,20 @@ svg {transform: rotate(-90deg);}
 .circle-progress {fill: none; stroke: #00ff88; stroke-width: 12; stroke-linecap: round; transition: stroke-dashoffset 1s linear;}
 .timer-text {position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); font-size: 22px; color: #ffcc00; font-weight: bold;}
 button {background: #0066ff; color: white; border: none; padding: 15px 20px; font-size: 16px; border-radius: 12px; cursor: pointer; margin: 5px 0; width: 100%; font-weight: bold;}
-button:disabled {background: #555; color: #aaa;}
+button:disabled {background: #555; color: #aaa; cursor: not-allowed;}
 .shop-item,.task-item {background: rgba(255,255,255,0.1); padding: 15px; border-radius: 12px; margin: 10px 0; text-align: right; display: flex; justify-content: space-between; align-items: center;}
-.task-item button {width: 80px; padding: 8px;}
+.task-item button {width: 90px; padding: 8px;}
 .input {width: 100%; padding: 12px; border-radius: 10px; border: none; margin: 10px 0; background: #222; color: white; text-align: center;}
 .wheel {width: 250px; height: 250px; border-radius: 50%; margin: 20px auto; border: 8px solid #ffcc00; display: flex; align-items: center; justify-content: center; font-size: 20px; background: conic-gradient(#0066ff 0deg 60deg, #00ff88 60deg 120deg, #ff0066 120deg 180deg, #ffcc00 180deg 240deg, #9900ff 240deg 300deg, #00ccff 300deg 360deg); transition: transform 4s cubic-bezier(.17,.67,.83,.67);}
 .board {display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; width: 280px; height: 280px; margin: 20px auto;}
-.cell {background: rgba(255,255,255,0.15); border-radius: 15px; font-size: 50px; font-weight: bold; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: 0.2s;}
+.cell {background: rgba(255,255,255,0.15); border-radius: 15px; font-size: 50px; font-weight: bold; display: flex; align-items: center; justify-content: center; cursor: pointer; height: 90px;}
 .cell:hover {background: rgba(255,255,255,0.25);}
-.nav {position: fixed; bottom: 0; left: 0; right: 0; background: #0a1a3a; display: flex; justify-content: space-around; padding: 10px 0; border-top: 1px solid #0066ff;}
-.nav button {background: none; font-size: 11px; padding: 5px;}
+.nav {position: fixed; bottom: 0; left: 0; right: 0; background: #0a1a3a; display: flex; justify-content: space-around; padding: 10px 0; border-top: 1px solid #0066ff; z-index: 999;}
+.nav button {background: none; font-size: 11px; padding: 5px; width: auto;}
 .nav button.active {color: #00ccff;}
 .page {display: none;}
 .page.active {display: block;}
-.fly-money {position: fixed; font-size: 24px; color: #00ff88; animation: fly 1s forwards; pointer-events: none;}
+.fly-money {position: fixed; font-size: 24px; color: #00ff88; animation: fly 1s forwards; pointer-events: none; z-index: 9999;}
 @keyframes fly {0%{opacity:1; transform:translateY(0)} 100%{opacity:0; transform:translateY(-100px)}}
 </style>
 </head>
@@ -49,7 +48,7 @@ button:disabled {background: #555; color: #aaa;}
                     <circle class="circle-bg" cx="100" cy="100" r="90"></circle>
                     <circle class="circle-progress" id="progress" cx="100" cy="100" r="90" stroke-dasharray="565.48" stroke-dashoffset="565.48"></circle>
                 </svg>
-                <div><div class="timer-text" id="timer">23:59:59</div></div>
+                <div class="timer-text" id="timer">23:59:59</div>
             </div>
             <button id="collectBtn" onclick="collect()">اجمع النقاط</button>
         </div>
@@ -92,7 +91,7 @@ button:disabled {background: #555; color: #aaa;}
     <div id="page-profile" class="page">
         <div class="card">
             <h2 style="text-align:center">البروفايل</h2>
-            <button onclick="loginGoogle()">ربط حساب كوكل</button>
+            <button onclick="alert('تحتاج استضافة')">ربط حساب كوكل</button>
             <div style="margin-top:15px">
                 <label>رمز الاحالة الخاص بك:</label>
                 <input type="text" id="refCode" class="input" readonly>
@@ -119,7 +118,7 @@ button:disabled {background: #555; color: #aaa;}
 
 <div class="nav">
     <button onclick="showPage('home')" id="nav-home" class="active">العداد</button>
-    <button onclick="showPage('wheel')" id="nav-wheel">العجلة</button>
+    <button onclick="showPage('wheel')" id="nav-wheel">العاب</button>
     <button onclick="showPage('tasks')" id="nav-tasks">المهام</button>
     <button onclick="showPage('shop')" id="nav-shop">المتجر</button>
     <button onclick="showPage('withdraw')" id="nav-withdraw">السحب</button>
@@ -129,14 +128,11 @@ button:disabled {background: #555; color: #aaa;}
 <audio id="cashSound" src="https://www.soundjay.com/mechanical/sounds/coin-drop-1.mp3"></audio>
 
 <script>
-let userId = localStorage.getItem('userId');
-if(!userId) {
-    userId = "1";
-    localStorage.setItem('userId', userId);
-}
+let userId = localStorage.getItem('userId') || "1";
+localStorage.setItem('userId', userId);
 
 let data = JSON.parse(localStorage.getItem('rafidainData_'+userId)) || {
-    points: 0, lastCollect: 0, rate: 100, level: 1,
+    points: 1000, lastCollect: 0, rate: 100, level: 1,
     refCode: userId,
     referredBy: null, dailyTasks: [], lastTaskReset: 0,
     stats: {collects: 0, spent: 0, spins: 0, xoGames: 0}
@@ -171,17 +167,20 @@ let board = Array(9).fill('');
 let xoGameOver = false;
 
 function save() {localStorage.setItem('rafidainData_'+userId, JSON.stringify(data));}
+
 function showPage(page) {
     document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
     document.querySelectorAll('.nav button').forEach(b => b.classList.remove('active'));
     document.getElementById('page-'+page).classList.add('active');
-    if(page!== 'wheel' && page!== 'xo') document.getElementById('nav-'+page).classList.add('active');
+    document.getElementById('nav-'+page).classList.add('active');
 }
+
 function formatTime(ms) {
     let totalSeconds = Math.floor(ms / 1000);
     let h = Math.floor(totalSeconds / 3600); let m = Math.floor((totalSeconds % 3600) / 60); let s = totalSeconds % 60;
-    return `${h.toString().padStart(2,'0')}:${m.toString().padStart(2,'0')}:${s.toString().padStart(2,'0')}`;
+    return `${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
 }
+
 function flyMoney() {
     let el = document.createElement('div'); el.className = 'fly-money'; el.innerText = '+'+data.rate;
     el.style.left = Math.random()*80+10+'%'; el.style.top = '50%'; document.body.appendChild(el);
@@ -201,8 +200,6 @@ function updateUI() {
     document.getElementById('progress').style.strokeDashoffset = offset;
     document.getElementById('collectBtn').disabled = timeLeft > 0;
     document.getElementById('collectBtn').innerText = timeLeft <= 0? `اجمع ${data.rate.toLocaleString()} نقطة` : "انتظر حتى يكتمل";
-
-    if(timeLeft <= 0 && Notification.permission === "granted") new Notification("الرافدين", {body: "يلا اجمع نقاطك صار 24 ساعة"});
 
     document.getElementById('spinBtn').disabled = data.points < 50;
     document.getElementById('xoBtn').disabled = data.points < 50;
@@ -225,25 +222,16 @@ function updateUI() {
 
     let tasksHTML = '';
     data.dailyTasks.forEach(task => {
-        tasksHTML += `
-        <div class="task-item">
-            <span>${task.text}</span>
-            <button onclick="claimTask('${task.id}')" ${task.done?'disabled':''}>
-                ${task.done?'تم':'+'+task.reward}
-            </button>
-        </div>`;
+        tasksHTML += `<div class="task-item"><span>${task.text}</span><button onclick="claimTask('${task.id}')" ${task.done?'disabled':''}>${task.done?'تم':'+task.reward}</button></div>`;
     });
     document.getElementById('tasks').innerHTML = tasksHTML;
 
-    let shopHTML = ""; shopItems.forEach(item => {
+    let shopHTML = "";
+    shopItems.forEach(item => {
         let canBuy = data.points >= item.price;
-        shopHTML += `
-        <div class="shop-item">
-            <b>${item.name}</b><br>
-            السعر: ${item.price.toLocaleString()} نقطة<br>
-            <button onclick="buy(${item.level})" ${!canBuy? 'disabled' : ''}>شراء</button>
-        </div>`;
-    }); document.getElementById('shop').innerHTML = shopHTML;
+        shopHTML += `<div class="shop-item"><div><b>${item.name}</b><br>السعر: ${item.price.toLocaleString()} نقطة</div><button onclick="buy(${item.level})" ${!canBuy? 'disabled' : ''}>شراء</button></div>`;
+    });
+    document.getElementById('shop').innerHTML = shopHTML;
 }
 
 function collect() {
@@ -251,13 +239,8 @@ function collect() {
     data.lastCollect = Date.now();
     data.stats.collects++;
     save(); updateUI();
-    document.getElementById('cashSound').play(); flyMoney(); if(navigator.vibrate) navigator.vibrate(100);
-
-    if(data.referredBy) {
-        let refData = JSON.parse(localStorage.getItem('rafidainData_'+data.referredBy)) || {};
-        refData.points = (refData.points || 0) + Math.floor(data.rate * 0.1);
-        localStorage.setItem('rafidainData_'+data.referredBy, JSON.stringify(refData));
-    }
+    document.getElementById('cashSound').play(); flyMoney();
+    if(navigator.vibrate) navigator.vibrate(100);
 }
 
 function buy(level) {
@@ -273,7 +256,7 @@ function buy(level) {
 }
 
 function spinWheel() {
-    if(data.points < 50) {alert("تحتاج 50 نقطة اقل شي"); return;}
+    if(data.points < 50) {alert("تحتاج 50 نقطة"); return;}
     data.points -= 50;
     data.stats.spins++;
     let prize = wheelPrizes[Math.floor(Math.random()*wheelPrizes.length)];
@@ -331,10 +314,8 @@ function endGame(result) {
         let prize = prizes[Math.floor(Math.random()*prizes.length)];
         data.points += prize; save(); updateUI();
         document.getElementById('xoStatus').innerText = `فزت! ربحت ${prize.toLocaleString()} نقطة`;
-    } else if(result === 'draw') {
-        document.getElementById('xoStatus').innerText = "تعادل! خسرت 50 نقطة";
     } else {
-        document.getElementById('xoStatus').innerText = "خسرت! خسرت 50 نقطة";
+        document.getElementById('xoStatus').innerText = result==='draw'? "تعادل! خسرت 50 نقطة" : "خسرت! خسرت 50 نقطة";
     }
 }
 
@@ -348,28 +329,23 @@ function claimTask(id) {
 }
 
 function withdraw() {
-    if(data.points < 100000) {alert("تحتاج 100000 نقطة اقل شي"); return;}
+    if(data.points < 100000) {alert("تحتاج 100000 نقطة"); return;}
     let info = document.getElementById('withdrawInfo').value;
     if(!info) {alert("دخل معلومات السحب"); return;}
-    alert(`تم ارسال طلب السحب. راح نتواصل وياك على: ${info}`);
+    alert(`تم ارسال طلب السحب: ${info}`);
 }
 
 function useRef() {
     let code = document.getElementById('enterRef').value;
     if(data.referredBy) {alert("استخدمت رمز من قبل"); return;}
     if(code && code!= data.refCode) {
-        let refExists = localStorage.getItem('rafidainData_'+code);
-        if(refExists) {
-            data.referredBy = code; data.points += 500; save(); updateUI();
-            alert(`تم تفعيل رمز المطور ${code}! حصلت 500 نقطة`);
-        } else {alert("الرمز غير موجود");}
+        data.referredBy = code; data.points += 500; save(); updateUI();
+        alert(`تم تفعيل الرمز! حصلت 500 نقطة`);
     }
 }
 
-function loginGoogle() {alert("هذا يحتاج استضافة و API كوكل");}
 function copyRef() {navigator.clipboard.writeText(data.refCode); alert("تم نسخ الرمز: " + data.refCode);}
 
-if(Notification.permission!== "granted") Notification.requestPermission();
 setInterval(updateUI, 1000); updateUI();
 </script>
 </body>
