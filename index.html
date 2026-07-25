@@ -2,145 +2,76 @@
 <html lang="ar" dir="rtl">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>الرافدين</title>
 <link rel="manifest" href="manifest.json">
 <meta name="theme-color" content="#0066ff">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<link rel="apple-touch-icon" href="icon-192.png">
-
 <style>
 * {box-sizing: border-box; margin: 0; padding: 0;}
-body {
-    font-family: 'Tahoma', sans-serif;
-    background: linear-gradient(135deg, #0a1a3a 0%, #0066ff 100%);
-    color: white;
-    text-align: center;
-    min-height: 100vh;
-    padding: 20px;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-}
-.container {
-    background: rgba(0,0,0,0.3);
-    padding: 30px;
-    border-radius: 20px;
-    backdrop-filter: blur(10px);
-    width: 100%;
-    max-width: 400px;
-}
-h1 {
-    color: #00ccff;
-    font-size: 28px;
-    margin-bottom: 10px;
-}
-.subtitle {
-    color: #aaa;
-    font-size: 14px;
-    margin-bottom: 30px;
-}
-#counter {
-    font-size: 80px;
-    font-weight: bold;
-    margin: 30px 0;
-    color: #00ff88;
-    text-shadow: 0 0 20px rgba(0,255,136,0.5);
-}
-.buttons {
-    display: flex;
-    gap: 10px;
-    justify-content: center;
-    flex-wrap: wrap;
-}
-button {
-    background: #0066ff;
-    color: white;
-    border: none;
-    padding: 15px 25px;
-    font-size: 20px;
-    border-radius: 15px;
-    cursor: pointer;
-    transition: 0.2s;
-    flex: 1;
-    min-width: 90px;
-    font-weight: bold;
-}
-button:hover {
-    background: #0055dd;
-    transform: scale(1.05);
-}
-button:active {
-    transform: scale(0.95);
-}
-.btn-reset {
-    background: #ff4444;
-    width: 100%;
-    margin-top: 10px;
-}
-.btn-reset:hover {
-    background: #dd3333;
-}
-.footer {
-    margin-top: 30px;
-    font-size: 12px;
-    color: #888;
-}
+body {font-family: 'Tahoma'; background: linear-gradient(135deg, #0a1a3a 0%, #0066ff 100%); color: white; text-align: center; padding: 15px;}
+.container {max-width: 500px; margin: auto;}
+h1 {color: #00ccff; margin-bottom: 10px;}
+.card {background: rgba(0,0,0,0.3); padding: 20px; border-radius: 15px; margin: 15px 0;}
+.points {font-size: 40px; color: #00ff88; font-weight: bold;}
+.timer {font-size: 18px; color: #ffcc00; margin: 10px 0;}
+button {background: #0066ff; color: white; border: none; padding: 12px 20px; font-size: 16px; border-radius: 10px; cursor: pointer; margin: 5px; width: 90%;}
+button:disabled {background: #555; cursor: not-allowed;}
+.shop-item {background: rgba(255,255,255,0.1); padding: 15px; border-radius: 10px; margin: 10px 0; text-align: right;}
 </style>
 </head>
 <body>
 <div class="container">
     <h1>الرافدين</h1>
-    <p class="subtitle">تطبيق عد سهل وسريع</p>
-    
-    <div id="counter">0</div>
-    
-    <div class="buttons">
-        <button onclick="decrease()">-</button>
-        <button onclick="increase()">+</button>
+    <div class="card">
+        <h2>رصيدك</h2>
+        <div class="points" id="points">0</div>
+        <button id="collectBtn" onclick="collect()">اجمع النقاط</button>
+        <div class="timer" id="timer">جاري الحساب...</div>
     </div>
-    
-    <button class="btn-reset" onclick="reset()">تصفير العداد</button>
-    
-    <p class="footer">يتم الحفظ تلقائياً</p>
+    <div class="card">
+        <h2>متجر العدادات</h2>
+        <div id="shop"></div>
+    </div>
 </div>
-
 <script>
-let count = parseInt(localStorage.getItem('rafidainCounter')) || 0;
-document.getElementById('counter').innerText = count;
-
-function increase(){
-    count++;
-    update();
+let data = JSON.parse(localStorage.getItem('rafidainData')) || {points: 0, lastCollect: 0, rate: 100, level: 1};
+const shopItems = [
+    {level: 1, rate: 100, price: 0, name: "العداد الاساسي - 100 نقطة"},
+    {level: 2, rate: 200, price: 1000, name: "عداد 200 نقطة"},
+    {level: 3, rate: 300, price: 2000, name: "عداد 300 نقطة"},
+    {level: 4, rate: 400, price: 3000, name: "عداد 400 نقطة"},
+    {level: 5, rate: 500, price: 5000, name: "عداد 500 نقطة"},
+    {level: 6, rate: 1000, price: 10000, name: "عداد 1000 نقطة"},
+    {level: 7, rate: 2000, price: 20000, name: "عداد 2000 نقطة"}
+];
+function save() {localStorage.setItem('rafidainData', JSON.stringify(data));}
+function updateUI() {
+    document.getElementById('points').innerText = data.points;
+    let now = Date.now(); let timeLeft = 24*60*60*1000 - (now - data.lastCollect);
+    if(timeLeft <= 0) {
+        document.getElementById('collectBtn').disabled = false;
+        document.getElementById('collectBtn').innerText = `اجمع ${data.rate} نقطة`;
+        document.getElementById('timer').innerText = "جاهز للجمع!";
+    } else {
+        document.getElementById('collectBtn').disabled = true;
+        let hours = Math.floor(timeLeft / (1000*60*60)); let mins = Math.floor((timeLeft % (1000*60*60)) / (1000*60));
+        document.getElementById('timer').innerText = `الوقت المتبقي: ${hours}س ${mins}د`;
+    }
+    let shopHTML = ""; shopItems.forEach(item => {
+        let canBuy = data.points >= item.price && data.level < item.level; let owned = data.level >= item.level;
+        shopHTML += `<div class="shop-item"><b>${item.name}</b><br>السعر: ${item.price} نقطة<br><button onclick="buy(${item.level})" ${!canBuy || owned ? 'disabled' : ''}>${owned ? 'مملوك' : 'شراء'}</button></div>`;
+    }); document.getElementById('shop').innerHTML = shopHTML;
 }
-
-function decrease(){
-    if(count > 0) {
-        count--;
-        update();
+function collect() {
+    data.points += data.rate; data.lastCollect = Date.now(); save(); updateUI(); if(navigator.vibrate) navigator.vibrate(100);
+}
+function buy(level) {
+    let item = shopItems.find(i => i.level === level);
+    if(data.points >= item.price && data.level < level) {
+        data.points -= item.price; data.level = level; data.rate = item.rate; save(); updateUI(); alert(`تم شراء ${item.name} بنجاح!`);
     }
 }
-
-function reset(){
-    if(confirm('متأكد تريد تصفر العداد؟')) {
-        count = 0;
-        update();
-    }
-}
-
-function update(){
-    document.getElementById('counter').innerText = count;
-    localStorage.setItem('rafidainCounter', count);
-    if(navigator.vibrate) {
-        navigator.vibrate(50);
-    }
-}
-
-if('serviceWorker' in navigator) {
-    navigator.serviceWorker.register('sw.js');
-}
+setInterval(updateUI, 1000); updateUI();
 </script>
 </body>
 </html>
