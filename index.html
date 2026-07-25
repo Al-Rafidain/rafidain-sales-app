@@ -23,6 +23,12 @@ button:disabled {background: #555; color: #aaa;}
 .shop-item,.task-item {background: rgba(255,255,255,0.1); padding: 15px; border-radius: 12px; margin: 10px 0; text-align: right;}
 .input {width: 100%; padding: 12px; border-radius: 10px; border: none; margin: 10px 0; background: #222; color: white; text-align: center;}
 .wheel {width: 250px; height: 250px; border-radius: 50%; margin: 20px auto; border: 8px solid #ffcc00; display: flex; align-items: center; justify-content: center; font-size: 20px; background: conic-gradient(#0066ff 0deg 60deg, #00ff88 60deg 120deg, #ff0066 120deg 180deg, #ffcc00 180deg 240deg, #9900ff 240deg 300deg, #00ccff 300deg 360deg); transition: transform 4s cubic-bezier(.17,.67,.83,.67);}
+
+/* شبكة XO */
+.board {display: grid; grid-template-columns: repeat(3, 1fr); gap: 5px; width: 250px; height: 250px; margin: 20px auto;}
+.cell {background: rgba(255,255,255,0.1); border-radius: 10px; font-size: 40px; font-weight: bold; display: flex; align-items: center; justify-content: center; cursor: pointer;}
+.cell:hover {background: rgba(255,255,255,0.2);}
+
 .nav {position: fixed; bottom: 0; left: 0; right: 0; background: #0a1a3a; display: flex; justify-content: space-around; padding: 10px 0; border-top: 1px solid #0066ff;}
 .nav button {background: none; font-size: 11px; padding: 5px;}
 .nav button.active {color: #00ccff;}
@@ -53,10 +59,11 @@ button:disabled {background: #555; color: #aaa;}
 
     <div id="page-wheel" class="page">
         <div class="card">
-            <h2 style="text-align:center">عجلة الحظ</h2>
-            <p style="text-align:center; color:#ffcc00">كل لفة = 50 نقطة</p>
+            <h2 style="text-align:center">العاب</h2>
+            <p style="text-align:center; color:#ffcc00">كل لعبة = 50 نقطة</p>
             <div class="wheel" id="wheel">لف</div>
-            <button id="spinBtn" onclick="spinWheel()">لف العجلة - 50 نقطة</button>
+            <button id="spinBtn" onclick="spinWheel()">عجلة الحظ - 50 نقطة</button>
+            <button id="xoBtn" onclick="startXO()">لعبة XO - 50 نقطة</button>
         </div>
     </div>
 
@@ -100,6 +107,16 @@ button:disabled {background: #555; color: #aaa;}
             </div>
         </div>
     </div>
+
+    <!-- صفحة لعبة XO -->
+    <div id="page-xo" class="page">
+        <div class="card">
+            <h2 style="text-align:center">XO ضد الذكاء الاصطناعي</h2>
+            <div class="board" id="board"></div>
+            <p id="xoStatus" style="text-align:center">دورك X</p>
+            <button onclick="showPage('wheel')">رجوع</button>
+        </div>
+    </div>
 </div>
 
 <div class="nav">
@@ -116,7 +133,7 @@ button:disabled {background: #555; color: #aaa;}
 <script>
 let userId = localStorage.getItem('userId');
 if(!userId) {
-    userId = "1"; // انت المطور رقم 1
+    userId = "1";
     localStorage.setItem('userId', userId);
 }
 
@@ -126,7 +143,6 @@ let data = JSON.parse(localStorage.getItem('rafidainData_'+userId)) || {
     referredBy: null, tasks: {login:0, buy:0, share:0}, lastTaskReset: 0
 };
 
-// المتجر الجديد حسب طلبك
 const shopItems = [
     {level: 1, rate: 100, price: 1000, name: "عداد 100 نقطة"},
     {level: 2, rate: 200, price: 2000, name: "عداد 200 نقطة"},
@@ -140,15 +156,20 @@ const shopItems = [
     {level: 10, rate: 5000, price: 50000, name: "عداد 5000 نقطة"}
 ];
 
-const wheelPrizes = [50, 100, 200, 500, 1000, 2000, 5000]; // لحد 5000
+const wheelPrizes = [50, 100, 200, 500, 1000, 2000, 5000];
 const circumference = 2 * Math.PI * 90;
+
+// متغيرات XO
+let board = ['', '', ''];
+let xoTurn = 'X';
+let xoGameOver = false;
 
 function save() {localStorage.setItem('rafidainData_'+userId, JSON.stringify(data));}
 function showPage(page) {
     document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
     document.querySelectorAll('.nav button').forEach(b => b.classList.remove('active'));
     document.getElementById('page-'+page).classList.add('active');
-    document.getElementById('nav-'+page).classList.add('active');
+    if(page!== 'wheel' && page!== 'xo') document.getElementById('nav-'+page).classList.add('active');
 }
 function formatTime(ms) {
     let totalSeconds = Math.floor(ms / 1000);
@@ -174,8 +195,8 @@ function updateUI() {
 
     if(timeLeft <= 0 && Notification.permission === "granted") new Notification("الرافدين", {body: "يلا اجمع نقاطك صار 24 ساعة"});
 
-    // العجلة مفتوحة دائما بس لازم 50 نقطة
     document.getElementById('spinBtn').disabled = data.points < 50;
+    document.getElementById('xoBtn').disabled = data.points < 50;
 
     if(now - data.lastTaskReset > 24*60*60*1000) {data.tasks = {login:0, buy:0, share:0}; data.lastTaskReset = now;}
     let tasksHTML = `
@@ -185,9 +206,8 @@ function updateUI() {
     `;
     document.getElementById('tasks').innerHTML = tasksHTML;
 
-    // المتجر الجديد بشرط النقاط
     let shopHTML = ""; shopItems.forEach(item => {
-        let canBuy = data.points >= item.price; // لازم عنده نفس السعر
+        let canBuy = data.points >= item.price;
         shopHTML += `
         <div class="shop-item">
             <b>${item.name}</b><br>
@@ -216,7 +236,6 @@ function buy(level) {
     }
 }
 
-// العجلة ب 50 نقطة
 function spinWheel() {
     if(data.points < 50) {alert("تحتاج 50 نقطة اقل شي"); return;}
     data.points -= 50;
@@ -227,6 +246,63 @@ function spinWheel() {
         data.points += prize; save(); updateUI();
         alert(`مبروك! ربحت ${prize.toLocaleString()} نقطة`);
     }, 4000);
+}
+
+// ===== لعبة XO =====
+function startXO() {
+    if(data.points < 50) {alert("تحتاج 50 نقطة"); return;}
+    data.points -= 50; save(); updateUI();
+    board = ['', '', '']; xoTurn = 'X'; xoGameOver = false;
+    renderBoard(); showPage('xo');
+}
+
+function renderBoard() {
+    let html = ''; board.forEach((cell, i) => {
+        html += `<div class="cell" onclick="makeMove(${i})">${cell}</div>`;
+    });
+    document.getElementById('board').innerHTML = html;
+}
+
+function makeMove(i) {
+    if(board[i] || xoGameOver) return;
+    board[i] = 'X'; renderBoard();
+    if(checkWinner('X')) {endGame('win'); return;}
+    if(board.every(c => c)) {endGame('draw'); return;}
+
+    xoTurn = 'O';
+    document.getElementById('xoStatus').innerText = "دور الذكاء الاصطناعي O";
+    setTimeout(aiMove, 500);
+}
+
+function aiMove() {
+    let empty = board.map((v,i) => v===''?i:null).filter(v=>v!==null);
+    let move = empty[Math.floor(Math.random()*empty.length)];
+    board[move] = 'O'; renderBoard();
+    if(checkWinner('O')) {endGame('lose'); return;}
+    if(board.every(c => c)) {endGame('draw'); return;}
+
+    xoTurn = 'X';
+    document.getElementById('xoStatus').innerText = "دورك X";
+}
+
+function checkWinner(p) {
+    const wins = [[0,1,2],[3,4,5],[6,7,8],[0,3,6],[1,4,7],[2,5,8],[0,4,8],[2,4,6]];
+    return wins.some(combo => combo.every(i => board[i]===p));
+}
+
+function endGame(result) {
+    xoGameOver = true;
+    let prizes = [50, 100, 200, 500, 1000, 2000, 5000];
+    if(result === 'win') {
+        let prize = prizes[Math.floor(Math.random()*prizes.length)];
+        data.points += prize; save(); updateUI();
+        document.getElementById('xoStatus').innerText = `فزت! ربحت ${prize.toLocaleString()} نقطة`;
+    } else if(result === 'draw') {
+        data.points += 50; save(); updateUI();
+        document.getElementById('xoStatus').innerText = "تعادل! رجعنالك 50 نقطة";
+    } else {
+        document.getElementById('xoStatus').innerText = "خسرت! حاول مرة ثانية";
+    }
 }
 
 function claimTask(task) {
