@@ -15,21 +15,24 @@ body{background:#000;color:white;font-family:'Tahoma';overflow-x:hidden}
 .timer{font-size:22px;color:#facc15;text-align:center;margin:8px 0}
 .btn{background:linear-gradient(90deg,#2563eb,#06b6d4);color:white;border:0;padding:15px;border-radius:14px;width:100%;font-size:16px;font-weight:bold;margin:8px 0;cursor:pointer}
 .btn:active{transform:scale(0.96)}
+.btn:disabled{background:#333;color:#777;box-shadow:none}
 .nav{position:fixed;bottom:0;left:0;right:0;max-width:430px;margin:auto;background:#0a0f1e;display:flex;border-top:1px solid #1e3a8a}
 .nav button{flex:1;background:none;border:0;color:#aaa;padding:10px 0;font-size:11px}
 .nav button.active{color:#00e5ff}
 .page{display:none}.page.active{display:block}
 .item{background:#1f2937;padding:14px;border-radius:14px;margin:10px 0;display:flex;justify-content:space-between;align-items:center}
-.item button{width:100px;padding:10px;font-size:13px}
+.item button{width:110px;padding:10px;font-size:14px}
 .wheel-wrap{display:flex;justify-content:center;margin:15px 0}
 .wheel{width:250px;height:250px;border-radius:50%;border:8px solid #facc15;background:conic-gradient(#ef4444 0 60deg,#22c55e 60deg 120deg,#3b82f6 120deg 180deg,#eab308 180deg 240deg,#a855f7 240deg 300deg,#06b6d4 300deg 360deg);position:relative;transition:5s cubic-bezier(0.23,1,0.32,1)}
 .pointer{position:absolute;top:-15px;left:50%;transform:translateX(-50%);width:0;height:0;border-left:15px solid transparent;border-right:15px solid transparent;border-bottom:20px solid #fff;z-index:10}
 .board{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;width:280px;margin:15px auto}
 .cell{background:#1f2937;height:90px;border-radius:15px;font-size:45px;display:flex;align-items:center;justify-content:center;font-weight:bold}
 .event{background:linear-gradient(90deg,#facc15,#eab308);color:#000;text-align:center;padding:10px;border-radius:12px;font-weight:bold}
+.toast{position:fixed;top:20px;left:50%;transform:translateX(-50%);background:#ef4444;color:white;padding:14px 22px;border-radius:12px;font-weight:bold;display:none;z-index:999;box-shadow:0 0 20px #ef4444}
 </style>
 </head>
 <body>
+<div class="toast" id="toast">نقاطك غير كافية ❌</div>
 <div class="app">
 
 <div id="home" class="page active">
@@ -122,17 +125,30 @@ allTasks100.push({text:"اشتري عداد",type:"buy",need:1,reward:2000});
 
 let boardXO = Array(9).fill('');
 let gameOver = false;
-let entered = false;
+let soundOn = false;
 
 function save(){localStorage.setItem('rafidainMobile', JSON.stringify(data));}
+
+function showToast(msg, color='#ef4444'){
+let t = document.getElementById('toast');
+t.innerText = msg;
+t.style.background = color;
+t.style.display = 'block';
+setTimeout(()=>t.style.display='none',2000);
+}
+
 function show(id){
 document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
 document.querySelectorAll('.nav button').forEach(b=>b.classList.remove('active'));
 document.getElementById(id).classList.add('active');
 playSound('clickSound');
-if(id=='home' &&!entered){playSound('enterSound'); entered=true;}
+if(!soundOn){playSound('enterSound'); soundOn=true;}
 }
-function playSound(id){let s=document.getElementById(id); s.currentTime=0; s.play().catch(()=>{});}
+
+function playSound(id){
+let s=document.getElementById(id);
+if(s){s.currentTime=0; s.play().catch(()=>{});}
+}
 
 function update(){
 document.getElementById('points').innerText = data.points.toLocaleString();
@@ -157,13 +173,16 @@ let tHtml='';
 data.tasks.forEach((t,i)=>{tHtml+=`<div class="item"><div><b>${t.text}</b><br><small>+${t.reward}</small></div><button class="btn" onclick="claim(${i})" ${t.prog<t.need?'disabled':''}>${t.done?'✅':t.prog+'/'+t.need}</button></div>`;});
 document.getElementById('taskList').innerHTML=tHtml;
 
-// الاسعار المضبوطة
+// الاسعار المضبوطة لكل العدادات
 let shop='';
 let prices = [
 {rate:100,price:1000},{rate:200,price:2000},{rate:300,price:3000},{rate:400,price:4000},{rate:500,price:5000},
 {rate:1000,price:10000},{rate:2000,price:20000},{rate:3000,price:30000},{rate:4000,price:40000},{rate:5000,price:50000}
 ];
-prices.forEach(p=>{shop+=`<div class="item"><span><b>عداد ${p.rate}</b></span><button class="btn" onclick="buy(${p.rate},${p.price})" ${data.points<p.price?'disabled':''}>${p.price.toLocaleString()}</button></div>`;});
+prices.forEach(p=>{
+let canBuy = data.points >= p.price;
+shop+=`<div class="item"><span><b>عداد ${p.rate}</b></span><button class="btn" onclick="buy(${p.rate},${p.price})" ${!canBuy?'disabled':''}>${p.price.toLocaleString()}</button></div>`;
+});
 document.getElementById('shopList').innerHTML=shop;
 
 let top=[{n:'انت',p:data.points},{n:'احمد',p:125000},{n:'علي',p:98000}].sort((a,b)=>b.p-a.p);
@@ -179,13 +198,17 @@ playSound('winSound'); save(); update();
 }
 
 function buy(r,p){
-if(data.points<p) return alert('ماعندك نقاط');
+if(data.points<p){
+showToast('نقاطك غير كافية ❌');
+playSound('loseSound');
+return;
+}
 data.points-=p; data.rate=r; data.tasks.forEach(t=>{if(t.type=="buy") t.prog++;});
-playSound('buySound'); save(); update(); alert('✅ تم شراء عداد '+r);
+playSound('buySound'); showToast('تم الشراء بنجاح ✅','#22c55e'); save(); update();
 }
 
 function spin(){
-if(data.points<50) return alert('تحتاج 50');
+if(data.points<50){showToast('تحتاج 50 نقطة'); playSound('loseSound'); return;}
 data.points-=50;
 let prizes=[50,100,200,500,1000,2000];
 let win = prizes[Math.floor(Math.random()*prizes.length)];
@@ -195,12 +218,12 @@ data.tasks.forEach(t=>{if(t.type=="game") t.prog++;});
 setTimeout(()=>{
 data.points+=win;
 if(win>=500) playSound('winSound'); else playSound('loseSound');
-alert('ربحت '+win); save(); update();
+showToast('ربحت '+win,'#22c55e'); save(); update();
 },5000); update();
 }
 
 function startXO(){
-if(data.points<50) return alert('تحتاج 50');
+if(data.points<50){showToast('تحتاج 50 نقطة'); playSound('loseSound'); return;}
 data.points-=50; save(); update();
 boardXO=Array(9).fill(''); gameOver=false;
 renderXO(); show('xo');
@@ -224,11 +247,11 @@ document.getElementById('xoText').innerText='دورك';
 function checkWin(p){const wins=[[0,1,2],[3,4,5],[6,7,8],[0,3,6],[1,4,7],[2,5,8],[0,4,8],[2,4,6]]; return wins.some(c=>c.every(i=>boardXO[i]===p));}
 
 function box(){
-if(data.points<500) return alert('تحتاج 500');
+if(data.points<500){showToast('تحتاج 500 نقطة'); playSound('loseSound'); return;}
 data.points-=500; let win=[100,500,1000,2000,5000][Math.floor(Math.random()*5)];
 data.points+=win; data.tasks.forEach(t=>{if(t.type=="box") t.prog++;});
 if(win>=1000) playSound('winSound'); else playSound('loseSound');
-save(); update(); alert('ربحت '+win);
+showToast('ربحت '+win,'#22c55e'); save(); update();
 }
 
 function claim(i){
@@ -242,8 +265,8 @@ function useRef(){
 let code = document.getElementById('refInput').value;
 if(code &&!data.usedRef && code!=data.myCode){
 data.points+=5000; data.usedRef=true; playSound('winSound'); save(); update();
-alert('تم +5000');
-}else alert('كود غلط');
+showToast('تم +5000','#22c55e');
+}else showToast('كود غلط');
 }
 
 setInterval(update,1000); update();
