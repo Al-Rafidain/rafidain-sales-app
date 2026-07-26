@@ -2,111 +2,123 @@
 <html lang="ar" dir="rtl">
 <head>
 <meta charset="UTF-8">
-<title>الرافدين الكامل</title>
+<title>الرافدين Pro</title>
 <style>
-body{background:linear-gradient(135deg,#0a1a3a,#0066ff);color:white;font-family:Tahoma;padding:15px;padding-bottom:80px}
-.card{background:rgba(0,0,0,0.4);margin:15px auto;padding:20px;border-radius:20px;max-width:500px}
-.points{font-size:45px;color:#00ff88;text-align:center}
-button{background:#0066ff;color:white;border:0;padding:14px;font-size:16px;border-radius:12px;margin:6px 0;width:100%;font-weight:bold;cursor:pointer}
-button:disabled{background:#555}
-.nav{position:fixed;bottom:0;left:0;right:0;background:#0a1a3a;display:flex}
-.nav button{flex:1;font-size:12px;background:none}
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:linear-gradient(135deg,#0a0f2c,#1e3a8a);color:white;font-family:'Tahoma';min-height:100vh;padding-bottom:70px}
+.container{max-width:480px;margin:auto;padding:15px}
+h1{text-align:center;color:#00ccff;margin:15px 0;font-size:30px;text-shadow:0 0 10px #00ccff}
+.card{background:rgba(0,0,0,0.5);backdrop-filter:blur(10px);padding:20px;border-radius:25px;margin:15px 0;border:1px solid rgba(0,204,255,0.3);box-shadow:0 0 20px rgba(0,204,255,0.2)}
+.points{font-size:55px;color:#00ff88;text-align:center;font-weight:bold;text-shadow:0 0 15px #00ff88}
+.time{font-size:24px;color:#ffeb3b;text-align:center;margin:10px 0;font-weight:bold}
+button{background:linear-gradient(90deg,#0066ff,#00ccff);color:white;border:0;padding:16px;font-size:17px;border-radius:15px;margin:8px 0;width:100%;font-weight:bold;cursor:pointer;box-shadow:0 4px 15px rgba(0,102,255,0.4)}
+button:active{transform:scale(0.95)}
+button:disabled{background:#444;box-shadow:none}
+.nav{position:fixed;bottom:0;left:0;right:0;background:#0a0f2c;display:flex;border-top:2px solid #00ccff}
+.nav button{flex:1;background:none;font-size:12px;padding:10px;border:0;color:white}
 .page{display:none}.page.active{display:block}
-.task,.shop{background:rgba(255,255,255,0.1);padding:12px;margin:8px 0;border-radius:12px;display:flex;justify-content:space-between}
-.event{background:#ff0;color:#000;padding:10px;border-radius:10px;font-weight:bold;text-align:center}
-.time{font-size:22px;color:#ff0;text-align:center}
-.wheel{width:200px;height:200px;border-radius:50%;margin:15px auto;border:8px solid #ff0;background:conic-gradient(#06f 0 60deg,#0f8 60deg 120deg,#f06 120deg 180deg,#ff0 180deg 240deg,#90f 240deg 300deg,#0cf 300deg 360deg);transition:4s}
+.task,.shop{background:rgba(255,255,255,0.08);padding:14px;margin:10px 0;border-radius:15px;display:flex;justify-content:space-between;align-items:center}
+.task button,.shop button{width:100px;padding:8px;font-size:14px}
+.wheel{width:220px;height:220px;border-radius:50%;margin:20px auto;border:10px solid #ffeb3b;background:conic-gradient(#06f 0 60deg,#0f8 60deg 120deg,#f06 120deg 180deg,#ff0 180deg 240deg,#90f 240deg 300deg,#0cf 300deg 360deg);display:flex;align-items:center;justify-content:center;font-size:20px;font-weight:bold;transition:4s cubic-bezier(0.17,0.67,0.12,0.99)}
+.event{background:linear-gradient(90deg,#ffeb3b,#ffc107);color:#000;padding:12px;border-radius:15px;font-weight:bold;text-align:center;margin-bottom:10px}
+input{padding:12px;border-radius:10px;border:0;width:65%}
 </style>
 </head>
 <body>
+<div class="container">
+<h1>🔥 الرافدين 🔥</h1>
 
 <div id="home" class="page active">
 <div class="card">
 <div id="event"></div>
-<h2>رصيدك</h2>
-<div class="points" id="points">1000</div>
+<h2 style="text-align:center">رصيدك الحالي</h2>
+<div class="points" id="points">1,000</div>
 <div class="time" id="timer">23:59:59</div>
-<button id="collectBtn" onclick="collect()">اجمع 100 نقطة</button>
+<button id="collectBtn" onclick="collect()">💰 اجمع 100 نقطة</button>
 </div>
 </div>
 
 <div id="games" class="page">
 <div class="card">
-<h2>العاب</h2>
-<div class="wheel" id="wheel">لف</div>
-<button onclick="spin()">عجلة الحظ -50</button>
-<button onclick="xo()">XO -50</button>
-<button onclick="box()">صندوق غامض -500</button>
+<h2 style="text-align:center">🎮 الالعاب -50 نقطة</h2>
+<div class="wheel" id="wheel">🎁</div>
+<button onclick="spin()">🎡 لف العجلة</button>
+<button onclick="xo()">❌⭕ لعبة XO</button>
+<button onclick="box()">📦 صندوق غامض -500</button>
 </div>
 </div>
 
 <div id="tasks" class="page">
 <div class="card">
-<h2>المهام <span id="taskTimer" style="color:#ff0;font-size:12px"></span></h2>
+<h2 style="text-align:center">📋 المهام <span id="taskTimer" style="color:#ffeb3b;font-size:13px"></span></h2>
 <div id="taskList"></div>
-<h2>الاحالة</h2>
-<input id="refInput" placeholder="كود صديقك" style="padding:10px;width:60%;border-radius:8px">
-<button onclick="useRef()" style="width:35%">تفعيل</button>
-<p>كودك: <b id="myCode"></b></p>
+<h2 style="text-align:center;margin-top:15px">🤝 نظام الاحالة</h2>
+<input id="refInput" placeholder="دخل كود صديقك">
+<button onclick="useRef()" style="width:30%">تفعيل</button>
+<p style="text-align:center;margin-top:10px">كودك: <b id="myCode" style="color:#0f0"></b></p>
 </div>
 </div>
 
 <div id="shop" class="page">
 <div class="card">
-<h2>متجر العدادات</h2>
+<h2 style="text-align:center">🛒 متجر العدادات</h2>
 <div id="shopList"></div>
 </div>
 </div>
 
 <div id="board" class="page">
 <div class="card">
-<h2>المتصدرين</h2>
+<h2 style="text-align:center">🏆 المتصدرين</h2>
 <div id="leader"></div>
 </div>
 </div>
 
-<div class="nav">
-<button onclick="show('home')">العداد</button>
-<button onclick="show('games')">العاب</button>
-<button onclick="show('tasks')">مهام</button>
-<button onclick="show('shop')">متجر</button>
-<button onclick="show('board')">متصدرين</button>
 </div>
 
+<div class="nav">
+<button onclick="show('home')">🏠 العداد</button>
+<button onclick="show('games')">🎮 العاب</button>
+<button onclick="show('tasks')">📋 مهام</button>
+<button onclick="show('shop')">🛒 متجر</button>
+<button onclick="show('board')">🏆 متصدرين</button>
+</div>
+
+<audio id="winSound" src="https://cdn.freesound.org/previews/270/270404_5123851-lq.mp3"></audio>
+<audio id="loseSound" src="https://cdn.freesound.org/previews/270/270310_5123851-lq.mp3"></audio>
+<audio id="collectSound" src="https://cdn.freesound.org/previews/270/270404_5123851-lq.mp3"></audio>
+
 <script>
-let data = JSON.parse(localStorage.getItem('rafidain3')) || {
+let data = JSON.parse(localStorage.getItem('rafidainPro')) || {
 points:1000, rate:100, last:0, myCode:'RAF'+Math.floor(Math.random()*9000),
 usedRef:false, tasks:[], taskEnd:0
 };
 
 let allTasks100 = [];
 for(let i=1;i<=100;i++){
-allTasks100.push({text:`مهمة ${i}: اجمع ${Math.floor(Math.random()*10)+1} مرات`,type:"collect",need:Math.floor(Math.random()*10)+1,reward:Math.floor(Math.random()*2000)+500});
+allTasks100.push({text:`اجمع ${Math.floor(Math.random()*8)+2} مرات`,type:"collect",need:Math.floor(Math.random()*8)+2,reward:Math.floor(Math.random()*1500)+500});
 }
-allTasks100.push({text:"العب XO",type:"game",need:1,reward:500});
+allTasks100.push({text:"العب XO مرة",type:"game",need:1,reward:500});
 allTasks100.push({text:"افتح صندوق",type:"box",need:1,reward:800});
 allTasks100.push({text:"اشتري عداد",type:"buy",need:1,reward:2000});
 
-function save(){localStorage.setItem('rafidain3', JSON.stringify(data));}
+function save(){localStorage.setItem('rafidainPro', JSON.stringify(data));}
 function show(id){document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));document.getElementById(id).classList.add('active');}
+function playSound(id){document.getElementById(id).play();}
 
 function update(){
 document.getElementById('points').innerText = data.points.toLocaleString();
 document.getElementById('myCode').innerText = data.myCode;
 
-// حدث الجمعة
-document.getElementById('event').innerHTML = new Date().getDay()==5? '<div class="event">الجمعة: جمع ×2</div>' : '';
+document.getElementById('event').innerHTML = new Date().getDay()==5? '<div class="event">🎉 الجمعة: الجمع ×2 🎉</div>' : '';
 let mult = new Date().getDay()==5? 2:1;
 
-// تايمر الجمع
 let left = 86400000 - (Date.now() - data.last);
 if(left<0) left=0;
 let h=Math.floor(left/3600000),m=Math.floor((left%3600000)/60000),s=Math.floor((left%60000)/1000);
-document.getElementById('timer').innerText = `${h}:${m}:${s}`;
+document.getElementById('timer').innerText = `${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
 document.getElementById('collectBtn').disabled = left>0;
-document.getElementById('collectBtn').innerText = left<=0? `اجمع ${data.rate*mult} نقطة` : 'انتظر';
+document.getElementById('collectBtn').innerText = left<=0? `💰 اجمع ${data.rate*mult} نقطة` : '⏳ انتظر';
 
-// المهام تتجدد كل 24 ساعة
 if(Date.now() > data.taskEnd || data.tasks.length==0){
 data.tasks = allTasks100.sort(()=>0.5-Math.random()).slice(0,3).map(t=>({...t,prog:0,done:false}));
 data.taskEnd = Date.now() + 86400000;
@@ -116,21 +128,19 @@ document.getElementById('taskTimer').innerText = `تتجدد بعد ${Math.floor
 
 let tHtml='';
 data.tasks.forEach((t,i)=>{
-tHtml+=`<div class="task"><span>${t.text}<br><small>+${t.reward}</small></span><button onclick="claim(${i})" ${t.prog<t.need?'disabled':''}>${t.done?'تم':t.prog+'/'+t.need}</button></div>`;
+tHtml+=`<div class="task"><div><b>${t.text}</b><br><small>+${t.reward} نقطة</small></div><button onclick="claim(${i})" ${t.prog<t.need?'disabled':''}>${t.done?'✅ تم':t.prog+'/'+t.need}</button></div>`;
 });
 document.getElementById('taskList').innerHTML=tHtml;
 
-// المتجر
 let shop='';
 [100,200,300,400,500,1000,2000,3000,4000,5000].forEach((r,i)=>{
 let p=(i+1)*1000;
-shop+=`<div class="shop"><span>عداد ${r}</span><button onclick="buy(${r},${p})" ${data.points<p?'disabled':''}>${p.toLocaleString()}</button></div>`;
+shop+=`<div class="shop"><div><b>عداد ${r}</b></div><button onclick="buy(${r},${p})" ${data.points<p?'disabled':''}>${p.toLocaleString()}</button></div>`;
 });
 document.getElementById('shopList').innerHTML=shop;
 
-// المتصدرين
-let top=[{n:'انت',p:data.points},{n:'احمد',p:125000},{n:'علي',p:98000}].sort((a,b)=>b.p-a.p);
-document.getElementById('leader').innerHTML = top.map((x,i)=>`<div class="shop"><span>#${i+1} ${x.n}</span><b>${x.p.toLocaleString()}</b></div>`).join('');
+let top=[{n:'انت',p:data.points},{n:'احمد',p:125000},{n:'علي',p:98000},{n:'سارة',p:76000}].sort((a,b)=>b.p-a.p);
+document.getElementById('leader').innerHTML = top.map((x,i)=>`<div class="shop"><span>🥇 #${i+1} ${x.n}</span><b>${x.p.toLocaleString()}</b></div>`).join('');
 }
 
 function collect(){
@@ -139,49 +149,58 @@ let mult = new Date().getDay()==5? 2:1;
 data.points += data.rate*mult;
 data.last = Date.now();
 data.tasks.forEach(t=>{if(t.type=="collect") t.prog++;});
+playSound('collectSound');
 save(); update();
 }
 
 function buy(r,p){
-if(data.points<p) return alert('ماعندك نقاط');
+if(data.points<p) return alert('ماعندك نقاط كافية');
 data.points-=p; data.rate=r;
 data.tasks.forEach(t=>{if(t.type=="buy") t.prog++;});
-save(); update(); alert('تم شراء عداد '+r);
+playSound('winSound');
+save(); update(); alert('✅ تم شراء عداد '+r);
 }
 
 function spin(){
-if(data.points<50) return alert('تحتاج 50');
+if(data.points<50) return alert('تحتاج 50 نقطة');
 data.points-=50;
 let win = [50,100,200,500,1000][Math.floor(Math.random()*5)];
 data.points+=win;
 data.tasks.forEach(t=>{if(t.type=="game") t.prog++;});
-save(); update();
 document.getElementById('wheel').style.transform=`rotate(${1800+Math.random()*360}deg)`;
-setTimeout(()=>alert('ربحت '+win),4000);
+setTimeout(()=>{
+if(win>=500) playSound('winSound'); else playSound('loseSound');
+alert('🎁 ربحت '+win.toLocaleString()+' نقطة');
+save(); update();
+},4000);
+update();
 }
 
 function xo(){
-if(data.points<50) return alert('تحتاج 50');
+if(data.points<50) return alert('تحتاج 50 نقطة');
 data.points-=50;
-let win = Math.random()>0.4? 1000:0;
-data.points+=win;
+let win = Math.random()>0.4;
+if(win){data.points+=1000; playSound('winSound'); alert('🏆 فزت +1000 نقطة');}
+else {playSound('loseSound'); alert('😢 خسرت');}
 data.tasks.forEach(t=>{if(t.type=="game") t.prog++;});
-save(); update(); alert(win? 'فزت +1000':'خسرت');
+save(); update();
 }
 
 function box(){
-if(data.points<500) return alert('تحتاج 500');
+if(data.points<500) return alert('تحتاج 500 نقطة');
 data.points-=500;
 let win = [100,500,1000,2000,5000][Math.floor(Math.random()*5)];
 data.points+=win;
 data.tasks.forEach(t=>{if(t.type=="box") t.prog++;});
-save(); update(); alert('ربحت '+win);
+if(win>=1000) playSound('winSound'); else playSound('loseSound');
+save(); update(); alert('📦 فتحت الصندوق وربحت '+win.toLocaleString());
 }
 
 function claim(i){
 if(data.tasks[i].prog>=data.tasks[i].need &&!data.tasks[i].done){
 data.points += data.tasks[i].reward;
 data.tasks[i].done=true;
+playSound('winSound');
 save(); update();
 }
 }
@@ -189,9 +208,9 @@ save(); update();
 function useRef(){
 let code = document.getElementById('refInput').value;
 if(code &&!data.usedRef && code!=data.myCode){
-data.points+=5000; data.usedRef=true; save(); update();
-alert('تم +5000 نقطة');
-}else alert('الكود غلط');
+data.points+=5000; data.usedRef=true; playSound('winSound'); save(); update();
+alert('✅ تم تفعيل الكود +5000 نقطة');
+}else alert('❌ الكود غلط او مستخدم');
 }
 
 setInterval(update,1000); update();
