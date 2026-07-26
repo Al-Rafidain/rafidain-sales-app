@@ -4,124 +4,86 @@
 <meta charset="UTF-8">
 <title>الرافدين</title>
 <style>
-body{background:#000;color:#fff;font-family:Tahoma;margin:0}
-.app{max-width:430px;margin:auto;background:#0a0f2e;min-height:100vh;padding-bottom:70px}
-.card{background:#111827;margin:10px;padding:15px;border-radius:15px}
-.points{font-size:45px;color:#22c55e;text-align:center}
-.btn{background:#2563eb;color:#fff;border:0;padding:15px;width:100%;border-radius:12px;margin:6px 0;font-size:16px}
-.nav{position:fixed;bottom:0;width:100%;max-width:430px;background:#0a0f2e;display:flex}
-.nav button{flex:1;padding:12px;background:none;border:0;color:#aaa}
-.nav button.active{color:#00e5ff}
-.page{display:none}.page.active{display:block}
-.board{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;width:270px;margin:auto}
-.cell{background:#222;height:85px;font-size:40px;display:flex;align-items:center;justify-content:center;border-radius:10px}
+body{background:#000;color:#fff;font-family:Tahoma;text-align:center;margin:0;padding:10px}
+.card{background:#111827;margin:10px auto;padding:20px;border-radius:15px;max-width:400px}
+.btn{background:#2563eb;color:#fff;border:0;padding:15px;width:90%;border-radius:12px;margin:8px;font-size:16px}
+.points{font-size:50px;color:#22c55e}
 </style>
 </head>
 <body>
-<div class="app">
 
-<div id="home" class="page active">
 <div class="card">
-<h2 style="text-align:center;color:#00e5ff">🔥 الرافدين 🔥</h2>
+<h2 style="color:#00e5ff">🔥 الرافدين 🔥</h2>
 <h3>رصيدك</h3>
 <div class="points" id="points">1000</div>
-<p id="rate">العداد: 100</p>
-<p id="timer">23:59:59</p>
-<button class="btn" onclick="collect()">اجمع النقاط</button>
-</div>
+<p id="timer">الوقت: 24:00:00</p>
+<button class="btn" onclick="collect()">اجمع 100</button>
 </div>
 
-<div id="games" class="page">
 <div class="card">
 <h3>الالعاب</h3>
 <button class="btn" onclick="spin()">عجلة -50</button>
 <button class="btn" onclick="xo()">XO -50</button>
 <button class="btn" onclick="box()">صندوق -500</button>
 </div>
-</div>
 
-<div id="xo" class="page">
-<div class="card">
-<h3>XO</h3>
-<div class="board" id="board"></div>
-<button class="btn" onclick="go('home')">رجوع</button>
-</div>
-</div>
-
-<div id="shop" class="page">
 <div class="card">
 <h3>المتجر</h3>
-<div id="shop"></div>
-</div>
-</div>
-
-</div>
-
-<div class="nav">
-<button onclick="go('home')">العداد</button>
-<button onclick="go('games')">العاب</button>
-<button onclick="go('shop')">متجر</button>
+<button class="btn" onclick="buy(100,1000)">+100 عداد = 1000</button>
+<button class="btn" onclick="buy(500,5000)">+500 عداد = 5000</button>
+<button class="btn" onclick="buy(1000,10000)">+1000 عداد = 10000</button>
 </div>
 
 <script>
 let points = 1000;
 let rate = 100;
-let last = 0;
-
-function go(id){
-document.getElementById('home').classList.remove('active');
-document.getElementById('games').classList.remove('active');
-document.getElementById('xo').classList.remove('active');
-document.getElementById('shop').classList.remove('active');
-document.getElementById(id).classList.add('active');
-update();
-}
+let last = Date.now();
 
 function update(){
 document.getElementById('points').innerText = points;
-document.getElementById('rate').innerText = 'العداد: ' + rate;
-
-let s = '';
-s += '<button class="btn" onclick="buy(100,1000)">+100 = 1000</button>';
-s += '<button class="btn" onclick="buy(500,5000)">+500 = 5000</button>';
-s += '<button class="btn" onclick="buy(1000,10000)">+1000 = 10000</button>';
-s += '<button class="btn" onclick="buy(5000,50000)">+5000 = 50000</button>';
-document.getElementById('shop').innerHTML = s;
+let left = 86400 - Math.floor((Date.now()-last)/1000);
+if(left<0) left=0;
+let h = Math.floor(left/3600);
+let m = Math.floor((left%3600)/60);
+let s = left%60;
+document.getElementById('timer').innerText = `الوقت: ${h}:${m}:${s}`;
 }
 
 function collect(){
-points = points + rate;
-alert('تم جمع ' + rate);
+if(Date.now()-last < 86400000) return alert('انتظر للغد');
+points += rate;
+last = Date.now();
 update();
 }
 
 function buy(r,p){
-if(points<p) return alert('ماعندك');
-points = points - p;
-rate = rate + r;
+if(points<p) return alert('ماعندك نقاط');
+points -= p;
+rate += r;
 alert('تم شراء +' + r);
 update();
 }
 
 function spin(){
 if(points<50) return alert('تحتاج 50');
-points = points - 50 + 200;
+points -= 50;
+points += 200;
 alert('ربحت 200');
 update();
 }
 
 function xo(){
 if(points<50) return alert('تحتاج 50');
-points = points - 50;
-let html = '';
-for(let i=0;i<9;i++) html += '<div class="cell" onclick="this.innerText=\'X\'">`+`</div>';
-document.getElementById('board').innerHTML = html;
-go('xo');
+points -= 50;
+points += 500;
+alert('فزت +500');
+update();
 }
 
 function box(){
 if(points<500) return alert('تحتاج 500');
-points = points - 500 + 1000;
+points -= 500;
+points += 1000;
 alert('ربحت 1000');
 update();
 }
