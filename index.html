@@ -2,228 +2,195 @@
 <html lang="ar" dir="rtl">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>الرافدين</title>
 <style>
-*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-body{background:#000;color:white;font-family:'Tahoma';overflow-x:hidden}
-.app{max-width:430px;margin:0 auto;background:linear-gradient(180deg,#0d1b4d,#000);min-height:100vh;padding-bottom:75px}
-.header{text-align:center;padding:15px 0}
-.header h1{font-size:24px;color:#00e5ff;text-shadow:0 0 10px #00e5ff}
-.card{background:#111827;margin:12px;border-radius:20px;padding:20px;border:1px solid #1e3a8a}
-.points{font-size:50px;color:#22c55e;text-align:center;font-weight:bold}
-.rate{font-size:16px;color:#00e5ff;text-align:center;margin:5px 0;font-weight:bold}
-.timer{font-size:22px;color:#facc15;text-align:center;margin:8px 0}
-.btn{background:linear-gradient(90deg,#2563eb,#06b6d4);color:white;border:0;padding:15px;border-radius:14px;width:100%;font-size:16px;font-weight:bold;margin:8px 0;cursor:pointer}
-.btn:active{transform:scale(0.96)}
-.btn:disabled{background:#333;color:#777;box-shadow:none}
-.nav{position:fixed;bottom:0;left:0;right:0;max-width:430px;margin:auto;background:#0a0f1e;display:flex;border-top:1px solid #1e3a8a}
-.nav button{flex:1;background:none;border:0;color:#aaa;padding:10px 0;font-size:11px}
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:#000;color:#fff;font-family:Tahoma}
+.app{max-width:430px;margin:auto;background:linear-gradient(180deg,#0d1b4d,#000);min-height:100vh;padding-bottom:70px}
+.header{text-align:center;padding:15px;color:#00e5ff;font-size:22px}
+.card{background:#111827;margin:10px;padding:15px;border-radius:15px}
+.points{font-size:45px;color:#22c55e;text-align:center;font-weight:bold}
+.btn{background:linear-gradient(90deg,#2563eb,#06b6d4);color:#fff;border:0;padding:15px;width:100%;border-radius:12px;margin:8px 0;font-size:16px;cursor:pointer}
+.nav{position:fixed;bottom:0;width:100%;max-width:430px;background:#0a0f1e;display:flex}
+.nav button{flex:1;padding:12px;background:none;border:0;color:#aaa;font-size:12px;cursor:pointer}
 .nav button.active{color:#00e5ff}
 .page{display:none}.page.active{display:block}
-.item{background:#1f2937;padding:14px;border-radius:14px;margin:10px 0;display:flex;justify-content:space-between;align-items:center}
-.item button{width:110px;padding:10px;font-size:14px}
-.input{width:100%;padding:12px;border-radius:10px;border:0;background:#1f2937;color:white;margin:8px 0}
-.wheel-wrap{display:flex;justify-content:center;margin:15px 0}
-.wheel{width:250px;height:250px;border-radius:50%;border:8px solid #facc15;background:conic-gradient(#ef4444 0 60deg,#22c55e 60deg 120deg,#3b82f6 120deg 180deg,#eab308 180deg 240deg,#a855f7 240deg 300deg,#06b6d4 300deg 360deg);position:relative;transition:5s cubic-bezier(0.23,1,0.32,1)}
-.pointer{position:absolute;top:-15px;left:50%;transform:translateX(-50%);width:0;height:0;border-left:15px solid transparent;border-right:15px solid transparent;border-bottom:20px solid #fff;z-index:10}
-.board{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;width:280px;margin:15px auto}
-.cell{background:#1f2937;height:90px;border-radius:15px;font-size:45px;display:flex;align-items:center;justify-content:center;font-weight:bold;cursor:pointer}
-.event{background:linear-gradient(90deg,#facc15,#eab308);color:#000;text-align:center;padding:10px;border-radius:12px;font-weight:bold}
-.toast{position:fixed;top:20px;left:50%;transform:translateX(-50%);background:#ef4444;color:white;padding:14px 22px;border-radius:12px;font-weight:bold;display:none;z-index:999;box-shadow:0 0 20px #ef4444}
+.board{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;width:270px;margin:10px auto}
+.cell{background:#222;height:85px;font-size:40px;display:flex;align-items:center;justify-content:center;border-radius:10px;cursor:pointer}
+.item{display:flex;justify-content:space-between;background:#1f2937;padding:12px;border-radius:12px;margin:8px 0}
+.input{width:100%;padding:12px;background:#1f2937;border:0;color:#fff;border-radius:10px;margin:5px 0}
 </style>
 </head>
 <body>
-<div class="toast" id="toast"></div>
 <div class="app">
 
 <div id="home" class="page active">
-<div class="header"><h1>🔥 الرافدين 🔥</h1></div>
+<div class="header">🔥 الرافدين 🔥</div>
 <div class="card">
-<div id="event"></div>
-<h3 style="text-align:center">رصيدك الحالي</h3>
-<div class="points" id="points">1,000</div>
-<div class="rate" id="rateInfo">عدادك: 100 نقطة / 24 ساعة</div>
-<div class="timer" id="timer">23:59:59</div>
-<button class="btn" id="collectBtn" onclick="collect()">💰 اجمع 100 نقطة</button>
+<h3 style="text-align:center">رصيدك</h3>
+<div class="points" id="points">1000</div>
+<p style="text-align:center;color:#00e5ff" id="rate">العداد: 100</p>
+<p style="text-align:center;color:#facc15" id="timer">23:59:59</p>
+<button class="btn" onclick="collect()">💰 اجمع النقاط</button>
 </div>
 </div>
 
 <div id="games" class="page">
 <div class="card">
-<h3 style="text-align:center">🎮 الالعاب</h3>
-<div class="wheel-wrap">
-<div style="position:relative">
-<div class="pointer"></div>
-<div class="wheel" id="wheel"></div>
-</div>
-</div>
-<button class="btn" onclick="spin()">🎡 لف العجلة -50</button>
-<button class="btn" onclick="startXO()">❌⭕ لعبة XO -50</button>
+<h3>🎮 الالعاب</h3>
+<button class="btn" onclick="spin()">🎡 عجلة -50</button>
+<button class="btn" onclick="xo()">❌⭕ XO -50</button>
 <button class="btn" onclick="box()">📦 صندوق -500</button>
 </div>
 </div>
 
 <div id="xo" class="page">
 <div class="card">
-<h3 style="text-align:center">XO ضد البوت</h3>
+<h3>XO</h3>
 <div class="board" id="board"></div>
-<p id="xoText" style="text-align:center;color:#facc15">دورك</p>
-<button class="btn" onclick="show('games')">رجوع</button>
+<button class="btn" onclick="openPage('games')">رجوع</button>
 </div>
 </div>
 
 <div id="tasks" class="page">
 <div class="card">
-<h3 style="text-align:center">📋 المهام</h3>
-<div id="taskList"></div>
-<h3 style="text-align:center;margin-top:20px">💸 تحويل نقاط</h3>
-<p style="text-align:center">كودك: <b id="myCode" style="color:#22c55e"></b></p>
-<input id="transferCode" placeholder="كود الصديق" class="input">
-<input id="transferAmount" type="number" placeholder="المبلغ" class="input">
+<h3>📋 المهام</h3>
+<div id="tasks"></div>
+<h3>💸 تحويل</h3>
+<p>كودك: <b id="code" style="color:#22c55e"></b></p>
+<input id="tcode" class="input" placeholder="كود الصديق">
+<input id="tamount" type="number" class="input" placeholder="المبلغ">
 <button class="btn" onclick="transfer()">تحويل</button>
 </div>
 </div>
 
 <div id="shop" class="page">
 <div class="card">
-<h3 style="text-align:center">🛒 المتجر</h3>
-<div id="shopList"></div>
-</div>
-</div>
-
-<div id="board" class="page">
-<div class="card">
-<h3 style="text-align:center">🏆 المتصدرين</h3>
-<div id="leader"></div>
+<h3>🛒 المتجر</h3>
+<div id="shop"></div>
 </div>
 </div>
 
 </div>
 
 <div class="nav">
-<button onclick="show('home')" class="active">🏠<br>العداد</button>
-<button onclick="show('games')">🎮<br>العاب</button>
-<button onclick="show('tasks')">📋<br>مهام</button>
-<button onclick="show('shop')">🛒<br>متجر</button>
-<button onclick="show('board')">🏆<br>متصدرين</button>
+<button onclick="openPage('home')" id="btn-home" class="active">🏠<br>العداد</button>
+<button onclick="openPage('games')" id="btn-games">🎮<br>العاب</button>
+<button onclick="openPage('tasks')" id="btn-tasks">📋<br>مهام</button>
+<button onclick="openPage('shop')" id="btn-shop">🛒<br>متجر</button>
 </div>
 
 <script>
-let data = JSON.parse(localStorage.getItem('rafidain_v1')) || {
-points:1000, rate:100, last:0, myCode:'RAF'+Math.floor(Math.random()*9000),
-tasks:[
-{txt:"اجمع 5 مرات",p:0,n:5,r:500},
-{txt:"العب XO",p:0,n:1,r:500},
-{txt:"افتح صندوق",p:0,n:1,r:800},
-{txt:"اشتري عداد",p:0,n:1,r:2000}
-]
-};
-
+let points = parseInt(localStorage.getItem('p')) || 1000;
+let rate = parseInt(localStorage.getItem('r')) || 100;
+let last = parseInt(localStorage.getItem('l')) || 0;
+let myCode = localStorage.getItem('code') || 'RAF'+Math.floor(Math.random()*9000);
+localStorage.setItem('code',myCode);
 let board = ['','',''];
-let gameOver = false;
 
-function save(){localStorage.setItem('rafidain_v1', JSON.stringify(data));}
-function toast(msg,c='#ef4444'){let t=document.getElementById('toast');t.innerText=msg;t.style.background=c;t.style.display='block';setTimeout(()=>t.style.display='none',2000);}
-function show(id){document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));document.querySelectorAll('.nav button').forEach(b=>b.classList.remove('active'));document.getElementById(id).classList.add('active');}
+function save(){
+localStorage.setItem('p',points);
+localStorage.setItem('r',rate);
+localStorage.setItem('l',last);
+}
+
+function openPage(id){
+document.querySelectorAll('.page').forEach(x=>x.classList.remove('active'));
+document.getElementById(id).classList.add('active');
+document.querySelectorAll('.nav button').forEach(x=>x.classList.remove('active'));
+document.getElementById('btn-'+id).classList.add('active');
+update();
+}
 
 function update(){
-document.getElementById('points').innerText = data.points.toLocaleString();
-document.getElementById('rateInfo').innerText = `عدادك: ${data.rate} نقطة / 24 ساعة`;
-document.getElementById('myCode').innerText = data.myCode;
+document.getElementById('points').innerText = points;
+document.getElementById('rate').innerText = 'العداد: ' + rate;
+document.getElementById('code').innerText = myCode;
 
-let left = 86400000 - (Date.now() - data.last); if(left<0) left=0;
-let h=Math.floor(left/3600000),m=Math.floor((left%3600000)/60000),s=Math.floor((left%60000)/1000);
-document.getElementById('timer').innerText = `${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
-document.getElementById('collectBtn').disabled = left>0;
-document.getElementById('collectBtn').innerText = left<=0? `💰 اجمع ${data.rate} نقطة` : '⏳ انتظر';
+let left = 86400000 - (Date.now() - last);
+if(left<0) left=0;
+let s = Math.floor(left/1000);
+document.getElementById('timer').innerText = Math.floor(s/3600)+':'+Math.floor(s%3600/60)+':'+s%60;
 
-let t='';
-data.tasks.forEach((x,i)=>{t+=`<div class="item"><div><b>${x.txt}</b><br><small>+${x.r}</small></div><button class="btn" onclick="claim(${i})" ${x.p<x.n?'disabled':''}>${x.p}/${x.n}</button></div>`;});
-document.getElementById('taskList').innerHTML=t;
-
-let s='';
-[{r:100,p:1000},{r:200,p:2000},{r:300,p:3000},{r:400,p:4000},{r:500,p:5000},
-{r:1000,p:10000},{r:2000,p:20000},{r:3000,p:30000},{r:4000,p:40000},{r:5000,p:50000}].forEach(x=>{
-s+=`<div class="item"><span><b>+${x.r} للعداد</b></span><button class="btn" onclick="buy(${x.r},${x.p})" ${data.points<x.p?'disabled':''}>${x.p.toLocaleString()}</button></div>`;
+let t = '';
+[{txt:"اجمع 5 مرات",n:5},{txt:"العب XO",n:1},{txt:"افتح صندوق",n:1},{txt:"اشتري عداد",n:1}].forEach((x,i)=>{
+t += `<div class="item"><span>${x.txt}</span><button class="btn" style="width:80px" onclick="claim(${i})">0/${x.n}</button></div>`;
 });
-document.getElementById('shopList').innerHTML=s;
+document.getElementById('tasks').innerHTML = t;
+
+let shtml = '';
+[[100,1000],[200,2000],[300,3000],[400,4000],[500,5000],[1000,10000],[2000,20000],[3000,30000],[4000,40000],[5000,50000]].forEach(x=>{
+shtml += `<div class="item"><span>+${x[0]} للعداد</span><button class="btn" style="width:100px" onclick="buy(${x[0]},${x[1]})">${x[1]}</button></div>`;
+});
+document.getElementById('shop').innerHTML = shtml;
 }
 
 function collect(){
-if(Date.now()-data.last<86400000) return;
-data.points += data.rate;
-data.last = Date.now();
-data.tasks[0].p++;
+if(Date.now()-last < 86400000) return alert('انتظر');
+points += rate;
+last = Date.now();
 save(); update();
 }
 
 function buy(r,p){
-if(data.points<p){toast('نقاطك غير كافية ❌'); return;}
-data.points -= p;
-data.rate += r;
-data.tasks[3].p++;
+if(points<p) return alert('ماعندك نقاط');
+points -= p;
+rate += r;
 save(); update();
-toast(`تم اضافة +${r} ✅`,'#22c55e');
-}
-
-function transfer(){
-let c = document.getElementById('transferCode').value;
-let a = parseInt(document.getElementById('transferAmount').value);
-if(!c ||!a){toast('دخل البيانات'); return;}
-if(a>data.points){toast('ماعندك نقاط'); return;}
-data.points -= a;
-save(); update();
-toast('تم التحويل','#22c55e');
+alert('تم شراء +' + r);
 }
 
 function spin(){
-if(data.points<50){toast('تحتاج 50 نقطة'); return;}
-data.points-=50;
-let win = [100,200,500,1000][Math.floor(Math.random()*4)];
-document.getElementById('wheel').style.transform=`rotate(${1800+Math.random()*360}deg)`;
-data.tasks[1].p++;
-setTimeout(()=>{data.points+=win; save(); update(); toast('ربحت '+win,'#22c55e');},5000);
-update();
+if(points<50) return alert('تحتاج 50');
+points -= 50;
+points += 200;
+save(); update();
+alert('ربحت 200');
 }
 
-function startXO(){
-if(data.points<50){toast('تحتاج 50 نقطة'); return;}
-data.points-=50; save(); update();
-board = ['','','']; // مصلح
-gameOver=false; renderXO(); show('xo');
+function xo(){
+if(points<50) return alert('تحتاج 50');
+points -= 50; save(); update();
+board = ['','',''];
+let html = '';
+for(let i=0;i<9;i++) html += `<div class="cell" onclick="play(${i})"></div>`;
+document.getElementById('board').innerHTML = html;
+openPage('xo');
 }
-function renderXO(){
-let h=''; for(let i=0;i<9;i++) h+=`<div class="cell" onclick="playXO(${i})">${board[i]}</div>`;
-document.getElementById('board').innerHTML=h;
+
+function play(i){
+if(board[i]) return;
+board[i]='X';
+document.getElementById('board').children[i].innerText='X';
+points += 500; save(); update();
+alert('فزت +500');
 }
-function playXO(i){
-if(board[i]||gameOver) return;
-board[i]='X'; renderXO();
-if(checkWin('X')){gameOver=true; data.points+=1000; data.tasks[1].p++; save(); update(); toast('فزت','#22c55e'); return;}
-let e=board.map((v,j)=>v?'':j).filter(x=>x!=='');
-if(e.length){board[e[0]]='O'; renderXO();}
-if(checkWin('O')){gameOver=true; toast('خسرت'); return;}
-if(!board.includes('')){gameOver=true; toast('تعادل'); return;}
-}
-function checkWin(p){const w=[[0,1,2],[3,4,5],[6,7,8],[0,3,6],[1,4,7],[2,5,8],[0,4,8],[2,4,6]]; return w.some(x=>x.every(i=>board[i]==p));}
 
 function box(){
-if(data.points<500){toast('تحتاج 500 نقطة'); return;}
-data.points-=500; let win = [100,500,1000,2000][Math.floor(Math.random()*4)];
-data.points+=win; data.tasks[2].p++;
-save(); update(); toast('ربحت '+win,'#22c55e');
+if(points<500) return alert('تحتاج 500');
+points -= 500;
+points += 1000;
+save(); update();
+alert('ربحت 1000');
+}
+
+function transfer(){
+let c = document.getElementById('tcode').value;
+let a = parseInt(document.getElementById('tamount').value);
+if(!c ||!a) return alert('دخل البيانات');
+if(a>points) return alert('ماعندك');
+points -= a;
+save(); update();
+alert('تم التحويل');
 }
 
 function claim(i){
-if(data.tasks[i].p>=data.tasks[i].n){
-data.points += data.tasks[i].r;
-data.tasks[i].p = 999;
-save(); update();
-}
+alert('مهمة');
 }
 
-setInterval(update,1000); update();
+setInterval(update,1000);
+update();
 </script>
 </body>
 </html>
