@@ -169,7 +169,7 @@ let prices = [
 ];
 prices.forEach(p=>{
 let canBuy = data.points >= p.price;
-shop+=`<div class="item"><span><b>عداد ${p.rate}</b></span><button class="btn" onclick="buy(${p.rate},${p.price})" ${!canBuy?'disabled':''}>${p.price.toLocaleString()}</button></div>`;
+shop+=`<div class="item"><span><b>+${p.rate} للعداد</b></span><button class="btn" onclick="buy(${p.rate},${p.price})" ${!canBuy?'disabled':''}>${p.price.toLocaleString()}</button></div>`;
 });
 document.getElementById('shopList').innerHTML=shop;
 
@@ -180,18 +180,24 @@ document.getElementById('leader').innerHTML = top.map((x,i)=>`<div class="item">
 function collect(){
 if(Date.now()-data.last<86400000) return;
 let mult = new Date().getDay()==5? 2:1;
-data.points += data.rate*mult; data.last = Date.now();
+data.points += data.rate*mult;
+data.last = Date.now();
 data.tasks.forEach(t=>{if(t.type=="collect") t.prog++;});
 save(); update();
 }
 
+// الفرق هنا: += بدل =
 function buy(r,p){
 if(data.points<p){
 showToast('نقاطك غير كافية ❌');
 return;
 }
-data.points-=p; data.rate=r; data.tasks.forEach(t=>{if(t.type=="buy") t.prog++;});
-showToast('تم الشراء بنجاح ✅','#22c55e'); save(); update();
+data.points -= p;
+data.rate += r; // يزيد على القديم
+data.tasks.forEach(t=>{if(t.type=="buy") t.prog++;});
+save();
+showToast(`تم اضافة +${r} للعداد ✅`,'#22c55e');
+update();
 }
 
 function spin(){
@@ -221,22 +227,17 @@ document.getElementById('board').innerHTML=h;
 
 function bestMove(b){
 const wins=[[0,1,2],[3,4,5],[6,7,8],[0,3,6],[1,4,7],[2,5,8],[0,4,8],[2,4,6]];
-// 1. يشوف اذا يكدر يفوز
 for(let c of wins){
 let line = c.map(i=>b[i]);
 if(line.filter(x=>x=='O').length==2 && line.includes('')) return c[line.indexOf('')];
 }
-// 2. يسد عليك اذا راح تفوز
 for(let c of wins){
 let line = c.map(i=>b[i]);
 if(line.filter(x=>x=='X').length==2 && line.includes('')) return c[line.indexOf('')];
 }
-// 3. ياخذ الوسط
 if(b[4]=='') return 4;
-// 4. ياخذ الزوايا
 let corners=[0,2,6,8].filter(i=>b[i]=='');
 if(corners.length) return corners[Math.floor(Math.random()*corners.length)];
-// 5. اي مكان فاضي
 let empty=b.map((v,i)=>v?'':i).filter(x=>x!=='');
 return empty[Math.floor(Math.random()*empty.length)];
 }
@@ -245,7 +246,7 @@ function playXO(i){
 if(boardXO[i]||gameOver) return;
 boardXO[i]='X'; renderXO();
 if(checkWin('X')){gameOver=true; document.getElementById('xoText').innerText='فزت!'; data.points+=1000; save(); update(); return;}
-if(!boardXO.includes('')){gameOver=true; document.getElementById('xoText').innerText='تعادل'; return;}
+if(!boardXO.includes('')){gameOne=true; document.getElementById('xoText').innerText='تعادل'; return;}
 document.getElementById('xoText').innerText='دور البوت';
 setTimeout(()=>{
 let move = bestMove(boardXO);
