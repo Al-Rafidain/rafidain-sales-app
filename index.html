@@ -69,13 +69,9 @@ body{background:#000;color:white;font-family:'Tahoma';overflow-x:hidden}
 <h3 style="text-align:center">📋 المهام <span id="taskTimer" style="color:#facc15;font-size:12px"></span></h3>
 <div id="taskList"></div>
 
-<h3 style="text-align:center;margin-top:15px">🤝 الاحالة</h3>
-<input id="refInput" placeholder="كود صديقك" class="input">
-<button class="btn" onclick="useRef()">تفعيل كود الاحالة +5000</button>
-<p style="text-align:center;margin-top:10px">كودك: <b id="myCode" style="color:#22c55e;font-size:18px"></b></p>
-
 <h3 style="text-align:center;margin-top:20px">💸 تحويل نقاط</h3>
-<input id="transferCode" placeholder="كود الشخص الي تريد تحوله" class="input">
+<p style="text-align:center;color:#aaa;font-size:13px">كودك: <b id="myCode" style="color:#22c55e"></b></p>
+<input id="transferCode" placeholder="دخل كود صديقك" class="input">
 <input id="transferAmount" type="number" placeholder="كم نقطة تريد تحول" class="input">
 <button class="btn" onclick="transfer()">تحويل</button>
 <p style="font-size:12px;color:#aaa;text-align:center">الحد الادنى: 100 نقطة</p>
@@ -109,12 +105,12 @@ body{background:#000;color:white;font-family:'Tahoma';overflow-x:hidden}
 <script>
 let data = JSON.parse(localStorage.getItem('rafidainMobile')) || {
 points:1000, rate:100, last:0, myCode:'RAF'+Math.floor(Math.random()*9000),
-usedRef:false, tasks:[], taskEnd:0
+tasks:[], taskEnd:0
 };
 
-// نخزن كل المستخدمين محليا حتى التحويل يشتغل
+// قاعدة بيانات محلية لكل المستخدمين
 let users = JSON.parse(localStorage.getItem('rafidainUsers')) || {};
-users[data.myCode] = {points:data.points, rate:data.rate}; // نحدث بياناتي
+if(!users[data.myCode]) users[data.myCode] = {points:data.points, rate:data.rate};
 
 let allTasks100 = [];
 for(let i=1;i<=100;i++) allTasks100.push({text:`اجمع ${Math.floor(Math.random()*7)+3} مرات`,type:"collect",need:Math.floor(Math.random()*7)+3,reward:Math.floor(Math.random()*1200)+500});
@@ -127,7 +123,7 @@ let gameOver = false;
 
 function save(){
 localStorage.setItem('rafidainMobile', JSON.stringify(data));
-users[data.myCode] = {points:data.points, rate:data.rate};
+users[data.myCode] = {points:data.points, rate:data.rate}; // نحدث بياناتي
 localStorage.setItem('rafidainUsers', JSON.stringify(users));
 }
 
@@ -180,7 +176,7 @@ shop+=`<div class="item"><span><b>+${p.rate} للعداد</b></span><button clas
 });
 document.getElementById('shopList').innerHTML=shop;
 
-let top=Object.keys(users).map(k=>({n:k,p:users[k].points})).concat([{n:'انت',p:data.points}]).sort((a,b)=>b.p-a.p).slice(0,5);
+let top=Object.keys(users).map(k=>({n:k,p:users[k].points})).sort((a,b)=>b.p-a.p).slice(0,5);
 document.getElementById('leader').innerHTML = top.map((x,i)=>`<div class="item"><span>🥇 #${i+1} ${x.n}</span><b>${x.p.toLocaleString()}</b></div>`).join('');
 }
 
@@ -206,7 +202,7 @@ showToast(`تم اضافة +${r} للعداد ✅`,'#22c55e');
 update();
 }
 
-// نظام التحويل الجديد
+// نظام التحويل المصح
 function transfer(){
 let code = document.getElementById('transferCode').value.trim().toUpperCase();
 let amount = parseInt(document.getElementById('transferAmount').value);
@@ -215,7 +211,9 @@ if(!code){showToast('دخل الكود'); return;}
 if(!amount || amount<100){showToast('الحد الادنى 100 نقطة'); return;}
 if(amount > data.points){showToast('نقاطك غير كافية ❌'); return;}
 if(code == data.myCode){showToast('ما تكدر تحول لنفسك'); return;}
-if(!users[code]){showToast('الكود غير موجود ❌'); return;}
+
+// اذا الكود جديد نسوي حساب اله تلقائي
+if(!users[code]) users[code] = {points:0, rate:100};
 
 // نحول
 data.points -= amount;
@@ -298,14 +296,6 @@ if(data.tasks[i].prog>=data.tasks[i].need &&!data.tasks[i].done){
 data.points += data.tasks[i].reward; data.tasks[i].done=true;
 save(); update();
 }
-}
-
-function useRef(){
-let code = document.getElementById('refInput').value.trim().toUpperCase();
-if(code &&!data.usedRef && code!=data.myCode && users[code]){
-data.points+=5000; data.usedRef=true; save(); update();
-showToast('تم +5000','#22c55e');
-}else showToast('كود غلط');
 }
 
 setInterval(update,1000); update();
