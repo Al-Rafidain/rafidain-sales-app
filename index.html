@@ -23,6 +23,7 @@ body{background:#000;color:white;font-family:'Tahoma';overflow-x:hidden}
 .page{display:none}.page.active{display:block}
 .item{background:#1f2937;padding:14px;border-radius:14px;margin:10px 0;display:flex;justify-content:space-between;align-items:center}
 .item button{width:110px;padding:10px;font-size:14px}
+.input{width:100%;padding:12px;border-radius:10px;border:0;background:#1f2937;color:white;margin:8px 0}
 .wheel-wrap{display:flex;justify-content:center;margin:15px 0}
 .wheel{width:250px;height:250px;border-radius:50%;border:8px solid #facc15;background:conic-gradient(#ef4444 0 60deg,#22c55e 60deg 120deg,#3b82f6 120deg 180deg,#eab308 180deg 240deg,#a855f7 240deg 300deg,#06b6d4 300deg 360deg);position:relative;transition:5s cubic-bezier(0.23,1,0.32,1)}
 .pointer{position:absolute;top:-15px;left:50%;transform:translateX(-50%);width:0;height:0;border-left:15px solid transparent;border-right:15px solid transparent;border-bottom:20px solid #fff;z-index:10}
@@ -63,23 +64,21 @@ body{background:#000;color:white;font-family:'Tahoma';overflow-x:hidden}
 </div>
 </div>
 
-<div id="xo" class="page">
-<div class="card">
-<h3 style="text-align:center">XO ضد البوت</h3>
-<div class="board" id="board"></div>
-<p id="xoText" style="text-align:center;color:#facc15">دورك</p>
-<button class="btn" onclick="show('games')">رجوع</button>
-</div>
-</div>
-
 <div id="tasks" class="page">
 <div class="card">
 <h3 style="text-align:center">📋 المهام <span id="taskTimer" style="color:#facc15;font-size:12px"></span></h3>
 <div id="taskList"></div>
+
 <h3 style="text-align:center;margin-top:15px">🤝 الاحالة</h3>
-<input id="refInput" placeholder="كود صديقك" style="padding:12px;border-radius:10px;border:0;width:60%">
-<button class="btn" onclick="useRef()" style="width:35%">تفعيل</button>
-<p style="text-align:center">كودك: <b id="myCode" style="color:#22c55e"></b></p>
+<input id="refInput" placeholder="كود صديقك" class="input">
+<button class="btn" onclick="useRef()">تفعيل كود الاحالة +5000</button>
+<p style="text-align:center;margin-top:10px">كودك: <b id="myCode" style="color:#22c55e;font-size:18px"></b></p>
+
+<h3 style="text-align:center;margin-top:20px">💸 تحويل نقاط</h3>
+<input id="transferCode" placeholder="كود الشخص الي تريد تحوله" class="input">
+<input id="transferAmount" type="number" placeholder="كم نقطة تريد تحول" class="input">
+<button class="btn" onclick="transfer()">تحويل</button>
+<p style="font-size:12px;color:#aaa;text-align:center">الحد الادنى: 100 نقطة</p>
 </div>
 </div>
 
@@ -113,6 +112,10 @@ points:1000, rate:100, last:0, myCode:'RAF'+Math.floor(Math.random()*9000),
 usedRef:false, tasks:[], taskEnd:0
 };
 
+// نخزن كل المستخدمين محليا حتى التحويل يشتغل
+let users = JSON.parse(localStorage.getItem('rafidainUsers')) || {};
+users[data.myCode] = {points:data.points, rate:data.rate}; // نحدث بياناتي
+
 let allTasks100 = [];
 for(let i=1;i<=100;i++) allTasks100.push({text:`اجمع ${Math.floor(Math.random()*7)+3} مرات`,type:"collect",need:Math.floor(Math.random()*7)+3,reward:Math.floor(Math.random()*1200)+500});
 allTasks100.push({text:"العب XO",type:"game",need:1,reward:500});
@@ -122,7 +125,11 @@ allTasks100.push({text:"اشتري عداد",type:"buy",need:1,reward:2000});
 let boardXO = Array(9).fill('');
 let gameOver = false;
 
-function save(){localStorage.setItem('rafidainMobile', JSON.stringify(data));}
+function save(){
+localStorage.setItem('rafidainMobile', JSON.stringify(data));
+users[data.myCode] = {points:data.points, rate:data.rate};
+localStorage.setItem('rafidainUsers', JSON.stringify(users));
+}
 
 function showToast(msg, color='#ef4444'){
 let t = document.getElementById('toast');
@@ -173,7 +180,7 @@ shop+=`<div class="item"><span><b>+${p.rate} للعداد</b></span><button clas
 });
 document.getElementById('shopList').innerHTML=shop;
 
-let top=[{n:'انت',p:data.points},{n:'احمد',p:125000},{n:'علي',p:98000}].sort((a,b)=>b.p-a.p);
+let top=Object.keys(users).map(k=>({n:k,p:users[k].points})).concat([{n:'انت',p:data.points}]).sort((a,b)=>b.p-a.p).slice(0,5);
 document.getElementById('leader').innerHTML = top.map((x,i)=>`<div class="item"><span>🥇 #${i+1} ${x.n}</span><b>${x.p.toLocaleString()}</b></div>`).join('');
 }
 
@@ -186,17 +193,38 @@ data.tasks.forEach(t=>{if(t.type=="collect") t.prog++;});
 save(); update();
 }
 
-// الفرق هنا: += بدل =
 function buy(r,p){
 if(data.points<p){
 showToast('نقاطك غير كافية ❌');
 return;
 }
 data.points -= p;
-data.rate += r; // يزيد على القديم
+data.rate += r;
 data.tasks.forEach(t=>{if(t.type=="buy") t.prog++;});
 save();
 showToast(`تم اضافة +${r} للعداد ✅`,'#22c55e');
+update();
+}
+
+// نظام التحويل الجديد
+function transfer(){
+let code = document.getElementById('transferCode').value.trim().toUpperCase();
+let amount = parseInt(document.getElementById('transferAmount').value);
+
+if(!code){showToast('دخل الكود'); return;}
+if(!amount || amount<100){showToast('الحد الادنى 100 نقطة'); return;}
+if(amount > data.points){showToast('نقاطك غير كافية ❌'); return;}
+if(code == data.myCode){showToast('ما تكدر تحول لنفسك'); return;}
+if(!users[code]){showToast('الكود غير موجود ❌'); return;}
+
+// نحول
+data.points -= amount;
+users[code].points += amount;
+save();
+
+document.getElementById('transferCode').value='';
+document.getElementById('transferAmount').value='';
+showToast(`تم تحويل ${amount.toLocaleString()} نقطة ✅`,'#22c55e');
 update();
 }
 
@@ -246,7 +274,7 @@ function playXO(i){
 if(boardXO[i]||gameOver) return;
 boardXO[i]='X'; renderXO();
 if(checkWin('X')){gameOver=true; document.getElementById('xoText').innerText='فزت!'; data.points+=1000; save(); update(); return;}
-if(!boardXO.includes('')){gameOne=true; document.getElementById('xoText').innerText='تعادل'; return;}
+if(!boardXO.includes('')){gameOver=true; document.getElementById('xoText').innerText='تعادل'; return;}
 document.getElementById('xoText').innerText='دور البوت';
 setTimeout(()=>{
 let move = bestMove(boardXO);
@@ -273,8 +301,8 @@ save(); update();
 }
 
 function useRef(){
-let code = document.getElementById('refInput').value;
-if(code &&!data.usedRef && code!=data.myCode){
+let code = document.getElementById('refInput').value.trim().toUpperCase();
+if(code &&!data.usedRef && code!=data.myCode && users[code]){
 data.points+=5000; data.usedRef=true; save(); update();
 showToast('تم +5000','#22c55e');
 }else showToast('كود غلط');
