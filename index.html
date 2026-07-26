@@ -16,18 +16,21 @@ body{background:#000;color:white;font-family:'Tahoma';overflow-x:hidden}
 .timer{font-size:22px;color:#facc15;text-align:center;margin:8px 0}
 .btn{background:linear-gradient(90deg,#2563eb,#06b6d4);color:white;border:0;padding:15px;border-radius:14px;width:100%;font-size:16px;font-weight:bold;margin:8px 0;cursor:pointer}
 .btn:active{transform:scale(0.96)}
-.btn:disabled{background:#333;color:#777}
+.btn:disabled{background:#333;color:#777;box-shadow:none}
 .nav{position:fixed;bottom:0;left:0;right:0;max-width:430px;margin:auto;background:#0a0f1e;display:flex;border-top:1px solid #1e3a8a}
 .nav button{flex:1;background:none;border:0;color:#aaa;padding:10px 0;font-size:11px}
 .nav button.active{color:#00e5ff}
 .page{display:none}.page.active{display:block}
 .item{background:#1f2937;padding:14px;border-radius:14px;margin:10px 0;display:flex;justify-content:space-between;align-items:center}
+.item button{width:110px;padding:10px;font-size:14px}
 .input{width:100%;padding:12px;border-radius:10px;border:0;background:#1f2937;color:white;margin:8px 0}
-.wheel{width:250px;height:250px;border-radius:50%;border:8px solid #facc15;background:conic-gradient(#ef4444 0 60deg,#22c55e 60deg 120deg,#3b82f6 120deg 180deg,#eab308 180deg 240deg,#a855f7 240deg 300deg,#06b6d4 300deg 360deg);margin:15px auto;transition:5s}
-.pointer{width:0;height:0;border-left:15px solid transparent;border-right:15px solid transparent;border-bottom:20px solid #fff;margin:0 auto}
+.wheel-wrap{display:flex;justify-content:center;margin:15px 0}
+.wheel{width:250px;height:250px;border-radius:50%;border:8px solid #facc15;background:conic-gradient(#ef4444 0 60deg,#22c55e 60deg 120deg,#3b82f6 120deg 180deg,#eab308 180deg 240deg,#a855f7 240deg 300deg,#06b6d4 300deg 360deg);position:relative;transition:5s cubic-bezier(0.23,1,0.32,1)}
+.pointer{position:absolute;top:-15px;left:50%;transform:translateX(-50%);width:0;height:0;border-left:15px solid transparent;border-right:15px solid transparent;border-bottom:20px solid #fff;z-index:10}
 .board{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;width:280px;margin:15px auto}
 .cell{background:#1f2937;height:90px;border-radius:15px;font-size:45px;display:flex;align-items:center;justify-content:center;font-weight:bold;cursor:pointer}
-.toast{position:fixed;top:20px;left:50%;transform:translateX(-50%);background:#ef4444;color:white;padding:14px 22px;border-radius:12px;font-weight:bold;display:none;z-index:999}
+.event{background:linear-gradient(90deg,#facc15,#eab308);color:#000;text-align:center;padding:10px;border-radius:12px;font-weight:bold}
+.toast{position:fixed;top:20px;left:50%;transform:translateX(-50%);background:#ef4444;color:white;padding:14px 22px;border-radius:12px;font-weight:bold;display:none;z-index:999;box-shadow:0 0 20px #ef4444}
 </style>
 </head>
 <body>
@@ -37,6 +40,7 @@ body{background:#000;color:white;font-family:'Tahoma';overflow-x:hidden}
 <div id="home" class="page active">
 <div class="header"><h1>🔥 الرافدين 🔥</h1></div>
 <div class="card">
+<div id="event"></div>
 <h3 style="text-align:center">رصيدك الحالي</h3>
 <div class="points" id="points">1,000</div>
 <div class="rate" id="rateInfo">عدادك: 100 نقطة / 24 ساعة</div>
@@ -48,8 +52,12 @@ body{background:#000;color:white;font-family:'Tahoma';overflow-x:hidden}
 <div id="games" class="page">
 <div class="card">
 <h3 style="text-align:center">🎮 الالعاب</h3>
+<div class="wheel-wrap">
+<div style="position:relative">
 <div class="pointer"></div>
 <div class="wheel" id="wheel"></div>
+</div>
+</div>
 <button class="btn" onclick="spin()">🎡 لف العجلة -50</button>
 <button class="btn" onclick="startXO()">❌⭕ لعبة XO -50</button>
 <button class="btn" onclick="box()">📦 صندوق -500</button>
@@ -84,6 +92,13 @@ body{background:#000;color:white;font-family:'Tahoma';overflow-x:hidden}
 </div>
 </div>
 
+<div id="board" class="page">
+<div class="card">
+<h3 style="text-align:center">🏆 المتصدرين</h3>
+<div id="leader"></div>
+</div>
+</div>
+
 </div>
 
 <div class="nav">
@@ -91,11 +106,13 @@ body{background:#000;color:white;font-family:'Tahoma';overflow-x:hidden}
 <button onclick="show('games')">🎮<br>العاب</button>
 <button onclick="show('tasks')">📋<br>مهام</button>
 <button onclick="show('shop')">🛒<br>متجر</button>
+<button onclick="show('board')">🏆<br>متصدرين</button>
 </div>
 
 <script>
-let data = JSON.parse(localStorage.getItem('rafidain_ok')) || {
-points:1000, rate:100, last:0, myCode:'RAF'+Math.floor(Math.random()*9000), tasks:[
+let data = JSON.parse(localStorage.getItem('rafidain_v1')) || {
+points:1000, rate:100, last:0, myCode:'RAF'+Math.floor(Math.random()*9000),
+tasks:[
 {txt:"اجمع 5 مرات",p:0,n:5,r:500},
 {txt:"العب XO",p:0,n:1,r:500},
 {txt:"افتح صندوق",p:0,n:1,r:800},
@@ -106,29 +123,29 @@ points:1000, rate:100, last:0, myCode:'RAF'+Math.floor(Math.random()*9000), task
 let board = ['','',''];
 let gameOver = false;
 
-function save(){localStorage.setItem('rafidain_ok', JSON.stringify(data));}
+function save(){localStorage.setItem('rafidain_v1', JSON.stringify(data));}
 function toast(msg,c='#ef4444'){let t=document.getElementById('toast');t.innerText=msg;t.style.background=c;t.style.display='block';setTimeout(()=>t.style.display='none',2000);}
-function show(id){document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));document.getElementById(id).classList.add('active');}
+function show(id){document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));document.querySelectorAll('.nav button').forEach(b=>b.classList.remove('active'));document.getElementById(id).classList.add('active');}
 
 function update(){
 document.getElementById('points').innerText = data.points.toLocaleString();
-document.getElementById('rateInfo').innerText = `عدادك: ${data.rate} نقطة`;
+document.getElementById('rateInfo').innerText = `عدادك: ${data.rate} نقطة / 24 ساعة`;
 document.getElementById('myCode').innerText = data.myCode;
 
 let left = 86400000 - (Date.now() - data.last); if(left<0) left=0;
 let h=Math.floor(left/3600000),m=Math.floor((left%3600000)/60000),s=Math.floor((left%60000)/1000);
-document.getElementById('timer').innerText = `${h}:${m}:${s}`;
+document.getElementById('timer').innerText = `${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
 document.getElementById('collectBtn').disabled = left>0;
-document.getElementById('collectBtn').innerText = left<=0? `💰 اجمع ${data.rate}` : '⏳ انتظر';
+document.getElementById('collectBtn').innerText = left<=0? `💰 اجمع ${data.rate} نقطة` : '⏳ انتظر';
 
 let t='';
-data.tasks.forEach((x,i)=>{t+=`<div class="item"><span>${x.txt}</span><button class="btn" style="width:90px" onclick="claim(${i})" ${x.p<x.n?'disabled':''}>${x.p}/${x.n}</button></div>`;});
+data.tasks.forEach((x,i)=>{t+=`<div class="item"><div><b>${x.txt}</b><br><small>+${x.r}</small></div><button class="btn" onclick="claim(${i})" ${x.p<x.n?'disabled':''}>${x.p}/${x.n}</button></div>`;});
 document.getElementById('taskList').innerHTML=t;
 
 let s='';
 [{r:100,p:1000},{r:200,p:2000},{r:300,p:3000},{r:400,p:4000},{r:500,p:5000},
 {r:1000,p:10000},{r:2000,p:20000},{r:3000,p:30000},{r:4000,p:40000},{r:5000,p:50000}].forEach(x=>{
-s+=`<div class="item"><span>+${x.r} للعداد</span><button class="btn" style="width:100px" onclick="buy(${x.r},${x.p})" ${data.points<x.p?'disabled':''}>${x.p}</button></div>`;
+s+=`<div class="item"><span><b>+${x.r} للعداد</b></span><button class="btn" onclick="buy(${x.r},${x.p})" ${data.points<x.p?'disabled':''}>${x.p.toLocaleString()}</button></div>`;
 });
 document.getElementById('shopList').innerHTML=s;
 }
@@ -142,28 +159,28 @@ save(); update();
 }
 
 function buy(r,p){
-if(data.points<p){toast('نقاطك قليلة'); return;}
+if(data.points<p){toast('نقاطك غير كافية ❌'); return;}
 data.points -= p;
-data.rate = data.rate + r; // هنا الخلل جان
+data.rate += r;
 data.tasks[3].p++;
 save(); update();
-toast(`تم +${r}`,'#22c55e');
+toast(`تم اضافة +${r} ✅`,'#22c55e');
 }
 
 function transfer(){
 let c = document.getElementById('transferCode').value;
 let a = parseInt(document.getElementById('transferAmount').value);
 if(!c ||!a){toast('دخل البيانات'); return;}
-if(a>data.points){toast('ماعندك'); return;}
+if(a>data.points){toast('ماعندك نقاط'); return;}
 data.points -= a;
 save(); update();
 toast('تم التحويل','#22c55e');
 }
 
 function spin(){
-if(data.points<50){toast('تحتاج 50'); return;}
+if(data.points<50){toast('تحتاج 50 نقطة'); return;}
 data.points-=50;
-let win = [100,200,500][Math.floor(Math.random()*3)];
+let win = [100,200,500,1000][Math.floor(Math.random()*4)];
 document.getElementById('wheel').style.transform=`rotate(${1800+Math.random()*360}deg)`;
 data.tasks[1].p++;
 setTimeout(()=>{data.points+=win; save(); update(); toast('ربحت '+win,'#22c55e');},5000);
@@ -171,30 +188,31 @@ update();
 }
 
 function startXO(){
-if(data.points<50){toast('تحتاج 50'); return;}
+if(data.points<50){toast('تحتاج 50 نقطة'); return;}
 data.points-=50; save(); update();
-board = ['','','']; // صلحت ال 9 مربعات
+board = ['','','']; // مصلح
 gameOver=false; renderXO(); show('xo');
 }
 function renderXO(){
-let h=''; for(let i=0;i<9;i++) h+=`<div class="cell" onclick="play(${i})">${board[i]}</div>`;
+let h=''; for(let i=0;i<9;i++) h+=`<div class="cell" onclick="playXO(${i})">${board[i]}</div>`;
 document.getElementById('board').innerHTML=h;
 }
-function play(i){
+function playXO(i){
 if(board[i]||gameOver) return;
 board[i]='X'; renderXO();
-if(win('X')){gameOver=true; data.points+=1000; data.tasks[1].p++; save(); update(); toast('فزت','#22c55e'); return;}
+if(checkWin('X')){gameOver=true; data.points+=1000; data.tasks[1].p++; save(); update(); toast('فزت','#22c55e'); return;}
 let e=board.map((v,j)=>v?'':j).filter(x=>x!=='');
 if(e.length){board[e[0]]='O'; renderXO();}
-if(win('O')){gameOver=true; toast('خسرت'); return;}
+if(checkWin('O')){gameOver=true; toast('خسرت'); return;}
+if(!board.includes('')){gameOver=true; toast('تعادل'); return;}
 }
-function win(p){const w=[[0,1,2],[3,4,5],[6,7,8],[0,3,6],[1,4,7],[2,5,8],[0,4,8],[2,4,6]]; return w.some(x=>x.every(i=>board[i]==p));}
+function checkWin(p){const w=[[0,1,2],[3,4,5],[6,7,8],[0,3,6],[1,4,7],[2,5,8],[0,4,8],[2,4,6]]; return w.some(x=>x.every(i=>board[i]==p));}
 
 function box(){
-if(data.points<500){toast('تحتاج 500'); return;}
-data.points-=500; let w=1000;
-data.points+=w; data.tasks[2].p++;
-save(); update(); toast('ربحت '+w,'#22c55e');
+if(data.points<500){toast('تحتاج 500 نقطة'); return;}
+data.points-=500; let win = [100,500,1000,2000][Math.floor(Math.random()*4)];
+data.points+=win; data.tasks[2].p++;
+save(); update(); toast('ربحت '+win,'#22c55e');
 }
 
 function claim(i){
