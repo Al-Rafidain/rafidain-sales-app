@@ -103,14 +103,20 @@ body{background:#000;color:white;font-family:'Tahoma';overflow-x:hidden}
 </div>
 
 <script>
-let data = JSON.parse(localStorage.getItem('rafidainMobile')) || {
-points:1000, rate:100, last:0, myCode:'RAF'+Math.floor(Math.random()*9000),
-tasks:[], taskEnd:0
-};
+// قاعدة بيانات وحدة لكل الناس
+function loadUsers(){
+return JSON.parse(localStorage.getItem('rafidainDB')) || {};
+}
+function saveUsers(db){
+localStorage.setItem('rafidainDB', JSON.stringify(db));
+}
 
-// قاعدة بيانات محلية لكل المستخدمين
-let users = JSON.parse(localStorage.getItem('rafidainUsers')) || {};
-if(!users[data.myCode]) users[data.myCode] = {points:data.points, rate:data.rate};
+let db = loadUsers();
+let myCode = localStorage.getItem('myCode') || 'RAF'+Math.floor(Math.random()*9000);
+localStorage.setItem('myCode', myCode);
+
+if(!db[myCode]) db[myCode] = {points:1000, rate:100, last:0, tasks:[], taskEnd:0};
+let data = db[myCode];
 
 let allTasks100 = [];
 for(let i=1;i<=100;i++) allTasks100.push({text:`اجمع ${Math.floor(Math.random()*7)+3} مرات`,type:"collect",need:Math.floor(Math.random()*7)+3,reward:Math.floor(Math.random()*1200)+500});
@@ -122,9 +128,8 @@ let boardXO = Array(9).fill('');
 let gameOver = false;
 
 function save(){
-localStorage.setItem('rafidainMobile', JSON.stringify(data));
-users[data.myCode] = {points:data.points, rate:data.rate}; // نحدث بياناتي
-localStorage.setItem('rafidainUsers', JSON.stringify(users));
+db[myCode] = data; // نحدث بياناتي اول
+saveUsers(db);
 }
 
 function showToast(msg, color='#ef4444'){
@@ -142,9 +147,12 @@ document.getElementById(id).classList.add('active');
 }
 
 function update(){
+db = loadUsers(); // نحدث البيانات من التخزين
+data = db[myCode];
+
 document.getElementById('points').innerText = data.points.toLocaleString();
 document.getElementById('rateInfo').innerText = `عدادك: ${data.rate} نقطة / 24 ساعة`;
-document.getElementById('myCode').innerText = data.myCode;
+document.getElementById('myCode').innerText = myCode;
 document.getElementById('event').innerHTML = new Date().getDay()==5? '<div class="event">🎉 الجمعة: الجمع ×2 🎉</div>' : '';
 let mult = new Date().getDay()==5? 2:1;
 
@@ -157,6 +165,7 @@ document.getElementById('collectBtn').innerText = left<=0? `💰 اجمع ${data
 if(Date.now() > data.taskEnd || data.tasks.length==0){
 data.tasks = allTasks100.sort(()=>0.5-Math.random()).slice(0,3).map(t=>({...t,prog:0,done:false}));
 data.taskEnd = Date.now() + 86400000;
+save();
 }
 let tLeft = data.taskEnd - Date.now();
 document.getElementById('taskTimer').innerText = `تتجدد بعد ${Math.floor(tLeft/3600000)}س`;
@@ -176,7 +185,7 @@ shop+=`<div class="item"><span><b>+${p.rate} للعداد</b></span><button clas
 });
 document.getElementById('shopList').innerHTML=shop;
 
-let top=Object.keys(users).map(k=>({n:k,p:users[k].points})).sort((a,b)=>b.p-a.p).slice(0,5);
+let top=Object.keys(db).map(k=>({n:k,p:db[k].points})).sort((a,b)=>b.p-a.p).slice(0,5);
 document.getElementById('leader').innerHTML = top.map((x,i)=>`<div class="item"><span>🥇 #${i+1} ${x.n}</span><b>${x.p.toLocaleString()}</b></div>`).join('');
 }
 
@@ -195,34 +204,38 @@ showToast('نقاطك غير كافية ❌');
 return;
 }
 data.points -= p;
-data.rate += r;
+data.rate += r; // يزيد تراكمي
 data.tasks.forEach(t=>{if(t.type=="buy") t.prog++;});
-save();
+save(); // نحفظ بعد التغيير مباشرة
 showToast(`تم اضافة +${r} للعداد ✅`,'#22c55e');
 update();
 }
 
-// نظام التحويل المصح
+// نظام التحويل المصح 100%
 function transfer(){
+db = loadUsers(); // نحدث قاعدة البيانات
+data = db[myCode];
+
 let code = document.getElementById('transferCode').value.trim().toUpperCase();
 let amount = parseInt(document.getElementById('transferAmount').value);
 
 if(!code){showToast('دخل الكود'); return;}
 if(!amount || amount<100){showToast('الحد الادنى 100 نقطة'); return;}
 if(amount > data.points){showToast('نقاطك غير كافية ❌'); return;}
-if(code == data.myCode){showToast('ما تكدر تحول لنفسك'); return;}
+if(code == myCode){showToast('ما تكدر تحول لنفسك'); return;}
 
-// اذا الكود جديد نسوي حساب اله تلقائي
-if(!users[code]) users[code] = {points:0, rate:100};
+// اذا الكود جديد نسوي حساب اله
+if(!db[code]) db[code] = {points:0, rate:100, last:0, tasks:[], taskEnd:0};
 
 // نحول
 data.points -= amount;
-users[code].points += amount;
-save();
+db[code].points += amount;
+
+saveUsers(db); // نحفظ الكل
 
 document.getElementById('transferCode').value='';
 document.getElementById('transferAmount').value='';
-showToast(`تم تحويل ${amount.toLocaleString()} نقطة ✅`,'#22c55e');
+showToast(`تم تحويل ${amount.toLocaleString()} نقطة ل ${code} ✅`,'#22c55e');
 update();
 }
 
