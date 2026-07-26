@@ -2,55 +2,76 @@
 <html lang="ar" dir="rtl">
 <head>
 <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>الرافدين</title>
 <style>
-body{background:#000;color:#fff;font-family:Tahoma;text-align:center;margin:0;padding:10px}
-.card{background:#111827;margin:10px auto;padding:20px;border-radius:15px;max-width:400px}
-.btn{background:#2563eb;color:#fff;border:0;padding:15px;width:90%;border-radius:12px;margin:8px;font-size:16px}
-.points{font-size:50px;color:#22c55e}
+body{background:#000;color:#fff;font-family:Tahoma;margin:0;padding:15px}
+.card{background:#1a1f36;margin:12px auto;padding:20px;border-radius:16px;max-width:400px}
+h2{text-align:center;color:#00e5ff}
+.points{font-size:45px;color:#22c55e;text-align:center;font-weight:bold;margin:10px 0}
+.timer{text-align:center;margin:8px 0}
+.btn{background:#2563eb;color:#fff;border:0;padding:14px;width:100%;border-radius:12px;margin:8px 0;font-size:16px;font-weight:bold}
+.wheel{width:220px;height:220px;border-radius:50%;border:8px solid #facc15;background:conic-gradient(red 0 60deg,green 60 120,blue 120 180,yellow 180 240,purple 240 300,cyan 300 360);margin:15px auto;transition:4s}
+.board{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;width:260px;margin:15px auto}
+.cell{background:#222;height:80px;font-size:40px;display:flex;align-items:center;justify-content:center;border-radius:10px}
 </style>
 </head>
 <body>
 
 <div class="card">
-<h2 style="color:#00e5ff">🔥 الرافدين 🔥</h2>
-<h3>رصيدك</h3>
+<h2>🔥 الرافدين 🔥</h2>
+<p style="text-align:center">رصيدك</p>
 <div class="points" id="points">1000</div>
-<p id="timer">الوقت: 24:00:00</p>
-<button class="btn" onclick="collect()">اجمع 100</button>
+<div class="timer" id="timer">الوقت: 23:59:59</div>
+<button class="btn" id="collectBtn" onclick="collect()">اجمع 100</button>
 </div>
 
 <div class="card">
-<h3>الالعاب</h3>
+<h3 style="text-align:center">الالعاب</h3>
+<div id="wheelBox" style="display:none">
+<div class="wheel" id="wheel"></div>
+</div>
+<div id="xoBox" style="display:none">
+<div class="board" id="board"></div>
+</div>
 <button class="btn" onclick="spin()">عجلة -50</button>
 <button class="btn" onclick="xo()">XO -50</button>
 <button class="btn" onclick="box()">صندوق -500</button>
 </div>
 
 <div class="card">
-<h3>المتجر</h3>
+<h3 style="text-align:center">المتجر</h3>
 <button class="btn" onclick="buy(100,1000)">+100 عداد = 1000</button>
+<button class="btn" onclick="buy(200,2000)">+200 عداد = 2000</button>
+<button class="btn" onclick="buy(300,3000)">+300 عداد = 3000</button>
+<button class="btn" onclick="buy(400,4000)">+400 عداد = 4000</button>
 <button class="btn" onclick="buy(500,5000)">+500 عداد = 5000</button>
 <button class="btn" onclick="buy(1000,10000)">+1000 عداد = 10000</button>
+<button class="btn" onclick="buy(2000,20000)">+2000 عداد = 20000</button>
+<button class="btn" onclick="buy(3000,30000)">+3000 عداد = 30000</button>
+<button class="btn" onclick="buy(4000,40000)">+4000 عداد = 40000</button>
+<button class="btn" onclick="buy(5000,50000)">+5000 عداد = 50000</button>
 </div>
 
 <script>
 let points = 1000;
 let rate = 100;
-let last = Date.now();
+let last = 0;
 
 function update(){
 document.getElementById('points').innerText = points;
 let left = 86400 - Math.floor((Date.now()-last)/1000);
 if(left<0) left=0;
-let h = Math.floor(left/3600);
-let m = Math.floor((left%3600)/60);
-let s = left%60;
+let h = String(Math.floor(left/3600)).padStart(2,'0');
+let m = String(Math.floor((left%3600)/60)).padStart(2,'0');
+let s = String(left%60).padStart(2,'0');
 document.getElementById('timer').innerText = `الوقت: ${h}:${m}:${s}`;
+document.getElementById('collectBtn').innerText = `اجمع ${rate}`;
+document.getElementById('collectBtn').disabled = left>0;
 }
 
 function collect(){
-if(Date.now()-last < 86400000) return alert('انتظر للغد');
+if(Date.now()-last < 86400000) return;
 points += rate;
 last = Date.now();
 update();
@@ -60,23 +81,31 @@ function buy(r,p){
 if(points<p) return alert('ماعندك نقاط');
 points -= p;
 rate += r;
-alert('تم شراء +' + r);
 update();
 }
 
 function spin(){
 if(points<50) return alert('تحتاج 50');
 points -= 50;
+document.getElementById('wheelBox').style.display='block';
+document.getElementById('xoBox').style.display='none';
+document.getElementById('wheel').style.transform = 'rotate('+(1800+Math.random()*360)+'deg)';
+setTimeout(()=>{
 points += 200;
 alert('ربحت 200');
+update();
+},4000);
 update();
 }
 
 function xo(){
 if(points<50) return alert('تحتاج 50');
 points -= 50;
-points += 500;
-alert('فزت +500');
+document.getElementById('xoBox').style.display='block';
+document.getElementById('wheelBox').style.display='none';
+let html='';
+for(let i=0;i<9;i++) html += `<div class="cell" onclick="this.innerText='X';points+=500;update();alert('فزت 500')"></div>`;
+document.getElementById('board').innerHTML = html;
 update();
 }
 
