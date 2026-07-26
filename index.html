@@ -2,73 +2,108 @@
 <html lang="ar" dir="rtl">
 <head>
 <meta charset="UTF-8">
-<title>الرافدين Pro</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>الرافدين</title>
 <style>
-*{margin:0;padding:0;box-sizing:border-box}
-body{background:linear-gradient(135deg,#0a0f2c,#1e3a8a);color:white;font-family:'Tahoma';min-height:100vh;padding-bottom:70px}
-.container{max-width:480px;margin:auto;padding:15px}
-h1{text-align:center;color:#00ccff;margin:15px 0;font-size:30px;text-shadow:0 0 10px #00ccff}
-.card{background:rgba(0,0,0,0.5);backdrop-filter:blur(10px);padding:20px;border-radius:25px;margin:15px 0;border:1px solid rgba(0,204,255,0.3);box-shadow:0 0 20px rgba(0,204,255,0.2)}
-.points{font-size:55px;color:#00ff88;text-align:center;font-weight:bold;text-shadow:0 0 15px #00ff88}
-.time{font-size:24px;color:#ffeb3b;text-align:center;margin:10px 0;font-weight:bold}
-button{background:linear-gradient(90deg,#0066ff,#00ccff);color:white;border:0;padding:16px;font-size:17px;border-radius:15px;margin:8px 0;width:100%;font-weight:bold;cursor:pointer;box-shadow:0 4px 15px rgba(0,102,255,0.4)}
-button:active{transform:scale(0.95)}
-button:disabled{background:#444;box-shadow:none}
-.nav{position:fixed;bottom:0;left:0;right:0;background:#0a0f2c;display:flex;border-top:2px solid #00ccff}
-.nav button{flex:1;background:none;font-size:12px;padding:10px;border:0;color:white}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{background:#000;color:white;font-family:'Tahoma';overflow-x:hidden}
+.app{max-width:430px;margin:0 auto;background:linear-gradient(180deg,#0d1b4d,#000);min-height:100vh;padding-bottom:75px}
+
+/* الهيدر */
+.header{text-align:center;padding:15px 0}
+.header h1{font-size:24px;color:#00e5ff;text-shadow:0 0 10px #00e5ff}
+
+/* الكارد */
+.card{background:#111827;margin:12px;border-radius:20px;padding:20px;border:1px solid #1e3a8a}
+.points{font-size:50px;color:#22c55e;text-align:center;font-weight:bold}
+.timer{font-size:22px;color:#facc15;text-align:center;margin:8px 0}
+
+/* الازرار */
+.btn{background:linear-gradient(90deg,#2563eb,#06b6d4);color:white;border:0;padding:15px;border-radius:14px;width:100%;font-size:16px;font-weight:bold;margin:8px 0;cursor:pointer}
+.btn:active{transform:scale(0.96)}
+
+/* شريط التنقل */
+.nav{position:fixed;bottom:0;left:0;right:0;max-width:430px;margin:auto;background:#0a0f1e;display:flex;border-top:1px solid #1e3a8a}
+.nav button{flex:1;background:none;border:0;color:#aaa;padding:10px 0;font-size:11px}
+.nav button.active{color:#00e5ff}
+
+/* الصفحات */
 .page{display:none}.page.active{display:block}
-.task,.shop{background:rgba(255,255,255,0.08);padding:14px;margin:10px 0;border-radius:15px;display:flex;justify-content:space-between;align-items:center}
-.task button,.shop button{width:100px;padding:8px;font-size:14px}
-.wheel{width:220px;height:220px;border-radius:50%;margin:20px auto;border:10px solid #ffeb3b;background:conic-gradient(#06f 0 60deg,#0f8 60deg 120deg,#f06 120deg 180deg,#ff0 180deg 240deg,#90f 240deg 300deg,#0cf 300deg 360deg);display:flex;align-items:center;justify-content:center;font-size:20px;font-weight:bold;transition:4s cubic-bezier(0.17,0.67,0.12,0.99)}
-.event{background:linear-gradient(90deg,#ffeb3b,#ffc107);color:#000;padding:12px;border-radius:15px;font-weight:bold;text-align:center;margin-bottom:10px}
-input{padding:12px;border-radius:10px;border:0;width:65%}
+
+/* المهام والمتجر */
+.item{background:#1f2937;padding:14px;border-radius:14px;margin:10px 0;display:flex;justify-content:space-between;align-items:center}
+.item button{width:90px;padding:10px;font-size:13px}
+
+/* العجلة */
+.wheel-wrap{display:flex;justify-content:center;margin:15px 0}
+.wheel{width:250px;height:250px;border-radius:50%;border:8px solid #facc15;background:conic-gradient(#ef4444 0 60deg,#22c55e 60deg 120deg,#3b82f6 120deg 180deg,#eab308 180deg 240deg,#a855f7 240deg 300deg,#06b6d4 300deg 360deg);position:relative;transition:5s cubic-bezier(0.23,1,0.32,1)}
+.pointer{position:absolute;top:-15px;left:50%;transform:translateX(-50%);width:0;height:0;border-left:15px solid transparent;border-right:15px solid transparent;border-bottom:20px solid #fff;z-index:10}
+
+/* XO */
+.board{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;width:280px;margin:15px auto}
+.cell{background:#1f2937;height:90px;border-radius:15px;font-size:45px;display:flex;align-items:center;justify-content:center;font-weight:bold}
+.event{background:linear-gradient(90deg,#facc15,#eab308);color:#000;text-align:center;padding:10px;border-radius:12px;font-weight:bold}
 </style>
 </head>
 <body>
-<div class="container">
-<h1>🔥 الرافدين 🔥</h1>
+<div class="app">
 
 <div id="home" class="page active">
+<div class="header"><h1>🔥 الرافدين 🔥</h1></div>
 <div class="card">
 <div id="event"></div>
-<h2 style="text-align:center">رصيدك الحالي</h2>
+<h3 style="text-align:center">رصيدك الحالي</h3>
 <div class="points" id="points">1,000</div>
-<div class="time" id="timer">23:59:59</div>
-<button id="collectBtn" onclick="collect()">💰 اجمع 100 نقطة</button>
+<div class="timer" id="timer">23:59:59</div>
+<button class="btn" id="collectBtn" onclick="collect()">💰 اجمع 100 نقطة</button>
 </div>
 </div>
 
 <div id="games" class="page">
 <div class="card">
-<h2 style="text-align:center">🎮 الالعاب -50 نقطة</h2>
-<div class="wheel" id="wheel">🎁</div>
-<button onclick="spin()">🎡 لف العجلة</button>
-<button onclick="xo()">❌⭕ لعبة XO</button>
-<button onclick="box()">📦 صندوق غامض -500</button>
+<h3 style="text-align:center">🎮 الالعاب</h3>
+<div class="wheel-wrap">
+<div style="position:relative">
+<div class="pointer"></div>
+<div class="wheel" id="wheel"></div>
+</div>
+</div>
+<button class="btn" onclick="spin()">🎡 لف العجلة -50</button>
+<button class="btn" onclick="startXO()">❌⭕ لعبة XO -50</button>
+<button class="btn" onclick="box()">📦 صندوق -500</button>
+</div>
+</div>
+
+<div id="xo" class="page">
+<div class="card">
+<h3 style="text-align:center">XO ضد البوت</h3>
+<div class="board" id="board"></div>
+<p id="xoText" style="text-align:center;color:#facc15">دورك</p>
+<button class="btn" onclick="show('games')">رجوع</button>
 </div>
 </div>
 
 <div id="tasks" class="page">
 <div class="card">
-<h2 style="text-align:center">📋 المهام <span id="taskTimer" style="color:#ffeb3b;font-size:13px"></span></h2>
+<h3 style="text-align:center">📋 المهام <span id="taskTimer" style="color:#facc15;font-size:12px"></span></h3>
 <div id="taskList"></div>
-<h2 style="text-align:center;margin-top:15px">🤝 نظام الاحالة</h2>
-<input id="refInput" placeholder="دخل كود صديقك">
-<button onclick="useRef()" style="width:30%">تفعيل</button>
-<p style="text-align:center;margin-top:10px">كودك: <b id="myCode" style="color:#0f0"></b></p>
+<h3 style="text-align:center;margin-top:15px">🤝 الاحالة</h3>
+<input id="refInput" placeholder="كود صديقك" style="padding:12px;border-radius:10px;border:0;width:60%">
+<button class="btn" onclick="useRef()" style="width:35%">تفعيل</button>
+<p style="text-align:center">كودك: <b id="myCode" style="color:#22c55e"></b></p>
 </div>
 </div>
 
 <div id="shop" class="page">
 <div class="card">
-<h2 style="text-align:center">🛒 متجر العدادات</h2>
+<h3 style="text-align:center">🛒 المتجر</h3>
 <div id="shopList"></div>
 </div>
 </div>
 
 <div id="board" class="page">
 <div class="card">
-<h2 style="text-align:center">🏆 المتصدرين</h2>
+<h3 style="text-align:center">🏆 المتصدرين</h3>
 <div id="leader"></div>
 </div>
 </div>
@@ -76,44 +111,48 @@ input{padding:12px;border-radius:10px;border:0;width:65%}
 </div>
 
 <div class="nav">
-<button onclick="show('home')">🏠 العداد</button>
-<button onclick="show('games')">🎮 العاب</button>
-<button onclick="show('tasks')">📋 مهام</button>
-<button onclick="show('shop')">🛒 متجر</button>
-<button onclick="show('board')">🏆 متصدرين</button>
+<button onclick="show('home')" class="active">🏠<br>العداد</button>
+<button onclick="show('games')">🎮<br>العاب</button>
+<button onclick="show('tasks')">📋<br>مهام</button>
+<button onclick="show('shop')">🛒<br>متجر</button>
+<button onclick="show('board')">🏆<br>متصدرين</button>
 </div>
 
-<audio id="winSound" src="https://cdn.freesound.org/previews/270/270404_5123851-lq.mp3"></audio>
-<audio id="loseSound" src="https://cdn.freesound.org/previews/270/270310_5123851-lq.mp3"></audio>
-<audio id="collectSound" src="https://cdn.freesound.org/previews/270/270404_5123851-lq.mp3"></audio>
+<audio id="winSound" src="https://cdn.pixabay.com/audio/1/1/coins-1-101625.mp3"></audio>
+<audio id="loseSound" src="https://cdn.pixabay.com/audio/1/1/error-1-126490.mp3"></audio>
+<audio id="clickSound" src="https://cdn.pixabay.com/audio/1/1/click-1-126490.mp3"></audio>
 
 <script>
-let data = JSON.parse(localStorage.getItem('rafidainPro')) || {
+let data = JSON.parse(localStorage.getItem('rafidainMobile')) || {
 points:1000, rate:100, last:0, myCode:'RAF'+Math.floor(Math.random()*9000),
 usedRef:false, tasks:[], taskEnd:0
 };
 
 let allTasks100 = [];
-for(let i=1;i<=100;i++){
-allTasks100.push({text:`اجمع ${Math.floor(Math.random()*8)+2} مرات`,type:"collect",need:Math.floor(Math.random()*8)+2,reward:Math.floor(Math.random()*1500)+500});
-}
-allTasks100.push({text:"العب XO مرة",type:"game",need:1,reward:500});
+for(let i=1;i<=100;i++) allTasks100.push({text:`اجمع ${Math.floor(Math.random()*7)+3} مرات`,type:"collect",need:Math.floor(Math.random()*7)+3,reward:Math.floor(Math.random()*1200)+500});
+allTasks100.push({text:"العب XO",type:"game",need:1,reward:500});
 allTasks100.push({text:"افتح صندوق",type:"box",need:1,reward:800});
 allTasks100.push({text:"اشتري عداد",type:"buy",need:1,reward:2000});
 
-function save(){localStorage.setItem('rafidainPro', JSON.stringify(data));}
-function show(id){document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));document.getElementById(id).classList.add('active');}
-function playSound(id){document.getElementById(id).play();}
+let boardXO = Array(9).fill('');
+let gameOver = false;
+
+function save(){localStorage.setItem('rafidainMobile', JSON.stringify(data));}
+function show(id){
+document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+document.querySelectorAll('.nav button').forEach(b=>b.classList.remove('active'));
+document.getElementById(id).classList.add('active');
+playSound('clickSound');
+}
+function playSound(id){let s=document.getElementById(id); s.currentTime=0; s.play();}
 
 function update(){
 document.getElementById('points').innerText = data.points.toLocaleString();
 document.getElementById('myCode').innerText = data.myCode;
-
 document.getElementById('event').innerHTML = new Date().getDay()==5? '<div class="event">🎉 الجمعة: الجمع ×2 🎉</div>' : '';
 let mult = new Date().getDay()==5? 2:1;
 
-let left = 86400000 - (Date.now() - data.last);
-if(left<0) left=0;
+let left = 86400000 - (Date.now() - data.last); if(left<0) left=0;
 let h=Math.floor(left/3600000),m=Math.floor((left%3600000)/60000),s=Math.floor((left%60000)/1000);
 document.getElementById('timer').innerText = `${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
 document.getElementById('collectBtn').disabled = left>0;
@@ -127,81 +166,82 @@ let tLeft = data.taskEnd - Date.now();
 document.getElementById('taskTimer').innerText = `تتجدد بعد ${Math.floor(tLeft/3600000)}س`;
 
 let tHtml='';
-data.tasks.forEach((t,i)=>{
-tHtml+=`<div class="task"><div><b>${t.text}</b><br><small>+${t.reward} نقطة</small></div><button onclick="claim(${i})" ${t.prog<t.need?'disabled':''}>${t.done?'✅ تم':t.prog+'/'+t.need}</button></div>`;
-});
+data.tasks.forEach((t,i)=>{tHtml+=`<div class="item"><div><b>${t.text}</b><br><small>+${t.reward}</small></div><button class="btn" onclick="claim(${i})" ${t.prog<t.need?'disabled':''}>${t.done?'✅':t.prog+'/'+t.need}</button></div>`;});
 document.getElementById('taskList').innerHTML=tHtml;
 
 let shop='';
-[100,200,300,400,500,1000,2000,3000,4000,5000].forEach((r,i)=>{
-let p=(i+1)*1000;
-shop+=`<div class="shop"><div><b>عداد ${r}</b></div><button onclick="buy(${r},${p})" ${data.points<p?'disabled':''}>${p.toLocaleString()}</button></div>`;
-});
+[100,200,300,400,500,1000,2000,3000,4000,5000].forEach((r,i)=>{let p=(i+1)*1000; shop+=`<div class="item"><span><b>عداد ${r}</b></span><button class="btn" onclick="buy(${r},${p})" ${data.points<p?'disabled':''}>${p.toLocaleString()}</button></div>`;});
 document.getElementById('shopList').innerHTML=shop;
 
-let top=[{n:'انت',p:data.points},{n:'احمد',p:125000},{n:'علي',p:98000},{n:'سارة',p:76000}].sort((a,b)=>b.p-a.p);
-document.getElementById('leader').innerHTML = top.map((x,i)=>`<div class="shop"><span>🥇 #${i+1} ${x.n}</span><b>${x.p.toLocaleString()}</b></div>`).join('');
+let top=[{n:'انت',p:data.points},{n:'احمد',p:125000},{n:'علي',p:98000}].sort((a,b)=>b.p-a.p);
+document.getElementById('leader').innerHTML = top.map((x,i)=>`<div class="item"><span>🥇 #${i+1} ${x.n}</span><b>${x.p.toLocaleString()}</b></div>`).join('');
 }
 
 function collect(){
 if(Date.now()-data.last<86400000) return;
 let mult = new Date().getDay()==5? 2:1;
-data.points += data.rate*mult;
-data.last = Date.now();
+data.points += data.rate*mult; data.last = Date.now();
 data.tasks.forEach(t=>{if(t.type=="collect") t.prog++;});
-playSound('collectSound');
-save(); update();
+playSound('winSound'); save(); update();
 }
 
 function buy(r,p){
-if(data.points<p) return alert('ماعندك نقاط كافية');
-data.points-=p; data.rate=r;
-data.tasks.forEach(t=>{if(t.type=="buy") t.prog++;});
-playSound('winSound');
-save(); update(); alert('✅ تم شراء عداد '+r);
+if(data.points<p) return alert('ماعندك');
+data.points-=p; data.rate=r; data.tasks.forEach(t=>{if(t.type=="buy") t.prog++;});
+playSound('winSound'); save(); update(); alert('تم شراء عداد '+r);
 }
 
 function spin(){
-if(data.points<50) return alert('تحتاج 50 نقطة');
+if(data.points<50) return alert('تحتاج 50');
 data.points-=50;
-let win = [50,100,200,500,1000][Math.floor(Math.random()*5)];
-data.points+=win;
+let prizes=[50,100,200,500,1000,2000];
+let win = prizes[Math.floor(Math.random()*prizes.length)];
+let deg = 1800 + Math.floor(Math.random()*360);
+document.getElementById('wheel').style.transform=`rotate(${deg}deg)`;
 data.tasks.forEach(t=>{if(t.type=="game") t.prog++;});
-document.getElementById('wheel').style.transform=`rotate(${1800+Math.random()*360}deg)`;
 setTimeout(()=>{
+data.points+=win;
 if(win>=500) playSound('winSound'); else playSound('loseSound');
-alert('🎁 ربحت '+win.toLocaleString()+' نقطة');
-save(); update();
-},4000);
-update();
+alert('ربحت '+win); save(); update();
+},5000); update();
 }
 
-function xo(){
-if(data.points<50) return alert('تحتاج 50 نقطة');
-data.points-=50;
-let win = Math.random()>0.4;
-if(win){data.points+=1000; playSound('winSound'); alert('🏆 فزت +1000 نقطة');}
-else {playSound('loseSound'); alert('😢 خسرت');}
-data.tasks.forEach(t=>{if(t.type=="game") t.prog++;});
-save(); update();
+function startXO(){
+if(data.points<50) return alert('تحتاج 50');
+data.points-=50; save(); update();
+boardXO=Array(9).fill(''); gameOver=false;
+renderXO(); show('xo');
 }
+function renderXO(){
+let h=''; for(let i=0;i<9;i++) h+=`<div class="cell" onclick="playXO(${i})">${boardXO[i]}</div>`;
+document.getElementById('board').innerHTML=h;
+}
+function playXO(i){
+if(boardXO[i]||gameOver) return;
+boardXO[i]='X'; renderXO();
+if(checkWin('X')){gameOver=true; document.getElementById('xoText').innerText='فزت!'; data.points+=1000; playSound('winSound'); save(); update(); return;}
+if(!boardXO.includes('')){gameOver=true; document.getElementById('xoText').innerText='تعادل'; return;}
+document.getElementById('xoText').innerText='دور البوت';
+setTimeout(()=>{let e=boardXO.map((v,j)=>v?'':j).filter(x=>x!==''); boardXO[e[Math.floor(Math.random()*e.length)]]='O'; renderXO();
+if(checkWin('O')){gameOver=true; document.getElementById('xoText').innerText='خسرت'; playSound('loseSound'); return;}
+if(!boardXO.includes('')){gameOver=true; document.getElementById('xoText').innerText='تعادل'; return;}
+document.getElementById('xoText').innerText='دورك';
+},400);
+}
+function checkWin(p){const wins=[[0,1,2],[3,4,5],[6,7,8],[0,3,6],[1,4,7],[2,5,8],[0,4,8],[2,4,6]]; return wins.some(c=>c.every(i=>boardXO[i]===p));}
 
 function box(){
-if(data.points<500) return alert('تحتاج 500 نقطة');
-data.points-=500;
-let win = [100,500,1000,2000,5000][Math.floor(Math.random()*5)];
-data.points+=win;
-data.tasks.forEach(t=>{if(t.type=="box") t.prog++;});
+if(data.points<500) return alert('تحتاج 500');
+data.points-=500; let win=[100,500,1000,2000,5000][Math.floor(Math.random()*5)];
+data.points+=win; data.tasks.forEach(t=>{if(t.type=="box") t.prog++;});
 if(win>=1000) playSound('winSound'); else playSound('loseSound');
-save(); update(); alert('📦 فتحت الصندوق وربحت '+win.toLocaleString());
+save(); update(); alert('ربحت '+win);
 }
 
 function claim(i){
 if(data.tasks[i].prog>=data.tasks[i].need &&!data.tasks[i].done){
-data.points += data.tasks[i].reward;
-data.tasks[i].done=true;
-playSound('winSound');
-save(); update();
+data.points += data.tasks[i].reward; data.tasks[i].done=true;
+playSound('winSound'); save(); update();
 }
 }
 
@@ -209,8 +249,8 @@ function useRef(){
 let code = document.getElementById('refInput').value;
 if(code &&!data.usedRef && code!=data.myCode){
 data.points+=5000; data.usedRef=true; playSound('winSound'); save(); update();
-alert('✅ تم تفعيل الكود +5000 نقطة');
-}else alert('❌ الكود غلط او مستخدم');
+alert('تم +5000');
+}else alert('كود غلط');
 }
 
 setInterval(update,1000); update();
