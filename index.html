@@ -24,23 +24,13 @@ h1{color:#ffcc00; text-shadow:0 0 10px #ffcc00; font-size:24px; margin:10px;}
 .btn-half{width:45%; max-width:170px;}
 .modal{display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.95); z-index:1000; overflow-y:auto;}
 .modal-content{background:#1a1a1a; margin:20px auto; padding:15px; width:95%; max-width:500px; border-radius:15px; border:2px solid #ff8c00;}
-.counterItem{background:#222; padding:15px; margin:10px auto; border-radius:10px; border:2px solid #333; width:90%; max-width:350px;}
-.counterItem h4{color:#ffb300; margin:5px; font-size:18px;}
-.counterItem p{margin:5px; color:#aaa;}
-#xoBoard{display:grid; grid-template-columns:repeat(3,100px); gap:5px; margin:20px auto; width:310px;}
-.xoCell{width:100px; height:100px; background:#222; font-size:60px; display:flex; align-items:center; justify-content:center; cursor:pointer; border-radius:10px; border:2px solid #ff8c00;}
-.xoCell:hover{background:#333;}
 
-/* العجلة الجديدة */
-.wheel-container{position:relative; width:320px; height:320px; margin:20px auto;}
-.pointer{width:0; height:0; border-left:20px solid transparent; border-right:20px solid transparent; border-bottom:40px solid #ff0000; position:absolute; top:-20px; left:50%; transform:translateX(-50%); z-index:10;}
-#wheel{width:100%; height:100%; border-radius:50%; border:8px solid #ff8c00; position:relative; transition: transform 5s cubic-bezier(0.17, 0.67, 0.12, 0.99); box-shadow:0 0 20px #ff8c00;}
-.wheel-segment{position:absolute; width:50%; height:50%; transform-origin:100% 100%; clip-path: polygon(0 0, 100% 0, 100% 100%);}
-.wheel-text{position:absolute; top:35%; left:65%; transform-origin:center; font-weight:bold; color:#000; font-size:14px; text-align:center; width:80px;}
-
-.boxItem{width:100px; height:100px; background:linear-gradient(135deg,#ffb300,#ff8c00); margin:10px; display:inline-block; border-radius:15px; cursor:pointer; font-size:40px; line-height:100px; border:3px solid #fff; transition:0.3s;}
-.boxItem:hover{transform:scale(1.1);}
-.boxItem.opened{background:#333; cursor:not-allowed; transform:scale(0.9);}
+/* العجلة الجديدة المضبوطة */
+.wheel-container{position:relative; width:300px; height:300px; margin:20px auto;}
+.pointer{width:0; height:0; border-left:20px solid transparent; border-right:20px solid transparent; border-bottom:40px solid #ff0000; position:absolute; top:-15px; left:50%; transform:translateX(-50%); z-index:10; filter:drop-shadow(0 0 5px red);}
+#wheel{width:100%; height:100%; border-radius:50%; border:8px solid #ff8c00; position:relative; transition: transform 5s cubic-bezier(0.17, 0.67, 0.12, 0.99); overflow:hidden; box-shadow:0 0 30px #ff8c00;}
+.wheel-segment{position:absolute; width:100%; height:100%; display:flex; align-items:center; justify-content:center;}
+.wheel-text{position:absolute; font-weight:bold; color:#000; font-size:16px; text-shadow:0 0 3px white;}
 </style>
 </head>
 <body>
@@ -53,7 +43,6 @@ h1{color:#ffcc00; text-shadow:0 0 10px #ffcc00; font-size:24px; margin:10px;}
   <button class="navBtn" onclick="showPage('games')">الالعاب 🎮</button>
 </div>
 
-<!-- صفحة العدادات -->
 <div id="counters" class="page active">
   <div class="stats">
     <div class="box"><h3>الرصيد 💰</h3><div id="coins">0 نقطة</div></div>
@@ -63,14 +52,12 @@ h1{color:#ffcc00; text-shadow:0 0 10px #ffcc00; font-size:24px; margin:10px;}
   <p id="nextClaim" style="color:#aaa;"></p>
 </div>
 
-<!-- صفحة المتجر -->
 <div id="store" class="page">
   <h2>🛒 متجر العدادات</h2>
   <div id="coins2" class="box">رصيدك: 0 نقطة</div>
   <div id="storeList"></div>
 </div>
 
-<!-- صفحة الالعاب -->
 <div id="games" class="page">
   <h2>🎮 الالعاب</h2>
   <div id="coins3" class="box">رصيدك: 0 نقطة</div>
@@ -79,7 +66,6 @@ h1{color:#ffcc00; text-shadow:0 0 10px #ffcc00; font-size:24px; margin:10px;}
   <button class="btn btn-half" onclick="openBox()">📦 الصندوق - 500</button>
 </div>
 
-<!-- نافذة XO -->
 <div id="xoModal" class="modal"><div class="modal-content">
   <h2>❌⭕ XO ضد البوت</h2>
   <div id="xoBoard"></div>
@@ -88,19 +74,17 @@ h1{color:#ffcc00; text-shadow:0 0 10px #ffcc00; font-size:24px; margin:10px;}
   <button class="btn" onclick="closeModal('xoModal')">خروج</button>
 </div></div>
 
-<!-- نافذة العجلة الجديدة -->
 <div id="wheelModal" class="modal"><div class="modal-content">
   <h2>🎡 العجلة</h2>
   <div class="wheel-container">
     <div class="pointer"></div>
-    <div id="wheel"></div>
+    <canvas id="wheel" width="300" height="300"></canvas>
   </div>
   <button class="btn" id="spinBtn" onclick="doSpin()">لف - 50</button>
   <p id="wheelResult" style="font-size:20px; color:#ffcc00;"></p>
   <button class="btn" onclick="closeModal('wheelModal')">اغلاق</button>
 </div></div>
 
-<!-- نافذة الصندوق الغامض -->
 <div id="boxModal" class="modal"><div class="modal-content">
   <h2>📦 الصندوق الغامض</h2>
   <p>اختر صندوق واحد - الخصم 500 نقطة</p>
@@ -116,6 +100,7 @@ let lastClaim = parseInt(localStorage.getItem('rafidain_lastClaim')) || 0;
 let xoBoard = Array(9).fill('');
 let gameOver = false;
 let boxOpened = false;
+let currentRotation = 0;
 
 const countersData = [
   {name:"عداد 100", price:1000, profit:100},
@@ -128,6 +113,15 @@ const countersData = [
   {name:"عداد 3000", price:30000, profit:3000},
   {name:"عداد 4000", price:40000, profit:4000},
   {name:"عداد 5000", price:50000, profit:5000}
+];
+
+const wheelPrizes = [
+  {text:"حظ اوفر", value:0, color:"#ff0000"},
+  {text:"100", value:100, color:"#ffcc00"},
+  {text:"250", value:250, color:"#00ff00"},
+  {text:"300", value:300, color:"#00ccff"},
+  {text:"1000", value:1000, color:"#ff00ff"},
+  {text:"5000", value:5000, color:"#ffb300"}
 ];
 
 function showPage(id){
@@ -186,7 +180,7 @@ function buyCounter(price, profit){
   alert(`✅ تم شراء العداد! صار عندك ${getCounterCount()} عداد`);
 }
 
-// 1. XO
+// XO
 function openXO(){
   if(coins<50){alert("ما عندك 50");return;}
   coins-=50; updateAll();
@@ -227,49 +221,59 @@ function checkWinner(p){
   return wins.some(w=>w.every(i=>xoBoard[i]==p));
 }
 
-// 2. العجلة الجديدة 6 جوائز
-const wheelPrizes = [
-  {text:"حظ اوفر", value:0, color:"#ff0000"},
-  {text:"100", value:100, color:"#ffcc00"},
-  {text:"250", value:250, color:"#00ff00"},
-  {text:"300", value:300, color:"#00ccff"},
-  {text:"1000", value:1000, color:"#ff00ff"},
-  {text:"5000", value:5000, color:"#ffb300"}
-];
-
+// العجلة بالـ Canvas - 100% دائرية
 function spinWheel(){
   if(coins<50){alert("ما عندك 50");return;}
   coins-=50; updateAll();
   document.getElementById('wheelModal').style.display='block';
   document.getElementById('wheelResult').innerText = '';
-  createWheel();
+  drawWheel();
 }
-function createWheel(){
-  let wheel = document.getElementById('wheel');
-  wheel.innerHTML = '';
-  let segmentAngle = 360 / wheelPrizes.length;
+function drawWheel(){
+  const canvas = document.getElementById('wheel');
+  const ctx = canvas.getContext('2d');
+  const centerX = 150;
+  const centerY = 150;
+  const radius = 140;
+  const segmentAngle = 2*Math.PI / wheelPrizes.length;
+
+  ctx.clearRect(0,0,300,300);
 
   wheelPrizes.forEach((p,i)=>{
-    let seg = document.createElement('div');
-    seg.className='wheel-segment';
-    seg.style.transform = `rotate(${i*segmentAngle}deg)`;
-    seg.style.background = p.color;
+    const startAngle = i * segmentAngle;
+    const endAngle = (i+1) * segmentAngle;
 
-    let text = document.createElement('div');
-    text.className='wheel-text';
-    text.style.transform = `rotate(${segmentAngle/2}deg)`;
-    text.innerText = p.text;
-    seg.appendChild(text);
-    wheel.appendChild(seg);
+    // رسم الجزء
+    ctx.beginPath();
+    ctx.moveTo(centerX, centerY);
+    ctx.arc(centerX, centerY, radius, startAngle, endAngle);
+    ctx.closePath();
+    ctx.fillStyle = p.color;
+    ctx.fill();
+    ctx.strokeStyle = '#000';
+    ctx.lineWidth = 3;
+    ctx.stroke();
+
+    // كتابة النص
+    const textAngle = startAngle + segmentAngle/2;
+    const textX = centerX + Math.cos(textAngle) * 80;
+    const textY = centerY + Math.sin(textAngle) * 80;
+    ctx.fillStyle = '#000';
+    ctx.font = 'bold 18px tahoma';
+    ctx.textAlign = 'center';
+    ctx.fillText(p.text, textX, textY);
   });
 }
+
 function doSpin(){
   document.getElementById('spinBtn').disabled = true;
   let randomIndex = Math.floor(Math.random()*wheelPrizes.length);
   let segmentAngle = 360 / wheelPrizes.length;
-  let finalDeg = 1800 + (360 - randomIndex*segmentAngle) - segmentAngle/2; // توكف بالنص
+  let targetDeg = 1800 + (360 - randomIndex*segmentAngle) - segmentAngle/2;
 
-  document.getElementById('wheel').style.transform = `rotate(${finalDeg}deg)`;
+  document.getElementById('wheel').style.transition = 'transform 5s cubic-bezier(0.17, 0.67, 0.12, 0.99)';
+  document.getElementById('wheel').style.transform = `rotate(${targetDeg}deg)`;
+
   setTimeout(()=>{
     let prize = wheelPrizes[randomIndex];
     if(prize.value>0){coins+=prize.value;}
@@ -279,7 +283,7 @@ function doSpin(){
   },5000);
 }
 
-// 3. الصندوق
+// الصندوق
 function openBox(){
   if(coins<500){alert("ما عندك 500");return;}
   coins-=500; updateAll();
