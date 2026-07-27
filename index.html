@@ -30,10 +30,14 @@ h1{color:#ffcc00; text-shadow:0 0 10px #ffcc00; font-size:24px; margin:10px;}
 #xoBoard{display:grid; grid-template-columns:repeat(3,100px); gap:5px; margin:20px auto; width:310px;}
 .xoCell{width:100px; height:100px; background:#222; font-size:60px; display:flex; align-items:center; justify-content:center; cursor:pointer; border-radius:10px; border:2px solid #ff8c00;}
 .xoCell:hover{background:#333;}
-#wheel{width:300px; height:300px; border-radius:50%; margin:20px auto; border:10px solid #ff8c00; position:relative; transition: transform 4s cubic-bezier(0.17, 0.67, 0.12, 0.99); overflow:hidden;}
+
+/* العجلة الجديدة */
+.wheel-container{position:relative; width:320px; height:320px; margin:20px auto;}
+.pointer{width:0; height:0; border-left:20px solid transparent; border-right:20px solid transparent; border-bottom:40px solid #ff0000; position:absolute; top:-20px; left:50%; transform:translateX(-50%); z-index:10;}
+#wheel{width:100%; height:100%; border-radius:50%; border:8px solid #ff8c00; position:relative; transition: transform 5s cubic-bezier(0.17, 0.67, 0.12, 0.99); box-shadow:0 0 20px #ff8c00;}
 .wheel-segment{position:absolute; width:50%; height:50%; transform-origin:100% 100%; clip-path: polygon(0 0, 100% 0, 100% 100%);}
-.wheel-text{position:absolute; top:25%; left:50%; transform:translateX(-50%) rotate(36deg); font-weight:bold; color:#000;}
-.pointer{width:0; height:0; border-left:15px solid transparent; border-right:15px solid transparent; border-top:30px solid #ff0000; margin:0 auto; position:relative; top:-10px; z-index:10;}
+.wheel-text{position:absolute; top:35%; left:65%; transform-origin:center; font-weight:bold; color:#000; font-size:14px; text-align:center; width:80px;}
+
 .boxItem{width:100px; height:100px; background:linear-gradient(135deg,#ffb300,#ff8c00); margin:10px; display:inline-block; border-radius:15px; cursor:pointer; font-size:40px; line-height:100px; border:3px solid #fff; transition:0.3s;}
 .boxItem:hover{transform:scale(1.1);}
 .boxItem.opened{background:#333; cursor:not-allowed; transform:scale(0.9);}
@@ -84,13 +88,15 @@ h1{color:#ffcc00; text-shadow:0 0 10px #ffcc00; font-size:24px; margin:10px;}
   <button class="btn" onclick="closeModal('xoModal')">خروج</button>
 </div></div>
 
-<!-- نافذة العجلة -->
+<!-- نافذة العجلة الجديدة -->
 <div id="wheelModal" class="modal"><div class="modal-content">
   <h2>🎡 العجلة</h2>
-  <div class="pointer"></div>
-  <div id="wheel"></div>
+  <div class="wheel-container">
+    <div class="pointer"></div>
+    <div id="wheel"></div>
+  </div>
   <button class="btn" id="spinBtn" onclick="doSpin()">لف - 50</button>
-  <p id="wheelResult"></p>
+  <p id="wheelResult" style="font-size:20px; color:#ffcc00;"></p>
   <button class="btn" onclick="closeModal('wheelModal')">اغلاق</button>
 </div></div>
 
@@ -221,7 +227,16 @@ function checkWinner(p){
   return wins.some(w=>w.every(i=>xoBoard[i]==p));
 }
 
-// 2. العجلة مصلحة
+// 2. العجلة الجديدة 6 جوائز
+const wheelPrizes = [
+  {text:"حظ اوفر", value:0, color:"#ff0000"},
+  {text:"100", value:100, color:"#ffcc00"},
+  {text:"250", value:250, color:"#00ff00"},
+  {text:"300", value:300, color:"#00ccff"},
+  {text:"1000", value:1000, color:"#ff00ff"},
+  {text:"5000", value:5000, color:"#ffb300"}
+];
+
 function spinWheel(){
   if(coins<50){alert("ما عندك 50");return;}
   coins-=50; updateAll();
@@ -232,35 +247,39 @@ function spinWheel(){
 function createWheel(){
   let wheel = document.getElementById('wheel');
   wheel.innerHTML = '';
-  let prizes = [100,250,500,1000,0];
-  let colors = ['#ffcc00','#00ff00','#00ccff','#ff00ff','#ff0000'];
-  prizes.forEach((p,i)=>{
+  let segmentAngle = 360 / wheelPrizes.length;
+
+  wheelPrizes.forEach((p,i)=>{
     let seg = document.createElement('div');
     seg.className='wheel-segment';
-    seg.style.transform = `rotate(${i*72}deg)`;
-    seg.style.background = colors[i];
+    seg.style.transform = `rotate(${i*segmentAngle}deg)`;
+    seg.style.background = p.color;
+
     let text = document.createElement('div');
     text.className='wheel-text';
-    text.innerText = p;
+    text.style.transform = `rotate(${segmentAngle/2}deg)`;
+    text.innerText = p.text;
     seg.appendChild(text);
     wheel.appendChild(seg);
   });
 }
 function doSpin(){
   document.getElementById('spinBtn').disabled = true;
-  let randomDeg = Math.floor(Math.random()*360) + 1800;
-  document.getElementById('wheel').style.transform = `rotate(${randomDeg}deg)`;
+  let randomIndex = Math.floor(Math.random()*wheelPrizes.length);
+  let segmentAngle = 360 / wheelPrizes.length;
+  let finalDeg = 1800 + (360 - randomIndex*segmentAngle) - segmentAngle/2; // توكف بالنص
+
+  document.getElementById('wheel').style.transform = `rotate(${finalDeg}deg)`;
   setTimeout(()=>{
-    let prizes = [100,250,500,1000,0];
-    let prize = prizes[Math.floor(Math.random()*prizes.length)];
-    if(prize>0){coins+=prize;}
-    document.getElementById('wheelResult').innerText = prize>0?`ربحت ${prize} نقطة`:'خسارة';
+    let prize = wheelPrizes[randomIndex];
+    if(prize.value>0){coins+=prize.value;}
+    document.getElementById('wheelResult').innerText = prize.value>0?`🎉 ربحت ${prize.text} نقطة`:`💀 ${prize.text}`;
     updateAll();
     document.getElementById('spinBtn').disabled = false;
-  },4000);
+  },5000);
 }
 
-// 3. الصندوق مصلح - خصم 500 مرة وحدة وصندوق واحد بس بيه جائزة
+// 3. الصندوق
 function openBox(){
   if(coins<500){alert("ما عندك 500");return;}
   coins-=500; updateAll();
@@ -270,7 +289,7 @@ function openBox(){
   let boxes = document.getElementById('boxes');
   boxes.innerHTML = '';
   let winningBox = Math.floor(Math.random()*3)+1;
-  let prize = Math.floor(Math.random()*4901)+100; // من 100 الى 5000
+  let prize = Math.floor(Math.random()*4901)+100;
 
   for(let i=1; i<=3; i++){
     let div = document.createElement('div');
