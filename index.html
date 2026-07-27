@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="theme-color" content="#0a0f1e">
-<link rel="manifest" href="data:application/json;base64,ewogICJuYW1lIjogItmF2LPYs9mGINiq2YLYs9mK2YYiLAogICJzaG9ydF9uYW1lIjogItmF2LPYs9mGINiq2YIiLAogICJzdGFydF91cmwiOiAiLi8iLAogICJkaXNwbGF5IjogInN0YW5kYWxvbmUiLAogICJiYWNrZ3JvdW5kX2NvbG9yIjogIiMwYTBmMWUiLAogICJ0aGVtZV9jb2xvciI6ICIjMGExZjFlIiwKICAiaWNvbnMiOiBbCiAgICB7CiAgICAgICJzcmMiOiAiaHR0cHM6Ly9pLmltZ3VyLmNvbS9BNlR6U2dRLnBuZyIsCiAgICAgICJzaXplcyI6ICIxOTI4MTkyIiwKICAgInR5cGUiOiAiaW1hZ2UvcG5nIgogICAgfQogIF0KfQ==">
+<link rel="manifest" href="data:application/json;base64,ewogICJuYW1lIjogItmF2LPYs9mGINiq2YLYs9mK2YYiLAogICJzaG9ydF9uYW1lIjogItmF2LPYs9mGINiq2YIiLAogICJzdGFydF91cmwiOiAiLi8iLAogICJkaXNwbGF5IjogInN0YW5kYWxvbmUiLAogICJiYWNrZ3JvdW5kX2NvbG9yIjogIiMwYTBmMWUiLAogICJ0aGVtZV9jb2xvciI6ICIjMGExZjFlIiwKICAiaWNvbnMiOiBbeyJzcmMiOiAiaHR0cHM6Ly9pLmltZ3VyLmNvbS9BNlR6U2dRLnBuZyIsInNpemVzIjogIjE5MjgxOTIiLCJ0eXBlIjogImltYWdlL3BuZyJ9XX0=">
 <title>الرافدين</title>
 <style>
 *{margin:0;padding:0;box-sizing:border-box;font-family:Tahoma}
@@ -15,6 +15,7 @@ h2{text-align:center;color:#00e5ff;margin-bottom:10px}
 .points{font-size:50px;color:#22c55e;text-align:center;font-weight:bold;margin:10px 0}
 .timer{text-align:center;margin:8px 0;font-size:16px}
 .btn{background:#2563eb;color:#fff;border:0;padding:14px;width:100%;border-radius:12px;margin:8px 0;font-size:16px;font-weight:bold;cursor:pointer}
+.btn:active{background:#1d4ed8}
 .btn:disabled{background:#333}
 .wheel{width:220px;height:220px;border-radius:50%;border:8px solid #facc15;background:conic-gradient(red 0 60deg,green 60 120,blue 120 180,yellow 180 240,purple 240 300,cyan 300 360);margin:15px auto;transition:4s cubic-bezier(.23,1,.32,1)}
 .board{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;width:260px;margin:15px auto}
@@ -58,20 +59,20 @@ h2{text-align:center;color:#00e5ff;margin-bottom:10px}
 </div>
 </div>
 
-<!-- صفحة 3: المتجر -->
+<!-- صفحة 3: المتجر - كل العدادات -->
 <div id="shop" class="page">
 <div class="card">
 <h3 style="text-align:center">المتجر</h3>
-<button class="btn" onclick="buy(100,1000)">+100 عداد = 1000</button>
-<button class="btn" onclick="buy(200,2000)">+200 عداد = 2000</button>
-<button class="btn" onclick="buy(300,3000)">+300 عداد = 3000</button>
-<button class="btn" onclick="buy(400,4000)">+400 عداد = 4000</button>
-<button class="btn" onclick="buy(500,5000)">+500 عداد = 5000</button>
-<button class="btn" onclick="buy(1000,10000)">+1000 عداد = 10000</button>
-<button class="btn" onclick="buy(2000,20000)">+2000 عداد = 20000</button>
-<button class="btn" onclick="buy(3000,30000)">+3000 عداد = 30000</button>
-<button class="btn" onclick="buy(4000,40000)">+4000 عداد = 40000</button>
-<button class="btn" onclick="buy(5000,50000)">+5000 عداد = 50000</button>
+<button class="btn" onclick="buy(100,1000)">+100 عداد = 1000 نقطة</button>
+<button class="btn" onclick="buy(200,2000)">+200 عداد = 2000 نقطة</button>
+<button class="btn" onclick="buy(300,3000)">+300 عداد = 3000 نقطة</button>
+<button class="btn" onclick="buy(400,4000)">+400 عداد = 4000 نقطة</button>
+<button class="btn" onclick="buy(500,5000)">+500 عداد = 5000 نقطة</button>
+<button class="btn" onclick="buy(1000,10000)">+1000 عداد = 10000 نقطة</button>
+<button class="btn" onclick="buy(2000,20000)">+2000 عداد = 20000 نقطة</button>
+<button class="btn" onclick="buy(3000,30000)">+3000 عداد = 30000 نقطة</button>
+<button class="btn" onclick="buy(4000,40000)">+4000 عداد = 40000 نقطة</button>
+<button class="btn" onclick="buy(5000,50000)">+5000 عداد = 50000 نقطة</button>
 </div>
 </div>
 
@@ -79,22 +80,25 @@ h2{text-align:center;color:#00e5ff;margin-bottom:10px}
 
 <!-- شريط التنقل -->
 <div class="nav">
-<button onclick="go('home')" class="active">العداد</button>
-<button onclick="go('games')">الالعاب</button>
-<button onclick="go('shop')">المتجر</button>
+<button onclick="go('home')" id="nav-home" class="active">العداد</button>
+<button onclick="go('games')" id="nav-games">الالعاب</button>
+<button onclick="go('shop')" id="nav-shop">المتجر</button>
 </div>
 
 <script>
 let data = JSON.parse(localStorage.getItem('rafidain')) || {points: 1000,rate: 100,last: 0};
-let board = ['','',''];let gameOver = false; let currentPlayer = 'X';
+let board = ['','',''];let gameOver = false;
 
 function save(){localStorage.setItem('rafidain', JSON.stringify(data));}
-function go(id){
+
+function go(page){
   document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
-  document.getElementById(id).classList.add('active');
+  document.getElementById(page).classList.add('active');
   document.querySelectorAll('.nav button').forEach(b=>b.classList.remove('active'));
-  event.target.classList.add('active');
-  if(id=='games'){document.getElementById('wheelBox').style.display='none';document.getElementById('xoBox').style.display='none';}
+  document.getElementById('nav-'+page).classList.add('active');
+  if(page=='games'){document.getElementById('wheelBox').style.display='none';document.getElementById('xoBox').style.display='none';}
+}
+
 function update(){
   document.getElementById('points').innerText = data.points;
   let left = 86400000 - (Date.now() - data.last);
@@ -106,14 +110,17 @@ function update(){
   document.getElementById('collectBtn').innerText = `اجمع ${data.rate}`;
   document.getElementById('collectBtn').disabled = left>0;
 }
+
 function collect(){
-  if(Date.now()-data.last < 86400000) return;
+  if(Date.now()-data.last < 86400000) return alert('انتظر 24 ساعة');
   data.points += data.rate;data.last = Date.now();save();update();
 }
+
 function buy(r,p){
   if(data.points<p) return alert('ماعندك نقاط كافية');
   data.points -= p;data.rate += r;save();update();alert(`تم شراء +${r} عداد`);
 }
+
 function spin(){
   if(data.points<50) return alert('تحتاج 50 نقطة');
   data.points -= 50;
@@ -128,20 +135,23 @@ function spin(){
     document.getElementById('wheelResult').innerText=`مبروك ربحت ${win} نقطة`;
   },4000);
 }
+
 function startXO(){
   if(data.points<50) return alert('تحتاج 50 نقطة');
   data.points -= 50;save();update();
-  gameOver=false;board = ['','',''];currentPlayer='X';
+  gameOver=false;board = ['','',''];
   document.getElementById('xoBox').style.display='block';
   document.getElementById('wheelBox').style.display='none';
   document.getElementById('xoResult').innerText='';
   renderXO();
 }
+
 function renderXO(){
   let html='';
   for(let i=0;i<9;i++) html += `<div class="cell" onclick="playXO(${i})">${board[i]}</div>`;
   document.getElementById('board').innerHTML = html;
 }
+
 function playXO(i){
   if(board[i]||gameOver) return;
   board[i]='X';
@@ -154,14 +164,17 @@ function playXO(i){
   if(!board.includes('')&&!gameOver){document.getElementById('xoResult').innerText='تعادل';}
   renderXO();
 }
+
 function checkWin(p){const w=[[0,1,2],[3,4,5],[6,7,8],[0,3,6],[1,4,7],[2,5,8],[0,4,8],[2,4,6]];return w.some(x=>x.every(i=>board[i]==p));}
 function resetXO(){startXO();}
+
 function box(){
   if(data.points<500) return alert('تحتاج 500 نقطة');
   data.points -= 500;
   let win = [100,500,1000,2000][Math.floor(Math.random()*4)];
   data.points += win;save();alert(`ربحت ${win} نقطة`);update();
 }
+
 setInterval(update,1000);update();
 </script>
 </body>
