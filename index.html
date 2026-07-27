@@ -24,10 +24,13 @@ h2{text-align:center;color:#00e5ff;margin-bottom:10px}
 .nav button{flex:1;background:none;border:0;color:#aaa;padding:10px 0;font-size:12px;cursor:pointer}
 .nav button.active{color:#00e5ff}
 .page{display:none}.page.active{display:block}
+#updateMsg{background:#22c55e;text-align:center;padding:10px;display:none}
 </style>
 </head>
 <body>
 <div class="app">
+<div id="updateMsg">🔄 جاري تحديث التطبيق...</div>
+
 <!-- صفحة 1: العداد -->
 <div id="home" class="page active">
 <div class="card">
@@ -59,7 +62,7 @@ h2{text-align:center;color:#00e5ff;margin-bottom:10px}
 </div>
 </div>
 
-<!-- صفحة 3: المتجر - كل العدادات -->
+<!-- صفحة 3: المتجر -->
 <div id="shop" class="page">
 <div class="card">
 <h3 style="text-align:center">المتجر</h3>
@@ -86,6 +89,19 @@ h2{text-align:center;color:#00e5ff;margin-bottom:10px}
 </div>
 
 <script>
+// كود التحديث التلقائي
+if('serviceWorker' in navigator){
+  navigator.serviceWorker.register('data:text/javascript,').then(reg=>{
+    setInterval(()=>{reg.update()}, 60000); // يفحص تحديث كل دقيقة
+  });
+  window.addEventListener('load', ()=>{
+    if(navigator.serviceWorker.controller){
+      document.getElementById('updateMsg').style.display='block';
+      setTimeout(()=>location.reload(), 1000);
+    }
+  });
+}
+
 let data = JSON.parse(localStorage.getItem('rafidain')) || {points: 1000,rate: 100,last: 0};
 let board = ['','',''];let gameOver = false;
 
@@ -106,76 +122,4 @@ function update(){
   let h = String(Math.floor(left/3600000)).padStart(2,'0');
   let m = String(Math.floor((left%3600000)/60000)).padStart(2,'0');
   let s = String(Math.floor((left%60000)/1000)).padStart(2,'0');
-  document.getElementById('timer').innerText = `الوقت: ${h}:${m}:${s}`;
-  document.getElementById('collectBtn').innerText = `اجمع ${data.rate}`;
-  document.getElementById('collectBtn').disabled = left>0;
-}
-
-function collect(){
-  if(Date.now()-data.last < 86400000) return alert('انتظر 24 ساعة');
-  data.points += data.rate;data.last = Date.now();save();update();
-}
-
-function buy(r,p){
-  if(data.points<p) return alert('ماعندك نقاط كافية');
-  data.points -= p;data.rate += r;save();update();alert(`تم شراء +${r} عداد`);
-}
-
-function spin(){
-  if(data.points<50) return alert('تحتاج 50 نقطة');
-  data.points -= 50;
-  document.getElementById('wheelBox').style.display='block';
-  document.getElementById('xoBox').style.display='none';
-  document.getElementById('wheelResult').innerText='جاري الدوران...';
-  document.getElementById('wheel').style.transform = 'rotate('+(1800+Math.random()*360)+'deg)';
-  let rewards = [100,200,500,1000];
-  let win = rewards[Math.floor(Math.random()*4)];
-  setTimeout(()=>{
-    data.points += win;save();update();
-    document.getElementById('wheelResult').innerText=`مبروك ربحت ${win} نقطة`;
-  },4000);
-}
-
-function startXO(){
-  if(data.points<50) return alert('تحتاج 50 نقطة');
-  data.points -= 50;save();update();
-  gameOver=false;board = ['','',''];
-  document.getElementById('xoBox').style.display='block';
-  document.getElementById('wheelBox').style.display='none';
-  document.getElementById('xoResult').innerText='';
-  renderXO();
-}
-
-function renderXO(){
-  let html='';
-  for(let i=0;i<9;i++) html += `<div class="cell" onclick="playXO(${i})">${board[i]}</div>`;
-  document.getElementById('board').innerHTML = html;
-}
-
-function playXO(i){
-  if(board[i]||gameOver) return;
-  board[i]='X';
-  if(checkWin('X')){gameOver=true; data.points+=1000; save(); update(); document.getElementById('xoResult').innerText='فزت +1000 نقطة'; renderXO(); return;}
-  let empty = board.map((v,j)=>v?'':j).filter(x=>x!=='');
-  if(empty.length){
-    board[empty[Math.floor(Math.random()*empty.length)]]='O';
-    if(checkWin('O')){gameOver=true; document.getElementById('xoResult').innerText='خسرت حاول مرة اخرى';}
-  }
-  if(!board.includes('')&&!gameOver){document.getElementById('xoResult').innerText='تعادل';}
-  renderXO();
-}
-
-function checkWin(p){const w=[[0,1,2],[3,4,5],[6,7,8],[0,3,6],[1,4,7],[2,5,8],[0,4,8],[2,4,6]];return w.some(x=>x.every(i=>board[i]==p));}
-function resetXO(){startXO();}
-
-function box(){
-  if(data.points<500) return alert('تحتاج 500 نقطة');
-  data.points -= 500;
-  let win = [100,500,1000,2000][Math.floor(Math.random()*4)];
-  data.points += win;save();alert(`ربحت ${win} نقطة`);update();
-}
-
-setInterval(update,1000);update();
-</script>
-</body>
-</html>
+  document.getElementById('timer').innerText = `الوق
