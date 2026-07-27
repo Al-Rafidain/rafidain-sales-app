@@ -30,11 +30,13 @@ h1{color:#ffcc00; text-shadow:0 0 10px #ffcc00; font-size:24px; margin:10px;}
 #xoBoard{display:grid; grid-template-columns:repeat(3,100px); gap:5px; margin:20px auto; width:310px;}
 .xoCell{width:100px; height:100px; background:#222; font-size:60px; display:flex; align-items:center; justify-content:center; cursor:pointer; border-radius:10px; border:2px solid #ff8c00;}
 .xoCell:hover{background:#333;}
-#wheel{width:300px; height:300px; border-radius:50%; margin:20px auto; border:8px solid #ff8c00; position:relative; transition: transform 4s cubic-bezier(0.17, 0.67, 0.12, 0.99);}
-.wheel-segment{position:absolute; width:50%; height:50%; transform-origin:100% 100%; display:flex; align-items:center; justify-content:center; font-weight:bold;}
+#wheel{width:300px; height:300px; border-radius:50%; margin:20px auto; border:10px solid #ff8c00; position:relative; transition: transform 4s cubic-bezier(0.17, 0.67, 0.12, 0.99); overflow:hidden;}
+.wheel-segment{position:absolute; width:50%; height:50%; transform-origin:100% 100%; clip-path: polygon(0 0, 100% 0, 100% 100%);}
+.wheel-text{position:absolute; top:25%; left:50%; transform:translateX(-50%) rotate(36deg); font-weight:bold; color:#000;}
+.pointer{width:0; height:0; border-left:15px solid transparent; border-right:15px solid transparent; border-top:30px solid #ff0000; margin:0 auto; position:relative; top:-10px; z-index:10;}
 .boxItem{width:100px; height:100px; background:linear-gradient(135deg,#ffb300,#ff8c00); margin:10px; display:inline-block; border-radius:15px; cursor:pointer; font-size:40px; line-height:100px; border:3px solid #fff; transition:0.3s;}
 .boxItem:hover{transform:scale(1.1);}
-.boxItem.opened{background:#333; cursor:not-allowed;}
+.boxItem.opened{background:#333; cursor:not-allowed; transform:scale(0.9);}
 </style>
 </head>
 <body>
@@ -64,13 +66,13 @@ h1{color:#ffcc00; text-shadow:0 0 10px #ffcc00; font-size:24px; margin:10px;}
   <div id="storeList"></div>
 </div>
 
-<!-- صفحة الالعاب - 3 العاب -->
+<!-- صفحة الالعاب -->
 <div id="games" class="page">
   <h2>🎮 الالعاب</h2>
   <div id="coins3" class="box">رصيدك: 0 نقطة</div>
   <button class="btn btn-half" onclick="openXO()">❌⭕ XO - 50</button>
   <button class="btn btn-half" onclick="spinWheel()">🎡 العجلة - 50</button>
-  <button class="btn btn-half" onclick="openBox()">📦 الصندوق - 200</button>
+  <button class="btn btn-half" onclick="openBox()">📦 الصندوق - 500</button>
 </div>
 
 <!-- نافذة XO -->
@@ -85,6 +87,7 @@ h1{color:#ffcc00; text-shadow:0 0 10px #ffcc00; font-size:24px; margin:10px;}
 <!-- نافذة العجلة -->
 <div id="wheelModal" class="modal"><div class="modal-content">
   <h2>🎡 العجلة</h2>
+  <div class="pointer"></div>
   <div id="wheel"></div>
   <button class="btn" id="spinBtn" onclick="doSpin()">لف - 50</button>
   <p id="wheelResult"></p>
@@ -94,19 +97,19 @@ h1{color:#ffcc00; text-shadow:0 0 10px #ffcc00; font-size:24px; margin:10px;}
 <!-- نافذة الصندوق الغامض -->
 <div id="boxModal" class="modal"><div class="modal-content">
   <h2>📦 الصندوق الغامض</h2>
-  <p>اختر صندوق واحد - 200 نقطة</p>
+  <p>اختر صندوق واحد - الخصم 500 نقطة</p>
   <div id="boxes"></div>
   <p id="boxResult"></p>
   <button class="btn" onclick="closeModal('boxModal')">اغلاق</button>
 </div></div>
 
 <script>
-let coins = parseInt(localStorage.getItem('rafidain_coins')) || 1599;
+let coins = parseInt(localStorage.getItem('rafidain_coins')) || 5000;
 let counters = JSON.parse(localStorage.getItem('rafidain_counters_list')) || [];
 let lastClaim = parseInt(localStorage.getItem('rafidain_lastClaim')) || 0;
 let xoBoard = Array(9).fill('');
-let xoTurn = 'X';
 let gameOver = false;
+let boxOpened = false;
 
 const countersData = [
   {name:"عداد 100", price:1000, profit:100},
@@ -177,12 +180,11 @@ function buyCounter(price, profit){
   alert(`✅ تم شراء العداد! صار عندك ${getCounterCount()} عداد`);
 }
 
-// 1. XO 9 مربعات + بوت
+// 1. XO
 function openXO(){
   if(coins<50){alert("ما عندك 50");return;}
   coins-=50; updateAll();
   xoBoard = Array(9).fill('');
-  xoTurn = 'X';
   gameOver = false;
   document.getElementById('xoModal').style.display='block';
   document.getElementById('xoResult').innerText = '';
@@ -197,7 +199,7 @@ function renderXO(){
     div.onclick = ()=>playXO(i);
     b.appendChild(div);
   });
-  document.getElementById('xoTurn').innerText = gameOver? '' : `دورك: ${xoTurn}`;
+  document.getElementById('xoTurn').innerText = gameOver? '' : `دورك: X`;
 }
 function playXO(i){
   if(xoBoard[i]!='' || gameOver) return;
@@ -219,7 +221,7 @@ function checkWinner(p){
   return wins.some(w=>w.every(i=>xoBoard[i]==p));
 }
 
-// 2. العجلة تفر
+// 2. العجلة مصلحة
 function spinWheel(){
   if(coins<50){alert("ما عندك 50");return;}
   coins-=50; updateAll();
@@ -230,23 +232,26 @@ function spinWheel(){
 function createWheel(){
   let wheel = document.getElementById('wheel');
   wheel.innerHTML = '';
-  let prizes = [0,50,100,200,500];
-  let colors = ['#ff0000','#00ff00','#0000ff','#ffff00','#ff00ff'];
+  let prizes = [100,250,500,1000,0];
+  let colors = ['#ffcc00','#00ff00','#00ccff','#ff00ff','#ff0000'];
   prizes.forEach((p,i)=>{
     let seg = document.createElement('div');
     seg.className='wheel-segment';
-    seg.style.transform = `rotate(${i*72}deg) skewY(-18deg)`;
+    seg.style.transform = `rotate(${i*72}deg)`;
     seg.style.background = colors[i];
-    seg.innerText = p;
+    let text = document.createElement('div');
+    text.className='wheel-text';
+    text.innerText = p;
+    seg.appendChild(text);
     wheel.appendChild(seg);
   });
 }
 function doSpin(){
   document.getElementById('spinBtn').disabled = true;
-  let deg = 1800 + Math.floor(Math.random()*360);
-  document.getElementById('wheel').style.transform = `rotate(${deg}deg)`;
+  let randomDeg = Math.floor(Math.random()*360) + 1800;
+  document.getElementById('wheel').style.transform = `rotate(${randomDeg}deg)`;
   setTimeout(()=>{
-    let prizes = [0,50,100,200,500];
+    let prizes = [100,250,500,1000,0];
     let prize = prizes[Math.floor(Math.random()*prizes.length)];
     if(prize>0){coins+=prize;}
     document.getElementById('wheelResult').innerText = prize>0?`ربحت ${prize} نقطة`:'خسارة';
@@ -255,30 +260,44 @@ function doSpin(){
   },4000);
 }
 
-// 3. الصندوق الغامض رجع
+// 3. الصندوق مصلح - خصم 500 مرة وحدة وصندوق واحد بس بيه جائزة
 function openBox(){
-  if(coins<200){alert("ما عندك 200");return;}
-  coins-=200; updateAll();
+  if(coins<500){alert("ما عندك 500");return;}
+  coins-=500; updateAll();
+  boxOpened = false;
   document.getElementById('boxModal').style.display='block';
-  document.getElementById('boxResult').innerText = '';
+  document.getElementById('boxResult').innerText = 'اختار صندوق واحد';
   let boxes = document.getElementById('boxes');
   boxes.innerHTML = '';
+  let winningBox = Math.floor(Math.random()*3)+1;
+  let prize = Math.floor(Math.random()*4901)+100; // من 100 الى 5000
+
   for(let i=1; i<=3; i++){
     let div = document.createElement('div');
     div.className = 'boxItem';
     div.innerText = '?';
-    div.onclick = ()=>openMysteryBox(i, div);
+    div.dataset.isWinner = i==winningBox;
+    div.dataset.prize = prize;
+    div.onclick = ()=>openMysteryBox(div);
     boxes.appendChild(div);
   }
 }
-function openMysteryBox(num, el){
-  if(el.classList.contains('opened')) return;
-  el.classList.add('opened');
-  let prizes = [0,100,300,500,1000];
-  let prize = prizes[Math.floor(Math.random()*prizes.length)];
-  if(prize>0){coins+=prize; el.innerText = prize;}
-  else{el.innerText = '💀';}
-  document.getElementById('boxResult').innerText = prize>0?`الصندوق ${num} بيه ${prize} نقطة`:'الصندوق فاضي!';
+function openMysteryBox(el){
+  if(boxOpened) return;
+  boxOpened = true;
+  let isWinner = el.dataset.isWinner=='true';
+  let prize = parseInt(el.dataset.prize);
+
+  document.querySelectorAll('.boxItem').forEach(b=>b.classList.add('opened'));
+
+  if(isWinner){
+    coins+=prize;
+    el.innerText = prize;
+    document.getElementById('boxResult').innerText = `🎉 مبروك! ربحت ${prize.toLocaleString()} نقطة`;
+  }else{
+    el.innerText = '💀';
+    document.getElementById('boxResult').innerText = `خسارة! الصندوق كان فاضي`;
+  }
   updateAll();
 }
 </script>
