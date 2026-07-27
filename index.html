@@ -24,13 +24,21 @@ h1{color:#ffcc00; text-shadow:0 0 10px #ffcc00; font-size:24px; margin:10px;}
 .btn-half{width:45%; max-width:170px;}
 .modal{display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.95); z-index:1000; overflow-y:auto;}
 .modal-content{background:#1a1a1a; margin:20px auto; padding:15px; width:95%; max-width:500px; border-radius:15px; border:2px solid #ff8c00;}
+.counterItem{background:#222; padding:15px; margin:10px auto; border-radius:10px; border:2px solid #333; width:90%; max-width:350px;}
+.counterItem h4{color:#ffb300; margin:5px; font-size:18px;}
+.counterItem p{margin:5px; color:#aaa;}
+#xoBoard{display:grid; grid-template-columns:repeat(3,100px); gap:5px; margin:20px auto; width:310px;}
+.xoCell{width:100px; height:100px; background:#222; font-size:60px; display:flex; align-items:center; justify-content:center; cursor:pointer; border-radius:10px; border:2px solid #ff8c00;}
+.xoCell:hover{background:#333;}
 
-/* العجلة الجديدة المضبوطة */
+/* العجلة */
 .wheel-container{position:relative; width:300px; height:300px; margin:20px auto;}
 .pointer{width:0; height:0; border-left:20px solid transparent; border-right:20px solid transparent; border-bottom:40px solid #ff0000; position:absolute; top:-15px; left:50%; transform:translateX(-50%); z-index:10; filter:drop-shadow(0 0 5px red);}
-#wheel{width:100%; height:100%; border-radius:50%; border:8px solid #ff8c00; position:relative; transition: transform 5s cubic-bezier(0.17, 0.67, 0.12, 0.99); overflow:hidden; box-shadow:0 0 30px #ff8c00;}
-.wheel-segment{position:absolute; width:100%; height:100%; display:flex; align-items:center; justify-content:center;}
-.wheel-text{position:absolute; font-weight:bold; color:#000; font-size:16px; text-shadow:0 0 3px white;}
+#wheel{width:100%; height:100%; border-radius:50%; border:8px solid #ff8c00; position:relative; transition: transform 5s cubic-bezier(0.17, 0.67, 0.12, 0.99); box-shadow:0 0 30px #ff8c00;}
+
+.boxItem{width:100px; height:100px; background:linear-gradient(135deg,#ffb300,#ff8c00); margin:10px; display:inline-block; border-radius:15px; cursor:pointer; font-size:40px; line-height:100px; border:3px solid #fff; transition:0.3s;}
+.boxItem:hover{transform:scale(1.1);}
+.boxItem.opened{background:#333; cursor:not-allowed; transform:scale(0.9);}
 </style>
 </head>
 <body>
@@ -100,7 +108,6 @@ let lastClaim = parseInt(localStorage.getItem('rafidain_lastClaim')) || 0;
 let xoBoard = Array(9).fill('');
 let gameOver = false;
 let boxOpened = false;
-let currentRotation = 0;
 
 const countersData = [
   {name:"عداد 100", price:1000, profit:100},
@@ -221,7 +228,7 @@ function checkWinner(p){
   return wins.some(w=>w.every(i=>xoBoard[i]==p));
 }
 
-// العجلة بالـ Canvas - 100% دائرية
+// العجلة مصححة 100%
 function spinWheel(){
   if(coins<50){alert("ما عندك 50");return;}
   coins-=50; updateAll();
@@ -229,6 +236,7 @@ function spinWheel(){
   document.getElementById('wheelResult').innerText = '';
   drawWheel();
 }
+
 function drawWheel(){
   const canvas = document.getElementById('wheel');
   const ctx = canvas.getContext('2d');
@@ -240,10 +248,9 @@ function drawWheel(){
   ctx.clearRect(0,0,300,300);
 
   wheelPrizes.forEach((p,i)=>{
-    const startAngle = i * segmentAngle;
-    const endAngle = (i+1) * segmentAngle;
+    const startAngle = i * segmentAngle - Math.PI/2; // نبلش من فوك يم السهم
+    const endAngle = (i+1) * segmentAngle - Math.PI/2;
 
-    // رسم الجزء
     ctx.beginPath();
     ctx.moveTo(centerX, centerY);
     ctx.arc(centerX, centerY, radius, startAngle, endAngle);
@@ -254,14 +261,18 @@ function drawWheel(){
     ctx.lineWidth = 3;
     ctx.stroke();
 
-    // كتابة النص
+    // النص
     const textAngle = startAngle + segmentAngle/2;
     const textX = centerX + Math.cos(textAngle) * 80;
     const textY = centerY + Math.sin(textAngle) * 80;
+    ctx.save();
+    ctx.translate(textX, textY);
+    ctx.rotate(textAngle + Math.PI/2);
     ctx.fillStyle = '#000';
     ctx.font = 'bold 18px tahoma';
     ctx.textAlign = 'center';
-    ctx.fillText(p.text, textX, textY);
+    ctx.fillText(p.text, 0, 0);
+    ctx.restore();
   });
 }
 
@@ -269,7 +280,10 @@ function doSpin(){
   document.getElementById('spinBtn').disabled = true;
   let randomIndex = Math.floor(Math.random()*wheelPrizes.length);
   let segmentAngle = 360 / wheelPrizes.length;
-  let targetDeg = 1800 + (360 - randomIndex*segmentAngle) - segmentAngle/2;
+
+  // الحساب المضبوط: نخلي نص القسم يوكف تحت السهم
+  let degrees = randomIndex * segmentAngle;
+  let targetDeg = 3600 + (360 - degrees) + segmentAngle/2;
 
   document.getElementById('wheel').style.transition = 'transform 5s cubic-bezier(0.17, 0.67, 0.12, 0.99)';
   document.getElementById('wheel').style.transform = `rotate(${targetDeg}deg)`;
