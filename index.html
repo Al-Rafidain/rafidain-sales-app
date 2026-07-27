@@ -27,11 +27,14 @@ h1{color:#ffcc00; text-shadow:0 0 10px #ffcc00; font-size:24px; margin:10px;}
 .counterItem{background:#222; padding:15px; margin:10px auto; border-radius:10px; border:2px solid #333; width:90%; max-width:350px;}
 .counterItem h4{color:#ffb300; margin:5px; font-size:18px;}
 .counterItem p{margin:5px; color:#aaa;}
-#ludoBoard{width:300px; height:300px; margin:10px auto; background:#0a5c0a; display:grid; grid-template-columns:repeat(11,1fr); grid-template-rows:repeat(11,1fr); gap:1px; border:3px solid #fff;}
-.ludoCell{background:#eee; font-size:12px; display:flex; align-items:center; justify-content:center;}
 #xoBoard{display:grid; grid-template-columns:repeat(3,100px); gap:5px; margin:20px auto; width:310px;}
 .xoCell{width:100px; height:100px; background:#222; font-size:60px; display:flex; align-items:center; justify-content:center; cursor:pointer; border-radius:10px; border:2px solid #ff8c00;}
-.boxItem{width:100px; height:100px; background:#333; margin:10px; display:inline-block; border-radius:10px; cursor:pointer; font-size:40px; line-height:100px; border:3px solid #ffb300;}
+.xoCell:hover{background:#333;}
+#wheel{width:300px; height:300px; border-radius:50%; margin:20px auto; border:8px solid #ff8c00; position:relative; transition: transform 4s cubic-bezier(0.17, 0.67, 0.12, 0.99);}
+.wheel-segment{position:absolute; width:50%; height:50%; transform-origin:100% 100%; display:flex; align-items:center; justify-content:center; font-weight:bold;}
+.boxItem{width:100px; height:100px; background:linear-gradient(135deg,#ffb300,#ff8c00); margin:10px; display:inline-block; border-radius:15px; cursor:pointer; font-size:40px; line-height:100px; border:3px solid #fff; transition:0.3s;}
+.boxItem:hover{transform:scale(1.1);}
+.boxItem.opened{background:#333; cursor:not-allowed;}
 </style>
 </head>
 <body>
@@ -47,71 +50,52 @@ h1{color:#ffcc00; text-shadow:0 0 10px #ffcc00; font-size:24px; margin:10px;}
 <!-- صفحة العدادات -->
 <div id="counters" class="page active">
   <div class="stats">
-    <div class="box">
-      <h3>الرصيد 💰</h3>
-      <div id="coins">0 نقطة</div>
-    </div>
-    <div class="box">
-      <h3>عدد العدادات ⚙️</h3>
-      <div id="counterCount">0 عداد</div>
-    </div>
-    <div class="box">
-      <h3>الارباح التلقائية ⚡</h3>
-      <div id="perDay">+0 نقطة/24 ساعة</div>
-    </div>
+    <div class="box"><h3>الرصيد 💰</h3><div id="coins">0 نقطة</div></div>
+    <div class="box"><h3>عدد العدادات ⚙️</h3><div id="counterCount">0 عداد</div></div>
+    <div class="box"><h3>الارباح التلقائية ⚡</h3><div id="perDay">+0 نقطة/24 ساعة</div></div>
   </div>
   <p id="nextClaim" style="color:#aaa;"></p>
 </div>
 
-<!-- صفحة المتجر - 10 عدادات -->
+<!-- صفحة المتجر -->
 <div id="store" class="page">
   <h2>🛒 متجر العدادات</h2>
   <div id="coins2" class="box">رصيدك: 0 نقطة</div>
   <div id="storeList"></div>
 </div>
 
-<!-- صفحة الالعاب - 4 العاب -->
+<!-- صفحة الالعاب - 3 العاب -->
 <div id="games" class="page">
   <h2>🎮 الالعاب</h2>
   <div id="coins3" class="box">رصيدك: 0 نقطة</div>
-  <button class="btn btn-half" onclick="openLudo()">🎲 لودو - 100</button>
   <button class="btn btn-half" onclick="openXO()">❌⭕ XO - 50</button>
   <button class="btn btn-half" onclick="spinWheel()">🎡 العجلة - 50</button>
-  <button class="btn btn-half" onclick="openBox()">📦 صندوق - 200</button>
+  <button class="btn btn-half" onclick="openBox()">📦 الصندوق - 200</button>
 </div>
-
-<!-- نافذة اللودو -->
-<div id="ludoModal" class="modal"><div class="modal-content">
-  <h2>🎲 لودو</h2>
-  <div id="ludoBoard"></div>
-  <button class="btn" id="diceBtn" onclick="rollDice()">ارمي النرد</button>
-  <p id="ludoResult"></p>
-  <button class="btn" onclick="closeModal('ludoModal')">خروج</button>
-</div></div>
 
 <!-- نافذة XO -->
 <div id="xoModal" class="modal"><div class="modal-content">
-  <h2>❌⭕ XO</h2>
+  <h2>❌⭕ XO ضد البوت</h2>
   <div id="xoBoard"></div>
   <p id="xoTurn">دورك: X</p>
+  <p id="xoResult"></p>
   <button class="btn" onclick="closeModal('xoModal')">خروج</button>
 </div></div>
 
 <!-- نافذة العجلة -->
 <div id="wheelModal" class="modal"><div class="modal-content">
   <h2>🎡 العجلة</h2>
-  <button class="btn" onclick="doSpin()">لف - 50</button>
+  <div id="wheel"></div>
+  <button class="btn" id="spinBtn" onclick="doSpin()">لف - 50</button>
   <p id="wheelResult"></p>
   <button class="btn" onclick="closeModal('wheelModal')">اغلاق</button>
 </div></div>
 
-<!-- نافذة الصندوق -->
+<!-- نافذة الصندوق الغامض -->
 <div id="boxModal" class="modal"><div class="modal-content">
   <h2>📦 الصندوق الغامض</h2>
   <p>اختر صندوق واحد - 200 نقطة</p>
-  <div class="boxItem" onclick="openMysteryBox(1)">?</div>
-  <div class="boxItem" onclick="openMysteryBox(2)">?</div>
-  <div class="boxItem" onclick="openMysteryBox(3)">?</div>
+  <div id="boxes"></div>
   <p id="boxResult"></p>
   <button class="btn" onclick="closeModal('boxModal')">اغلاق</button>
 </div></div>
@@ -120,10 +104,10 @@ h1{color:#ffcc00; text-shadow:0 0 10px #ffcc00; font-size:24px; margin:10px;}
 let coins = parseInt(localStorage.getItem('rafidain_coins')) || 1599;
 let counters = JSON.parse(localStorage.getItem('rafidain_counters_list')) || [];
 let lastClaim = parseInt(localStorage.getItem('rafidain_lastClaim')) || 0;
-let xoBoard = ['','','','','','',''];
+let xoBoard = Array(9).fill('');
 let xoTurn = 'X';
+let gameOver = false;
 
-// ال 10 عدادات
 const countersData = [
   {name:"عداد 100", price:1000, profit:100},
   {name:"عداد 200", price:2000, profit:200},
@@ -174,19 +158,12 @@ function updateAll(){
 }
 updateAll();
 setInterval(updateAll, 60000);
-
 function closeModal(id){document.getElementById(id).style.display='none';}
 
 function loadStore(){
   let html = '';
   countersData.forEach((c)=>{
-    html += `
-    <div class="counterItem">
-      <h4>${c.name}</h4>
-      <p>السعر: ${c.price.toLocaleString()} نقطة</p>
-      <p>الربح: ${c.profit.toLocaleString()} نقطة كل 24 ساعة</p>
-      <button class="btn" onclick="buyCounter(${c.price}, ${c.profit})" ${coins<c.price?'disabled':''}>شراء</button>
-    </div>`;
+    html += `<div class="counterItem"><h4>${c.name}</h4><p>السعر: ${c.price.toLocaleString()} نقطة</p><p>الربح: ${c.profit.toLocaleString()} نقطة كل 24 ساعة</p><button class="btn" onclick="buyCounter(${c.price}, ${c.profit})" ${coins<c.price?'disabled':''}>شراء</button></div>`;
   });
   document.getElementById('storeList').innerHTML = html;
 }
@@ -200,42 +177,15 @@ function buyCounter(price, profit){
   alert(`✅ تم شراء العداد! صار عندك ${getCounterCount()} عداد`);
 }
 
-// 1. لودو
-function openLudo(){
-  if(coins<100){alert("ما عندك 100");return;}
-  coins-=100; updateAll();
-  document.getElementById('ludoModal').style.display='block';
-  createLudoBoard();
-  document.getElementById('ludoResult').innerText = '';
-}
-function createLudoBoard(){
-  let b = document.getElementById('ludoBoard'); b.innerHTML='';
-  for(let i=0;i<121;i++){let cell=document.createElement('div'); cell.className='ludoCell'; b.appendChild(cell);}
-}
-function rollDice(){
-  let dice = Math.floor(Math.random()*6)+1;
-  document.getElementById('diceBtn').innerText = `🎲 ${dice}`;
-  document.getElementById('diceBtn').disabled = true;
-  setTimeout(()=>{
-    if(Math.random() > 0.4){
-      coins += 300;
-      document.getElementById('ludoResult').innerText = `فزت! +300 نقطة`;
-    }else{
-      document.getElementById('ludoResult').innerText = `خسرت! حاول مرة ثانية`;
-    }
-    updateAll();
-    document.getElementById('diceBtn').disabled = false;
-    document.getElementById('diceBtn').innerText = `ارمي النرد`;
-  },1000);
-}
-
-// 2. XO
+// 1. XO 9 مربعات + بوت
 function openXO(){
   if(coins<50){alert("ما عندك 50");return;}
   coins-=50; updateAll();
-  xoBoard = ['','','','','','',''];
+  xoBoard = Array(9).fill('');
   xoTurn = 'X';
+  gameOver = false;
   document.getElementById('xoModal').style.display='block';
+  document.getElementById('xoResult').innerText = '';
   renderXO();
 }
 function renderXO(){
@@ -247,53 +197,87 @@ function renderXO(){
     div.onclick = ()=>playXO(i);
     b.appendChild(div);
   });
-  document.getElementById('xoTurn').innerText = `دورك: ${xoTurn}`;
+  document.getElementById('xoTurn').innerText = gameOver? '' : `دورك: ${xoTurn}`;
 }
 function playXO(i){
-  if(xoBoard[i]!='') return;
-  xoBoard[i] = xoTurn;
-  xoTurn = xoTurn=='X'?'O':'X';
-  renderXO();
-  checkXO();
+  if(xoBoard[i]!='' || gameOver) return;
+  xoBoard[i] = 'X';
+  if(checkWinner('X')){coins+=200; document.getElementById('xoResult').innerText="فزت! +200 نقطة"; gameOver=true; updateAll(); renderXO(); return;}
+  if(!xoBoard.includes('')){document.getElementById('xoResult').innerText="تعادل"; gameOver=true; renderXO(); return;}
+  botMove();
 }
-function checkXO(){
-  let wins = [[0,1,2],[3,4,5],[6,7,8],[0,3,6],[1,4,7],[2,5,8],[0,4,8],[2,4,6]];
-  for(let w of wins){
-    if(xoBoard[w[0]]&&xoBoard[w[0]]==xoBoard[w[1]]&&xoBoard[w[0]]==xoBoard[w[2]]){
-      setTimeout(()=>{
-        if(xoBoard[w[0]]=='X'){coins+=200; alert("فزت! +200")}
-        else alert("خسرت!");
-        updateAll(); closeModal('xoModal');
-      },500); return;
-    }
-  }
+function botMove(){
+  let empty = xoBoard.map((v,i)=>v==''?i:null).filter(v=>v!==null);
+  let move = empty[Math.floor(Math.random()*empty.length)];
+  xoBoard[move] = 'O';
+  if(checkWinner('O')){document.getElementById('xoResult').innerText="خسرت!"; gameOver=true;}
+  else if(!xoBoard.includes('')){document.getElementById('xoResult').innerText="تعادل"; gameOver=true;}
+  renderXO();
+}
+function checkWinner(p){
+  const wins = [[0,1,2],[3,4,5],[6,7,8],[0,3,6],[1,4,7],[2,5,8],[0,4,8],[2,4,6]];
+  return wins.some(w=>w.every(i=>xoBoard[i]==p));
 }
 
-// 3. العجلة
+// 2. العجلة تفر
 function spinWheel(){
   if(coins<50){alert("ما عندك 50");return;}
   coins-=50; updateAll();
   document.getElementById('wheelModal').style.display='block';
+  document.getElementById('wheelResult').innerText = '';
+  createWheel();
+}
+function createWheel(){
+  let wheel = document.getElementById('wheel');
+  wheel.innerHTML = '';
+  let prizes = [0,50,100,200,500];
+  let colors = ['#ff0000','#00ff00','#0000ff','#ffff00','#ff00ff'];
+  prizes.forEach((p,i)=>{
+    let seg = document.createElement('div');
+    seg.className='wheel-segment';
+    seg.style.transform = `rotate(${i*72}deg) skewY(-18deg)`;
+    seg.style.background = colors[i];
+    seg.innerText = p;
+    wheel.appendChild(seg);
+  });
 }
 function doSpin(){
-  let prizes = [0,50,100,200,500,1000];
-  let prize = prizes[Math.floor(Math.random()*prizes.length)];
-  if(prize>0){coins+=prize;}
-  document.getElementById('wheelResult').innerText = prize>0?`ربحت ${prize}`:'خسارة';
-  updateAll();
+  document.getElementById('spinBtn').disabled = true;
+  let deg = 1800 + Math.floor(Math.random()*360);
+  document.getElementById('wheel').style.transform = `rotate(${deg}deg)`;
+  setTimeout(()=>{
+    let prizes = [0,50,100,200,500];
+    let prize = prizes[Math.floor(Math.random()*prizes.length)];
+    if(prize>0){coins+=prize;}
+    document.getElementById('wheelResult').innerText = prize>0?`ربحت ${prize} نقطة`:'خسارة';
+    updateAll();
+    document.getElementById('spinBtn').disabled = false;
+  },4000);
 }
 
-// 4. الصندوق الغامض
+// 3. الصندوق الغامض رجع
 function openBox(){
   if(coins<200){alert("ما عندك 200");return;}
   coins-=200; updateAll();
   document.getElementById('boxModal').style.display='block';
   document.getElementById('boxResult').innerText = '';
+  let boxes = document.getElementById('boxes');
+  boxes.innerHTML = '';
+  for(let i=1; i<=3; i++){
+    let div = document.createElement('div');
+    div.className = 'boxItem';
+    div.innerText = '?';
+    div.onclick = ()=>openMysteryBox(i, div);
+    boxes.appendChild(div);
+  }
 }
-function openMysteryBox(num){
+function openMysteryBox(num, el){
+  if(el.classList.contains('opened')) return;
+  el.classList.add('opened');
   let prizes = [0,100,300,500,1000];
   let prize = prizes[Math.floor(Math.random()*prizes.length)];
-  if(prize>0){coins+=prize;}
+  if(prize>0){coins+=prize; el.innerText = prize;}
+  else{el.innerText = '💀';}
   document.getElementById('boxResult').innerText = prize>0?`الصندوق ${num} بيه ${prize} نقطة`:'الصندوق فاضي!';
   updateAll();
 }
