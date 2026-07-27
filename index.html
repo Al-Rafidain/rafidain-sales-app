@@ -228,7 +228,7 @@ function checkWinner(p){
   return wins.some(w=>w.every(i=>xoBoard[i]==p));
 }
 
-// العجلة مصححة 100%
+// العجلة مصححة 100% السهم يطابق النتيجة
 function spinWheel(){
   if(coins<50){alert("ما عندك 50");return;}
   coins-=50; updateAll();
@@ -248,7 +248,7 @@ function drawWheel(){
   ctx.clearRect(0,0,300,300);
 
   wheelPrizes.forEach((p,i)=>{
-    const startAngle = i * segmentAngle - Math.PI/2; // نبلش من فوك يم السهم
+    const startAngle = i * segmentAngle - Math.PI/2;
     const endAngle = (i+1) * segmentAngle - Math.PI/2;
 
     ctx.beginPath();
@@ -261,7 +261,6 @@ function drawWheel(){
     ctx.lineWidth = 3;
     ctx.stroke();
 
-    // النص
     const textAngle = startAngle + segmentAngle/2;
     const textX = centerX + Math.cos(textAngle) * 80;
     const textY = centerY + Math.sin(textAngle) * 80;
@@ -281,9 +280,9 @@ function doSpin(){
   let randomIndex = Math.floor(Math.random()*wheelPrizes.length);
   let segmentAngle = 360 / wheelPrizes.length;
 
-  // الحساب المضبوط: نخلي نص القسم يوكف تحت السهم
-  let degrees = randomIndex * segmentAngle;
-  let targetDeg = 3600 + (360 - degrees) + segmentAngle/2;
+  // التعديل المهم: نعكس الحساب حتى يطابق الرسم
+  let degrees = (wheelPrizes.length - 1 - randomIndex) * segmentAngle;
+  let targetDeg = 3600 + degrees + segmentAngle/2;
 
   document.getElementById('wheel').style.transition = 'transform 5s cubic-bezier(0.17, 0.67, 0.12, 0.99)';
   document.getElementById('wheel').style.transform = `rotate(${targetDeg}deg)`;
