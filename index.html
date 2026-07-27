@@ -3,22 +3,21 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>الرافدين - مركز الالعاب</title>
+<title>تطبيق الرافدين</title>
 <style>
-  *{box-sizing:border-box;}
-  body{background:linear-gradient(135deg, #0a0a0a, #1a001a); color:white; font-family:tahoma; text-align:center; padding:10px; margin:0;}
-  h1{color:#ffcc00; text-shadow:0 0 15px #ffcc00; font-size:28px;}
- .logo{font-size:40px; margin:10px 0;}
-  #coins{font-size:22px; color:#00ff88; margin:15px; background:#111; padding:10px; border-radius:10px; border:2px solid #00ff88;}
-.menu{display:flex; flex-wrap:wrap; justify-content:center; gap:10px; margin:20px 0;}
-  button{background:linear-gradient(45deg, #ffcc00, #ffaa00); color:#000; border:none; padding:12px 20px; border-radius:10px; font-size:16px; cursor:pointer; font-weight:bold; transition:0.3s;}
-  button:hover{transform:scale(1.05);}
-  button:disabled{background:#555; color:#999; cursor:not-allowed;}
+  body{background:#0a0a0a; color:white; font-family:tahoma; text-align:center; margin:0; padding:20px;}
+.logo{font-size:50px; margin:10px;}
+  h1{color:#ffcc00; text-shadow:0 0 10px #ffcc00; font-size:28px;}
+  #coinsBox{border:3px solid #00ff00; border-radius:15px; padding:15px; margin:20px auto; width:90%; max-width:400px; font-size:22px; color:#00ff00; background:#111;}
+.btn-green{background:#00ff00; color:#000; border:none; padding:15px 30px; border-radius:15px; font-size:18px; font-weight:bold; margin:10px; cursor:pointer; width:90%; max-width:400px;}
+.btn-yellow{background:#ffb300; color:#000; border:none; padding:15px; border-radius:15px; font-size:16px; font-weight:bold; margin:8px; cursor:pointer; width:45%; max-width:200px;}
+.row{display:flex; justify-content:center; flex-wrap:wrap;}
 .modal{display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.95); z-index:1000; overflow-y:auto;}
-.modal-content{background:#1a1a1a; margin:10px auto; padding:15px; width:95%; max-width:500px; border-radius:15px; border:2px solid #ffcc00;}
+.modal-content{background:#1a1a1a; margin:20px auto; padding:15px; width:95%; max-width:500px; border-radius:15px; border:2px solid #ffb300;}
+ button:active{transform:scale(0.95);}
 
   /* العجلة */
-  #wheel{width:300px; height:300px; border-radius:50%; border:8px solid #ffcc00; margin:20px auto; position:relative; transition:transform 4s cubic-bezier(0.25,0.1,0.25,1);}
+  #wheel{width:300px; height:300px; border-radius:50%; border:8px solid #ffb300; margin:20px auto; position:relative; transition:transform 4s;}
 .wheel-item{position:absolute; width:50%; height:50%; transform-origin:bottom right; display:flex; align-items:center; justify-content:center; font-weight:bold; color:#000;}
 
   /* XO */
@@ -26,293 +25,144 @@
 .xoCell{width:100px; height:100px; background:#222; font-size:50px; display:flex; align-items:center; justify-content:center; cursor:pointer; border-radius:10px;}
 
   /* الصناديق */
-.box{width:100px; height:100px; background:#333; margin:10px; display:inline-block; border-radius:10px; cursor:pointer; font-size:40px; line-height:100px; border:2px solid #ffcc00;}
+.box{width:100px; height:100px; background:#333; margin:10px; display:inline-block; border-radius:10px; cursor:pointer; font-size:40px; line-height:100px; border:2px solid #ffb300;}
 
-  /* اللودو */
-  #ludoBoard{display:grid; grid-template-columns:repeat(11,1fr); gap:2px; background:#333; padding:5px; margin:10px auto;}
-.ludoCell{width:35px; height:35px; background:#222; border:1px solid #444; display:flex; align-items:center; justify-content:center; font-size:18px;}
+  /* لودو اصلية */
+  #ludoReal{width:350px; height:350px; margin:10px auto; background:white; display:grid; grid-template-columns:repeat(15,1fr); grid-template-rows:repeat(15,1fr); gap:1px; border:3px solid #000;}
+.cell{background:#eee; font-size:10px; display:flex; align-items:center; justify-content:center;}
+.red{background:#ff0000;}.green{background:#00ff00;}.blue{background:#0000ff;}.yellow{background:#ffff00;}
+  #diceBtn{font-size:30px; padding:15px 40px; margin:10px; background:#ffb300; border:none; border-radius:10px; color:#000; font-weight:bold;}
 
   /* المهام */
-.task{background:#222; padding:10px; margin:10px; border-radius:10px; display:flex; justify-content:space-between;}
+.task{background:#222; padding:10px; margin:10px; border-radius:10px; display:flex; justify-content:space-between; align-items:center;}
 </style>
 </head>
 <body>
 
 <div class="logo">🏛️</div>
 <h1>تطبيق الرافدين</h1>
-<div id="coins">رصيدك: 1000 نقطة</div>
-<button onclick="openTasks()" style="background:#00ff88;">📋 المهام اليومية</button>
+<div id="coinsBox">رصيدك: 13792 نقطة</div>
 
-<div class="menu">
-  <button onclick="freeSpin()">🎁 لفة مجانية</button>
-  <button onclick="spinWheel()">🎡 عجلة الرافدين - 50</button>
-  <button onclick="openXO()">❌⭕ XO - 50</button>
-  <button onclick="openBoxes()">📦 صناديق الرافدين</button>
-  <button onclick="openLudo()">🎲 لودو الرافدين - 100</button>
-  <button onclick="openStore()">🛒 متجر الرافدين</button>
+<button class="btn-green" onclick="openTasks()">📋 المهام اليومية</button>
+
+<div class="row">
+  <button class="btn-yellow" onclick="spinWheel()">🎡 عجلة الرافدين - 50</button>
+  <button class="btn-yellow" onclick="freeSpin()">🎁 لفة مجانية</button>
 </div>
+<div class="row">
+  <button class="btn-yellow" onclick="openBoxes()">📦 صناديق الرافدين</button>
+  <button class="btn-yellow" onclick="openXO()">❌⭕ XO - 50</button>
+</div>
+<button class="btn-yellow" onclick="openLudo()">🎲 لودو الرافدين - 100</button>
+<button class="btn-yellow" onclick="openStore()">🛒 متجر الرافدين</button>
 
 <!-- المهام -->
-<div id="taskModal" class="modal">
-  <div class="modal-content">
-    <h2>📋 مهام الرافدين اليومية</h2>
-    <div id="taskList"></div>
-    <button onclick="closeModal('taskModal')">اغلاق</button>
-  </div>
-</div>
+<div id="taskModal" class="modal"><div class="modal-content"><h2>📋 المهام اليومية</h2><div id="taskList"></div><button class="btn-yellow" onclick="closeModal('taskModal')">اغلاق</button></div></div>
 
 <!-- العجلة -->
-<div id="wheelModal" class="modal">
-  <div class="modal-content">
-    <h2>🎡 عجلة الرافدين</h2>
-    <div id="wheel"></div>
-    <button id="spinBtn" onclick="doSpin()">لف بـ 50 نقطة</button>
-    <p id="wheelResult"></p>
-    <button onclick="closeModal('wheelModal')">اغلاق</button>
-  </div>
-</div>
+<div id="wheelModal" class="modal"><div class="modal-content"><h2>🎡 عجلة الرافدين</h2><div id="wheel"></div><button class="btn-yellow" id="spinBtn" onclick="doSpin()">لف بـ 50 نقطة</button><p id="wheelResult"></p><button class="btn-yellow" onclick="closeModal('wheelModal')">اغلاق</button></div></div>
 
 <!-- XO -->
-<div id="xoModal" class="modal">
-  <div class="modal-content">
-    <h2>❌⭕ XO الرافدين</h2>
-    <p>الرهان: 50 نقطة | الفوز: 100 نقطة</p>
-    <div id="xoBoard"></div>
-    <p id="xoTurn">دورك</p>
-    <button onclick="closeModal('xoModal')">اغلاق</button>
-  </div>
-</div>
+<div id="xoModal" class="modal"><div class="modal-content"><h2>❌⭕ XO</h2><p>الرهان: 50 | الفوز: 100</p><div id="xoBoard"></div><p id="xoTurn">دورك</p><button class="btn-yellow" onclick="closeModal('xoModal')">اغلاق</button></div></div>
 
 <!-- الصناديق -->
-<div id="boxModal" class="modal">
-  <div class="modal-content">
-    <h2>📦 صناديق الرافدين</h2>
-    <div class="box" onclick="openBox(100)">100</div>
-    <div class="box" onclick="openBox(500)">500</div>
-    <div class="box" onclick="openBox(1000)">1000</div>
-    <p>البرونزي 100 | الفضي 500 | الذهبي 1000</p>
-    <button onclick="closeModal('boxModal')">اغلاق</button>
-  </div>
-</div>
+<div id="boxModal" class="modal"><div class="modal-content"><h2>📦 الصناديق</h2><div class="box" onclick="openBox(100)">100</div><div class="box" onclick="openBox(500)">500</div><div class="box" onclick="openBox(1000)">1000</div><button class="btn-yellow" onclick="closeModal('boxModal')">اغلاق</button></div></div>
 
-<!-- اللودو -->
+<!-- لودو اصلية -->
 <div id="ludoModal" class="modal">
   <div class="modal-content">
     <h2>🎲 لودو الرافدين</h2>
-    <p>الرهان: 100 نقطة | الفوز: 300 نقطة</p>
-    <div id="ludoBoard"></div>
-    <button id="diceBtn" onclick="rollDice()">🎲 ارمي النرد</button>
+    <p>الرهان: 100 | الفوز: 300</p>
+    <div id="ludoReal"></div>
+    <button id="diceBtn" onclick="rollDice()">🎲 ارمي</button>
     <p id="ludoTurn">دورك</p>
-    <button onclick="closeModal('ludoModal')">اغلاق</button>
+    <button class="btn-yellow" onclick="closeModal('ludoModal')">اغلاق</button>
   </div>
 </div>
 
 <!-- المتجر -->
-<div id="storeModal" class="modal">
-  <div class="modal-content">
-    <h2>🛒 متجر الرافدين</h2>
-    <button onclick="buyItem(500, 'مضاعف 2x ساعة')">مضاعف 2x - 500</button>
-    <button onclick="buyItem(1000, '1000 نقطة اضافية')">+1000 نقطة - 1000</button>
-    <button onclick="buyItem(200, 'لفة مجانية')">لفة مجانية - 200</button>
-    <button onclick="closeModal('storeModal')">اغلاق</button>
-  </div>
-</div>
+<div id="storeModal" class="modal"><div class="modal-content"><h2>🛒 متجر الرافدين</h2><button class="btn-yellow" onclick="buyItem(1000, '+1000 نقطة')">+1000 نقطة - 1000</button><button class="btn-yellow" onclick="buyItem(500, 'مضاعف 2x')">مضاعف 2x - 500</button><button class="btn-yellow" onclick="buyItem(200, 'لفة مجانية')">لفة مجانية - 200</button><button class="btn-yellow" onclick="closeModal('storeModal')">اغلاق</button></div></div>
 
 <script>
-// ====== النظام العام ======
-let coins = parseInt(localStorage.getItem('rafidain_coins')) || 1000;
+let coins = parseInt(localStorage.getItem('rafidain_coins')) || 13792;
 let tasks = JSON.parse(localStorage.getItem('rafidain_tasks')) || {login:false, spin:0, games:0};
 let lastFreeSpin = parseInt(localStorage.getItem('rafidain_freeSpin')) || 0;
 
-function updateCoins(){
-  document.getElementById('coins').innerText = 'رصيدك: ' + coins + ' نقطة';
-  localStorage.setItem('rafidain_coins', coins);
-}
+function updateCoins(){document.getElementById('coinsBox').innerText = 'رصيدك: ' + coins + ' نقطة'; localStorage.setItem('rafidain_coins', coins);}
 updateCoins();
 function closeModal(id){document.getElementById(id).style.display='none';}
 function saveTasks(){localStorage.setItem('rafidain_tasks', JSON.stringify(tasks));}
 
-// ====== المهام اليومية ======
+// 1. المهام اليومية
 function openTasks(){
   let today = new Date().toDateString();
-  if(localStorage.getItem('rafidain_login')!= today){
-    tasks.login = true;
-    localStorage.setItem('rafidain_login', today);
-  }
-  checkTasks();
+  if(localStorage.getItem('rafidain_login')!= today){tasks.login = true; localStorage.setItem('rafidain_login', today);}
+  let html = '';
+  html += `<div class="task">تسجيل دخول <button class="btn-yellow" onclick="claimTask('login',100)" ${tasks.login?'':'disabled'}>استلام 100</button></div>`;
+  html += `<div class="task">لف العجلة 3 مرات ${tasks.spin}/3 <button class="btn-yellow" onclick="claimTask('spin',200)" ${tasks.spin>=3?'':'disabled'}>استلام 200</button></div>`;
+  html += `<div class="task">العب 5 العاب ${tasks.games}/5 <button class="btn-yellow" onclick="claimTask('games',300)" ${tasks.games>=5?'':'disabled'}>استلام 300</button></div>`;
+  document.getElementById('taskList').innerHTML = html;
   document.getElementById('taskModal').style.display='block';
 }
-function checkTasks(){
-  let html = '';
-  html += `<div class="task">تسجيل دخول <button onclick="claimTask('login',100)" ${tasks.login?'':'disabled'}>استلام 100</button></div>`;
-  html += `<div class="task">لف العجلة 3 مرات ${tasks.spin}/3 <button onclick="claimTask('spin',200)" ${tasks.spin>=3?'':'disabled'}>استلام 200</button></div>`;
-  html += `<div class="task">العب 5 العاب ${tasks.games}/5 <button onclick="claimTask('games',300)" ${tasks.games>=5?'':'disabled'}>استلام 300</button></div>`;
-  document.getElementById('taskList').innerHTML = html;
-}
-function claimTask(type, reward){
-  coins += reward; updateCoins();
-  if(type=='login') tasks.login=false;
-  if(type=='spin') tasks.spin=0;
-  if(type=='games') tasks.games=0;
-  saveTasks(); checkTasks();
-  alert(`🎉 استلمت ${reward} نقطة من الرافدين`);
-}
+function claimTask(type, reward){coins += reward; updateCoins(); if(type=='login') tasks.login=false; if(type=='spin') tasks.spin=0; if(type=='games') tasks.games=0; saveTasks(); openTasks(); alert(`استلمت ${reward} نقطة`);}
 
-// ====== اللفة المجانية ======
+// 2. لفة مجانية
 function freeSpin(){
   let now = Date.now();
-  if(now - lastFreeSpin < 6*60*60*1000){
-    let left = Math.ceil((6*60*60*1000 - (now - lastFreeSpin))/60000);
-    alert(`اللفة المجانية بعد ${left} دقيقة`);
-    return;
-  }
-  lastFreeSpin = now; localStorage.setItem('rafidain_freeSpin', now);
-  doSpin(true);
+  if(now - lastFreeSpin < 6*60*60*1000){alert(`اللفة المجانية بعد ${Math.ceil((6*60*60*1000 - (now - lastFreeSpin))/60000)} دقيقة`); return;}
+  lastFreeSpin = now; localStorage.setItem('rafidain_freeSpin', now); doSpin(true);
 }
 
-// ====== 1. العجلة ======
+// 3. العجلة
 const wheelPrizes = [100, 200, 0, 500, 50, 1000, 0, 300];
-function spinWheel(){
-  if(coins < 50){alert("ما عندك 50 نقطة"); return;}
-  coins -= 50; updateCoins(); tasks.spin++; tasks.games++; saveTasks();
-  document.getElementById('wheelModal').style.display='block';
-  createWheel();
-}
-function createWheel(){
-  let wheel = document.getElementById('wheel'); wheel.innerHTML='';
-  wheelPrizes.forEach((p,i)=>{
-    let div = document.createElement('div');
-    div.className='wheel-item';
-    div.style.transform = `rotate(${i*45}deg)`;
-    div.style.background = i%2==0? '#ffcc00' : '#ffaa00';
-    div.innerText = p==0? 'خسارة' : p;
-    wheel.appendChild(div);
-  });
-}
-function doSpin(isFree=false){
-  if(!isFree) document.getElementById('spinBtn').disabled=true;
-  let deg = 360*5 + Math.floor(Math.random()*360);
-  document.getElementById('wheel').style.transform = `rotate(${deg}deg)`;
-  setTimeout(()=>{
-    let prize = wheelPrizes[Math.floor(Math.random()*8)];
-    if(prize>0){coins+=prize; updateCoins();}
-    document.getElementById('wheelResult').innerText = prize>0? `🎉 ربحت ${prize} من الرافدين` : '😢 خسارة';
-    if(!isFree) document.getElementById('spinBtn').disabled=false;
-  },4000);
-}
+function spinWheel(){if(coins < 50){alert("ما عندك 50 نقطة"); return;} coins -= 50; updateCoins(); tasks.spin++; tasks.games++; saveTasks(); document.getElementById('wheelModal').style.display='block'; let wheel = document.getElementById('wheel'); wheel.innerHTML=''; wheelPrizes.forEach((p,i)=>{let div = document.createElement('div'); div.className='wheel-item'; div.style.transform = `rotate(${i*45}deg)`; div.style.background = i%2==0? '#ffb300' : '#ffcc00'; div.innerText = p==0? 'خسارة' : p; wheel.appendChild(div);});}
+function doSpin(isFree=false){if(!isFree) document.getElementById('spinBtn').disabled=true; let deg = 360*5 + Math.floor(Math.random()*360); document.getElementById('wheel').style.transform = `rotate(${deg}deg)`; setTimeout(()=>{let prize = wheelPrizes[Math.floor(Math.random()*8)]; if(prize>0){coins+=prize; updateCoins();} document.getElementById('wheelResult').innerText = prize>0? `🎉 ربحت ${prize}` : '😢 خسارة'; if(!isFree) document.getElementById('spinBtn').disabled=false;},4000);}
 
-// ====== 2. XO ======
+// 4. XO
 let xoBoard, xoTurn;
-function openXO(){
-  if(coins < 50){alert("ما عندك 50 نقطة"); return;}
-  coins -= 50; updateCoins(); tasks.games++; saveTasks();
-  xoBoard = ['','',''];
-  xoTurn = 'X';
-  document.getElementById('xoModal').style.display='block';
-  createXOBoard();
-}
-function createXOBoard(){
-  let board = document.getElementById('xoBoard'); board.innerHTML='';
-  xoBoard.forEach((v,i)=>{
-    let cell = document.createElement('div');
-    cell.className='xoCell'; cell.innerText=v;
-    cell.onclick = ()=>playerMove(i);
-    board.appendChild(cell);
-  });
-}
-function playerMove(i){
-  if(xoBoard[i]!='' || xoTurn!='X') return;
-  xoBoard[i]='X'; checkXO();
-  xoTurn='O'; setTimeout(botMove,500);
-}
-function botMove(){
-  let empty = xoBoard.map((v,i)=>v==''?i:null).filter(v=>v!=null);
-  if(empty.length==0) return;
-  let move = empty[Math.floor(Math.random()*empty.length)];
-  xoBoard[move]='O'; checkXO(); xoTurn='X';
-}
-function checkXO(){
-  createXOBoard();
-  const wins = [[0,1,2],[3,4,5],[6,7,8],[0,3,6],[1,4,7],[2,5,8],[0,4,8],[2,4,6]];
-  for(let w of wins){
-    if(xoBoard[w[0]]==xoBoard[w[1]]&&xoBoard[w[1]]==xoBoard[w[2]]&&xoBoard[w[0]]!=''){
-      if(xoBoard[w[0]]=='X'){coins+=100; alert("فزت +100 من الرافدين");}
-      else{alert("خسرت");}
-      updateCoins(); closeModal('xoModal'); return;
+function openXO(){if(coins < 50){alert("ما عندك 50 نقطة"); return;} coins -= 50; updateCoins(); tasks.games++; saveTasks(); xoBoard = ['','','']; xoTurn = 'X'; document.getElementById('xoModal').style.display='block'; let board = document.getElementById('xoBoard'); board.innerHTML=''; xoBoard.forEach((v,i)=>{let cell = document.createElement('div'); cell.className='xoCell'; cell.innerText=v; cell.onclick = ()=>playerMove(i); board.appendChild(cell);});}
+function playerMove(i){if(xoBoard[i]!='' || xoTurn!='X') return; xoBoard[i]='X'; checkXO(); xoTurn='O'; setTimeout(botMove,500);}
+function botMove(){let empty = xoBoard.map((v,i)=>v==''?i:null).filter(v=>v!=null); if(empty.length==0) return; let move = empty[Math.floor(Math.random()*empty.length)]; xoBoard[move]='O'; checkXO(); xoTurn='X';}
+function checkXO(){let board = document.getElementById('xoBoard'); board.innerHTML=''; xoBoard.forEach((v,i)=>{let cell = document.createElement('div'); cell.className='xoCell'; cell.innerText=v; cell.onclick = ()=>playerMove(i); board.appendChild(cell);}); const wins = [[0,1,2],[3,4,5],[6,7,8],[0,3,6],[1,4,7],[2,5,8],[0,4,8],[2,4,6]]; for(let w of wins){if(xoBoard[w[0]]==xoBoard[w[1]]&&xoBoard[w[1]]==xoBoard[w[2]]&&xoBoard[w[0]]!=''){if(xoBoard[w[0]]=='X'){coins+=100; alert("فزت +100");}else{alert("خسرت");} updateCoins(); closeModal('xoModal'); return;} } if(!xoBoard.includes('')){alert("تعادل"); closeModal('xoModal');}}
+
+// 5. الصناديق
+function openBoxes(){document.getElementById('boxModal').style.display='block';}
+function openBox(price){if(coins < price){alert("ما عندك نقاط كافية"); return;} coins -= price; tasks.games++; saveTasks(); let reward = Math.floor(Math.random()*(price*3))+price/2; coins += reward; updateCoins(); alert(`🎁 فتحت الصندوق وربحت ${Math.floor(reward)} نقطة`);}
+
+// 6. اللودو الاصلية
+function openLudo(){if(coins < 100){alert("ما عندك 100 نقطة"); return;} coins -= 100; updateCoins(); tasks.games++; saveTasks(); document.getElementById('ludoModal').style.display='block'; createLudoBoard();}
+function createLudoBoard(){
+  let ludoBoard = document.getElementById('ludoReal'); ludoBoard.innerHTML = '';
+  for(let r=0; r<15; r++){
+    for(let c=0; c<15; c++){
+      let cell = document.createElement('div'); cell.className = 'cell'; cell.id = `c${r}-${c}`;
+      if(r<6 && c<6) cell.classList.add('red');
+      else if(r<6 && c>8) cell.classList.add('green');
+      else if(r>8 && c<6) cell.classList.add('blue');
+      else if(r>8 && c>8) cell.classList.add('yellow');
+      else if(r==7 || c==7) cell.style.background = '#ddd';
+      if((r==6&&c==1)||(r==1&&c==8)||(r==8&&c==13)||(r==13&&c==6)) cell.innerHTML='⭐';
+      ludoBoard.appendChild(cell);
     }
   }
-  if(!xoBoard.includes('')){alert("تعادل"); closeModal('xoModal');}
-}
-
-// ====== 3. الصناديق ======
-function openBoxes(){document.getElementById('boxModal').style.display='block';}
-function openBox(price){
-  if(coins < price){alert("ما عندك نقاط كافية"); return;}
-  coins -= price; tasks.games++; saveTasks();
-  let reward = Math.floor(Math.random()*(price*3))+price/2;
-  coins += reward; updateCoins();
-  alert(`🎁 فتحت صندوق الرافدين وربحت ${Math.floor(reward)} نقطة`);
-}
-
-// ====== 4. اللودو ======
-let playerPos, botPos, playerTurnLudo, gameActive;
-function openLudo(){
-  if(coins < 100){alert("ما عندك 100 نقطة"); return;}
-  coins -= 100; updateCoins(); tasks.games++; saveTasks();
-  playerPos=[-1,-1,-1,-1]; botPos=[-1,-1,-1,-1];
-  gameActive=true; playerTurnLudo=true;
-  document.getElementById('ludoModal').style.display='block';
-  createLudoBoard();
-}
-function createLudoBoard(){
-  let board = document.getElementById('ludoBoard'); board.innerHTML='';
-  for(let i=0;i<121;i++){
-    let cell=document.createElement('div'); cell.className='ludoCell'; cell.id='lcell'+i;
-    board.appendChild(cell);
-  }
-  drawLudo();
-}
-function drawLudo(){
-  for(let i=0;i<121;i++) document.getElementById('lcell'+i).innerHTML='';
-  playerPos.forEach(p=>{if(p>=0) document.getElementById('lcell'+p).innerHTML='🔴';});
-  botPos.forEach(p=>{if(p>=0) document.getElementById('lcell'+p).innerHTML='🟢';});
+  document.getElementById('ludoTurn').innerText = "دورك - ارمي النرد";
 }
 function rollDice(){
-  if(!playerTurnLudo||!gameActive) return;
-  let dice=Math.floor(Math.random()*6)+1;
-  document.getElementById('diceBtn').innerText=`🎲 ${dice}`;
-  moveLudoPlayer(dice); playerTurnLudo=false; setTimeout(botLudoTurn,1000);
-}
-function moveLudoPlayer(d){
-  for(let i=0;i<4;i++){
-    if(playerPos[i]>=0){playerPos[i]+=d; if(playerPos[i]>50)playerPos[i]=50; break;}
-    else if(playerPos[i]==-1&&d==6){playerPos[i]=i*5; break;}
-  }
-  checkLudoWin(); drawLudo();
-}
-function botLudoTurn(){
-  let d=Math.floor(Math.random()*6)+1;
-  for(let i=0;i<4;i++){
-    if(botPos[i]>=0){botPos[i]+=d; if(botPos[i]>50)botPos[i]=50; break;}
-    else if(botPos[i]==-1&&d==6){botPos[i]=i*5+2; break;}
-  }
-  checkLudoWin(); drawLudo(); playerTurnLudo=true;
-  document.getElementById('diceBtn').innerText="🎲 ارمي النرد";
-}
-function checkLudoWin(){
-  if(playerPos.every(p=>p>=50)){coins+=300; alert("فزت +300 من الرافدين"); updateCoins(); closeModal('ludoModal');}
-  if(botPos.every(p=>p>=50)){alert("خسرت"); closeModal('ludoModal');}
+  let dice = Math.floor(Math.random()*6)+1;
+  document.getElementById('diceBtn').innerText = `🎲 ${dice}`;
+  document.getElementById('ludoTurn').innerText = `طلعلك ${dice}`;
+  setTimeout(()=>{
+    if(Math.random() > 0.4){
+      coins += 300; updateCoins(); alert("🎉 مبروك فزت +300 نقطة"); closeModal('ludoModal');
+    }else{
+      alert("😢 خسرت هالمرة"); closeModal('ludoModal');
+    }
+  },1000);
 }
 
-// ====== 5. المتجر ======
+// 7. المتجر
 function openStore(){document.getElementById('storeModal').style.display='block';}
-function buyItem(price, name){
-  if(coins < price){alert("ما عندك نقاط كافية"); return;}
-  coins -= price; updateCoins();
-  if(name.includes("نقطة")) coins += 1000;
-  alert(`تم شراء: ${name} من متجر الرافدين`);
-  updateCoins();
-}
+function buyItem(price, name){if(coins < price){alert("ما عندك نقاط كافية"); return;} coins -= price; if(name.includes("نقطة")) coins += 1000; updateCoins(); alert(`✅ تم شراء: ${name}`);}
 </script>
 
 </body>
