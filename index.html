@@ -8,8 +8,8 @@
 body{background:#000; color:white; font-family:tahoma; text-align:center; padding:10px; margin:0;}
 .logo{font-size:40px; margin:10px;}
 h1{color:#ffcc00; text-shadow:0 0 10px #ffcc00; font-size:24px; margin:10px;}
-.nav{display:flex; justify-content:center; gap:10px; margin:15px 0;}
-.navBtn{background:#222; color:white; border:2px solid #ff8c00; padding:10px 25px; border-radius:10px; font-size:16px; cursor:pointer;}
+.nav{display:flex; justify-content:center; gap:8px; margin:15px 0; flex-wrap:wrap;}
+.navBtn{background:#222; color:white; border:2px solid #ff8c00; padding:10px 18px; border-radius:10px; font-size:15px; cursor:pointer;}
 .navBtn.active{background:#ff8c00; color:#000; font-weight:bold;}
 .page{display:none;}
 .page.active{display:block;}
@@ -17,30 +17,32 @@ h1{color:#ffcc00; text-shadow:0 0 10px #ffcc00; font-size:24px; margin:10px;}
 .box{border:3px solid #00ff00; border-radius:15px; padding:15px; margin:15px 0; background:#111;}
 .box h3{margin:5px; font-size:16px; color:#aaa;}
 #coins{font-size:32px; color:#00ff00; font-weight:bold;}
+#coinsDollar{font-size:18px; color:#00ccff; font-weight:bold; margin-top:5px;}
 #counterCount{font-size:32px; color:#ffb300; font-weight:bold;}
 #perDay{font-size:24px; color:#00ccff; font-weight:bold;}
 .btn{background:#ff8c00; color:#000; border:none; padding:15px; border-radius:12px; font-size:16px; font-weight:bold; margin:8px; cursor:pointer; width:90%; max-width:350px;}
+.btn-green{background:#00cc00; color:#000;}
 .btn:disabled{background:#555; color:#999;}
 .btn-half{width:45%; max-width:170px;}
 .modal{display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.95); z-index:1000; overflow-y:auto;}
 .modal-content{background:#1a1a1a; margin:20px auto; padding:15px; width:95%; max-width:500px; border-radius:15px; border:2px solid #ff8c00;}
-.counterItem{background:#222; padding:15px; margin:10px auto; border-radius:10px; border:2px solid #333; width:90%; max-width:350px;}
+.counterItem{background:#222; padding:15px; margin:10px auto; border-radius:10px; border:2px solid #333; width:90%; max-width:350px; text-align:right;}
 .counterItem h4{color:#ffb300; margin:5px; font-size:18px;}
-.counterItem p{margin:5px; color:#aaa;}
+.counterItem p{margin:5px; color:#aaa; font-size:14px;}
 #xoBoard{display:grid; grid-template-columns:repeat(3,100px); gap:5px; margin:20px auto; width:310px;}
 .xoCell{width:100px; height:100px; background:#222; font-size:60px; display:flex; align-items:center; justify-content:center; cursor:pointer; border-radius:10px; border:2px solid #ff8c00;}
 .xoCell:hover{background:#333;}
-
-/* العجلة */
 .wheel-container{position:relative; width:300px; height:300px; margin:20px auto;}
 .pointer{width:0; height:0; border-left:20px solid transparent; border-right:20px solid transparent; border-bottom:40px solid #ff0000; position:absolute; top:-15px; left:50%; transform:translateX(-50%); z-index:10; filter:drop-shadow(0 0 5px red);}
 #wheel{width:100%; height:100%; border-radius:50%; border:8px solid #ff8c00; position:relative; transition: transform 5s cubic-bezier(0.17, 0.67, 0.12, 0.99); box-shadow:0 0 30px #ff8c00;}
-
 .boxItem{width:100px; height:100px; background:linear-gradient(135deg,#ffb300,#ff8c00); margin:10px; display:inline-block; border-radius:15px; cursor:pointer; font-size:28px; line-height:100px; border:3px solid #fff; transition:0.3s; font-weight:bold;}
 .boxItem:hover{transform:scale(1.1);}
 .boxItem.opened{background:#222; cursor:not-allowed; transform:scale(0.9);}
 .boxItem.win{border-color:#00ff00; background:linear-gradient(135deg,#00ff00,#00cc00);}
 .boxItem.lose{border-color:#ff0000; background:#333;}
+.input{width:90%; padding:12px; margin:8px 0; border-radius:8px; background:#222; color:white; border:1px solid #ff8c00; font-size:16px;}
+.agentBadge{background:linear-gradient(135deg,#00ff00,#00cc00); color:#000; padding:5px 12px; border-radius:8px; font-weight:bold; font-size:14px; display:inline-block; margin:5px;}
+.withdrawBox{border-color:#00ccff;}
 </style>
 </head>
 <body>
@@ -51,11 +53,17 @@ h1{color:#ffcc00; text-shadow:0 0 10px #ffcc00; font-size:24px; margin:10px;}
   <button class="navBtn" onclick="showPage('store')">المتجر 🛒</button>
   <button class="navBtn active" onclick="showPage('counters')">العدادات ⚙️</button>
   <button class="navBtn" onclick="showPage('games')">الالعاب 🎮</button>
+  <button class="navBtn" onclick="showPage('agents')">الوكلاء 👑</button>
 </div>
 
 <div id="counters" class="page active">
   <div class="stats">
-    <div class="box"><h3>الرصيد 💰</h3><div id="coins">0 نقطة</div></div>
+    <div class="box">
+      <h3>الرصيد 💰</h3>
+      <div id="coins">0 نقطة</div>
+      <div id="coinsDollar">يعادل $0.00 دولار</div>
+      <button class="btn btn-green" onclick="openWithdraw()" style="margin-top:10px;">💵 سحب الارباح</button>
+    </div>
     <div class="box"><h3>عدد العدادات ⚙️</h3><div id="counterCount">0 عداد</div></div>
     <div class="box"><h3>الارباح التلقائية ⚡</h3><div id="perDay">+0 نقطة/24 ساعة</div></div>
   </div>
@@ -64,17 +72,66 @@ h1{color:#ffcc00; text-shadow:0 0 10px #ffcc00; font-size:24px; margin:10px;}
 
 <div id="store" class="page">
   <h2>🛒 متجر العدادات</h2>
-  <div id="coins2" class="box">رصيدك: 0 نقطة</div>
+  <div id="coins2" class="box">رصيدك: 0 نقطة<br><span id="coins2Dollar" style="color:#00ccff;">يعادل $0.00</span></div>
   <div id="storeList"></div>
 </div>
 
 <div id="games" class="page">
   <h2>🎮 الالعاب</h2>
-  <div id="coins3" class="box">رصيدك: 0 نقطة</div>
+  <div id="coins3" class="box">رصيدك: 0 نقطة<br><span id="coins3Dollar" style="color:#00ccff;">يعادل $0.00</span></div>
   <button class="btn btn-half" onclick="openXO()">❌⭕ XO - 50</button>
   <button class="btn btn-half" onclick="spinWheel()">🎡 العجلة - 50</button>
   <button class="btn btn-half" onclick="openBox()">📦 الصندوق - 500</button>
 </div>
+
+<div id="agents" class="page">
+  <h2>👑 نظام الوكالات</h2>
+  <div id="coins4" class="box">رصيدك: 0 نقطة<br><span id="coins4Dollar" style="color:#00ccff;">يعادل $0.00</span></div>
+
+  <div id="myAgentBox" class="box" style="border-color:#ff8c00; display:none;">
+    <h3>✅ انت وكيل معتمد</h3>
+    <p>المبيعات: <span id="mySales">0</span> | الارباح: <span id="myProfit">0</span> نقطة</p>
+  </div>
+
+  <div id="buyAgentBox" class="box">
+    <h3>اشتري وكالة - 5,000,000 نقطة</h3>
+    <input type="text" id="agentNameInput" class="input" placeholder="اسم الوكيل">
+    <input type="text" id="agentAddressInput" class="input" placeholder="العنوان">
+    <input type="text" id="agentPhoneInput" class="input" placeholder="رقم الواتساب 07...">
+    <textarea id="agentNotesInput" class="input" placeholder="ملاحظات" rows="3"></textarea>
+    <button class="btn" onclick="buyAgent()">شراء الوكالة ب 5 مليون</button>
+  </div>
+
+  <div class="box">
+    <h3>قائمة الوكلاء</h3>
+    <input type="text" id="searchAgent" onkeyup="loadAgents()" class="input" placeholder="ابحث عن وكيل...">
+    <div id="agentsList" style="margin-top:15px;"></div>
+  </div>
+
+  <div id="agentShop" class="box" style="display:none; border-color:#ff8c00;">
+    <h3>متجر الوكيل</h3>
+    <h4 id="agentShopName" style="color:#ffcc00;"></h4>
+    <p>📍 العنوان: <span id="agentShopAddress"></span></p>
+    <p>📱 واتساب: <span id="agentShopPhone"></span></p>
+    <p>📝 ملاحظات: <span id="agentShopNotes"></span></p>
+    <hr style="border-color:#333;">
+    <p>سعر 100 الف نقطة: <span id="agentPrice100k" style="color:#00ff00; font-size:20px;"></span></p>
+    <button class="btn" onclick="buyFromAgent()">اشتري 100 الف نقطة</button>
+    <button class="btn" onclick="document.getElementById('agentShop').style.display='none'">اغلاق</button>
+  </div>
+</div>
+
+<!-- مودال السحب -->
+<div id="withdrawModal" class="modal"><div class="modal-content withdrawBox">
+  <h2>💵 سحب الارباح</h2>
+  <p>كل <span id="rateText">10000</span> نقطة = 1 دولار</p>
+  <p>رصيدك الحالي: <span id="withdrawCoins" style="color:#00ff00"></span> نقطة</p>
+  <p>يعادل: <span id="withdrawDollar" style="color:#00ccff"></span> دولار</p>
+  <input type="number" id="withdrawAmount" class="input" placeholder="اكتب المبلغ بالدولار" min="1">
+  <button class="btn btn-green" onclick="doWithdraw()">تأكيد السحب</button>
+  <p id="withdrawResult" style="color:#ffcc00;"></p>
+  <button class="btn" onclick="closeModal('withdrawModal')">اغلاق</button>
+</div></div>
 
 <div id="xoModal" class="modal"><div class="modal-content">
   <h2>❌⭕ XO ضد البوت</h2>
@@ -107,9 +164,14 @@ h1{color:#ffcc00; text-shadow:0 0 10px #ffcc00; font-size:24px; margin:10px;}
 let coins = parseInt(localStorage.getItem('rafidain_coins')) || 5000;
 let counters = JSON.parse(localStorage.getItem('rafidain_counters_list')) || [];
 let lastClaim = parseInt(localStorage.getItem('rafidain_lastClaim')) || 0;
+let agents = JSON.parse(localStorage.getItem('rafidain_agents')) || [];
+let myAgent = JSON.parse(localStorage.getItem('rafidain_myAgent')) || null;
 let xoBoard = Array(9).fill('');
 let gameOver = false;
 let boxOpened = false;
+let selectedAgentIndex = -1;
+
+const RATE = 10000; // كل 10000 نقطة = 1 دولار
 
 const countersData = [
   {name:"عداد 100", price:1000, profit:100},
@@ -139,19 +201,36 @@ function showPage(id){
   document.getElementById(id).classList.add('active');
   event.target.classList.add('active');
   if(id=='store') loadStore();
+  if(id=='agents') loadAgents();
   updateAll();
 }
 
 function getTotalPerDay(){return counters.reduce((a,b)=>a+b,0);}
 function getCounterCount(){return counters.length;}
+function toDollar(n){return (n / RATE).toFixed(2);}
 
 function updateAll(){
   let totalPerDay = getTotalPerDay();
+  let dollar = toDollar(coins);
+
   document.getElementById('coins').innerText = coins.toLocaleString() + ' نقطة';
-  document.getElementById('coins2').innerText = 'رصيدك: ' + coins.toLocaleString() + ' نقطة';
-  document.getElementById('coins3').innerText = 'رصيدك: ' + coins.toLocaleString() + ' نقطة';
+  document.getElementById('coinsDollar').innerText = `يعادل $${dollar} دولار`;
+  document.getElementById('coins2').innerHTML = `رصيدك: ${coins.toLocaleString()} نقطة<br><span id="coins2Dollar" style="color:#00ccff;">يعادل $${dollar}</span>`;
+  document.getElementById('coins3').innerHTML = `رصيدك: ${coins.toLocaleString()} نقطة<br><span id="coins3Dollar" style="color:#00ccff;">يعادل $${dollar}</span>`;
+  document.getElementById('coins4').innerHTML = `رصيدك: ${coins.toLocaleString()} نقطة<br><span id="coins4Dollar" style="color:#00ccff;">يعادل $${dollar}</span>`;
+
   document.getElementById('counterCount').innerText = getCounterCount() + ' عداد';
   document.getElementById('perDay').innerText = '+' + totalPerDay.toLocaleString() + ' نقطة/24 ساعة';
+
+  if(myAgent){
+    document.getElementById('myAgentBox').style.display='block';
+    document.getElementById('buyAgentBox').style.display='none';
+    document.getElementById('mySales').innerText = myAgent.sales;
+    document.getElementById('myProfit').innerText = myAgent.profit.toLocaleString();
+  } else {
+    document.getElementById('myAgentBox').style.display='none';
+    document.getElementById('buyAgentBox').style.display='block';
+  }
 
   let now = Date.now();
   let timeLeft = 24*60*60*1000 - (now - lastClaim);
@@ -167,10 +246,36 @@ function updateAll(){
   localStorage.setItem('rafidain_coins', coins);
   localStorage.setItem('rafidain_counters_list', JSON.stringify(counters));
   localStorage.setItem('rafidain_lastClaim', lastClaim);
+  localStorage.setItem('rafidain_agents', JSON.stringify(agents));
+  localStorage.setItem('rafidain_myAgent', JSON.stringify(myAgent));
 }
 updateAll();
 setInterval(updateAll, 60000);
 function closeModal(id){document.getElementById(id).style.display='none';}
+
+// نظام السحب
+function openWithdraw(){
+  document.getElementById('withdrawModal').style.display='block';
+  document.getElementById('rateText').innerText = RATE.toLocaleString();
+  document.getElementById('withdrawCoins').innerText = coins.toLocaleString();
+  document.getElementById('withdrawDollar').innerText = toDollar(coins);
+  document.getElementById('withdrawAmount').value = '';
+  document.getElementById('withdrawResult').innerText = '';
+}
+
+function doWithdraw(){
+  let amount = parseFloat(document.getElementById('withdrawAmount').value);
+  if(!amount || amount <= 0){alert("دخل مبلغ صحيح"); return;}
+
+  let costInCoins = amount * RATE;
+  if(costInCoins > coins){alert("ما عندك رصيد كافي"); return;}
+
+  coins -= costInCoins;
+  document.getElementById('withdrawResult').innerText = `✅ تم طلب سحب $${amount.toFixed(2)}. سيتم التواصل معك`;
+  updateAll();
+
+  setTimeout(()=>closeModal('withdrawModal'), 2000);
+}
 
 function loadStore(){
   let html = '';
@@ -187,6 +292,74 @@ function buyCounter(price, profit){
   updateAll();
   loadStore();
   alert(`✅ تم شراء العداد! صار عندك ${getCounterCount()} عداد`);
+}
+
+// نظام الوكلاء
+function buyAgent(){
+  let name = document.getElementById('agentNameInput').value.trim();
+  let address = document.getElementById('agentAddressInput').value.trim();
+  let phone = document.getElementById('agentPhoneInput').value.trim();
+  let notes = document.getElementById('agentNotesInput').value.trim();
+  let price = 5000000;
+
+  if(!name ||!address ||!phone){alert("املأ الاسم والعنوان ورقم الواتساب"); return;}
+  if(coins < price){alert("ما عندك 5 مليون نقطة"); return;}
+  if(myAgent){alert("انت اصلا وكيل"); return;}
+
+  coins -= price;
+  myAgent = {name: name, address: address, phone: phone, notes: notes, sales: 0, profit: 0, price: 800000};
+  agents.push(myAgent);
+
+  document.getElementById('agentNameInput').value='';
+  document.getElementById('agentAddressInput').value='';
+  document.getElementById('agentPhoneInput').value='';
+  document.getElementById('agentNotesInput').value='';
+
+  alert(`✅ مبروك صرت وكيل معتمد!`);
+  loadAgents();
+  updateAll();
+}
+
+function loadAgents(){
+  let search = document.getElementById('searchAgent').value.toLowerCase();
+  let html = '';
+  agents.forEach((a, i)=>{
+    if(a.name.toLowerCase().includes(search)){
+      html += `<div class="counterItem">
+        <h4>👑 ${a.name}</h4>
+        <p>📍 العنوان: ${a.address}</p>
+        <p>📱 واتساب: ${a.phone}</p>
+        <p>📝 ${a.notes || 'لا توجد ملاحظات'}</p>
+        <p>سعر 100 الف: <span style="color:#00ff00">${a.price.toLocaleString()}</span></p>
+        <button class="btn" onclick="openAgentShop(${i})">اشتري منه</button>
+      </div>`;
+    }
+  });
+  document.getElementById('agentsList').innerHTML = html || '<p>ماكو وكلاء بعد</p>';
+}
+
+function openAgentShop(index){
+  selectedAgentIndex = index;
+  let a = agents[index];
+  document.getElementById('agentShop').style.display='block';
+  document.getElementById('agentShopName').innerText = a.name;
+  document.getElementById('agentShopAddress').innerText = a.address;
+  document.getElementById('agentShopPhone').innerText = a.phone;
+  document.getElementById('agentShopNotes').innerText = a.notes || 'لا توجد';
+  document.getElementById('agentPrice100k').innerText = a.price.toLocaleString() + ' نقطة';
+}
+
+function buyFromAgent(){
+  let a = agents[selectedAgentIndex];
+  if(coins < a.price){alert("ما عندك نقاط كافية"); return;}
+  coins -= a.price;
+  coins += 100000;
+  a.sales += 1;
+  a.profit += (100000 - a.price);
+  if(myAgent && myAgent.name == a.name){myAgent.sales = a.sales; myAgent.profit = a.profit;}
+  alert(`✅ تم شراء 100 الف نقطة بسعر ${a.price.toLocaleString()}`);
+  loadAgents();
+  updateAll();
 }
 
 // XO
@@ -242,38 +415,22 @@ function spinWheel(){
 function drawWheel(){
   const canvas = document.getElementById('wheel');
   const ctx = canvas.getContext('2d');
-  const centerX = 150;
-  const centerY = 150;
-  const radius = 140;
+  const centerX = 150; const centerY = 150; const radius = 140;
   const segmentAngle = 2*Math.PI / wheelPrizes.length;
-
   ctx.clearRect(0,0,300,300);
-
   wheelPrizes.forEach((p,i)=>{
     const startAngle = i * segmentAngle - Math.PI/2;
     const endAngle = (i+1) * segmentAngle - Math.PI/2;
-
-    ctx.beginPath();
-    ctx.moveTo(centerX, centerY);
+    ctx.beginPath(); ctx.moveTo(centerX, centerY);
     ctx.arc(centerX, centerY, radius, startAngle, endAngle);
-    ctx.closePath();
-    ctx.fillStyle = p.color;
-    ctx.fill();
-    ctx.strokeStyle = '#000';
-    ctx.lineWidth = 3;
-    ctx.stroke();
-
+    ctx.closePath(); ctx.fillStyle = p.color; ctx.fill();
+    ctx.strokeStyle = '#000'; ctx.lineWidth = 3; ctx.stroke();
     const textAngle = startAngle + segmentAngle/2;
     const textX = centerX + Math.cos(textAngle) * 80;
     const textY = centerY + Math.sin(textAngle) * 80;
-    ctx.save();
-    ctx.translate(textX, textY);
-    ctx.rotate(textAngle + Math.PI/2);
-    ctx.fillStyle = '#000';
-    ctx.font = 'bold 18px tahoma';
-    ctx.textAlign = 'center';
-    ctx.fillText(p.text, 0, 0);
-    ctx.restore();
+    ctx.save(); ctx.translate(textX, textY); ctx.rotate(textAngle + Math.PI/2);
+    ctx.fillStyle = '#000'; ctx.font = 'bold 18px tahoma'; ctx.textAlign = 'center';
+    ctx.fillText(p.text, 0, 0); ctx.restore();
   });
 }
 
@@ -283,36 +440,29 @@ function doSpin(){
   let segmentAngle = 360 / wheelPrizes.length;
   let degrees = (wheelPrizes.length - 1 - randomIndex) * segmentAngle;
   let targetDeg = 3600 + degrees + segmentAngle/2;
-
   document.getElementById('wheel').style.transition = 'transform 5s cubic-bezier(0.17, 0.67, 0.12, 0.99)';
   document.getElementById('wheel').style.transform = `rotate(${targetDeg}deg)`;
-
   setTimeout(()=>{
     let prize = wheelPrizes[randomIndex];
     if(prize.value>0){coins+=prize.value;}
     document.getElementById('wheelResult').innerText = prize.value>0?`🎉 ربحت ${prize.text} نقطة`:`💀 ${prize.text}`;
-    updateAll();
-    document.getElementById('spinBtn').disabled = false;
+    updateAll(); document.getElementById('spinBtn').disabled = false;
   },5000);
 }
 
-// الصندوق - واحد رابح من 3 عشوائي من 100 الى 10000
+// الصندوق
 function openBox(){
   if(coins<500){alert("ما عندك 500");return;}
   coins-=500; updateAll();
   boxOpened = false;
   document.getElementById('boxModal').style.display='block';
   document.getElementById('boxResult').innerText = 'اختار صندوق واحد - واحد فقط رابح!';
-  let boxes = document.getElementById('boxes');
-  boxes.innerHTML = '';
-
-  let winningBox = Math.floor(Math.random()*3); // 0, 1, او 2
-  let prize = Math.floor(Math.random()*9901)+100; // من 100 الى 10000
-
+  let boxes = document.getElementById('boxes'); boxes.innerHTML = '';
+  let winningBox = Math.floor(Math.random()*3);
+  let prize = Math.floor(Math.random()*9901)+100;
   for(let i=0; i<3; i++){
     let div = document.createElement('div');
-    div.className = 'boxItem';
-    div.innerText = '?';
+    div.className = 'boxItem'; div.innerText = '?';
     div.dataset.isWinner = i==winningBox;
     div.dataset.prize = prize;
     div.onclick = ()=>openMysteryBox(div);
@@ -325,18 +475,14 @@ function openMysteryBox(el){
   boxOpened = true;
   let isWinner = el.dataset.isWinner=='true';
   let prize = parseInt(el.dataset.prize);
-
   document.querySelectorAll('.boxItem').forEach((b, i)=>{
     b.classList.add('opened');
     if(b.dataset.isWinner=='true'){
-      b.classList.add('win');
-      b.innerText = b.dataset.prize; // نكشف الرابح
+      b.classList.add('win'); b.innerText = b.dataset.prize;
     }else{
-      b.classList.add('lose');
-      b.innerText = '💀'; // الخاسرين
+      b.classList.add('lose'); b.innerText = '💀';
     }
   });
-
   if(isWinner){
     coins+=prize;
     document.getElementById('boxResult').innerText = `🎉 مبروك! ربحت ${prize.toLocaleString()} نقطة`;
