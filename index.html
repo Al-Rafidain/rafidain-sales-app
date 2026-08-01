@@ -125,7 +125,7 @@ h1{color:#ffcc00; text-shadow:0 0 10px #ffcc00; font-size:24px; margin:10px;}
   </div>
 </div>
 
-<!-- صفحة الاحالات الجديدة -->
+<!-- صفحة الاحالات بعد التعديل -->
 <div id="referral" class="page">
   <h2>👥 دعوة الاصدقاء</h2>
   <div class="box referBox">
@@ -136,14 +136,8 @@ h1{color:#ffcc00; text-shadow:0 0 10px #ffcc00; font-size:24px; margin:10px;}
   <div class="box referBox">
     <h3>رابط الدعوة الخاص بيك</h3>
     <div id="myReferCode" class="referCode" onclick="copyRefer()">اضغط للنسخ</div>
-    <button class="btn btn-blue" onclick="copyRefer()">📋 نسخ الرابط</button>
+    <button class="btn btn-blue" onclick="copyRefer()">📋 نسخ رمز الاحالة</button>
     <button class="btn btn-green" onclick="shareRefer()">📤 مشاركة</button>
-  </div>
-  <div class="box">
-    <h3>ادخل كود صديق</h3>
-    <input type="text" id="referInput" class="input" placeholder="اكتب كود الدعوة هنا">
-    <button class="btn btn-blue" onclick="useReferCode()">تفعيل الكود +5000</button>
-    <p id="referResult" style="color:#ffcc00;"></p>
   </div>
 </div>
 
@@ -182,7 +176,7 @@ h1{color:#ffcc00; text-shadow:0 0 10px #ffcc00; font-size:24px; margin:10px;}
   <p>اختر صندوق واحد - واحد فقط رابح! الجائزة من 100 الى 10000 نقطة</p>
   <div id="boxes"></div>
   <p id="boxResult"></p>
-  <button class=" btn" onclick="closeModal('boxModal')">اغلاق</button>
+  <button class="btn" onclick="closeModal('boxModal')">اغلاق</button>
 </div></div>
 
 <script>
@@ -193,7 +187,6 @@ let agents = JSON.parse(localStorage.getItem('rafidain_agents')) || [];
 let myAgent = JSON.parse(localStorage.getItem('rafidain_myAgent')) || null;
 let myReferCode = localStorage.getItem('rafidain_myRefer') || 'RAF' + Math.floor(Math.random()*9000+1000);
 let referCount = parseInt(localStorage.getItem('rafidain_referCount')) || 0;
-let usedRefer = localStorage.getItem('rafidain_usedRefer') || null;
 let xoBoard = Array(9).fill('');
 let gameOver = false;
 let boxOpened = false;
@@ -285,7 +278,7 @@ updateAll();
 setInterval(updateAll, 60000);
 function closeModal(id){document.getElementById(id).style.display='none';}
 
-// نظام الاحالات
+// نظام الاحالات بعد التعديل
 function loadRefer(){
   document.getElementById('myReferCode').innerText = myReferCode;
   document.getElementById('referCount').innerText = referCount;
@@ -293,35 +286,16 @@ function loadRefer(){
 
 function copyRefer(){
   navigator.clipboard.writeText(myReferCode);
-  alert("✅ تم نسخ الكود: " + myReferCode);
+  alert("✅ تم نسخ رمز الاحالة: " + myReferCode);
 }
 
 function shareRefer(){
-  let text = `تعال العب بتطبيق الرافدين واربح نقاط 💰\nاستخدم كود الدعوة مالتي: ${myReferCode}\nوراح تاخذ 5000 نقطة هدية`;
+  let text = `تعال العب بتطبيق الرافدين واربح نقاط 💰\nاستخدم رمز الاحالة مالتي: ${myReferCode}\nوراح تاخذ 5000 نقطة هدية`;
   if(navigator.share){
     navigator.share({title:'تطبيق الرافدين', text:text});
   }else{
     copyRefer();
   }
-}
-
-function useReferCode(){
-  let code = document.getElementById('referInput').value.trim().toUpperCase();
-  if(!code){alert("دخل الكود"); return;}
-  if(usedRefer){document.getElementById('referResult').innerText="انت اصلا استخدمت كود من قبل"; return;}
-  if(code == myReferCode){document.getElementById('referResult').innerText="ما تكدر تستخدم كودك"; return;}
-
-  // هنا المفروض نتحقق من الكود بس لان ماكو سيرفر رح نطيه مباشر
-  coins += 5000;
-  usedRefer = code;
-  localStorage.setItem('rafidain_usedRefer', code);
-
-  // نزيد عداد الشخص اللي انطاه الكود - هذا يشتغل بس اذا هو فاتح نفس الجهاز
-  referCount++;
-
-  document.getElementById('referResult').innerText = `✅ مبروك! تم اضافة 5000 نقطة`;
-  document.getElementById('referInput').value = '';
-  updateAll();
 }
 
 // نظام السحب
