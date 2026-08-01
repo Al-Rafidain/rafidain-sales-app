@@ -23,13 +23,18 @@ h1{color:#ffcc00; text-shadow:0 0 10px #ffcc00; font-size:24px; margin:10px;}
 .btn{background:#ff8c00; color:#000; border:none; padding:15px; border-radius:12px; font-size:16px; font-weight:bold; margin:8px; cursor:pointer; width:90%; max-width:350px;}
 .btn-green{background:#00cc00; color:#000;}
 .btn-blue{background:#00ccff; color:#000;}
+.btn-red{background:#ff0000; color:#fff;}
 .btn:disabled{background:#555; color:#999;}
 .btn-half{width:45%; max-width:170px;}
+.btn-small{padding:8px 12px; font-size:13px; width:auto; margin:3px;}
 .modal{display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.95); z-index:1000; overflow-y:auto;}
 .modal-content{background:#1a1a1a; margin:20px auto; padding:15px; width:95%; max-width:500px; border-radius:15px; border:2px solid #ff8c00;}
 .counterItem{background:#222; padding:15px; margin:10px auto; border-radius:10px; border:2px solid #333; width:90%; max-width:350px; text-align:right;}
 .counterItem h4{color:#ffb300; margin:5px; font-size:18px;}
 .counterItem p{margin:5px; color:#aaa; font-size:14px;}
+.agentCard{background:#222; padding:15px; margin:10px auto; border-radius:10px; border:2px solid #ff8c00; width:90%; max-width:350px; text-align:right;}
+.agentCard h4{color:#ffcc00; margin:5px; font-size:18px;}
+.input{width:90%; padding:12px; margin:8px 0; border-radius:8px; background:#222; color:white; border:1px solid #ff8c00; font-size:16px;}
 #xoBoard{display:grid; grid-template-columns:repeat(3,100px); gap:5px; margin:20px auto; width:310px;}
 .xoCell{width:100px; height:100px; background:#222; font-size:60px; display:flex; align-items:center; justify-content:center; cursor:pointer; border-radius:10px; border:2px solid #ff8c00;}
 .xoCell:hover{background:#333;}
@@ -41,11 +46,7 @@ h1{color:#ffcc00; text-shadow:0 0 10px #ffcc00; font-size:24px; margin:10px;}
 .boxItem.opened{background:#222; cursor:not-allowed; transform:scale(0.9);}
 .boxItem.win{border-color:#00ff00; background:linear-gradient(135deg,#00ff00,#00cc00);}
 .boxItem.lose{border-color:#ff0000; background:#333;}
-.input{width:90%; padding:12px; margin:8px 0; border-radius:8px; background:#222; color:white; border:1px solid #ff8c00; font-size:16px;}
-.agentBadge{background:linear-gradient(135deg,#00ff00,#00cc00); color:#000; padding:5px 12px; border-radius:8px; font-weight:bold; font-size:14px; display:inline-block; margin:5px;}
 .withdrawBox{border-color:#00ccff;}
-.referBox{border-color:#00ccff; background:linear-gradient(135deg,#111,#1a0033);}
-.referCode{background:#222; padding:15px; border-radius:10px; border:2px dashed #00ccff; font-size:20px; color:#00ccff; margin:10px; cursor:pointer;}
 </style>
 </head>
 <body>
@@ -57,7 +58,6 @@ h1{color:#ffcc00; text-shadow:0 0 10px #ffcc00; font-size:24px; margin:10px;}
   <button class="navBtn active" onclick="showPage('counters')">العدادات ⚙️</button>
   <button class="navBtn" onclick="showPage('games')">الالعاب 🎮</button>
   <button class="navBtn" onclick="showPage('agents')">الوكلاء 👑</button>
-  <button class="navBtn" onclick="showPage('referral')">دعوة اصدقاء 👥</button>
 </div>
 
 <div id="counters" class="page active">
@@ -89,54 +89,22 @@ h1{color:#ffcc00; text-shadow:0 0 10px #ffcc00; font-size:24px; margin:10px;}
 </div>
 
 <div id="agents" class="page">
-  <h2>👑 نظام الوكالات</h2>
+  <h2>👑 نظام الوكلاء</h2>
   <div id="coins4" class="box">رصيدك: 0 نقطة<br><span id="coins4Dollar" style="color:#00ccff;">يعادل $0.00</span></div>
 
-  <div id="myAgentBox" class="box" style="border-color:#ff8c00; display:none;">
-    <h3>✅ انت وكيل معتمد</h3>
-    <p>المبيعات: <span id="mySales">0</span> | الارباح: <span id="myProfit">0</span> نقطة</p>
-  </div>
-
-  <div id="buyAgentBox" class="box">
-    <h3>اشتري وكالة - 50,000 نقطة</h3>
+  <div class="box">
+    <h3>اضافة وكيل جديد - 50,000 نقطة</h3>
     <input type="text" id="agentNameInput" class="input" placeholder="اسم الوكيل">
     <input type="text" id="agentAddressInput" class="input" placeholder="العنوان">
     <input type="text" id="agentPhoneInput" class="input" placeholder="رقم الواتساب 07...">
     <textarea id="agentNotesInput" class="input" placeholder="ملاحظات" rows="3"></textarea>
-    <button class="btn" onclick="buyAgent()">شراء الوكالة ب 50 الف</button>
+    <button class="btn" onclick="addAgent()">اضافة وكيل ب 50 الف</button>
   </div>
 
   <div class="box">
-    <h3>قائمة الوكلاء</h3>
+    <h3>قائمة الوكلاء <span id="agentsCount" style="color:#00ccff;">0</span></h3>
     <input type="text" id="searchAgent" onkeyup="loadAgents()" class="input" placeholder="ابحث عن وكيل...">
     <div id="agentsList" style="margin-top:15px;"></div>
-  </div>
-
-  <div id="agentShop" class="box" style="display:none; border-color:#ff8c00;">
-    <h3>متجر الوكيل</h3>
-    <h4 id="agentShopName" style="color:#ffcc00;"></h4>
-    <p>📍 العنوان: <span id="agentShopAddress"></span></p>
-    <p>📱 واتساب: <span id="agentShopPhone"></span></p>
-    <p>📝 ملاحظات: <span id="agentShopNotes"></span></p>
-    <hr style="border-color:#333;">
-    <p>سعر 100 الف نقطة: <span id="agentPrice100k" style="color:#00ff00; font-size:20px;"></span></p>
-    <button class="btn" onclick="buyFromAgent()">اشتري 100 الف نقطة</button>
-    <button class="btn" onclick="document.getElementById('agentShop').style.display='none'">اغلاق</button>
-  </div>
-</div>
-
-<div id="referral" class="page">
-  <h2>👥 دعوة الاصدقاء</h2>
-  <div class="box referBox">
-    <h3>🎁 اربح 10,000 نقطة على كل صديق</h3>
-    <p>صديقك ياخذ 5,000 نقطة هدية</p>
-    <p>عدد المدعوين: <span id="referCount" style="color:#00ccff; font-size:20px;">0</span></p>
-  </div>
-  <div class="box referBox">
-    <h3>رابط الدعوة الخاص بيك</h3>
-    <div id="myReferCode" class="referCode" onclick="copyRefer()">اضغط للنسخ</div>
-    <button class="btn btn-blue" onclick="copyRefer()">📋 نسخ رمز الاحالة</button>
-    <button class="btn btn-green" onclick="shareRefer()">📤 مشاركة</button>
   </div>
 </div>
 
@@ -182,18 +150,13 @@ h1{color:#ffcc00; text-shadow:0 0 10px #ffcc00; font-size:24px; margin:10px;}
 let coins = parseInt(localStorage.getItem('rafidain_coins')) || 5000;
 let counters = JSON.parse(localStorage.getItem('rafidain_counters_list')) || [];
 let lastClaim = parseInt(localStorage.getItem('rafidain_lastClaim')) || 0;
-let agents = JSON.parse(localStorage.getItem('rafidain_agents')) || [];
-let myAgent = JSON.parse(localStorage.getItem('rafidain_myAgent')) || null;
-let myReferCode = localStorage.getItem('rafidain_myRefer') || 'RAF' + Math.floor(Math.random()*9000+1000);
-let referCount = parseInt(localStorage.getItem('rafidain_referCount')) || 0;
+let agents = JSON.parse(localStorage.getItem('rafidain_agents')) || []; // هاي صارت مصفوفة
 let xoBoard = Array(9).fill('');
 let gameOver = false;
 let boxOpened = false;
-let selectedAgentIndex = -1;
-
-localStorage.setItem('rafidain_myRefer', myReferCode);
 
 const RATE = 10000;
+const AGENT_PRICE = 50000; // سعر الوكالة
 
 const countersData = [
   {name:"عداد 100", price:1000, profit:100},
@@ -224,7 +187,6 @@ function showPage(id){
   event.target.classList.add('active');
   if(id=='store') loadStore();
   if(id=='agents') loadAgents();
-  if(id=='referral') loadRefer();
   updateAll();
 }
 
@@ -244,16 +206,7 @@ function updateAll(){
 
   document.getElementById('counterCount').innerText = getCounterCount() + ' عداد';
   document.getElementById('perDay').innerText = '+' + totalPerDay.toLocaleString() + ' نقطة/24 ساعة';
-
-  if(myAgent){
-    document.getElementById('myAgentBox').style.display='block';
-    document.getElementById('buyAgentBox').style.display='none';
-    document.getElementById('mySales').innerText = myAgent.sales;
-    document.getElementById('myProfit').innerText = myAgent.profit.toLocaleString();
-  } else {
-    document.getElementById('myAgentBox').style.display='none';
-    document.getElementById('buyAgentBox').style.display='block';
-  }
+  document.getElementById('agentsCount').innerText = agents.length;
 
   let now = Date.now();
   let timeLeft = 24*60*60*1000 - (now - lastClaim);
@@ -270,32 +223,11 @@ function updateAll(){
   localStorage.setItem('rafidain_counters_list', JSON.stringify(counters));
   localStorage.setItem('rafidain_lastClaim', lastClaim);
   localStorage.setItem('rafidain_agents', JSON.stringify(agents));
-  localStorage.setItem('rafidain_myAgent', JSON.stringify(myAgent));
-  localStorage.setItem('rafidain_referCount', referCount);
 }
 updateAll();
 setInterval(updateAll, 60000);
+
 function closeModal(id){document.getElementById(id).style.display='none';}
-
-// نظام الاحالات
-function loadRefer(){
-  document.getElementById('myReferCode').innerText = myReferCode;
-  document.getElementById('referCount').innerText = referCount;
-}
-
-function copyRefer(){
-  navigator.clipboard.writeText(myReferCode);
-  alert("✅ تم نسخ رمز الاحالة: " + myReferCode);
-}
-
-function shareRefer(){
-  let text = `تعال العب بتطبيق الرافدين واربح نقاط 💰\nاستخدم رمز الاحالة مالتي: ${myReferCode}\nوراح تاخذ 5000 نقطة هدية`;
-  if(navigator.share){
-    navigator.share({title:'تطبيق الرافدين', text:text});
-  }else{
-    copyRefer();
-  }
-}
 
 // نظام السحب
 function openWithdraw(){
@@ -335,66 +267,67 @@ function buyCounter(price, profit){
   alert(`✅ تم شراء العداد! صار عندك ${getCounterCount()} عداد`);
 }
 
-// نظام الوكلاء - تم تعديل السعر هنا
-function buyAgent(){
+// نظام الوكلاء الجديد - يقبل اكثر من وكيل
+function addAgent(){
   let name = document.getElementById('agentNameInput').value.trim();
   let address = document.getElementById('agentAddressInput').value.trim();
   let phone = document.getElementById('agentPhoneInput').value.trim();
   let notes = document.getElementById('agentNotesInput').value.trim();
-  let price = 50000; // تم التعديل من 5 مليون الى 50 الف
+
   if(!name ||!address ||!phone){alert("املأ الاسم والعنوان ورقم الواتساب"); return;}
-  if(coins < price){alert("ما عندك 50 الف نقطة"); return;}
-  if(myAgent){alert("انت اصلا وكيل"); return;}
-  coins -= price;
-  myAgent = {name: name, address: address, phone: phone, notes: notes, sales: 0, profit: 0, price: 40000};
-  agents.push(myAgent);
+  if(coins < AGENT_PRICE){alert(`ما عندك ${AGENT_PRICE.toLocaleString()} نقطة`); return;}
+
+  coins -= AGENT_PRICE;
+
+  let newAgent = {
+    id: Date.now(), // id فريد
+    name: name,
+    address: address,
+    phone: phone,
+    notes: notes,
+    balance: 0, // رصيد الوكيل
+    created: new Date().toLocaleDateString('ar-IQ')
+  };
+
+  agents.push(newAgent); // نضيفه للقائمة
+
   document.getElementById('agentNameInput').value='';
   document.getElementById('agentAddressInput').value='';
   document.getElementById('agentPhoneInput').value='';
   document.getElementById('agentNotesInput').value='';
-  alert(`✅ مبروك صرت وكيل معتمد!`);
+
+  alert(`✅ تم اضافة الوكيل ${name}`);
   loadAgents();
   updateAll();
 }
 
 function loadAgents(){
-  let search = document.getElementById('agentNameInput').value.toLowerCase();
+  let search = document.getElementById('searchAgent').value.toLowerCase();
   let html = '';
-  agents.forEach((a, i)=>{
-    if(a.name.toLowerCase().includes(search)){
-      html += `<div class="counterItem">
-        <h4>👑 ${a.name}</h4>
-        <p>📍 العنوان: ${a.address}</p>
-        <p>📱 واتساب: ${a.phone}</p>
-        <p>📝 ${a.notes || 'لا توجد ملاحظات'}</p>
-        <p>سعر 100 الف: <span style="color:#00ff00">${a.price.toLocaleString()}</span></p>
-        <button class="btn" onclick="openAgentShop(${i})">اشتري منه</button>
-      </div>`;
-    }
-  });
-  document.getElementById('agentsList').innerHTML = html || '<p>ماكو وكلاء بعد</p>';
+  if(agents.length == 0){
+    html = '<p>ماكو وكلاء بعد. ضيف اول وكيل</p>';
+  } else {
+    agents.forEach((a)=>{
+      if(a.name.toLowerCase().includes(search) || a.phone.includes(search)){
+        html += `<div class="agentCard">
+          <h4>👑 ${a.name}</h4>
+          <p>📍 العنوان: ${a.address}</p>
+          <p>📱 واتساب: ${a.phone}</p>
+          <p>📝 ${a.notes || 'لا توجد ملاحظات'}</p>
+          <p>💰 رصيد الوكيل: ${a.balance.toLocaleString()} نقطة</p>
+          <p>📅 تاريخ الاضافة: ${a.created}</p>
+          <button class="btn btn-small btn-red" onclick="deleteAgent(${a.id})">حذف</button>
+        </div>`;
+      }
+    });
+  }
+  document.getElementById('agentsList').innerHTML = html;
 }
 
-function openAgentShop(index){
-  selectedAgentIndex = index;
-  let a = agents[index];
-  document.getElementById('agentShop').style.display='block';
-  document.getElementById('agentShopName').innerText = a.name;
-  document.getElementById('agentShopAddress').innerText = a.address;
-  document.getElementById('agentShopPhone').innerText = a.phone;
-  document.getElementById('agentShopNotes').innerText = a.notes || 'لا توجد';
-  document.getElementById('agentPrice100k').innerText = a.price.toLocaleString() + ' نقطة';
-}
-
-function buyFromAgent(){
-  let a = agents[selectedAgentIndex];
-  if(coins < a.price){alert("ما عندك نقاط كافية"); return;}
-  coins -= a.price;
-  coins += 100000;
-  a.sales += 1;
-  a.profit += (100000 - a.price);
-  if(myAgent && myAgent.name == a.name){myAgent.sales = a.sales; myAgent.profit = a.profit;}
-  alert(`✅ تم شراء 100 الف نقطة بسعر ${a.price.toLocaleString()}`);
+function deleteAgent(id){
+  if(!confirm("متأكد تريد تحذف هذا الوكيل؟")) return;
+  agents = agents.filter(a => a.id!= id);
+  alert("تم حذف الوكيل");
   loadAgents();
   updateAll();
 }
