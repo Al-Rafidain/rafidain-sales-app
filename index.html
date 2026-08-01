@@ -98,12 +98,12 @@ h1{color:#ffcc00; text-shadow:0 0 10px #ffcc00; font-size:24px; margin:10px;}
   </div>
 
   <div id="buyAgentBox" class="box">
-    <h3>اشتري وكالة - 5,000,000 نقطة</h3>
+    <h3>اشتري وكالة - 50,000 نقطة</h3>
     <input type="text" id="agentNameInput" class="input" placeholder="اسم الوكيل">
     <input type="text" id="agentAddressInput" class="input" placeholder="العنوان">
     <input type="text" id="agentPhoneInput" class="input" placeholder="رقم الواتساب 07...">
     <textarea id="agentNotesInput" class="input" placeholder="ملاحظات" rows="3"></textarea>
-    <button class="btn" onclick="buyAgent()">شراء الوكالة ب 5 مليون</button>
+    <button class="btn" onclick="buyAgent()">شراء الوكالة ب 50 الف</button>
   </div>
 
   <div class="box">
@@ -125,7 +125,6 @@ h1{color:#ffcc00; text-shadow:0 0 10px #ffcc00; font-size:24px; margin:10px;}
   </div>
 </div>
 
-<!-- صفحة الاحالات بعد التعديل -->
 <div id="referral" class="page">
   <h2>👥 دعوة الاصدقاء</h2>
   <div class="box referBox">
@@ -278,7 +277,7 @@ updateAll();
 setInterval(updateAll, 60000);
 function closeModal(id){document.getElementById(id).style.display='none';}
 
-// نظام الاحالات بعد التعديل
+// نظام الاحالات
 function loadRefer(){
   document.getElementById('myReferCode').innerText = myReferCode;
   document.getElementById('referCount').innerText = referCount;
@@ -336,18 +335,18 @@ function buyCounter(price, profit){
   alert(`✅ تم شراء العداد! صار عندك ${getCounterCount()} عداد`);
 }
 
-// نظام الوكلاء
+// نظام الوكلاء - تم تعديل السعر هنا
 function buyAgent(){
   let name = document.getElementById('agentNameInput').value.trim();
   let address = document.getElementById('agentAddressInput').value.trim();
   let phone = document.getElementById('agentPhoneInput').value.trim();
   let notes = document.getElementById('agentNotesInput').value.trim();
-  let price = 5000000;
+  let price = 50000; // تم التعديل من 5 مليون الى 50 الف
   if(!name ||!address ||!phone){alert("املأ الاسم والعنوان ورقم الواتساب"); return;}
-  if(coins < price){alert("ما عندك 5 مليون نقطة"); return;}
+  if(coins < price){alert("ما عندك 50 الف نقطة"); return;}
   if(myAgent){alert("انت اصلا وكيل"); return;}
   coins -= price;
-  myAgent = {name: name, address: address, phone: phone, notes: notes, sales: 0, profit: 0, price: 800000};
+  myAgent = {name: name, address: address, phone: phone, notes: notes, sales: 0, profit: 0, price: 40000};
   agents.push(myAgent);
   document.getElementById('agentNameInput').value='';
   document.getElementById('agentAddressInput').value='';
@@ -359,7 +358,7 @@ function buyAgent(){
 }
 
 function loadAgents(){
-  let search = document.getElementById('searchAgent').value.toLowerCase();
+  let search = document.getElementById('agentNameInput').value.toLowerCase();
   let html = '';
   agents.forEach((a, i)=>{
     if(a.name.toLowerCase().includes(search)){
