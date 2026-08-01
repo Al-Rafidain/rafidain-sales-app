@@ -22,6 +22,7 @@ h1{color:#ffcc00; text-shadow:0 0 10px #ffcc00; font-size:24px; margin:10px;}
 #perDay{font-size:24px; color:#00ccff; font-weight:bold;}
 .btn{background:#ff8c00; color:#000; border:none; padding:15px; border-radius:12px; font-size:16px; font-weight:bold; margin:8px; cursor:pointer; width:90%; max-width:350px;}
 .btn-green{background:#00cc00; color:#000;}
+.btn-blue{background:#00ccff; color:#000;}
 .btn:disabled{background:#555; color:#999;}
 .btn-half{width:45%; max-width:170px;}
 .modal{display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.95); z-index:1000; overflow-y:auto;}
@@ -43,6 +44,8 @@ h1{color:#ffcc00; text-shadow:0 0 10px #ffcc00; font-size:24px; margin:10px;}
 .input{width:90%; padding:12px; margin:8px 0; border-radius:8px; background:#222; color:white; border:1px solid #ff8c00; font-size:16px;}
 .agentBadge{background:linear-gradient(135deg,#00ff00,#00cc00); color:#000; padding:5px 12px; border-radius:8px; font-weight:bold; font-size:14px; display:inline-block; margin:5px;}
 .withdrawBox{border-color:#00ccff;}
+.referBox{border-color:#00ccff; background:linear-gradient(135deg,#111,#1a0033);}
+.referCode{background:#222; padding:15px; border-radius:10px; border:2px dashed #00ccff; font-size:20px; color:#00ccff; margin:10px; cursor:pointer;}
 </style>
 </head>
 <body>
@@ -54,6 +57,7 @@ h1{color:#ffcc00; text-shadow:0 0 10px #ffcc00; font-size:24px; margin:10px;}
   <button class="navBtn active" onclick="showPage('counters')">العدادات ⚙️</button>
   <button class="navBtn" onclick="showPage('games')">الالعاب 🎮</button>
   <button class="navBtn" onclick="showPage('agents')">الوكلاء 👑</button>
+  <button class="navBtn" onclick="showPage('referral')">دعوة اصدقاء 👥</button>
 </div>
 
 <div id="counters" class="page active">
@@ -121,7 +125,28 @@ h1{color:#ffcc00; text-shadow:0 0 10px #ffcc00; font-size:24px; margin:10px;}
   </div>
 </div>
 
-<!-- مودال السحب -->
+<!-- صفحة الاحالات الجديدة -->
+<div id="referral" class="page">
+  <h2>👥 دعوة الاصدقاء</h2>
+  <div class="box referBox">
+    <h3>🎁 اربح 10,000 نقطة على كل صديق</h3>
+    <p>صديقك ياخذ 5,000 نقطة هدية</p>
+    <p>عدد المدعوين: <span id="referCount" style="color:#00ccff; font-size:20px;">0</span></p>
+  </div>
+  <div class="box referBox">
+    <h3>رابط الدعوة الخاص بيك</h3>
+    <div id="myReferCode" class="referCode" onclick="copyRefer()">اضغط للنسخ</div>
+    <button class="btn btn-blue" onclick="copyRefer()">📋 نسخ الرابط</button>
+    <button class="btn btn-green" onclick="shareRefer()">📤 مشاركة</button>
+  </div>
+  <div class="box">
+    <h3>ادخل كود صديق</h3>
+    <input type="text" id="referInput" class="input" placeholder="اكتب كود الدعوة هنا">
+    <button class="btn btn-blue" onclick="useReferCode()">تفعيل الكود +5000</button>
+    <p id="referResult" style="color:#ffcc00;"></p>
+  </div>
+</div>
+
 <div id="withdrawModal" class="modal"><div class="modal-content withdrawBox">
   <h2>💵 سحب الارباح</h2>
   <p>كل <span id="rateText">10000</span> نقطة = 1 دولار</p>
@@ -157,7 +182,7 @@ h1{color:#ffcc00; text-shadow:0 0 10px #ffcc00; font-size:24px; margin:10px;}
   <p>اختر صندوق واحد - واحد فقط رابح! الجائزة من 100 الى 10000 نقطة</p>
   <div id="boxes"></div>
   <p id="boxResult"></p>
-  <button class="btn" onclick="closeModal('boxModal')">اغلاق</button>
+  <button class=" btn" onclick="closeModal('boxModal')">اغلاق</button>
 </div></div>
 
 <script>
@@ -166,12 +191,17 @@ let counters = JSON.parse(localStorage.getItem('rafidain_counters_list')) || [];
 let lastClaim = parseInt(localStorage.getItem('rafidain_lastClaim')) || 0;
 let agents = JSON.parse(localStorage.getItem('rafidain_agents')) || [];
 let myAgent = JSON.parse(localStorage.getItem('rafidain_myAgent')) || null;
+let myReferCode = localStorage.getItem('rafidain_myRefer') || 'RAF' + Math.floor(Math.random()*9000+1000);
+let referCount = parseInt(localStorage.getItem('rafidain_referCount')) || 0;
+let usedRefer = localStorage.getItem('rafidain_usedRefer') || null;
 let xoBoard = Array(9).fill('');
 let gameOver = false;
 let boxOpened = false;
 let selectedAgentIndex = -1;
 
-const RATE = 10000; // كل 10000 نقطة = 1 دولار
+localStorage.setItem('rafidain_myRefer', myReferCode);
+
+const RATE = 10000;
 
 const countersData = [
   {name:"عداد 100", price:1000, profit:100},
@@ -202,6 +232,7 @@ function showPage(id){
   event.target.classList.add('active');
   if(id=='store') loadStore();
   if(id=='agents') loadAgents();
+  if(id=='referral') loadRefer();
   updateAll();
 }
 
@@ -248,10 +279,50 @@ function updateAll(){
   localStorage.setItem('rafidain_lastClaim', lastClaim);
   localStorage.setItem('rafidain_agents', JSON.stringify(agents));
   localStorage.setItem('rafidain_myAgent', JSON.stringify(myAgent));
+  localStorage.setItem('rafidain_referCount', referCount);
 }
 updateAll();
 setInterval(updateAll, 60000);
 function closeModal(id){document.getElementById(id).style.display='none';}
+
+// نظام الاحالات
+function loadRefer(){
+  document.getElementById('myReferCode').innerText = myReferCode;
+  document.getElementById('referCount').innerText = referCount;
+}
+
+function copyRefer(){
+  navigator.clipboard.writeText(myReferCode);
+  alert("✅ تم نسخ الكود: " + myReferCode);
+}
+
+function shareRefer(){
+  let text = `تعال العب بتطبيق الرافدين واربح نقاط 💰\nاستخدم كود الدعوة مالتي: ${myReferCode}\nوراح تاخذ 5000 نقطة هدية`;
+  if(navigator.share){
+    navigator.share({title:'تطبيق الرافدين', text:text});
+  }else{
+    copyRefer();
+  }
+}
+
+function useReferCode(){
+  let code = document.getElementById('referInput').value.trim().toUpperCase();
+  if(!code){alert("دخل الكود"); return;}
+  if(usedRefer){document.getElementById('referResult').innerText="انت اصلا استخدمت كود من قبل"; return;}
+  if(code == myReferCode){document.getElementById('referResult').innerText="ما تكدر تستخدم كودك"; return;}
+
+  // هنا المفروض نتحقق من الكود بس لان ماكو سيرفر رح نطيه مباشر
+  coins += 5000;
+  usedRefer = code;
+  localStorage.setItem('rafidain_usedRefer', code);
+
+  // نزيد عداد الشخص اللي انطاه الكود - هذا يشتغل بس اذا هو فاتح نفس الجهاز
+  referCount++;
+
+  document.getElementById('referResult').innerText = `✅ مبروك! تم اضافة 5000 نقطة`;
+  document.getElementById('referInput').value = '';
+  updateAll();
+}
 
 // نظام السحب
 function openWithdraw(){
@@ -266,14 +337,11 @@ function openWithdraw(){
 function doWithdraw(){
   let amount = parseFloat(document.getElementById('withdrawAmount').value);
   if(!amount || amount <= 0){alert("دخل مبلغ صحيح"); return;}
-
   let costInCoins = amount * RATE;
   if(costInCoins > coins){alert("ما عندك رصيد كافي"); return;}
-
   coins -= costInCoins;
   document.getElementById('withdrawResult').innerText = `✅ تم طلب سحب $${amount.toFixed(2)}. سيتم التواصل معك`;
   updateAll();
-
   setTimeout(()=>closeModal('withdrawModal'), 2000);
 }
 
@@ -301,20 +369,16 @@ function buyAgent(){
   let phone = document.getElementById('agentPhoneInput').value.trim();
   let notes = document.getElementById('agentNotesInput').value.trim();
   let price = 5000000;
-
   if(!name ||!address ||!phone){alert("املأ الاسم والعنوان ورقم الواتساب"); return;}
   if(coins < price){alert("ما عندك 5 مليون نقطة"); return;}
   if(myAgent){alert("انت اصلا وكيل"); return;}
-
   coins -= price;
   myAgent = {name: name, address: address, phone: phone, notes: notes, sales: 0, profit: 0, price: 800000};
   agents.push(myAgent);
-
   document.getElementById('agentNameInput').value='';
   document.getElementById('agentAddressInput').value='';
   document.getElementById('agentPhoneInput').value='';
   document.getElementById('agentNotesInput').value='';
-
   alert(`✅ مبروك صرت وكيل معتمد!`);
   loadAgents();
   updateAll();
