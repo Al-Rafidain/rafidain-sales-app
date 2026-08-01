@@ -71,6 +71,15 @@ h1{color:#ffcc00; text-shadow:0 0 10px #ffcc00; font-size:24px; margin:10px;}
     <div class="box"><h3>عدد العدادات ⚙️</h3><div id="counterCount">0 عداد</div></div>
     <div class="box"><h3>الارباح التلقائية ⚡</h3><div id="perDay">+0 نقطة/24 ساعة</div></div>
   </div>
+
+  <div class="box">
+    <h3>🎁 دعوة صديق</h3>
+    <p>اربح <span style="color:#00ff00">5000 نقطة</span> على كل صديق يسجل</p>
+    <input type="text" id="inviteLink" class="input" readonly>
+    <button class="btn btn-blue" onclick="copyInvite()">📋 نسخ رابط الدعوة</button>
+    <p>عدد الاصدقاء: <span id="friendsCount" style="color:#00ccff">0</span></p>
+  </div>
+
   <p id="nextClaim" style="color:#aaa;"></p>
 </div>
 
@@ -150,13 +159,15 @@ h1{color:#ffcc00; text-shadow:0 0 10px #ffcc00; font-size:24px; margin:10px;}
 let coins = parseInt(localStorage.getItem('rafidain_coins')) || 5000;
 let counters = JSON.parse(localStorage.getItem('rafidain_counters_list')) || [];
 let lastClaim = parseInt(localStorage.getItem('rafidain_lastClaim')) || 0;
-let agents = JSON.parse(localStorage.getItem('rafidain_agents')) || []; // هاي صارت مصفوفة
+let agents = JSON.parse(localStorage.getItem('rafidain_agents')) || [];
+let friends = JSON.parse(localStorage.getItem('rafidain_friends')) || [];
 let xoBoard = Array(9).fill('');
 let gameOver = false;
 let boxOpened = false;
 
 const RATE = 10000;
-const AGENT_PRICE = 50000; // سعر الوكالة
+const AGENT_PRICE = 50000;
+const INVITE_REWARD = 5000;
 
 const countersData = [
   {name:"عداد 100", price:1000, profit:100},
@@ -187,6 +198,7 @@ function showPage(id){
   event.target.classList.add('active');
   if(id=='store') loadStore();
   if(id=='agents') loadAgents();
+  if(id=='counters') setupInvite();
   updateAll();
 }
 
@@ -207,6 +219,7 @@ function updateAll(){
   document.getElementById('counterCount').innerText = getCounterCount() + ' عداد';
   document.getElementById('perDay').innerText = '+' + totalPerDay.toLocaleString() + ' نقطة/24 ساعة';
   document.getElementById('agentsCount').innerText = agents.length;
+  document.getElementById('friendsCount').innerText = friends.length;
 
   let now = Date.now();
   let timeLeft = 24*60*60*1000 - (now - lastClaim);
@@ -223,11 +236,31 @@ function updateAll(){
   localStorage.setItem('rafidain_counters_list', JSON.stringify(counters));
   localStorage.setItem('rafidain_lastClaim', lastClaim);
   localStorage.setItem('rafidain_agents', JSON.stringify(agents));
+  localStorage.setItem('rafidain_friends', JSON.stringify(friends));
 }
 updateAll();
 setInterval(updateAll, 60000);
 
 function closeModal(id){document.getElementById(id).style.display='none';}
+
+// نظام الدعوات
+function setupInvite(){
+  let myLink = window.location.href.split('?')[0] + '?ref=' + Date.now();
+  document.getElementById('inviteLink').value = myLink;
+}
+
+function copyInvite(){
+  let copyText = document.getElementById('inviteLink');
+  copyText.select();
+  document.execCommand("copy");
+  alert("✅ تم نسخ رابط الدعوة");
+  if(!friends.includes(copyText.value)){
+    friends.push(copyText.value);
+    coins += INVITE_REWARD;
+    alert(`🎉 مبروك! ربحت ${INVITE_REWARD} نقطة على دعوة صديق`);
+    updateAll();
+  }
+}
 
 // نظام السحب
 function openWithdraw(){
@@ -267,7 +300,7 @@ function buyCounter(price, profit){
   alert(`✅ تم شراء العداد! صار عندك ${getCounterCount()} عداد`);
 }
 
-// نظام الوكلاء الجديد - يقبل اكثر من وكيل
+// نظام الوكلاء
 function addAgent(){
   let name = document.getElementById('agentNameInput').value.trim();
   let address = document.getElementById('agentAddressInput').value.trim();
@@ -280,16 +313,16 @@ function addAgent(){
   coins -= AGENT_PRICE;
 
   let newAgent = {
-    id: Date.now(), // id فريد
+    id: Date.now(),
     name: name,
     address: address,
     phone: phone,
     notes: notes,
-    balance: 0, // رصيد الوكيل
+    balance: 0,
     created: new Date().toLocaleDateString('ar-IQ')
   };
 
-  agents.push(newAgent); // نضيفه للقائمة
+  agents.push(newAgent);
 
   document.getElementById('agentNameInput').value='';
   document.getElementById('agentAddressInput').value='';
@@ -332,7 +365,7 @@ function deleteAgent(id){
   updateAll();
 }
 
-// XO
+// XO كامل
 function openXO(){
   if(coins<50){alert("ما عندك 50");return;}
   coins-=50; updateAll();
@@ -373,7 +406,7 @@ function checkWinner(p){
   return wins.some(w=>w.every(i=>xoBoard[i]==p));
 }
 
-// العجلة
+// العجلة كاملة
 function spinWheel(){
   if(coins<50){alert("ما عندك 50");return;}
   coins-=50; updateAll();
@@ -420,7 +453,7 @@ function doSpin(){
   },5000);
 }
 
-// الصندوق
+// الصندوق كامل
 function openBox(){
   if(coins<500){alert("ما عندك 500");return;}
   coins-=500; updateAll();
