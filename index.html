@@ -31,11 +31,23 @@ h1{color:#ffcc00; text-shadow:0 0 10px #ffcc00; font-size:24px; margin:10px;}
 .modal-content{background:#1a1a1a; margin:20px auto; padding:15px; width:95%; max-width:500px; border-radius:15px; border:2px solid #ff8c00;}
 .counterItem{background:#222; padding:15px; margin:10px auto; border-radius:10px; border:2px solid #333; width:90%; max-width:350px; text-align:right;}
 .counterItem h4{color:#ffb300; margin:5px; font-size:18px;}
+.counterItem p{margin:5px; color:#aaa; font-size:14px;}
 .agentCard{background:#222; padding:15px; margin:10px auto; border-radius:10px; border:2px solid #ff8c00; width:90%; max-width:350px; text-align:right;}
 .agentCard h4{color:#ffcc00; margin:5px; font-size:18px;}
 .input{width:90%; padding:12px; margin:8px 0; border-radius:8px; background:#222; color:white; border:1px solid #ff8c00; font-size:16px;}
+#xoBoard{display:grid; grid-template-columns:repeat(3,100px); gap:5px; margin:20px auto; width:310px;}
+.xoCell{width:100px; height:100px; background:#222; font-size:60px; display:flex; align-items:center; justify-content:center; cursor:pointer; border-radius:10px; border:2px solid #ff8c00;}
+.xoCell:hover{background:#333;}
+.wheel-container{position:relative; width:300px; height:300px; margin:20px auto;}
+.pointer{width:0; height:0; border-left:20px solid transparent; border-right:20px solid transparent; border-bottom:40px solid #ff0000; position:absolute; top:-15px; left:50%; transform:translateX(-50%); z-index:10; filter:drop-shadow(0 0 5px red);}
+#wheel{width:100%; height:100%; border-radius:50%; border:8px solid #ff8c00; position:relative; transition: transform 5s cubic-bezier(0.17, 0.67, 0.12, 0.99); box-shadow:0 0 30px #ff8c00;}
+.boxItem{width:100px; height:100px; background:linear-gradient(135deg,#ffb300,#ff8c00); margin:10px; display:inline-block; border-radius:15px; cursor:pointer; font-size:28px; line-height:100px; border:3px solid #fff; transition:0.3s; font-weight:bold;}
+.boxItem:hover{transform:scale(1.1);}
+.boxItem.opened{background:#222; cursor:not-allowed; transform:scale(0.9);}
+.boxItem.win{border-color:#00ff00; background:linear-gradient(135deg,#00ff00,#00cc00);}
+.boxItem.lose{border-color:#ff0000; background:#333;}
 .referralBox{border:3px solid #ff00ff; background:linear-gradient(135deg,#1a001a,#110011);}
-.referralCode{font-size:28px; color:#ff00ff; font-weight:bold; letter-spacing:3px; padding:15px; background:#000; border-radius:10px; border:2px dashed #ff00ff; margin:10px 0;}
+.referralCode{font-size:28px; color:#ff00ff; font-weight:bold; letter-spacing:3px; padding:20px; background:#000; border-radius:10px; border:2px dashed #ff00ff; margin:15px 0;}
 </style>
 </head>
 <body>
@@ -87,14 +99,13 @@ h1{color:#ffcc00; text-shadow:0 0 10px #ffcc00; font-size:24px; margin:10px;}
     <div id="myReferralCode" class="referralCode">RAF0000</div>
     <button class="btn btn-blue" onclick="copyCode()">📋 نسخ الرمز</button>
     <button class="btn btn-green" onclick="shareCode()">📤 مشاركة الرمز</button>
-    <p style="color:#aaa; font-size:13px;">ارسله لاصدقائك واربح على كل واحد</p>
+    <p style="color:#aaa; font-size:13px;">ارسله لاصدقائك واربح 5000 نقطة على كل واحد</p>
   </div>
 
   <div class="box">
-    <h3>💰 المكافآت</h3>
-    <p>تربح <span style="color:#00ff00; font-size:20px;">5000 نقطة</span> على كل صديق</p>
-    <p>عدد الاصدقاء: <span id="friendsCount" style="color:#00ff00; font-size:22px;">0</span></p>
-    <p>اجمالي الارباح: <span id="totalReferral" style="color:#00ccff; font-size:18px;">0</span> نقطة</p>
+    <h3>💰 احصائيات الاحالة</h3>
+    <p>عدد الاصدقاء المدعوين: <span id="friendsCount" style="color:#00ff00; font-size:24px;">0</span></p>
+    <p>اجمالي الارباح: <span id="totalReferral" style="color:#00ccff; font-size:20px;">0</span> نقطة</p>
   </div>
 </div>
 
@@ -121,10 +132,38 @@ h1{color:#ffcc00; text-shadow:0 0 10px #ffcc00; font-size:24px; margin:10px;}
 <div id="withdrawModal" class="modal"><div class="modal-content">
   <h2>💵 سحب الارباح</h2>
   <p>كل 10000 نقطة = 1 دولار</p>
+  <p>رصيدك: <span id="withdrawCoins"></span> نقطة</p>
   <input type="number" id="withdrawAmount" class="input" placeholder="اكتب المبلغ بالدولار">
   <button class="btn btn-green" onclick="doWithdraw()">تأكيد السحب</button>
   <p id="withdrawResult" style="color:#ffcc00;"></p>
   <button class="btn" onclick="closeModal('withdrawModal')">اغلاق</button>
+</div></div>
+
+<div id="xoModal" class="modal"><div class="modal-content">
+  <h2>❌⭕ XO ضد البوت</h2>
+  <div id="xoBoard"></div>
+  <p id="xoTurn">دورك: X</p>
+  <p id="xoResult"></p>
+  <button class="btn" onclick="closeModal('xoModal')">خروج</button>
+</div></div>
+
+<div id="wheelModal" class="modal"><div class="modal-content">
+  <h2>🎡 العجلة</h2>
+  <div class="wheel-container">
+    <div class="pointer"></div>
+    <canvas id="wheel" width="300" height="300"></canvas>
+  </div>
+  <button class="btn" id="spinBtn" onclick="doSpin()">لف - 50</button>
+  <p id="wheelResult" style="font-size:20px; color:#ffcc00;"></p>
+  <button class="btn" onclick="closeModal('wheelModal')">اغلاق</button>
+</div></div>
+
+<div id="boxModal" class="modal"><div class="modal-content">
+  <h2>📦 الصندوق الغامض</h2>
+  <p>اختر صندوق واحد - واحد فقط رابح! الجائزة من 100 الى 10000 نقطة</p>
+  <div id="boxes"></div>
+  <p id="boxResult"></p>
+  <button class="btn" onclick="closeModal('boxModal')">اغلاق</button>
 </div></div>
 
 <script>
@@ -135,6 +174,9 @@ let agents = JSON.parse(localStorage.getItem('rafidain_agents')) || [];
 let friends = JSON.parse(localStorage.getItem('rafidain_friends')) || [];
 let myReferralCode = localStorage.getItem('rafidain_referral') || 'RAF' + Math.floor(Math.random()*9000+1000);
 localStorage.setItem('rafidain_referral', myReferralCode);
+let xoBoard = Array(9).fill('');
+let gameOver = false;
+let boxOpened = false;
 
 const RATE = 10000;
 const AGENT_PRICE = 50000;
@@ -151,6 +193,15 @@ const countersData = [
   {name:"عداد 3000", price:30000, profit:3000},
   {name:"عداد 4000", price:40000, profit:4000},
   {name:"عداد 5000", price:50000, profit:5000}
+];
+
+const wheelPrizes = [
+  {text:"حظ اوفر", value:0, color:"#ff0000"},
+  {text:"100", value:100, color:"#ffcc00"},
+  {text:"250", value:250, color:"#00ff00"},
+  {text:"300", value:300, color:"#00ccff"},
+  {text:"1000", value:1000, color:"#ff00ff"},
+  {text:"5000", value:5000, color:"#ffb300"}
 ];
 
 function showPage(id){
@@ -170,14 +221,12 @@ function toDollar(n){return (n / RATE).toFixed(2);}
 function updateAll(){
   let totalPerDay = getTotalPerDay();
   let dollar = toDollar(coins);
-
   document.getElementById('coins').innerText = coins.toLocaleString() + ' نقطة';
   document.getElementById('coinsDollar').innerText = `يعادل $${dollar} دولار`;
   document.getElementById('coins2').innerHTML = `رصيدك: ${coins.toLocaleString()} نقطة<br><span style="color:#00ccff;">يعادل $${dollar}</span>`;
   document.getElementById('coins3').innerHTML = `رصيدك: ${coins.toLocaleString()} نقطة<br><span style="color:#00ccff;">يعادل $${dollar}</span>`;
   document.getElementById('coins4').innerHTML = `رصيدك: ${coins.toLocaleString()} نقطة<br><span style="color:#00ccff;">يعادل $${dollar}</span>`;
   document.getElementById('coins5').innerHTML = `رصيدك: ${coins.toLocaleString()} نقطة<br><span style="color:#00ccff;">يعادل $${dollar}</span>`;
-
   document.getElementById('counterCount').innerText = counters.length + ' عداد';
   document.getElementById('perDay').innerText = '+' + totalPerDay.toLocaleString() + ' نقطة/24 ساعة';
   document.getElementById('agentsCount').innerText = agents.length;
@@ -187,8 +236,12 @@ function updateAll(){
   let now = Date.now();
   let timeLeft = 24*60*60*1000 - (now - lastClaim);
   if(timeLeft <= 0 && totalPerDay > 0){
-    coins += totalPerDay; lastClaim = now;
+    coins += totalPerDay; lastClaim = now; alert(`تم اضافة ${totalPerDay.toLocaleString()} نقطة!`);
   }
+  let hours = Math.floor(timeLeft/1000/60/60);
+  let mins = Math.floor((timeLeft/1000/60)%60);
+  document.getElementById('nextClaim').innerText = totalPerDay>0? `الارباح الجاية بعد: ${hours}س ${mins}د` : '';
+
   localStorage.setItem('rafidain_coins', coins);
   localStorage.setItem('rafidain_counters_list', JSON.stringify(counters));
   localStorage.setItem('rafidain_lastClaim', lastClaim);
@@ -199,27 +252,12 @@ updateAll(); setInterval(updateAll, 60000);
 
 function closeModal(id){document.getElementById(id).style.display='none';}
 
-// نظام الاحالة بصفحة وحدها
-function setupReferral(){
-  document.getElementById('myReferralCode').innerText = myReferralCode;
-}
+// الاحالة
+function setupReferral(){document.getElementById('myReferralCode').innerText = myReferralCode;}
+function copyCode(){navigator.clipboard.writeText(myReferralCode); alert("✅ تم نسخ الرمز: " + myReferralCode);}
+function shareCode(){let text = `انضم لتطبيق الرافدين!\nرمز الاحالة: ${myReferralCode}`; if(navigator.share){navigator.share({title: 'الرافدين', text: text});}else{copyCode();}}
 
-function copyCode(){
-  navigator.clipboard.writeText(myReferralCode);
-  alert("✅ تم نسخ الرمز: " + myReferralCode);
-}
-
-function shareCode(){
-  let text = `انضم لتطبيق الرافدين واربح نقاط!\nاستخدم رمز الاحالة: ${myReferralCode}\nتحصل على 5000 نقطة هدية`;
-  if(navigator.share){
-    navigator.share({title: 'تطبيق الرافدين', text: text});
-  }else{
-    copyCode();
-    alert("تم نسخ الرسالة. الصقها وارسلها لاصدقائك");
-  }
-}
-
-// باقي الكود
+// المتجر
 function loadStore(){
   let html = '';
   countersData.forEach((c)=>{
@@ -227,45 +265,51 @@ function loadStore(){
   });
   document.getElementById('storeList').innerHTML = html;
 }
-
 function buyCounter(price, profit){
   if(coins < price){alert("ما عندك نقاط كافية"); return;}
-  coins -= price; counters.push(profit); updateAll(); loadStore();
+  coins -= price; counters.push(profit); updateAll(); loadStore(); alert(`✅ تم الشراء!`);
 }
 
+// الوكلاء
 function addAgent(){
   let name = document.getElementById('agentNameInput').value.trim();
-  if(!name){alert("دخل اسم الوكيل"); return;}
+  let address = document.getElementById('agentAddressInput').value.trim();
+  let phone = document.getElementById('agentPhoneInput').value.trim();
+  let notes = document.getElementById('agentNotesInput').value.trim();
+  if(!name ||!address ||!phone){alert("املأ البيانات"); return;}
   if(coins < AGENT_PRICE){alert("ما عندك 50 الف"); return;}
   coins -= AGENT_PRICE;
-  agents.push({id: Date.now(), name:name, address:document.getElementById('agentAddressInput').value, phone:document.getElementById('agentPhoneInput').value, notes:document.getElementById('agentNotesInput').value, balance:0, created: new Date().toLocaleDateString('ar-IQ')});
-  document.getElementById('agentNameInput').value='';
-  document.getElementById('agentAddressInput').value='';
-  document.getElementById('agentPhoneInput').value='';
-  document.getElementById('agentNotesInput').value='';
-  loadAgents(); updateAll();
+  agents.push({id: Date.now(), name:name, address:address, phone:phone, notes:notes, balance:0, created: new Date().toLocaleDateString('ar-IQ')});
+  document.getElementById('agentNameInput').value=''; document.getElementById('agentAddressInput').value=''; document.getElementById('agentPhoneInput').value=''; document.getElementById('agentNotesInput').value='';
+  alert(`✅ تم اضافة ${name}`); loadAgents(); updateAll();
 }
-
 function loadAgents(){
   let search = document.getElementById('searchAgent').value.toLowerCase();
   let html = '';
-  agents.forEach((a)=>{
-    if(a.name.toLowerCase().includes(search)){
-      html += `<div class="agentCard"><h4>👑 ${a.name}</h4><p>📍 ${a.address}</p><p>📱 ${a.phone}</p><p>📝 ${a.notes}</p><p>💰 رصيده: ${a.balance} نقطة</p><p>📅 ${a.created}</p><button class="btn btn-small btn-red" onclick="deleteAgent(${a.id})">حذف</button></div>`;
-    }
-  });
-  document.getElementById('agentsList').innerHTML = html || '<p>لا يوجد وكلاء</p>';
+  if(agents.length == 0){html = '<p>ماكو وكلاء</p>';}
+  else{agents.forEach((a)=>{if(a.name.toLowerCase().includes(search)){html += `<div class="agentCard"><h4>👑 ${a.name}</h4><p>📍 ${a.address}</p><p>📱 ${a.phone}</p><p>📝 ${a.notes||'لا شي'}</p><p>💰 رصيده: ${a.balance} نقطة</p><p>📅 ${a.created}</p><button class="btn btn-small btn-red" onclick="deleteAgent(${a.id})">حذف</button></div>`;}});}
+  document.getElementById('agentsList').innerHTML = html;
 }
+function deleteAgent(id){if(!confirm("متأكد؟")) return; agents = agents.filter(a => a.id!= id); loadAgents(); updateAll();}
 
-function deleteAgent(id){
-  agents = agents.filter(a => a.id!= id);
-  loadAgents(); updateAll();
-}
+// السحب
+function openWithdraw(){document.getElementById('withdrawModal').style.display='block'; document.getElementById('withdrawCoins').innerText = coins.toLocaleString();}
+function doWithdraw(){let amount = parseFloat(document.getElementById('withdrawAmount').value); if(!amount || amount <= 0){alert("دخل مبلغ"); return;} let cost = amount * RATE; if(cost > coins){alert("ما عندك رصيد"); return;} coins -= cost; document.getElementById('withdrawResult').innerText = `✅ تم طلب سحب $${amount.toFixed(2)}`; updateAll(); setTimeout(()=>closeModal('withdrawModal'),2000);}
 
-function openWithdraw(){document.getElementById('withdrawModal').style.display='block';}
-function doWithdraw(){alert("تم طلب السحب"); closeModal('withdrawModal');}
-function openXO(){alert("XO");}
-function spinWheel(){alert("العجلة");}
-function openBox(){alert("الصندوق");}
+// XO كامل
+function openXO(){if(coins<50){alert("ما عندك 50");return;} coins-=50; updateAll(); xoBoard = Array(9).fill(''); gameOver = false; document.getElementById('xoModal').style.display='block'; document.getElementById('xoResult').innerText = ''; renderXO();}
+function renderXO(){let b = document.getElementById('xoBoard'); b.innerHTML=''; xoBoard.forEach((cell,i)=>{let div = document.createElement('div'); div.className = 'xoCell'; div.innerText = cell; div.onclick = ()=>playXO(i); b.appendChild(div);}); document.getElementById('xoTurn').innerText = gameOver? '' : `دورك: X`;}
+function playXO(i){if(xoBoard[i]!='' || gameOver) return; xoBoard[i] = 'X'; if(checkWinner('X')){coins+=200; document.getElementById('xoResult').innerText="فزت! +200 نقطة"; gameOver=true; updateAll(); renderXO(); return;} if(!xoBoard.includes('')){document.getElementById('xoResult').innerText="تعادل"; gameOver=true; renderXO(); return;} botMove();}
+function botMove(){let empty = xoBoard.map((v,i)=>v==''?i:null).filter(v=>v!==null); let move = empty[Math.floor(Math.random()*empty.length)]; xoBoard[move] = 'O'; if(checkWinner('O')){document.getElementById('xoResult').innerText="خسرت!"; gameOver=true;} else if(!xoBoard.includes('')){document.getElementById('xoResult').innerText="تعادل"; gameOver=true;} renderXO();}
+function checkWinner(p){const wins = [[0,1,2],[3,4,5],[6,7,8],[0,3,6],[1,4,7],[2,5,8],[0,4,8],[2,4,6]]; return wins.some(w=>w.every(i=>xoBoard[i]==p));}
+
+// العجلة كاملة
+function spinWheel(){if(coins<50){alert("ما عندك 50");return;} coins-=50; updateAll(); document.getElementById('wheelModal').style.display='block'; document.getElementById('wheelResult').innerText = ''; drawWheel();}
+function drawWheel(){const canvas = document.getElementById('wheel'); const ctx = canvas.getContext('2d'); const centerX = 150; const centerY = 150; const radius = 140; const segmentAngle = 2*Math.PI / wheelPrizes.length; ctx.clearRect(0,0,300,300); wheelPrizes.forEach((p,i)=>{const startAngle = i * segmentAngle - Math.PI/2; const endAngle = (i+1) * segmentAngle - Math.PI/2; ctx.beginPath(); ctx.moveTo(centerX, centerY); ctx.arc(centerX, centerY, radius, startAngle, endAngle); ctx.closePath(); ctx.fillStyle = p.color; ctx.fill(); ctx.strokeStyle = '#000'; ctx.lineWidth = 3; ctx.stroke(); const textAngle = startAngle + segmentAngle/2; const textX = centerX + Math.cos(textAngle) * 80; const textY = centerY + Math.sin(textAngle) * 80; ctx.save(); ctx.translate(textX, textY); ctx.rotate(textAngle + Math.PI/2); ctx.fillStyle = '#000'; ctx.font = 'bold 18px tahoma'; ctx.textAlign = 'center'; ctx.fillText(p.text, 0, 0); ctx.restore();});}
+function doSpin(){document.getElementById('spinBtn').disabled = true; let randomIndex = Math.floor(Math.random()*wheelPrizes.length); let segmentAngle = 360 / wheelPrizes.length; let degrees = (wheelPrizes.length - 1 - randomIndex) * segmentAngle; let targetDeg = 3600 + degrees + segmentAngle/2; document.getElementById('wheel').style.transform = `rotate(${targetDeg}deg)`; setTimeout(()=>{let prize = wheelPrizes[randomIndex]; if(prize.value>0){coins+=prize.value;} document.getElementById('wheelResult').innerText = prize.value>0?`🎉 ربحت ${prize.text} نقطة`:`💀 ${prize.text}`; updateAll(); document.getElementById('spinBtn').disabled = false;},5000);}
+
+// الصندوق كامل
+function openBox(){if(coins<500){alert("ما عندك 500");return;} coins-=500; updateAll(); boxOpened = false; document.getElementById('boxModal').style.display='block'; document.getElementById('boxResult').innerText = 'اختار صندوق!'; let boxes = document.getElementById('boxes'); boxes.innerHTML = ''; let winningBox = Math.floor(Math.random()*3); let prize = Math.floor(Math.random()*9901)+100; for(let i=0; i<3; i++){let div = document.createElement('div'); div.className = 'boxItem'; div.innerText = '?'; div.dataset.isWinner = i==winningBox; div.dataset.prize = prize; div.onclick = ()=>openMysteryBox(div); boxes.appendChild(div);}}
+function openMysteryBox(el){if(boxOpened) return; boxOpened = true; let isWinner = el.dataset.isWinner=='true'; let prize = parseInt(el.dataset.prize); document.querySelectorAll('.boxItem').forEach((b, i)=>{b.classList.add('opened'); if(b.dataset.isWinner=='true'){b.classList.add('win'); b.innerText = b.dataset.prize;}else{b.classList.add('lose'); b.innerText = '💀';}}); if(isWinner){coins+=prize; document.getElementById('boxResult').innerText = `🎉 مبروك! ربحت ${prize.toLocaleString()} نقطة`;}else{document.getElementById('boxResult').innerText = `💀 حظ اوفر!`;} updateAll();}
 </script>
 </body></html>
