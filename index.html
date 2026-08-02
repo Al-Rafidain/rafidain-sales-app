@@ -5,53 +5,41 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
 <title>تطبيق الرافدين</title>
 <style>
-*{box-sizing:border-box; margin:0; padding:0;}
-body{background:#000; color:white; font-family:tahoma; text-align:center; padding:10px; margin:0; padding-bottom:100px; min-height:100vh;}
-.logo{font-size:50px; margin:15px; animation:glow 2s ease-in-out infinite;}
-@keyframes glow{0%,100%{text-shadow:0 0 10px #ffcc00;} 50%{text-shadow:0 0 20px #ffcc00, 0 0 30px #ffcc00;}}
-h1{color:#ffcc00; text-shadow:0 0 15px #ffcc00; font-size:26px; margin:10px;}
-.page{display:none; animation:fadeIn 0.3s;}
+*{box-sizing:border-box;}
+body{background:#000; color:white; font-family:tahoma; text-align:center; padding:10px; margin:0; padding-bottom:100px;}
+.logo{font-size:50px; margin:15px;}
+h1{color:#ffcc00; text-shadow:0 0 15px #ffcc00; font-size:26px;}
+.page{display:none;}
 .page.active{display:block;}
-@keyframes fadeIn{from{opacity:0; transform:translateY(10px);} to{opacity:1; transform:translateY(0);}}
 .stats{margin:15px auto; max-width:420px;}
-.box{border:3px solid #00ff00; border-radius:18px; padding:20px; margin:15px 0; background:linear-gradient(135deg,#111,#1a1a1a); box-shadow:0 0 20px rgba(0,255,0,0.1);}
+.box{border:3px solid #00ff00; border-radius:18px; padding:20px; margin:15px 0; background:#111;}
 .box h3{margin:5px; font-size:16px; color:#aaa;}
-#coins{font-size:36px; color:#00ff00; font-weight:bold; margin:10px 0; text-shadow:0 0 10px #00ff00;}
+#coins{font-size:36px; color:#00ff00; font-weight:bold; margin:10px 0;}
 #coinsDollar{font-size:18px; color:#00ccff; font-weight:bold;}
-#counterCount{font-size:36px; color:#ffb300; font-weight:bold; margin:10px 0;}
+#dailyProfit{font-size:36px; color:#ffb300; font-weight:bold; margin:10px 0;}
 #perDay{font-size:24px; color:#00ccff; font-weight:bold; margin:10px 0;}
-.btn{background:linear-gradient(135deg,#ff8c00,#ff6a00); color:#000; border:none; padding:16px; border-radius:15px; font-size:16px; font-weight:bold; margin:10px; cursor:pointer; width:90%; max-width:380px; transition:0.3s;}
-.btn:hover{transform:scale(1.05); box-shadow:0 5px 20px rgba(255,140,0,0.4);}
-.btn-green{background:linear-gradient(135deg,#00ff00,#00cc00); color:#000; width:100%; padding:18px; font-size:18px;}
-.btn-blue{background:linear-gradient(135deg,#00ccff,#0099cc); color:#000;}
-.btn:disabled{background:#555; color:#999; cursor:not-allowed;}
-.modal{display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.95); z-index:1000; overflow-y:auto; animation:fadeIn 0.3s;}
+.btn{background:#ff8c00; color:#000; border:none; padding:16px; border-radius:15px; font-size:16px; font-weight:bold; margin:10px; cursor:pointer; width:90%; max-width:380px;}
+.btn:active{transform:scale(0.95);}
+.btn-green{background:#00ff00; color:#000; width:100%; padding:18px; font-size:18px;}
+.btn-blue{background:#00ccff; color:#000;}
+.btn:disabled{background:#555; color:#999;}
+.modal{display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.95); z-index:1000; overflow-y:auto;}
 .modal-content{background:#1a1a1a; margin:20px auto; padding:15px; width:95%; max-width:500px; border-radius:15px; border:2px solid #ff8c00;}
-.counterItem{background:#222; padding:15px; margin:10px auto; border-radius:10px; border:2px solid #333; width:90%; max-width:350px; text-align:right; transition:0.3s;}
-.counterItem:hover{border-color:#ffb300; transform:scale(1.02);}
+.counterItem{background:#222; padding:15px; margin:10px auto; border-radius:10px; border:2px solid #333; width:90%; max-width:350px; text-align:right;}
 .counterItem h4{color:#ffb300; margin:5px; font-size:18px;}
 .input{width:90%; padding:12px; margin:8px 0; border-radius:8px; background:#222; color:white; border:1px solid #ff8c00; font-size:16px;}
-.input:focus{outline:none; border-color:#00ccff;}
-.referralCode{font-size:20px; color:#ff00ff; font-weight:bold; letter-spacing:2px; padding:15px; background:#000; border-radius:10px; border:2px dashed #ff00ff; margin:10px 0;}
-.verified-badge{display:inline-block; background:#00ccff; color:#000; padding:3px 10px; border-radius:20px; font-size:12px; font-weight:bold; margin-right:5px;}
-.toast{position:fixed; bottom:100px; left:50%; transform:translateX(-50%); background:#00cc00; color:#000; padding:15px 25px; border-radius:10px; font-weight:bold; display:none; z-index:2000; animation:slideUp 0.3s;}
-@keyframes slideUp{from{bottom:50px; opacity:0;} to{bottom:100px; opacity:1;}}
+.referralCode{font-size:20px; color:#ff00ff; font-weight:bold; padding:15px; background:#000; border-radius:10px; border:2px dashed #ff00ff; margin:10px 0;}
+.toast{position:fixed; bottom:100px; left:50%; transform:translateX(-50%); background:#00cc00; color:#000; padding:15px 25px; border-radius:10px; font-weight:bold; display:none; z-index:2000;}
 #xoBoard{display:grid; grid-template-columns:repeat(3,100px); gap:5px; margin:20px auto; width:310px;}
-.xoCell{width:100px; height:100px; background:#222; font-size:60px; display:flex; align-items:center; justify-content:center; cursor:pointer; border-radius:10px; border:2px solid #ff8c00; transition:0.2s;}
-.xoCell:hover{background:#333;}
+.xoCell{width:100px; height:100px; background:#222; font-size:60px; display:flex; align-items:center; justify-content:center; cursor:pointer; border-radius:10px; border:2px solid #ff8c00;}
 .wheel-container{position:relative; width:300px; height:300px; margin:20px auto;}
-.pointer{width:0; height:0; border-left:20px solid transparent; border-right:20px solid transparent; border-bottom:40px solid #ff0000; position:absolute; top:-15px; left:50%; transform:translateX(-50%); z-index:10; filter:drop-shadow(0 0 5px #ff0000);}
+.pointer{width:0; height:0; border-left:20px solid transparent; border-right:20px solid transparent; border-bottom:40px solid #ff0000; position:absolute; top:-15px; left:50%; transform:translateX(-50%); z-index:10;}
 #wheel{width:100%; height:100%; border-radius:50%; border:8px solid #ff8c00; transition: transform 5s cubic-bezier(0.17, 0.67, 0.12, 0.99);}
-.boxItem{width:100px; height:100px; background:linear-gradient(135deg,#ffb300,#ff8c00); margin:10px; display:inline-block; border-radius:15px; cursor:pointer; font-size:28px; line-height:100px; border:3px solid #fff; font-weight:bold; transition:0.3s;}
-.boxItem:hover{transform:scale(1.1);}
-.boxItem.win{border-color:#00ff00; background:#00ff00; animation:win 0.5s;}
-.boxItem.lose{border-color:#ff0000; background:#333;}
-@keyframes win{0%,100%{transform:scale(1);} 50%{transform:scale(1.2);}}
-.bottomNav{position:fixed; bottom:15px; left:50%; transform:translateX(-50%); width:95%; max-width:500px; background:linear-gradient(135deg,#8b5cf6,#ec4899); border-radius:25px; display:flex; justify-content:space-around; padding:10px 5px; box-shadow:0 10px 30px rgba(0,0,0,0.4); z-index:999;}
-.navItem{display:flex; flex-direction:column; align-items:center; color:#ddd; font-size:11px; cursor:pointer; flex:1; transition:0.3s;}
-.navIcon{font-size:26px; margin-bottom:4px; opacity:0.7; transition:0.3s;}
-.navItem.active{color:#fff; transform:translateY(-3px);}
-.navItem.active.navIcon{opacity:1; filter:drop-shadow(0 0 8px #fff);}
+.boxItem{width:100px; height:100px; background:#ffb300; margin:10px; display:inline-block; border-radius:15px; cursor:pointer; font-size:28px; line-height:100px; border:3px solid #fff; font-weight:bold;}
+.bottomNav{position:fixed; bottom:15px; left:50%; transform:translateX(-50%); width:95%; max-width:500px; background:linear-gradient(135deg,#8b5cf6,#ec4899); border-radius:25px; display:flex; justify-content:space-around; padding:10px 5px; z-index:999;}
+.navItem{display:flex; flex-direction:column; align-items:center; color:#ddd; font-size:11px; cursor:pointer; flex:1;}
+.navIcon{font-size:26px; margin-bottom:4px;}
+.navItem.active{color:#fff;}
 </style>
 </head>
 <body>
@@ -61,20 +49,20 @@ h1{color:#ffcc00; text-shadow:0 0 15px #ffcc00; font-size:26px; margin:10px;}
 <div id="home" class="page active">
   <div class="stats">
     <div class="box"><h3>💰 الرصيد</h3><div id="coins">0 نقطة</div><div id="coinsDollar">يعادل $0.00 دولار</div><button class="btn btn-green" onclick="alert('ميزة السحب قريباً')">💵 سحب</button></div>
-    <div class="box"><h3>⚙️ عدادك الحالي</h3><div id="counterCount">0 عداد</div></div>
+    <div class="box"><h3>⚙️ عدادك الحالي</h3><div id="dailyProfit">0 نقطة/يوم</div></div>
     <div class="box"><h3>⚡ الارباح التلقائية</h3><div id="perDay">+0 نقطة/24 ساعة</div></div>
   </div>
-  <p id="nextClaim" style="color:#aaa; font-size:14px;"></p>
+  <p id="nextClaim" style="color:#aaa;"></p>
 </div>
 
-<div id="store" class="page"><h2>🛒 متجر العدادات - 10 انواع</h2><div id="coins2" class="box">رصيدك: 0 نقطة</div><div id="storeList"></div></div>
-<div id="games" class="page"><h2>🎮 الالعاب</h2><div id="coins3" class="box">رصيدك: 0 نقطة</div><button class="btn" onclick="openXO()">❌⭕ XO - 50 نقطة</button><button class="btn" onclick="spinWheel()">🎡 العجلة - 50 نقطة</button><button class="btn" onclick="openBox()">📦 الصندوق - 500 نقطة</button></div>
-<div id="referral" class="page"><h2>🎁 نظام الاحالة</h2><div class="box"><h3>🌟 ادعُ اصدقائك واربح</h3><p style="color:#aaa; font-size:14px;">كل شخص يستخدم رمزك تاخذ 1000 نقطة</p><div id="myReferralCode" class="referralCode">RAF0000</div><button class="btn btn-blue" onclick="copyCode()">📋 نسخ رسالة الدعوة</button></div></div>
-<div id="profile" class="page"><h2>👤 الملف الشخصي</h2><div class="box"><h3><span id="verifyBadge"></span><span id="userName">مستخدم الرافدين</span></h3></div><div class="box"><h3>🔒 توثيق الحساب</h3><input type="text" id="nameVerify" class="input" placeholder="الاسم الكامل"><input type="text" id="phoneVerify" class="input" placeholder="رقم الهاتف"><input type="email" id="emailVerify" class="input" placeholder="البريد الالكتروني"><button class="btn btn-green" onclick="verifyAccount()">توثيق الحساب</button><p id="verifyStatus" style="color:#00ccff;"></p></div><div class="box"><h3>🎁 رمز الاحالة الخاص بك</h3><div id="myReferralCode2" class="referralCode">RAF0000</div><button class="btn btn-blue" onclick="copyCode()">📋 نسخ</button></div></div>
+<div id="store" class="page"><h2>🛒 متجر العدادات</h2><div id="coins2" class="box">رصيدك: 0 نقطة</div><div id="storeList"></div></div>
+<div id="games" class="page"><h2>🎮 الالعاب</h2><div id="coins3" class="box">رصيدك: 0 نقطة</div><button class="btn" onclick="openXO()">❌⭕ XO - 50</button><button class="btn" onclick="spinWheel()">🎡 العجلة - 50</button><button class="btn" onclick="openBox()">📦 الصندوق - 500</button></div>
+<div id="referral" class="page"><h2>🎁 نظام الاحالة</h2><div class="box"><h3>🌟 ادعُ اصدقائك واربح</h3><div id="myReferralCode" class="referralCode">RAF0000</div><button class="btn btn-blue" onclick="copyCode()">📋 نسخ رسالة الدعوة</button></div></div>
+<div id="profile" class="page"><h2>👤 الملف الشخصي</h2><div class="box"><h3 id="userName">مستخدم الرافدين</h3></div><div class="box"><h3>🔒 توثيق الحساب</h3><input type="text" id="nameVerify" class="input" placeholder="الاسم"><input type="text" id="phoneVerify" class="input" placeholder="رقم الهاتف"><input type="email" id="emailVerify" class="input" placeholder="البريد الالكتروني"><button class="btn btn-green" onclick="verifyAccount()">توثيق</button><p id="verifyStatus" style="color:#00ccff;"></p></div><div class="box"><h3>🎁 رمز الاحالة</h3><div id="myReferralCode2" class="referralCode">RAF0000</div><button class="btn btn-blue" onclick="copyCode()">📋 نسخ</button></div></div>
 
-<div id="xoModal" class="modal"><div class="modal-content"><h2>❌⭕ لعبة XO</h2><div id="xoBoard"></div><p id="xoResult" style="font-size:18px; margin:15px;"></p><button class="btn" onclick="closeModal('xoModal')">خروج</button></div></div>
-<div id="wheelModal" class="modal"><div class="modal-content"><h2>🎡 عجلة الحظ</h2><div class="wheel-container"><div class="pointer"></div><canvas id="wheel" width="300" height="300"></canvas></div><button class="btn" id="spinBtn" onclick="doSpin()">لف العجلة - 50</button><p id="wheelResult" style="font-size:18px; margin:15px;"></p><button class="btn" onclick="closeModal('wheelModal')">اغلاق</button></div></div>
-<div id="boxModal" class="modal"><div class="modal-content"><h2>📦 صندوق الاسرار</h2><div id="boxes"></div><p id="boxResult" style="font-size:18px; margin:15px;"></p><button class="btn" onclick="closeModal('boxModal')">اغلاق</button></div></div>
+<div id="xoModal" class="modal"><div class="modal-content"><h2>❌⭕ XO</h2><div id="xoBoard"></div><p id="xoResult"></p><button class="btn" onclick="closeModal('xoModal')">خروج</button></div></div>
+<div id="wheelModal" class="modal"><div class="modal-content"><h2>🎡 العجلة</h2><div class="wheel-container"><div class="pointer"></div><canvas id="wheel" width="300" height="300"></canvas></div><button class="btn" id="spinBtn" onclick="doSpin()">لف - 50</button><p id="wheelResult"></p><button class="btn" onclick="closeModal('wheelModal')">اغلاق</button></div></div>
+<div id="boxModal" class="modal"><div class="modal-content"><h2>📦 الصندوق</h2><div id="boxes"></div><p id="boxResult"></p><button class="btn" onclick="closeModal('boxModal')">اغلاق</button></div></div>
 <div id="toast" class="toast">تم استلام الارباح!</div>
 
 <div class="bottomNav">
@@ -87,26 +75,21 @@ h1{color:#ffcc00; text-shadow:0 0 15px #ffcc00; font-size:26px; margin:10px;}
 
 <script>
 let coins = parseInt(localStorage.getItem('rafidain_coins')) || 5000;
-let counters = JSON.parse(localStorage.getItem('rafidain_counters_list')) || [];
+let dailyProfitTotal = parseInt(localStorage.getItem('rafidain_dailyProfit')) || 0;
 let lastClaim = parseInt(localStorage.getItem('rafidain_lastClaim')) || 0;
-let isVerified = localStorage.getItem('rafidain_verified') == 'true';
 let myReferralCode = localStorage.getItem('rafidain_referral') || 'RAF' + Math.floor(Math.random()*9000+1000);
 localStorage.setItem('rafidain_referral', myReferralCode);
 let xoBoard = Array(9).fill(''); let gameOver = false; let boxOpened = false;
 const RATE = 10000;
+
 const countersData = [
-  {name:"عداد 100", price:1000, profit:100, desc:"للمبتدئين"},
-  {name:"عداد 200", price:2000, profit:200, desc:"جيد"},
-  {name:"عداد 300", price:3000, profit:300, desc:"ممتاز"},
-  {name:"عداد 400", price:4000, profit:400, desc:"قوي"},
-  {name:"عداد 500", price:5000, profit:500, desc:"احترافي"},
-  {name:"عداد 1000", price:10000, profit:1000, desc="اسطوري"},
-  {name:"عداد 2000", price:20000, profit:2000, desc="نادر"},
-  {name:"عداد 3000", price:30000, profit:3000, desc="ملكي"},
-  {name:"عداد 4000", price:40000, profit:4000, desc="ذهبي"},
-  {name:"عداد 5000", price:50000, profit:5000, desc="اسطوري++"}
+  {name:"عداد 100", price:1000, profit:100},{name:"عداد 200", price:2000, profit:200},{name:"عداد 300", price:3000, profit:300},
+  {name:"عداد 400", price:4000, profit:400},{name:"عداد 500", price:5000, profit:500},{name:"عداد 1000", price:10000, profit:1000},
+  {name:"عداد 2000", price:20000, profit:2000},{name:"عداد 3000", price:30000, profit:3000},{name:"عداد 4000", price:40000, profit:4000},{name:"عداد 5000", price:50000, profit:5000}
 ];
+
 const wheelPrizes = [{text:"حظ اوفر", value:0},{text:"100", value:100},{text:"250", value:250},{text:"500", value:500},{text:"1000", value:1000},{text:"5000", value:5000}];
+
 function showPage(id){
   document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
   document.querySelectorAll('.navItem').forEach(b=>b.classList.remove('active'));
@@ -114,72 +97,82 @@ function showPage(id){
   event.currentTarget.classList.add('active');
   if(id=='store') loadStore();
   if(id=='referral') setupReferral();
-  if(id=='profile') loadProfile();
   updateAll();
 }
-function getTotalPerDay(){return counters.reduce((a,b)=>a+b,0);}
+
 function toDollar(n){return (n / RATE).toFixed(2);}
+
 function updateAll(){
-  let totalPerDay = getTotalPerDay();
   let dollar = toDollar(coins);
   document.getElementById('coins').innerText = coins.toLocaleString() + ' نقطة';
   document.getElementById('coinsDollar').innerText = `يعادل $${dollar} دولار`;
   document.getElementById('coins2').innerText = `رصيدك: ${coins.toLocaleString()} نقطة`;
   document.getElementById('coins3').innerText = `رصيدك: ${coins.toLocaleString()} نقطة`;
-  document.getElementById('counterCount').innerText = counters.length + ' عداد';
-  document.getElementById('perDay').innerText = '+' + totalPerDay.toLocaleString() + ' نقطة/يوم';
+  document.getElementById('dailyProfit').innerText = dailyProfitTotal.toLocaleString() + ' نقطة/يوم';
+  document.getElementById('perDay').innerText = '+' + dailyProfitTotal.toLocaleString() + ' نقطة/24 ساعة';
+
   let now = Date.now();
   let timeLeft = 24*60*60*1000 - (now - lastClaim);
-  if(timeLeft <= 0 && totalPerDay > 0){coins += totalPerDay; lastClaim = now; showToast(`تم استلام ${totalPerDay.toLocaleString()} نقطة!`);}
+  if(timeLeft <= 0 && dailyProfitTotal > 0){
+    coins += dailyProfitTotal;
+    lastClaim = now;
+    showToast(`تم استلام ${dailyProfitTotal.toLocaleString()} نقطة!`);
+  }
   let hours = Math.floor(timeLeft/1000/60/60);
   let mins = Math.floor((timeLeft/1000/60)%60);
-  document.getElementById('nextClaim').innerText = totalPerDay>0? `الارباح الجاية بعد: ${hours}س ${mins}د` : 'اشتري عداد ليبدا الربح';
+  document.getElementById('nextClaim').innerText = dailyProfitTotal>0? `الارباح الجاية بعد: ${hours}س ${mins}د` : '';
+
   localStorage.setItem('rafidain_coins', coins);
-  localStorage.setItem('rafidain_counters_list', JSON.stringify(counters));
+  localStorage.setItem('rafidain_dailyProfit', dailyProfitTotal);
   localStorage.setItem('rafidain_lastClaim', lastClaim);
 }
 updateAll(); setInterval(updateAll, 60000);
+
 function showToast(msg){let t=document.getElementById('toast'); t.innerText=msg; t.style.display='block'; setTimeout(()=>t.style.display='none',3000);}
 function closeModal(id){document.getElementById(id).style.display='none';}
+
 function loadStore(){
   let html = '';
   countersData.forEach((c)=>{
-    html += `<div class="counterItem"><h4>${c.name}</h4><p style="color:#aaa; font-size:12px;">${c.desc}</p><p>السعر: ${c.price.toLocaleString()} نقطة</p><p style="color:#00ccff;">الربح: ${c.profit.toLocaleString()} نقطة كل 24 ساعة</p><button class="btn" onclick="buyCounter(${c.price}, ${c.profit})" ${coins<c.price?'disabled':''}>شراء</button></div>`;
+    html += `<div class="counterItem"><h4>${c.name}</h4><p>السعر: ${c.price.toLocaleString()} نقطة</p><p>الربح: ${c.profit.toLocaleString()} نقطة كل 24 ساعة</p><button class="btn" onclick="buyCounter(${c.price}, ${c.profit})" ${coins<c.price?'disabled':''}>شراء</button></div>`;
   });
   document.getElementById('storeList').innerHTML = html;
 }
+
 function buyCounter(price, profit){
   if(coins < price){alert("ما عندك نقاط كافية"); return;}
-  coins -= price; counters.push(profit); updateAll(); loadStore(); alert(`✅ تم شراء العداد بنجاح`);
+  coins -= price;
+  dailyProfitTotal += profit; // هنا التراكمي
+  updateAll();
+  loadStore();
+  alert(`✅ تم شراء العداد`);
 }
-function setupReferral(){document.getElementById('myReferralCode').innerText = myReferralCode;}
-function loadProfile(){
-  document.getElementById('myReferralCode2').innerText = myReferralCode;
-  if(isVerified){document.getElementById('verifyBadge').innerHTML = '<span class="verified-badge">✓ موثق</span>';}
+
+function setupReferral(){document.getElementById('myReferralCode').innerText = myReferralCode; document.getElementById('myReferralCode2').innerText = myReferralCode;}
+
 function verifyAccount(){
   let name = document.getElementById('nameVerify').value;
-  let phone = document.getElementById('phoneVerify').value;
-  let email = document.getElementById('emailVerify').value;
-  if(name || phone || email){
-    isVerified = true; localStorage.setItem('rafidain_verified', 'true');
-    document.getElementById('verifyStatus').innerText = '✅ تم التوثيق بنجاح';
-    document.getElementById('verifyBadge').innerHTML = '<span class="verified-badge">✓ موثق</span>';
-  }else{alert("دخل اسم او رقم او بريد");}
+  if(name){document.getElementById('verifyStatus').innerText = '✅ تم التوثيق بنجاح'; document.getElementById('userName').innerText = name;}
+  else{alert("دخل اسم");}
 }
-function openXO(){if(coins<50){alert("ما عندك 50 نقطة");return;} coins-=50; updateAll(); xoBoard = Array(9).fill(''); gameOver = false; document.getElementById('xoModal').style.display='block'; document.getElementById('xoResult').innerText = 'دورك X'; renderXO();}
+
+function openXO(){if(coins<50){alert("ما عندك 50 نقطة");return;} coins-=50; updateAll(); xoBoard = Array(9).fill(''); gameOver = false; document.getElementById('xoModal').style.display='block'; document.getElementById('xoResult').innerText = ''; renderXO();}
 function renderXO(){let b = document.getElementById('xoBoard'); b.innerHTML=''; xoBoard.forEach((cell,i)=>{let div = document.createElement('div'); div.className = 'xoCell'; div.innerText = cell; div.onclick = ()=>playXO(i); b.appendChild(div);});}
-function playXO(i){if(xoBoard[i]!='' || gameOver) return; xoBoard[i] = 'X'; if(checkWinner('X')){coins+=200; document.getElementById('xoResult').innerText="🎉 فزت! +200 نقطة"; gameOver=true; updateAll(); renderXO(); return;} if(!xoBoard.includes('')){document.getElementById('xoResult').innerText="تعادل"; gameOver=true; renderXO(); return;} document.getElementById('xoResult').innerText="دور البوت O"; botMove();}
-function botMove(){let empty = xoBoard.map((v,i)=>v==''?i:null).filter(v=>v!==null); let move = empty[Math.floor(Math.random()*empty.length)]; xoBoard[move] = 'O'; if(checkWinner('O')){document.getElementById('xoResult').innerText="💀 خسرت!"; gameOver=true;} else if(!xoBoard.includes('')){document.getElementById('xoResult').innerText="تعادل"; gameOver=true;} else{document.getElementById('xoResult').innerText="دورك X";} renderXO();}
+function playXO(i){if(xoBoard[i]!='' || gameOver) return; xoBoard[i] = 'X'; if(checkWinner('X')){coins+=200; document.getElementById('xoResult').innerText="فزت! +200 نقطة"; gameOver=true; updateAll(); renderXO(); return;} if(!xoBoard.includes('')){document.getElementById('xoResult').innerText="تعادل"; gameOver=true; renderXO(); return;} botMove();}
+function botMove(){let empty = xoBoard.map((v,i)=>v==''?i:null).filter(v=>v!==null); let move = empty[Math.floor(Math.random()*empty.length)]; xoBoard[move] = 'O'; if(checkWinner('O')){document.getElementById('xoResult').innerText="خسرت!"; gameOver=true;} else if(!xoBoard.includes('')){document.getElementById('xoResult').innerText="تعادل"; gameOver=true;} renderXO();}
 function checkWinner(p){const wins = [[0,1,2],[3,4,5],[6,7,8],[0,3,6],[1,4,7],[2,5,8],[0,4,8],[2,4,6]]; return wins.some(w=>w.every(i=>xoBoard[i]==p));}
+
 function spinWheel(){if(coins<50){alert("ما عندك 50 نقطة");return;} coins-=50; updateAll(); document.getElementById('wheelModal').style.display='block'; document.getElementById('wheelResult').innerText = ''; drawWheel();}
-function drawWheel(){const canvas = document.getElementById('wheel'); const ctx = canvas.getContext('2d'); const centerX = 150; const centerY = 150; const radius = 140; const segmentAngle = 2*Math.PI / wheelPrizes.length; ctx.clearRect(0,0,300,300); wheelPrizes.forEach((p,i)=>{const startAngle = i * segmentAngle - Math.PI/2; const endAngle = (i+1) * segmentAngle - Math.PI/2; ctx.beginPath(); ctx.moveTo(centerX, centerY); ctx.arc(centerX, centerY, radius, startAngle, endAngle); ctx.fillStyle = i%2==0?'#ffcc00':'#ff9900'; ctx.fill(); ctx.strokeStyle='#000'; ctx.stroke(); ctx.save(); ctx.translate(centerX, centerY); ctx.rotate(startAngle + segmentAngle/2); ctx.textAlign="right"; ctx.fillStyle="#000"; ctx.font="bold 14px tahoma"; ctx.fillText(p.text, radius-10, 5); ctx.restore();});}
-function doSpin(){document.getElementById('spinBtn').disabled = true; let randomIndex = Math.floor(Math.random()*wheelPrizes.length); let targetDeg = 3600 + (360/wheelPrizes.length)*randomIndex; document.getElementById('wheel').style.transform = `rotate(${targetDeg}deg)`; setTimeout(()=>{let prize = wheelPrizes[randomIndex]; if(prize.value>0){coins+=prize.value;} document.getElementById('wheelResult').innerText = prize.value>0?`🎉 ربحت ${prize.text} نقطة`:`💀 ${prize.text}`; updateAll(); document.getElementById('spinBtn').disabled = false;},5000);}
+function drawWheel(){const canvas = document.getElementById('wheel'); const ctx = canvas.getContext('2d'); const centerX = 150; const centerY = 150; const radius = 140; const segmentAngle = 2*Math.PI / wheelPrizes.length; ctx.clearRect(0,0,300,300); wheelPrizes.forEach((p,i)=>{const startAngle = i * segmentAngle - Math.PI/2; const endAngle = (i+1) * segmentAngle - Math.PI/2; ctx.beginPath(); ctx.moveTo(centerX, centerY); ctx.arc(centerX, centerY, radius, startAngle, endAngle); ctx.fillStyle = '#ffcc00'; ctx.fill(); ctx.stroke();});}
+function doSpin(){document.getElementById('spinBtn').disabled = true; let randomIndex = Math.floor(Math.random()*wheelPrizes.length); let targetDeg = 3600 + (360/wheelPrizes.length)*randomIndex; document.getElementById('wheel').style.transform = `rotate(${targetDeg}deg)`; setTimeout(()=>{let prize = wheelPrizes[randomIndex]; if(prize.value>0){coins+=prize.value;} document.getElementById('wheelResult').innerText = prize.value>0?`ربحت ${prize.text} نقطة`:`حظ اوفر`; updateAll(); document.getElementById('spinBtn').disabled = false;},5000);}
+
 function openBox(){if(coins<500){alert("ما عندك 500 نقطة");return;} coins-=500; updateAll(); boxOpened = false; document.getElementById('boxModal').style.display='block'; document.getElementById('boxResult').innerText = 'اختار صندوق!'; let boxes = document.getElementById('boxes'); boxes.innerHTML = ''; let winningBox = Math.floor(Math.random()*3); let prize = Math.floor(Math.random()*9901)+100; for(let i=0; i<3; i++){let div = document.createElement('div'); div.className = 'boxItem'; div.innerText = '?'; div.dataset.isWinner = i==winningBox; div.dataset.prize = prize; div.onclick = ()=>openMysteryBox(div); boxes.appendChild(div);}}
-function openMysteryBox(el){if(boxOpened) return; boxOpened = true; let isWinner = el.dataset.isWinner=='true'; let prize = parseInt(el.dataset.prize); document.querySelectorAll('.boxItem').forEach((b)=>{if(b.dataset.isWinner=='true'){b.classList.add('win'); b.innerText = b.dataset.prize;}else{b.classList.add('lose'); b.innerText = '💀';}}); if(isWinner){coins+=prize; document.getElementById('boxResult').innerText = `🎉 مبروك! ربحت ${prize.toLocaleString()} نقطة`;}else{document.getElementById('boxResult').innerText = `💀 حظ اوفر!`;} updateAll();}
+function openMysteryBox(el){if(boxOpened) return; boxOpened = true; let isWinner = el.dataset.isWinner=='true'; let prize = parseInt(el.dataset.prize); document.querySelectorAll('.boxItem').forEach((b)=>{if(b.dataset.isWinner=='true'){b.style.background='#00ff00'; b.innerText = b.dataset.prize;}else{b.style.background='#333'; b.innerText = '💀';}}); if(isWinner){coins+=prize; document.getElementById('boxResult').innerText = `مبروك! ربحت ${prize.toLocaleString()} نقطة`;}else{document.getElementById('boxResult').innerText = `حظ اوفر!`;} updateAll();}
+
 function copyCode(){
-  let shareText = `🏛️ تطبيق الرافدين - اربح نقاط ودولارات بسهولة!\n\nانا اربح نقاط كل يوم من تطبيق الرافدين.\nاستخدم رمز الدعوة الخاص بي: ${myReferralCode}\nوحصل على 1000 نقطة هدية عند التسجيل 🎁`;
+  let shareText = `تعال لتطبيق الرافدين! رمز الدعوة: ${myReferralCode} 🎁`;
   navigator.clipboard.writeText(shareText);
-  alert("✅ تم نسخ رسالة الدعوة");
+  alert("تم النسخ");
 }
 </script>
 </body></html>
