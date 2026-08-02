@@ -5,16 +5,16 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
 <title>تطبيق الرافدين</title>
 
-<!-- ايقونة التطبيق -->
-<link rel="icon" type="image/png" href="icon.png">
-<link rel="apple-touch-icon" href="icon.png">
+<link rel="icon" type="image/png" href="icon-192.png">
+<link rel="apple-touch-icon" href="icon-512.png">
+<link rel="manifest" href="manifest.json">
 <meta name="theme-color" content="#1e3a8a">
 
 <style>
 *{box-sizing:border-box;}
 body{background:#000; color:white; font-family:tahoma; text-align:center; padding:10px; margin:0; padding-bottom:100px;}
 
-/* ===== شاشة التحميل بصورتك ===== */
+/* ===== شاشة التحميل ===== */
 #splash{
   position:fixed; top:0; left:0; width:100%; height:100%;
   background: linear-gradient(135deg, #0a1a3a 0%, #000 100%);
@@ -23,31 +23,18 @@ body{background:#000; color:white; font-family:tahoma; text-align:center; paddin
   animation: fadeOut 1s ease-in 3s forwards;
 }
 .logo-splash-img{
-  width:220px;
-  height:220px;
-  object-fit:contain;
-  animation: glowBlue 2s ease-in-out infinite; /* توهج ازرق */
+  width:220px; height:220px; object-fit:contain; border-radius:25px;
+  animation: glowBlue 2s ease-in-out infinite;
   filter: drop-shadow(0 0 30px #3b82f6);
 }
-.text-splash{
-  color:#3b82f6; font-size:28px; font-weight:bold; margin-top:20px;
-  text-shadow:0 0 20px #3b82f6;
-}
+.text-splash{color:#3b82f6; font-size:28px; font-weight:bold; margin-top:20px; text-shadow:0 0 20px #3b82f6;}
+@keyframes glowBlue {0%, 100% { transform: scale(1); } 50% { transform: scale(1.08); }}
+@keyframes fadeOut { to { opacity: 0; visibility: hidden; } }
 
-@keyframes glowBlue {
- 0%, 100% { transform: scale(1); filter: drop-shadow(0 0 15px #3b82f6); }
- 50% { transform: scale(1.08); filter: drop-shadow(0 0 40px #3b82f6); }
-}
-
-@keyframes fadeOut {
-  to { opacity: 0; visibility: hidden; }
-}
-
-/* ===== باقي كودك ===== */
+/* ===== باقي كود التطبيق كامل ===== */
 .logo{font-size:50px; margin:15px;}
 h1{color:#3b82f6; text-shadow:0 0 15px #3b82f6; font-size:26px;}
-.page{display:none;}
-.page.active{display:block;}
+.page{display:none;}.page.active{display:block;}
 .stats{margin:15px auto; max-width:420px;}
 .box{border:3px solid #3b82f6; border-radius:18px; padding:20px; margin:15px 0; background:#111;}
 .box h3{margin:5px; font-size:16px; color:#aaa;}
@@ -83,7 +70,7 @@ h1{color:#3b82f6; text-shadow:0 0 15px #3b82f6; font-size:26px;}
 
 <!-- شاشة التحميل بصورتك -->
 <div id="splash">
-  <img src="icon.png" class="logo-splash-img">
+  <img src="icon-512.png" class="logo-splash-img">
   <div class="text-splash">AL-RAFIDAIN</div>
 </div>
 
@@ -134,10 +121,7 @@ const countersData = [
 
 const wheelPrizes = [{text:"حظ اوفر", value:0},{text:"100", value:100},{text:"250", value:250},{text:"500", value:500},{text:"1000", value:1000},{text:"5000", value:5000}];
 
-// نشيل شاشة التحميل بعد 3.5 ثواني
-setTimeout(()=>{
-  document.getElementById('splash').style.display = 'none';
-}, 3500);
+setTimeout(()=>{ document.getElementById('splash').style.display = 'none'; }, 3500);
 
 function showPage(id){
   document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
@@ -159,21 +143,11 @@ function updateAll(){
   document.getElementById('coins3').innerText = `رصيدك: ${coins.toLocaleString()} نقطة`;
   document.getElementById('dailyProfit').innerText = dailyProfitTotal.toLocaleString() + ' نقطة/يوم';
   document.getElementById('perDay').innerText = '+' + dailyProfitTotal.toLocaleString() + ' نقطة/24 ساعة';
-
-  let now = Date.now();
-  let timeLeft = 24*60*60*1000 - (now - lastClaim);
-  if(timeLeft <= 0 && dailyProfitTotal > 0){
-    coins += dailyProfitTotal;
-    lastClaim = now;
-    showToast(`تم استلام ${dailyProfitTotal.toLocaleString()} نقطة!`);
-  }
-  let hours = Math.floor(timeLeft/1000/60/60);
-  let mins = Math.floor((timeLeft/1000/60)%60);
+  let now = Date.now(); let timeLeft = 24*60*60*1000 - (now - lastClaim);
+  if(timeLeft <= 0 && dailyProfitTotal > 0){ coins += dailyProfitTotal; lastClaim = now; showToast(`تم استلام ${dailyProfitTotal.toLocaleString()} نقطة!`); }
+  let hours = Math.floor(timeLeft/1000/60/60); let mins = Math.floor((timeLeft/1000/60)%60);
   document.getElementById('nextClaim').innerText = dailyProfitTotal>0? `الارباح الجاية بعد: ${hours}س ${mins}د` : '';
-
-  localStorage.setItem('rafidain_coins', coins);
-  localStorage.setItem('rafidain_dailyProfit', dailyProfitTotal);
-  localStorage.setItem('rafidain_lastClaim', lastClaim);
+  localStorage.setItem('rafidain_coins', coins); localStorage.setItem('rafidain_dailyProfit', dailyProfitTotal); localStorage.setItem('rafidain_lastClaim', lastClaim);
 }
 updateAll(); setInterval(updateAll, 60000);
 
@@ -190,11 +164,7 @@ function loadStore(){
 
 function buyCounter(price, profit){
   if(coins < price){alert("ما عندك نقاط كافية"); return;}
-  coins -= price;
-  dailyProfitTotal += profit;
-  updateAll();
-  loadStore();
-  alert(`✅ تم شراء العداد`);
+  coins -= price; dailyProfitTotal += profit; updateAll(); loadStore(); alert(`✅ تم شراء العداد`);
 }
 
 function setupReferral(){document.getElementById('myReferralCode').innerText = myReferralCode; document.getElementById('myReferralCode2').innerText = myReferralCode;}
@@ -220,8 +190,7 @@ function openMysteryBox(el){if(boxOpened) return; boxOpened = true; let isWinner
 
 function copyCode(){
   let shareText = `تعال لتطبيق الرافدين! رمز الدعوة: ${myReferralCode} 🎁`;
-  navigator.clipboard.writeText(shareText);
-  alert("تم النسخ");
+  navigator.clipboard.writeText(shareText); alert("تم النسخ");
 }
 </script>
 </body></html>
