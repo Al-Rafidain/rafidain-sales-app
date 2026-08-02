@@ -14,7 +14,7 @@
 *{box-sizing:border-box;}
 body{background:#000; color:white; font-family:tahoma; text-align:center; padding:10px; margin:0; padding-bottom:100px;}
 
-/* ===== شاشة التحميل + الصوت ===== */
+/* ===== شاشة التحميل ===== */
 #splash{
   position:fixed; top:0; left:0; width:100%; height:100%;
   background: linear-gradient(135deg, #0a1a3a 0%, #000 100%);
@@ -28,7 +28,6 @@ body{background:#000; color:white; font-family:tahoma; text-align:center; paddin
   filter: drop-shadow(0 0 30px #3b82f6);
 }
 .text-splash{color:#3b82f6; font-size:28px; font-weight:bold; margin-top:20px; text-shadow:0 0 20px #3b82f6;}
-#muteBtn{position:fixed; top:20px; right:20px; background:#3b82f6; border:none; border-radius:50%; width:45px; height:45px; font-size:22px; cursor:pointer; z-index:10000;}
 @keyframes glowBlue {0%, 100% { transform: scale(1); } 50% { transform: scale(1.08); }}
 @keyframes fadeOut { to { opacity: 0; visibility: hidden; } }
 
@@ -69,9 +68,6 @@ h1{color:#3b82f6; text-shadow:0 0 15px #3b82f6; font-size:26px;}
 </head>
 <body>
 
-<!-- زر كتم الصوت -->
-<button id="muteBtn" onclick="toggleMute()">🔊</button>
-
 <!-- شاشة التحميل بصورتك -->
 <div id="splash">
   <img src="icon-512.png" class="logo-splash-img">
@@ -109,7 +105,7 @@ h1{color:#3b82f6; text-shadow:0 0 15px #3b82f6; font-size:26px;}
 </div>
 
 <!-- ملف الصوت -->
-<audio id="splashSound" loop>
+<audio id="splashSound">
   <source src="https://cdn.pixabay.com/download/audio/2022/03/24/audio_d1716c42f9.mp3" type="audio/mpeg">
 </audio>
 
@@ -130,15 +126,16 @@ const countersData = [
 
 const wheelPrizes = [{text:"حظ اوفر", value:0},{text:"100", value:100},{text:"250", value:250},{text:"500", value:500},{text:"1000", value:1000},{text:"5000", value:5000}];
 
-// كود الصوت
+// كود الصوت - يشتغل بأول ضغطة
 const sound = document.getElementById('splashSound');
-let isMuted = false;
-window.addEventListener('load', () => {
-  sound.volume = 0.4;
-  sound.play().catch(e => console.log("المتصفح منع التشغيل"));
-  setTimeout(()=>{ document.getElementById('splash').style.display = 'none'; sound.pause(); }, 3500);
-});
-function toggleMute(){ isMuted =!isMuted; sound.muted = isMuted; document.getElementById('muteBtn').innerText = isMuted? '🔇' : '🔊'; }
+sound.volume = 0.5;
+document.body.addEventListener('click', function startSound(){
+  sound.play();
+  setTimeout(()=>{ sound.pause(); sound.currentTime = 0; }, 3500);
+  document.body.removeEventListener('click', startSound);
+}, {once: true});
+
+setTimeout(()=>{ document.getElementById('splash').style.display = 'none'; }, 3500);
 
 function showPage(id){
   document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
