@@ -54,12 +54,27 @@ h1{color:#3b82f6; text-shadow:0 0 15px #3b82f6; font-size:26px;}
 .logItem{padding:12px; margin:8px 0; background:#222; border-radius:10px; text-align:right; border-right:4px solid #3b82f6;}
 .logItem.win{border-right-color:#00ff00;}
 .logItem.buy{border-right-color:#ffb300;}
+/* صفحة التسجيل */
+#registerPage{position:fixed; top:0; left:0; width:100%; height:100%; background:#000; z-index:9998; display:flex; flex-direction:column; justify-content:center; align-items:center; padding:20px;}
 </style>
 </head>
 <body>
 
 <div id="splash"><img src="icon-512.png" class="logo-splash-img"><div class="text-splash">AL-RAFIDAIN</div></div>
 
+<!-- صفحة التسجيل الجديدة -->
+<div id="registerPage">
+  <div class="logo">🏛️</div>
+  <h1>انشاء حساب</h1>
+  <div class="box" style="max-width:400px;">
+    <input type="text" id="regName" class="input" placeholder="ادخل اسمك">
+    <input type="password" id="regPass" class="input" placeholder="ادخل كلمة السر">
+    <input type="text" id="regRef" class="input" placeholder="رمز الاحالة - اختياري">
+    <button class="btn btn-green" onclick="createAccount()">تسجيل</button>
+  </div>
+</div>
+
+<div id="mainApp" style="display:none;">
 <div class="logo">🏛️</div>
 <h1>تطبيق الرافدين</h1>
 
@@ -90,7 +105,7 @@ h1{color:#3b82f6; text-shadow:0 0 15px #3b82f6; font-size:26px;}
 
 <div id="log" class="page"><h2>📜 سجل المعاملات</h2><div id="logList"></div><button class="btn btn-red" onclick="clearLog()">🗑️ مسح السجل</button></div>
 
-<div id="profile" class="page"><h2>👤 الملف الشخصي</h2><div class="box"><h3 id="userName">مستخدم الرافدين</h3></div><div class="box"><h3>🔔 الاشعارات</h3><button class="btn" id="notifBtn" onclick="requestNotif()">تفعيل الاشعارات</button><p style="font-size:12px; color:#aaa;">نذكرك من تصير الارباح جاهزة</p></div><div class="box"><h3>🔒 توثيق الحساب</h3><input type="text" id="nameVerify" class="input" placeholder="الاسم"><input type="text" id="phoneVerify" class="input" placeholder="رقم الهاتف"><input type="email" id="emailVerify" class="input" placeholder="البريد الالكتروني"><button class="btn btn-green" onclick="verifyAccount()">توثيق</button><p id="verifyStatus" style="color:#3b82f6;"></p></div><div class="box"><h3>🎁 رمز الاحالة</h3><div id="myReferralCode2" class="referralCode">RAF0000</div><button class="btn btn-blue" onclick="copyCode()">📋 نسخ</button></div></div>
+<div id="profile" class="page"><h2>👤 الملف الشخصي</h2><div class="box"><h3 id="userName"></h3></div><div class="box"><h3>🔔 الاشعارات</h3><button class="btn" id="notifBtn" onclick="requestNotif()">تفعيل الاشعارات</button><p style="font-size:12px; color:#aaa;">نذكرك من تصير الارباح جاهزة</p></div><div class="box"><h3>🎁 رمز الاحالة</h3><div id="myReferralCode2" class="referralCode">RAF0000</div><button class="btn btn-blue" onclick="copyCode()">📋 نسخ</button></div><button class="btn btn-red" onclick="logout()">🚪 تسجيل خروج</button></div>
 
 <div id="xoModal" class="modal"><div class="modal-content"><h2>❌⭕ XO</h2><div id="xoBoard"></div><p id="xoResult"></p><button class="btn" onclick="closeModal('xoModal')">خروج</button></div></div>
 <div id="wheelModal" class="modal"><div class="modal-content"><h2>🎡 العجلة</h2><div class="wheel-container"><div class="pointer"></div><canvas id="wheel" width="300" height="300"></canvas></div><button class="btn" id="spinBtn" onclick="doSpin()">لف - 50</button><p id="wheelResult"></p><button class="btn" onclick="closeModal('wheelModal')">اغلاق</button></div></div>
@@ -102,19 +117,16 @@ h1{color:#3b82f6; text-shadow:0 0 15px #3b82f6; font-size:26px;}
   <div class="navItem" onclick="showPage('store')"><div class="navIcon">🛒</div><div>المتجر</div></div>
   <div class="navItem active" onclick="showPage('home')"><div class="navIcon">⚙️</div><div>العداد</div></div>
   <div class="navItem" onclick="showPage('games')"><div class="navIcon">🎮</div><div>الالعاب</div></div>
+  <div class="navItem" onclick="showPage('referral')"><div class="navIcon">🎁</div><div>احالة</div></div>
   <div class="navItem" onclick="showPage('log')"><div class="navIcon">📜</div><div>السجل</div></div>
   <div class="navItem" onclick="showPage('profile')"><div class="navIcon">👤</div><div>الملف</div></div>
+</div>
 </div>
 
 <audio id="splashSound"><source src="https://cdn.pixabay.com/download/audio/2022/03/24/audio_d1716c42f9.mp3" type="audio/mpeg"></audio>
 
 <script>
-let coins = parseInt(localStorage.getItem('rafidain_coins')) || 5000;
-let dailyProfitTotal = parseInt(localStorage.getItem('rafidain_dailyProfit')) || 0;
-let lastClaim = parseInt(localStorage.getItem('rafidain_lastClaim')) || 0;
-let myReferralCode = localStorage.getItem('rafidain_referral') || 'RAF' + Math.floor(Math.random()*9000+1000);
-localStorage.setItem('rafidain_referral', myReferralCode);
-let transactionLog = JSON.parse(localStorage.getItem('rafidain_log')) || [];
+let coins = 5000; let dailyProfitTotal = 0; let lastClaim = 0; let myReferralCode = ''; let currentUser = ''; let transactionLog = [];
 let xoBoard = Array(9).fill(''); let gameOver = false; let boxOpened = false;
 const RATE = 10000;
 
@@ -132,7 +144,51 @@ document.body.addEventListener('click', function startSound(){
   sound.play(); setTimeout(()=>{ sound.pause(); sound.currentTime = 0; }, 3500);
   document.body.removeEventListener('click', startSound);
 }, {once: true});
-setTimeout(()=>{ document.getElementById('splash').style.display = 'none'; }, 3500);
+setTimeout(()=>{ document.getElementById('splash').style.display = 'none'; checkLogin(); }, 3500);
+
+// ===== نظام التسجيل =====
+function checkLogin(){
+  currentUser = localStorage.getItem('rafidain_user');
+  if(currentUser){
+    loadUserData();
+    document.getElementById('registerPage').style.display = 'none';
+    document.getElementById('mainApp').style.display = 'block';
+  }
+}
+function createAccount(){
+  let name = document.getElementById('regName').value.trim();
+  let pass = document.getElementById('regPass').value.trim();
+  let ref = document.getElementById('regRef').value.trim();
+  if(!name ||!pass){alert("دخل الاسم وكلمة السر"); return;}
+
+  localStorage.setItem('rafidain_user', name);
+  localStorage.setItem('rafidain_pass', pass);
+  localStorage.setItem('rafidain_coins', 5000);
+  localStorage.setItem('rafidain_dailyProfit', 0);
+  localStorage.setItem('rafidain_lastClaim', 0);
+  localStorage.setItem('rafidain_referral', 'RAF' + Math.floor(Math.random()*9000+1000));
+  localStorage.setItem('rafidain_log', '[]');
+
+  if(ref){ addLog(`استخدم رمز الاحالة: ${ref}`, 500, 'win'); }
+
+  currentUser = name;
+  loadUserData();
+  document.getElementById('registerPage').style.display = 'none';
+  document.getElementById('mainApp').style.display = 'block';
+  showToast('مرحبا بك ' + name);
+}
+function loadUserData(){
+  coins = parseInt(localStorage.getItem('rafidain_coins')) || 5000;
+  dailyProfitTotal = parseInt(localStorage.getItem('rafidain_dailyProfit')) || 0;
+  lastClaim = parseInt(localStorage.getItem('rafidain_lastClaim')) || 0;
+  myReferralCode = localStorage.getItem('rafidain_referral');
+  transactionLog = JSON.parse(localStorage.getItem('rafidain_log')) || [];
+  document.getElementById('userName').innerText = currentUser;
+  updateAll();
+}
+function logout(){
+  if(confirm('متأكد تريد تسوي تسجيل خروج؟')){ localStorage.clear(); location.reload(); }
+}
 
 function showPage(id){
   document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
@@ -143,7 +199,6 @@ function showPage(id){
   if(id=='games') loadTasks();
   if(id=='referral') setupReferral();
   if(id=='log') loadLog();
-  updateAll();
 }
 
 function toDollar(n){return (n / RATE).toFixed(2);}
@@ -166,7 +221,7 @@ function updateAll(){
   document.getElementById('nextClaim').innerText = dailyProfitTotal>0? `الارباح الجاية بعد: ${hours}س ${mins}د` : '';
   localStorage.setItem('rafidain_coins', coins); localStorage.setItem('rafidain_dailyProfit', dailyProfitTotal); localStorage.setItem('rafidain_lastClaim', lastClaim);
 }
-updateAll(); setInterval(updateAll, 60000);
+setInterval(updateAll, 60000);
 
 function showToast(msg){let t=document.getElementById('toast'); t.innerText=msg; t.style.display='block'; setTimeout(()=>t.style.display='none',3000);}
 function closeModal(id){document.getElementById(id).style.display='none';}
@@ -218,14 +273,12 @@ function buyCounter(price, profit, name){
 }
 
 function setupReferral(){document.getElementById('myReferralCode').innerText = myReferralCode; document.getElementById('myReferralCode2').innerText = myReferralCode;}
-function verifyAccount(){let name = document.getElementById('nameVerify').value; if(name){document.getElementById('verifyStatus').innerText = '✅ تم التوثيق بنجاح'; document.getElementById('userName').innerText = name;}else{alert("دخل اسم");}}
 
-// ===== رسالة الاحالة الجديدة 👻 =====
+// ===== رسالة الاحالة الجديدة =====
 function copyCode(){
-  let userName = document.getElementById('userName').innerText || 'مستخدم الرافدين';
   let shareText = `👻 انضم لفريقي في تطبيق الرافدين
 
-👤 ${userName}
+👤 ${currentUser}
 🆔 رمز الاحاله: ${myReferralCode}
 
 😜 حمّل التطبيق وأدخل رمز الاحاله عند التسجيل!
@@ -251,11 +304,11 @@ function openBox(){if(coins<500){alert("ما عندك 500 نقطة");return;} co
 function openMysteryBox(el){if(boxOpened) return; boxOpened = true; let isWinner = el.dataset.isWinner=='true'; let prize = parseInt(el.dataset.prize); document.querySelectorAll('.boxItem').forEach((b)=>{if(b.dataset.isWinner=='true'){b.style.background='#00ff00'; b.innerText = b.dataset.prize;}else{b.style.background='#333'; b.innerText = '💀';}}); if(isWinner){coins+=prize; addLog('ربح من الصندوق', prize, 'win'); document.getElementById('boxResult').innerText = `مبروك! ربحت ${prize.toLocaleString()} نقطة`;}else{document.getElementById('boxResult').innerText = `حظ اوفر!`;} updateAll();}
 
 // ===== المهمات اليومية =====
-let dailyTasks = JSON.parse(localStorage.getItem('rafidain_tasks')) || {login:{done:false, reward:200}, buy:{done:false, reward:300}, play:{done:false, reward:150}};
-let lastTaskReset = localStorage.getItem('rafidain_taskReset') || 0;
-function checkTaskReset(){let now = new Date().toDateString(); if(lastTaskReset!= now){dailyTasks = {login:{done:false, reward:200}, buy:{done:false, reward:300}, play:{done:false, reward:150}}; lastTaskReset = now; localStorage.setItem('rafidain_taskReset', now);}}
+let dailyTasks = {login:{done:false, reward:200}, buy:{done:false, reward:300}, play:{done:false, reward:150}};
+let lastTaskReset = 0;
+function checkTaskReset(){let now = new Date().toDateString(); if(lastTaskReset!= now){dailyTasks = {login:{done:false, reward:200}, buy:{done:false, reward:300}, play:{done:false, reward:150}}; lastTaskReset = now;}}
 function loadTasks(){checkTaskReset(); let html = ''; html += `<div class="counterItem"><h4>📅 تسجيل الدخول</h4><p>المكافأة: ${dailyTasks.login.reward} نقطة</p><button class="btn" onclick="completeTask('login')" ${dailyTasks.login.done?'disabled':''}>${dailyTasks.login.done?'✅ تم':'استلام'}</button></div>`; html += `<div class="counterItem"><h4>🛒 شراء عداد</h4><p>المكافأة: ${dailyTasks.buy.reward} نقطة</p><button class="btn" onclick="completeTask('buy')" ${dailyTasks.buy.done?'disabled':''}>${dailyTasks.buy.done?'✅ تم':'استلام'}</button></div>`; html += `<div class="counterItem"><h4>🎮 لعب اي لعبة</h4><p>المكافأة: ${dailyTasks.play.reward} نقطة</p><button class="btn" onclick="completeTask('play')" ${dailyTasks.play.done?'disabled':''}>${dailyTasks.play.done?'✅ تم':'استلام'}</button></div>`; document.getElementById('dailyTasks').innerHTML = html;}
-function completeTask(task){if(dailyTasks[task].done) return; coins += dailyTasks[task].reward; addLog(`مهمة ${task}`, dailyTasks[task].reward, 'win'); dailyTasks[task].done = true; localStorage.setItem('rafidain_tasks', JSON.stringify(dailyTasks)); showToast(`+${dailyTasks[task].reward} نقطة`); updateAll(); loadTasks();}
+function completeTask(task){if(dailyTasks[task].done) return; coins += dailyTasks[task].reward; addLog(`مهمة ${task}`, dailyTasks[task].reward, 'win'); dailyTasks[task].done = true; showToast(`+${dailyTasks[task].reward} نقطة`); updateAll(); loadTasks();}
 
 // ===== لعبة الميموري =====
 let memoryCards = []; let flipped = []; let matched = 0;
