@@ -54,7 +54,6 @@ h1{color:#3b82f6;text-shadow:0 0 15px #3b82f6;font-size:26px}
 .chatMsg.me{background:#3b82f6;margin-right:auto}
 .chatMsg.other{background:#222;margin-left:auto}
 .giftBtn{font-size:24px;padding:8px;margin:4px;border-radius:10px;background:#333;border:2px solid #3b82f6;cursor:pointer}
-.giftMsg{background:linear-gradient(45deg,#f0f,#0ff);padding:10px;border-radius:15px;margin:8px 0;text-align:center;font-weight:bold}
 </style>
 </head>
 <body>
@@ -76,7 +75,6 @@ h1{color:#3b82f6;text-shadow:0 0 15px #3b82f6;font-size:26px}
 <div id="mainApp" style="display:none">
   <div class="logo">🏛️</div>
   <h1>تطبيق الرافدين</h1>
-
   <div id="home" class="page active">
     <div class="stats">
       <div class="box">
@@ -96,8 +94,7 @@ h1{color:#3b82f6;text-shadow:0 0 15px #3b82f6;font-size:26px}
     </div>
     <p id="nextClaim" style="color:#aaa"></p>
   </div>
-
-  <div id="store" class="page">
+    <div id="store" class="page">
     <h2>🛒 متجر العدادات</h2>
     <div id="coins2" class="box">رصيدك: 0 نقطة</div>
     <div id="storeList"></div>
@@ -126,7 +123,7 @@ h1{color:#3b82f6;text-shadow:0 0 15px #3b82f6;font-size:26px}
   </div>
 
   <div id="chatRoom" class="page">
-    <button class="btn" onclick="showPage('rooms')">🔙 رجوع</button>
+    <button class="btn" onclick="showPage('rooms',this)">🔙 رجوع</button>
     <h2 id="roomNameTitle"></h2>
     <p class="roomId" id="roomIdTitle"></p>
     <button id="editRoomBtn" class="btn btn-yellow" style="display:none" onclick="editRoomName()">✏️ تعديل اسم الغرفة</button>
@@ -138,8 +135,7 @@ h1{color:#3b82f6;text-shadow:0 0 15px #3b82f6;font-size:26px}
     <h4 style="color:#ffb300;margin-top:10px">🎁 الهدايا</h4>
     <div id="giftsBar"></div>
   </div>
-
-  <div id="referral" class="page">
+    <div id="referral" class="page">
     <h2>🎁 نظام الاحالة</h2>
     <div class="box">
       <h3>🌟 ادعُ اصدقائك واربح</h3>
@@ -158,111 +154,47 @@ h1{color:#3b82f6;text-shadow:0 0 15px #3b82f6;font-size:26px}
 
   <div id="profile" class="page">
     <h2>👤 الملف الشخصي</h2>
-    <div class="box">
-      <h3 id="userName"></h3>
-      <p id="userLevel"></p>
-    </div>
-    <div class="box">
-      <h3>🎁 رمز الاحالة</h3>
-      <div id="myReferralCode2" class="referralCode">RAF0000</div>
-      <button class="btn btn-blue" onclick="copyCode()">📋 نسخ</button>
-    </div>
+    <div class="box"><h3 id="userName"></h3><p id="userLevel"></p></div>
+    <div class="box"><h3>🎁 رمز الاحالة</h3><div id="myReferralCode2" class="referralCode">RAF0000</div><button class="btn btn-blue" onclick="copyCode()">📋 نسخ</button></div>
     <button class="btn btn-red" onclick="logout()">🚪 تسجيل خروج</button>
   </div>
-    <div id="xoModal" class="modal"><div class="modal-content"><h2>❌⭕ XO</h2><div id="xoBoard"></div><p id="xoResult"></p><button class="btn" onclick="closeModal('xoModal')">خروج</button></div></div>
-  <div id="challengeModal" class="modal"><div class="modal-content"><h2>⚔️ تحدي جديد</h2><p>دخل اسم الخصم ورهان النقاط</p><input type="text" id="challengeUser" class="input" placeholder="اسم الخصم"><input type="number" id="challengeBet" class="input" placeholder="الرهان"><button class="btn btn-green" onclick="sendChallenge()">ارسال التحدي</button><button class="btn" onclick="closeModal('challengeModal')">الغاء</button></div></div>
-  <div id="wheelModal" class="modal"><div class="modal-content"><h2>🎡 العجلة</h2><div class="wheel-container"><div class="pointer"></div><canvas id="wheel" width="300" height="300"></canvas></div><button class="btn" id="spinBtn" onclick="doSpin()">لف - 50</button><p id="wheelResult"></p><button class="btn" onclick="closeModal('wheelModal')">اغلاق</button></div></div>
-  <div id="boxModal" class="modal"><div class="modal-content"><h2>📦 الصندوق</h2><div id="boxes"></div><p id="boxResult"></p><button class="btn" onclick="closeModal('boxModal')">اغلاق</button></div></div>
-  <div id="memoryModal" class="modal"><div class="modal-content"><h2>🧠 لعبة الميموري</h2><p>طابق 4 ازواج - الجائزة 250</p><div id="memoryBoard" style="display:grid;grid-template-columns:repeat(4,70px);gap:8px;justify-content:center;margin:20px auto"></div><p id="memoryResult"></p><button class="btn" onclick="closeModal('memoryModal')">خروج</button></div></div>
-  <div id="createRoomModal" class="modal"><div class="modal-content"><h2>انشاء غرفة جديدة</h2><input type="text" id="newRoomName" class="input" placeholder="اسم الغرفة"><button class="btn">📷 اضافة صورة</button><p style="font-size:12px;color:#aaa">* الصورة بعدين نربطها</p><button class="btn btn-green" onclick="createRoom()">شراء وانشاء - 80000</button><button class="btn btn-red" onclick="closeModal('createRoomModal')">الغاء</button></div></div>
-  <div id="toast" class="toast">تم استلام الارباح!</div>
 
   <div class="bottomNav">
-    <div class="navItem" onclick="showPage('store')"><div class="navIcon">🛒</div><div>المتجر</div></div>
-    <div class="navItem active" onclick="showPage('home')"><div class="navIcon">⚙️</div><div>العداد</div></div>
-    <div class="navItem" onclick="showPage('games')"><div class="navIcon">🎮</div><div>الالعاب</div></div>
-    <div class="navItem" onclick="showPage('rooms')"><div class="navIcon">🏠</div><div>الغرف</div></div>
-    <div class="navItem" onclick="showPage('referral')"><div class="navIcon">🎁</div><div>احالة</div></div>
-    <div class="navItem" onclick="showPage('log')"><div class="navIcon">📜</div><div>السجل</div></div>
-    <div class="navItem" onclick="showPage('profile')"><div class="navIcon">👤</div><div>الملف</div></div>
+    <div class="navItem active" onclick="showPage('home',this)"><div class="navIcon">⚙️</div><div>العداد</div></div>
+    <div class="navItem" onclick="showPage('store',this)"><div class="navIcon">🛒</div><div>المتجر</div></div>
+    <div class="navItem" onclick="showPage('games',this)"><div class="navIcon">🎮</div><div>الالعاب</div></div>
+    <div class="navItem" onclick="showPage('rooms',this)"><div class="navIcon">🏠</div><div>الغرف</div></div>
+    <div class="navItem" onclick="showPage('referral',this)"><div class="navIcon">🎁</div><div>احالة</div></div>
+    <div class="navItem" onclick="showPage('log',this)"><div class="navIcon">📜</div><div>السجل</div></div>
+    <div class="navItem" onclick="showPage('profile',this)"><div class="navIcon">👤</div><div>الملف</div></div>
   </div>
 </div>
+<div id="xoModal" class="modal"><div class="modal-content"><h2>❌⭕ XO</h2><div id="xoBoard"></div><p id="xoResult"></p><button class="btn" onclick="closeModal('xoModal')">خروج</button></div></div>
+<div id="challengeModal" class="modal"><div class="modal-content"><h2>⚔️ تحدي جديد</h2><p>دخل اسم الخصم ورهان النقاط</p><input type="text" id="challengeUser" class="input" placeholder="اسم الخصم"><input type="number" id="challengeBet" class="input" placeholder="الرهان"><button class="btn btn-green" onclick="sendChallenge()">ارسال التحدي</button><button class="btn" onclick="closeModal('challengeModal')">الغاء</button></div></div>
+<div id="wheelModal" class="modal"><div class="modal-content"><h2>🎡 العجلة</h2><div class="wheel-container"><div class="pointer"></div><canvas id="wheel" width="300" height="300"></canvas></div><button class="btn" id="spinBtn" onclick="doSpin()">لف - 50</button><p id="wheelResult"></p><button class="btn" onclick="closeModal('wheelModal')">اغلاق</button></div></div>
+<div id="boxModal" class="modal"><div class="modal-content"><h2>📦 الصندوق</h2><div id="boxes"></div><p id="boxResult"></p><button class="btn" onclick="closeModal('boxModal')">اغلاق</button></div></div>
+<div id="memoryModal" class="modal"><div class="modal-content"><h2>🧠 لعبة الميموري</h2><p>طابق 4 ازواج - الجائزة 250</p><div id="memoryBoard" style="display:grid;grid-template-columns:repeat(4,70px);gap:8px;justify-content:center;margin:20px auto"></div><p id="memoryResult"></p><button class="btn" onclick="closeModal('memoryModal')">خروج</button></div></div>
+<div id="createRoomModal" class="modal"><div class="modal-content"><h2>انشاء غرفة جديدة</h2><input type="text" id="newRoomName" class="input" placeholder="اسم الغرفة"><button class="btn">📷 اضافة صورة</button><p style="font-size:12px;color:#aaa">* الصورة بعدين نربطها</p><button class="btn btn-green" onclick="createRoom()">شراء وانشاء - 80000</button><button class="btn btn-red" onclick="closeModal('createRoomModal')">الغاء</button></div></div>
+<div id="toast" class="toast">تم استلام الارباح!</div>
 <script>
 let coins=5000,dailyProfitTotal=0,lastClaim=0,myReferralCode='',currentUser='',transactionLog=[],rooms=JSON.parse(localStorage.getItem('rooms'))||[],currentRoom=null,roomMessages=JSON.parse(localStorage.getItem('roomMessages'))||{};
 let xoBoard=Array(9).fill(''),gameOver=false,boxOpened=false;
 const RATE=10000;
-
 const countersData=[
 {name:"عداد 100",price:1000,profit:100},{name:"عداد 200",price:2000,profit:200},{name:"عداد 300",price:3000,profit:300},
 {name:"عداد 400",price:4000,profit:400},{name:"عداد 500",price:5000,profit:500},{name:"عداد 1000",price:10000,profit:1000},
 {name:"عداد 2000",price:20000,profit:2000},{name:"عداد 3000",price:30000,profit:3000},{name:"عداد 4000",price:40000,profit:4000},
 {name:"عداد 5000",price:50000,profit:5000}];
-
 const wheelPrizes=[{text:"حظ اوفر",value:0},{text:"100",value:100},{text:"250",value:250},{text:"500",value:500},{text:"1000",value:1000},{text:"5000",value:5000}];
 const giftsList=[{icon:"🌹",name:"وردة",price:1000},{icon:"💎",name:"الماس",price:5000},{icon:"👑",name:"تاج",price:10000},{icon:"🚀",name:"صاروخ",price:20000},{icon:"🏆",name:"كاس",price:50000},{icon:"💰",name:"كيس فلوس",price:100000},{icon:"🔥",name:"نار",price:500},{icon:"❤️",name:"قلب",price:2000},{icon:"🎉",name:"احتفال",price:8000},{icon:"🌟",name:"نجمة",price:25000}];
-
 setTimeout(()=>{document.getElementById('splash').style.display='none';checkLogin()},3500);
-
-function checkLogin(){
-  currentUser=localStorage.getItem('rafidain_user');
-  if(currentUser){
-    loadUserData();
-    document.getElementById('registerPage').style.display='none';
-    document.getElementById('mainApp').style.display='block';
-  }
-}
-
-function createAccount(){
-  let name=document.getElementById('regName').value.trim();
-  let pass=document.getElementById('regPass').value.trim();
-  let ref=document.getElementById('regRef').value.trim();
-  if(!name||!pass)return alert("دخل الاسم وكلمة السر");
-
-  localStorage.setItem('rafidain_user',name);
-  localStorage.setItem('rafidain_pass',pass);
-  localStorage.setItem('rafidain_coins',5000);
-  localStorage.setItem('rafidain_dailyProfit',0);
-  localStorage.setItem('rafidain_lastClaim',0);
-  localStorage.setItem('rafidain_referral','RAF'+Math.floor(Math.random()*9000+1000));
-  localStorage.setItem('rafidain_log','[]');
-  localStorage.setItem('rafidain_hasRoom','false');
-  if(ref)addLog(`استخدم رمز الاحالة: ${ref}`,500,'win');
-
-  currentUser=name;loadUserData();
-  document.getElementById('registerPage').style.display='none';
-  document.getElementById('mainApp').style.display='block';
-  showToast('مرحبا بك '+name);
-}
-  function loadUserData(){
-  coins=parseInt(localStorage.getItem('rafidain_coins'))||5000;
-  dailyProfitTotal=parseInt(localStorage.getItem('rafidain_dailyProfit'))||0;
-  lastClaim=parseInt(localStorage.getItem('rafidain_lastClaim'))||0;
-  myReferralCode=localStorage.getItem('rafidain_referral');
-  transactionLog=JSON.parse(localStorage.getItem('rafidain_log'))||[];
-  document.getElementById('userName').innerText=currentUser;
-  document.getElementById('userLevel').innerText='المستوى: '+Math.floor(dailyProfitTotal/1000+1);
-  updateAll();
-}
-
+function checkLogin(){currentUser=localStorage.getItem('rafidain_user');if(currentUser){loadUserData();document.getElementById('registerPage').style.display='none';document.getElementById('mainApp').style.display='block'}}
+function createAccount(){let name=document.getElementById('regName').value.trim();let pass=document.getElementById('regPass').value.trim();let ref=document.getElementById('regRef').value.trim();if(!name||!pass)return alert("دخل الاسم وكلمة السر");localStorage.setItem('rafidain_user',name);localStorage.setItem('rafidain_pass',pass);localStorage.setItem('rafidain_coins',5000);localStorage.setItem('rafidain_dailyProfit',0);localStorage.setItem('rafidain_lastClaim',Date.now());localStorage.setItem('rafidain_referral','RAF'+Math.floor(Math.random()*9000+1000));localStorage.setItem('rafidain_log','[]');localStorage.setItem('rafidain_hasRoom','false');if(ref)addLog(`استخدم رمز الاحالة: ${ref}`,500,'win');currentUser=name;loadUserData();document.getElementById('registerPage').style.display='none';document.getElementById('mainApp').style.display='block';showToast('مرحبا بك '+name)}
+  function loadUserData(){coins=parseInt(localStorage.getItem('rafidain_coins'))||5000;dailyProfitTotal=parseInt(localStorage.getItem('rafidain_dailyProfit'))||0;lastClaim=parseInt(localStorage.getItem('rafidain_lastClaim'))||0;myReferralCode=localStorage.getItem('rafidain_referral');transactionLog=JSON.parse(localStorage.getItem('rafidain_log'))||[];document.getElementById('userName').innerText=currentUser;document.getElementById('userLevel').innerText='المستوى: '+Math.floor(dailyProfitTotal/1000+1);updateAll()}
 function logout(){if(confirm('متأكد تريد تسوي تسجيل خروج؟')){localStorage.clear();location.reload()}}
-function showPage(id){document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));document.querySelectorAll('.navItem').forEach(b=>b.classList.remove('active'));document.getElementById(id).classList.add('active');event.currentTarget.classList.add('active');if(id=='store')loadStore();if(id=='games')loadTasks();if(id=='referral')setupReferral();if(id=='log')loadLog();if(id=='rooms')loadRooms()}
+function showPage(id,el){document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));document.querySelectorAll('.navItem').forEach(b=>b.classList.remove('active'));document.getElementById(id).classList.add('active');if(el)el.classList.add('active');if(id=='store')loadStore();if(id=='games')loadTasks();if(id=='referral')setupReferral();if(id=='log')loadLog();if(id=='rooms')loadRooms()}
 function toDollar(n){return(n/RATE).toFixed(2)}
-
-function updateAll(){
-  let dollar=toDollar(coins);
-  document.getElementById('coins').innerText=coins.toLocaleString()+' نقطة';
-  document.getElementById('coinsDollar').innerText=`يعادل $${dollar} دولار`;
-  document.getElementById('coins2').innerText=`رصيدك: ${coins.toLocaleString()} نقطة`;
-  document.getElementById('coins3').innerText=`رصيدك: ${coins.toLocaleString()} نقطة`;
-  document.getElementById('dailyProfit').innerText=dailyProfitTotal.toLocaleString()+' نقطة/يوم';
-  document.getElementById('perDay').innerText='+'+dailyProfitTotal.toLocaleString()+' نقطة/24 ساعة';
-
-  let now=Date.now(),timeLeft=24*60*60*1000-(now-lastClaim);
-  if(timeLeft<=0&&dailyProfitTotal>0){coins+=dailyProfitTotal;lastClaim=now;addLog(`استلام ارباح تلقائية`,dailyProfitTotal,'win');showToast(`تم استلام ${dailyProfitTotal.toLocaleString()} نقطة!`)}
-  let hours=Math.floor(timeLeft/1000/60/60),mins=Math.floor(timeLeft/1000/60%60);
-  document.getElementById('nextClaim').innerText=dailyProfitTotal>0?`الارباح الجاية بعد: ${hours}س ${mins}د`:'';
-  localStorage.setItem('rafidain_coins',coins);localStorage.setItem('rafidain_dailyProfit',dailyProfitTotal);localStorage.setItem('rafidain_lastClaim',lastClaim)
-}
+function updateAll(){let dollar=toDollar(coins);document.getElementById('coins').innerText=coins.toLocaleString()+' نقطة';document.getElementById('coinsDollar').innerText=`يعادل $${dollar} دولار`;document.getElementById('coins2').innerText=`رصيدك: ${coins.toLocaleString()} نقطة`;document.getElementById('coins3').innerText=`رصيدك: ${coins.toLocaleString()} نقطة`;document.getElementById('dailyProfit').innerText=dailyProfitTotal.toLocaleString()+' نقطة/يوم';document.getElementById('perDay').innerText='+'+dailyProfitTotal.toLocaleString()+' نقطة/24 ساعة';let now=Date.now(),timeLeft=24*60*60*1000-(now-lastClaim);if(timeLeft<=0&&dailyProfitTotal>0){coins+=dailyProfitTotal;lastClaim=now;addLog(`استلام ارباح تلقائية`,dailyProfitTotal,'win');showToast(`تم استلام ${dailyProfitTotal.toLocaleString()} نقطة!`)}let hours=Math.floor(timeLeft/1000/60/60),mins=Math.floor(timeLeft/1000/60%60);document.getElementById('nextClaim').innerText=dailyProfitTotal>0?`الارباح الجاية بعد: ${hours}س ${mins}د`:'';localStorage.setItem('rafidain_coins',coins);localStorage.setItem('rafidain_dailyProfit',dailyProfitTotal);localStorage.setItem('rafidain_lastClaim',lastClaim)}
 setInterval(updateAll,60000);
 function showToast(msg){let t=document.getElementById('toast');t.innerText=msg;t.style.display='block';setTimeout(()=>t.style.display='none',3000)}
 function closeModal(id){document.getElementById(id).style.display='none'}
@@ -288,16 +220,13 @@ function openBox(){if(coins<500)return alert("ما عندك 500 نقطة");coins
 function openMysteryBox(el){if(boxOpened)return;boxOpened=true;let isWinner=el.dataset.isWinner=='true',prize=parseInt(el.dataset.prize);document.querySelectorAll('.boxItem').forEach(b=>{if(b.dataset.isWinner=='true'){b.style.background='#0f0';b.innerText=b.dataset.prize}else{b.style.background='#333';b.innerText='💀'}});if(isWinner){coins+=prize;addLog('ربح من الصندوق',prize,'win');document.getElementById('boxResult').innerText=`مبروك! ربحت ${prize.toLocaleString()} نقطة`}else{document.getElementById('boxResult').innerText=`حظ اوفر!`}updateAll()}
 let dailyTasks={login:{done:false,reward:200},buy:{done:false,reward:300},play:{done:false,reward:150}},lastTaskReset=0;
 function checkTaskReset(){let now=new Date().toDateString();if(lastTaskReset!=now){dailyTasks={login:{done:false,reward:200},buy:{done:false,reward:300},play:{done:false,reward:150}};lastTaskReset=now}}
-function loadTasks(){checkTaskReset();let html='';html+=`<div class="counterItem"><h4>📅 تسجيل الدخول</h4><p>المكافأة: ${dailyTasks.login.reward} نقطة</p><button class="btn" onclick="completeTask('login')" ${dailyTasks.login.done?'disabled':''}>${dailyTasks.login.done?'✅ تم':'استلام'}</button></div>`;
-html+=`<div class="counterItem"><h4>🛒 شراء عداد</h4><p>المكافأة: ${dailyTasks.buy.reward} نقطة</p><button class="btn" onclick="completeTask('buy')" ${dailyTasks.buy.done?'disabled':''}>${dailyTasks.buy.done?'✅ تم':'استلام'}</button></div>`;
-html+=`<div class="counterItem"><h4>🎮 لعب اي لعبة</h4><p>المكافأة: ${dailyTasks.play.reward} نقطة</p><button class="btn" onclick="completeTask('play')" ${dailyTasks.play.done?'disabled':''}>${dailyTasks.play.done?'✅ تم':'استلام'}</button></div>`;document.getElementById('dailyTasks').innerHTML=html}
+function loadTasks(){checkTaskReset();let html='';html+=`<div class="counterItem"><h4>📅 تسجيل الدخول</h4><p>المكافأة: ${dailyTasks.login.reward} نقطة</p><button class="btn" onclick="completeTask('login')" ${dailyTasks.login.done?'disabled':''}>${dailyTasks.login.done?'✅ تم':'استلام'}</button></div>`;html+=`<div class="counterItem"><h4>🛒 شراء عداد</h4><p>المكافأة: ${dailyTasks.buy.reward} نقطة</p><button class="btn" onclick="completeTask('buy')" ${dailyTasks.buy.done?'disabled':''}>${dailyTasks.buy.done?'✅ تم':'استلام'}</button></div>`;html+=`<div class="counterItem"><h4>🎮 لعب اي لعبة</h4><p>المكافأة: ${dailyTasks.play.reward} نقطة</p><button class="btn" onclick="completeTask('play')" ${dailyTasks.play.done?'disabled':''}>${dailyTasks.play.done?'✅ تم':'استلام'}</button></div>`;document.getElementById('dailyTasks').innerHTML=html}
 function completeTask(task){if(dailyTasks[task].done)return;coins+=dailyTasks[task].reward;addLog(`مهمة ${task}`,dailyTasks[task].reward,'win');dailyTasks[task].done=true;showToast(`+${dailyTasks[task].reward} نقطة`);updateAll();loadTasks()}
 let memoryCards=[],flipped=[],matched=0;
 function openMemory(){if(coins<50)return alert("ما عندك 50 نقطة");coins-=50;addLog('لعب ميموري',-50,'buy');if(!dailyTasks.play.done)completeTask('play');updateAll();document.getElementById('memoryModal').style.display='block';startMemory()}
-function startMemory(){matched=0;flipped=[];let emojis=['💎','💰','🏛️','⚡','💎',''🏛️','⚡'];memoryCards=emojis.sort(()=>.5-Math.random());let board=document.getElementById('memoryBoard');board.innerHTML='';memoryCards.forEach((card,i)=>{let div=document.createElement('div');div.style.cssText='width:70px;height:70px;background:#3b82f6;border-radius:10px;font-size:35px;display:flex;align-items:center;justify-content:center;cursor:pointer;border:2px solid #fff';div.dataset.index=i;div.dataset.value=card;div.innerText='?';div.onclick=()=>flipCard(div);board.appendChild(div)})}
+function startMemory(){matched=0;flipped=[];let emojis=['💎','💰','🏛️','⚡','💎','🏛️','⚡'];memoryCards=emojis.sort(()=>.5-Math.random());let board=document.getElementById('memoryBoard');board.innerHTML='';memoryCards.forEach((card,i)=>{let div=document.createElement('div');div.style.cssText='width:70px;height:70px;background:#3b82f6;border-radius:10px;font-size:35px;display:flex;align-items:center;justify-content:center;cursor:pointer;border:2px solid #fff';div.dataset.index=i;div.dataset.value=card;div.innerText='?';div.onclick=()=>flipCard(div);board.appendChild(div)})}
 function flipCard(el){if(flipped.length==2||el.innerText!='?')return;el.innerText=el.dataset.value;flipped.push(el);if(flipped.length==2){setTimeout(()=>{if(flipped[0].dataset.value==flipped[1].dataset.value){flipped.forEach(c=>c.style.background='#0f0');matched++;if(matched==4){coins+=250;addLog('فوز ميموري',250,'win');document.getElementById('memoryResult').innerText='فزت! +250 نقطة';updateAll()}}else{flipped.forEach(c=>c.innerText='?')}flipped=[]},800)}}
-
-function openCreateRoom(){let hasRoom=localStorage.getItem('rafidain_hasRoom');if(hasRoom=='true')return alert("انت عندك غرفة اصلا. كل حساب غرفة وحدة");document.getElementById('createRoomModal').style.display='block'}
+  function openCreateRoom(){let hasRoom=localStorage.getItem('rafidain_hasRoom');if(hasRoom=='true')return alert("انت عندك غرفة اصلا. كل حساب غرفة وحدة");document.getElementById('createRoomModal').style.display='block'}
 function createRoom(){
   let name=document.getElementById('newRoomName').value.trim();
   if(!name)return alert("دخل اسم الغرفة");
