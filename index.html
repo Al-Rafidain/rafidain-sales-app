@@ -38,7 +38,7 @@ h1{color:#3b82f6;text-shadow:0 0 15px #3b82f6;font-size:26px}
 .pointer{width:0;height:0;border-left:15px solid transparent;border-right:15px solid transparent;border-bottom:30px solid red;position:absolute;top:-10px;left:50%;transform:translateX(-50%);z-index:10}
 #wheel{width:100%;height:100%;border-radius:50%;border:6px solid #3b82f6;transition:transform 5s cubic-bezier(.17,.67,.12,.99)}
 .boxItem{width:80px;height:80px;background:#3b82f6;margin:5px;display:inline-block;border-radius:15px;cursor:pointer;font-size:28px;line-height:80px;border:3px solid #fff;font-weight:bold}
-.bottomNav{position:fixed;bottom:15px;left:50%;transform:translateX(-50%);width:95%;max-width:500px;background:linear-gradient(135deg,#1e3a8a,#3b82f6);border-radius:25px;display:flex;justify-content:space-around;padding:10px 5px;z-index:999}
+.bottomNav{position:fixed;bottom:15px;left:50%;transform:translateX(-50%);width:95%;max-width:500px;background:linear-gradient(135deg,#1e3a8a,#3b82f6);border-radius:25px;display:flex;justify-space-around;padding:10px 5px;z-index:999}
 .navItem{display:flex;flex-direction:column;align-items:center;color:#ddd;font-size:11px;cursor:pointer;flex:1}
 .navIcon{font-size:22px;margin-bottom:2px}
 .navItem.active{color:#fff;font-weight:bold}
@@ -216,7 +216,9 @@ h1{color:#3b82f6;text-shadow:0 0 15px #3b82f6;font-size:26px}
 <div id="toast" class="toast">تم استلام الارباح!</div>
 
 <script>
-let coins=5000, dailyProfitTotal=0, lastClaim=0, myReferralCode='', currentUser='', transactionLog=[], rooms=[], currentRoom=null;
+let coins=5000, dailyProfitTotal=0, lastClaim=0, myReferralCode='', currentUser='', transactionLog=[], currentRoom=null;
+// جلب الغرف المحفوظة
+let rooms=JSON.parse(localStorage.getItem('rafidain_rooms'))||[];
 let roomMessages=JSON.parse(localStorage.getItem('roomMessages'))||{}, globalMessages=JSON.parse(localStorage.getItem('globalMessages'))||[];
 let xoBoard=Array(9).fill(''), gameOver=false, boxOpened=false, dominoSet=[], dominoMy=[], dominoBot=[], dominoTable=[], dominoLeftEnd=0, dominoRightEnd=0;
 const RATE=10000;
@@ -991,6 +993,7 @@ function checkLudoWin(){
   });
 }
 
+/* --- تعديل نظام الغرف --- */
 function openCreateRoom(){
   let hasRoom=localStorage.getItem('rafidain_hasRoom');
   if(hasRoom=='true') return alert("انت عندك غرفة اصلا. كل حساب غرفة وحدة");
@@ -1003,42 +1006,61 @@ function createRoom(){
   if(coins<80000) return alert("ما عندك 80000 نقطة");
   coins-=80000;
   let id='RM'+Math.floor(Math.random()*900000+100000);
-  rooms.push({id:id,name:name,owner:currentUser});
+  
+  let newRoom = {id:id, name:name, owner:currentUser};
+  rooms.push(newRoom);
+  
+  // حفظ الغرف بالـ localStorage
+  localStorage.setItem('rafidain_rooms', JSON.stringify(rooms));
   localStorage.setItem('rafidain_hasRoom','true');
+  
   addLog(`انشاء غرفة ${name}`,-80000,'buy');
   updateAll();
   closeModal('createRoomModal');
   alert("تم انشاء الغرفة! الايدي: "+id);
+  loadRooms(); // تحديث القائمة
+  enterRoom(id); // دخول الغرفة المشتراة مباشرة
 }
 
 function loadRooms(){
+  // جلب الغرف وتحديث القائمة
+  rooms = JSON.parse(localStorage.getItem('rafidain_rooms')) || [];
   let html='';
   rooms.forEach(r=>{
     html+=`<div class="roomItem" onclick="enterRoom('${r.id}')"><h4>${r.name}</h4><div class="roomId">ID: ${r.id}</div><div>المالك: ${r.owner}</div></div>`;
   });
   document.getElementById('roomsList').innerHTML=html||'<p style="color:#aaa">لا توجد غرف</p>';
+  
   let hasRoom=localStorage.getItem('rafidain_hasRoom');
-  document.getElementById('myRoomSection').innerHTML=hasRoom=='true'?'<button class="btn btn-green" onclick="myRoom()">🏠 دخول غرفتي</button>':'';
+  document.getElementById('myRoomSection').innerHTML=(hasRoom=='true')?'<button class="btn btn-green" onclick="myRoom()">🏠 دخول غرفتي</button>':'';
 }
 
 function joinRoomById(){
   let id=document.getElementById('searchRoomId').value.trim();
+  rooms = JSON.parse(localStorage.getItem('rafidain_rooms')) || [];
   let room=rooms.find(r=>r.id==id);
   if(!room) return alert("الغرفة غير موجودة");
   enterRoom(id);
 }
 
 function myRoom(){
+  rooms = JSON.parse(localStorage.getItem('rafidain_rooms')) || [];
   let room=rooms.find(r=>r.owner==currentUser);
   if(room) enterRoom(room.id);
+  else alert("لم يتم العثور على غرفتك");
 }
 
 function enterRoom(id){
+  rooms = JSON.parse(localStorage.getItem('rafidain_rooms')) || [];
   currentRoom=rooms.find(r=>r.id==id);
+  if(!currentRoom) return alert("خطأ بالدخول للغرفة");
+
   document.getElementById('roomNameTitle').innerText=currentRoom.name;
   document.getElementById('roomIdTitle').innerText='ID: '+currentRoom.id;
+  
   if(currentRoom.owner==currentUser) document.getElementById('editRoomBtn').style.display='block';
   else document.getElementById('editRoomBtn').style.display='none';
+  
   showPage('chatRoom',null);
   loadChat();
   let g='';
@@ -1050,9 +1072,10 @@ function enterRoom(id){
 
 function editRoomName(){
   let nn=prompt("الاسم الجديد للغرفة:");
-  if(nn){
+  if(nn && currentRoom){
     currentRoom.name=nn;
     rooms=rooms.map(r=>r.id==currentRoom.id?currentRoom:r);
+    localStorage.setItem('rafidain_rooms', JSON.stringify(rooms));
     document.getElementById('roomNameTitle').innerText=nn;
     loadRooms();
   }
@@ -1060,7 +1083,7 @@ function editRoomName(){
 
 function sendRoomMsg(){
   let m=document.getElementById('roomChatInput').value.trim();
-  if(!m) return;
+  if(!m || !currentRoom) return;
   if(!roomMessages[currentRoom.id]) roomMessages[currentRoom.id]=[];
   roomMessages[currentRoom.id].push({u:currentUser,t:m,time:Date.now()});
   localStorage.setItem('roomMessages',JSON.stringify(roomMessages));
@@ -1069,6 +1092,7 @@ function sendRoomMsg(){
 }
 
 function loadChat(){
+  if(!currentRoom) return;
   let b=document.getElementById('roomChatBox');
   b.innerHTML='';
   (roomMessages[currentRoom.id]||[]).forEach(m=>{
@@ -1080,6 +1104,7 @@ function loadChat(){
 
 function sendGift(icon,name,price){
   if(coins<price) return alert("ما عندك نقاط كافية");
+  if(!currentRoom) return;
   coins-=price;
   if(!roomMessages[currentRoom.id]) roomMessages[currentRoom.id]=[];
   roomMessages[currentRoom.id].push({u:currentUser,t:`${icon} ارسل هدية ${name} بـ ${price} نقطة`,time:Date.now()});
