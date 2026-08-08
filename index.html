@@ -147,8 +147,7 @@ h1{color:#3b82f6;text-shadow:0 0 15px #3b82f6;font-size:26px}
     <h2 id="roomNameTitle"></h2>
     <p class="roomId" id="roomIdTitle"></p>
     <div style="display:flex;gap:10px;justify-content:center;max-width:400px;margin:auto">
-      <button id="editRoomBtn" class="btn btn-yellow" style="display:none;width:45%" onclick="editRoomName()">✏️ تعديل الاسم</button>
-      <button id="deleteRoomBtn" class="btn btn-red" style="display:none;width:45%" onclick="deleteMyRoom()">🗑️ حذف الغرفة</button>
+      <button id="editRoomBtn" class="btn btn-yellow" style="display:none;width:90%" onclick="editRoomName()">✏️ تعديل الاسم</button>
     </div>
     <div id="roomChatBox" class="chatBox"></div>
     <div style="display:flex;gap:8px;justify-content:center;max-width:400px;margin:auto">
@@ -1023,7 +1022,13 @@ function loadRooms(){
   document.getElementById('roomsList').innerHTML=html||'<p style="color:#aaa">لا توجد غرف</p>';
   
   let hasRoom=localStorage.getItem('rafidain_hasRoom');
-  document.getElementById('myRoomSection').innerHTML=(hasRoom=='true')?'<button class="btn btn-green" onclick="myRoom()">🏠 دخول غرفتي</button>':'';
+  if(hasRoom=='true'){
+    document.getElementById('myRoomSection').innerHTML=
+      '<button class="btn btn-green" onclick="myRoom()">🏠 دخول غرفتي</button>' +
+      '<button class="btn btn-red" onclick="deleteMyRoomOutside()">🗑️ حذف الغرفة</button>';
+  } else {
+    document.getElementById('myRoomSection').innerHTML='';
+  }
   
   if(hasRoom=='true'){
     document.getElementById('createRoomBtnSection').style.display='none';
@@ -1057,10 +1062,8 @@ function enterRoom(id){
   
   if(currentRoom.owner==currentUser){
     document.getElementById('editRoomBtn').style.display='inline-block';
-    document.getElementById('deleteRoomBtn').style.display='inline-block';
   } else {
     document.getElementById('editRoomBtn').style.display='none';
-    document.getElementById('deleteRoomBtn').style.display='none';
   }
   
   showPage('chatRoom',null);
@@ -1083,19 +1086,21 @@ function editRoomName(){
   }
 }
 
-function deleteMyRoom(){
-  if(!currentRoom) return;
+function deleteMyRoomOutside(){
+  rooms = JSON.parse(localStorage.getItem('rafidain_rooms')) || [];
+  let myRoomObj = rooms.find(r => r.owner == currentUser);
+  if(!myRoomObj) return alert("ليس لديك غرفة لحذفها");
+  
   if(confirm("هل أنت متأكد من حذف الغرفة؟ ستتمكن من شراء غرفة جديدة بعد الحذف.")){
-    rooms = rooms.filter(r => r.id !== currentRoom.id);
+    rooms = rooms.filter(r => r.id !== myRoomObj.id);
     localStorage.setItem('rafidain_rooms', JSON.stringify(rooms));
     
-    delete roomMessages[currentRoom.id];
+    delete roomMessages[myRoomObj.id];
     localStorage.setItem('roomMessages', JSON.stringify(roomMessages));
     
     localStorage.setItem('rafidain_hasRoom', 'false');
     
     alert("تم حذف الغرفة بنجاح! يمكنك الآن شراء غرفة جديدة.");
-    showPage('rooms', null);
     loadRooms();
   }
 }
