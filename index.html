@@ -38,7 +38,7 @@ h1{color:#3b82f6;text-shadow:0 0 15px #3b82f6;font-size:26px}
 .pointer{width:0;height:0;border-left:15px solid transparent;border-right:15px solid transparent;border-bottom:30px solid red;position:absolute;top:-10px;left:50%;transform:translateX(-50%);z-index:10}
 #wheel{width:100%;height:100%;border-radius:50%;border:6px solid #3b82f6;transition:transform 5s cubic-bezier(.17,.67,.12,.99)}
 .boxItem{width:80px;height:80px;background:#3b82f6;margin:5px;display:inline-block;border-radius:15px;cursor:pointer;font-size:28px;line-height:80px;border:3px solid #fff;font-weight:bold}
-.bottomNav{position:fixed;bottom:15px;left:50%;transform:translateX(-50%);width:95%;max-width:500px;background:linear-gradient(135deg,#1e3a8a,#3b82f6);border-radius:25px;display:flex;justify-space-around;padding:10px 5px;z-index:999}
+.bottomNav{position:fixed;bottom:15px;left:50%;transform:translateX(-50%);width:95%;max-width:500px;background:linear-gradient(135deg,#1e3a8a,#3b82f6);border-radius:25px;display:flex;justify-content:space-around;padding:10px 5px;z-index:999}
 .navItem{display:flex;flex-direction:column;align-items:center;color:#ddd;font-size:11px;cursor:pointer;flex:1}
 .navIcon{font-size:22px;margin-bottom:2px}
 .navItem.active{color:#fff;font-weight:bold}
@@ -122,7 +122,9 @@ h1{color:#3b82f6;text-shadow:0 0 15px #3b82f6;font-size:26px}
   <div id="rooms" class="page">
     <h2>🏠 الغرف</h2>
     <div id="myRoomSection"></div>
-    <button class="btn btn-green" onclick="openCreateRoom()">➕ انشاء غرفة - 80000</button>
+    <div id="createRoomBtnSection">
+      <button class="btn btn-green" onclick="openCreateRoom()">➕ انشاء غرفة - 80000</button>
+    </div>
     <button class="btn" onclick="openGlobalChat()">🌍 الدردشة العامة</button>
     <input type="text" id="searchRoomId" class="input" placeholder="ادخل ايدي الغرفة للبحث">
     <button class="btn" onclick="joinRoomById()">دخول</button>
@@ -144,7 +146,10 @@ h1{color:#3b82f6;text-shadow:0 0 15px #3b82f6;font-size:26px}
     <button class="btn" onclick="showPage('rooms',null)">🔙 رجوع</button>
     <h2 id="roomNameTitle"></h2>
     <p class="roomId" id="roomIdTitle"></p>
-    <button id="editRoomBtn" class="btn btn-yellow" style="display:none" onclick="editRoomName()">✏️ تعديل اسم الغرفة</button>
+    <div style="display:flex;gap:10px;justify-content:center;max-width:400px;margin:auto">
+      <button id="editRoomBtn" class="btn btn-yellow" style="display:none;width:45%" onclick="editRoomName()">✏️ تعديل الاسم</button>
+      <button id="deleteRoomBtn" class="btn btn-red" style="display:none;width:45%" onclick="deleteMyRoom()">🗑️ حذف الغرفة</button>
+    </div>
     <div id="roomChatBox" class="chatBox"></div>
     <div style="display:flex;gap:8px;justify-content:center;max-width:400px;margin:auto">
       <input type="text" id="roomChatInput" class="input" placeholder="اكتب هنا" style="width:70%" onkeypress="if(event.key=='Enter')sendRoomMsg()">
@@ -217,13 +222,11 @@ h1{color:#3b82f6;text-shadow:0 0 15px #3b82f6;font-size:26px}
 
 <script>
 let coins=5000, dailyProfitTotal=0, lastClaim=0, myReferralCode='', currentUser='', transactionLog=[], currentRoom=null;
-// جلب الغرف المحفوظة
 let rooms=JSON.parse(localStorage.getItem('rafidain_rooms'))||[];
 let roomMessages=JSON.parse(localStorage.getItem('roomMessages'))||{}, globalMessages=JSON.parse(localStorage.getItem('globalMessages'))||[];
 let xoBoard=Array(9).fill(''), gameOver=false, boxOpened=false, dominoSet=[], dominoMy=[], dominoBot=[], dominoTable=[], dominoLeftEnd=0, dominoRightEnd=0;
 const RATE=10000;
 
-// Ludo Global Vars
 let ludoPlayers=[], ludoDice=0, ludoCurrentPlayer=0, ludoGameOver=false, ludoCanMove=false;
 const LUDO_COLORS=['#f33','#3b82f6','#0f0','#ffb300'];
 const LUDO_NAMES=['انت (أحمر)','بوت أزرق','بوت أخضر','بوت أصفر'];
@@ -248,7 +251,6 @@ function checkLogin(){
     loadUserData();
     document.getElementById('registerPage').style.display='none';
     document.getElementById('mainApp').style.display='block';
-    startBots();
   }else{
     document.getElementById('registerPage').style.display='flex';
     document.getElementById('mainApp').style.display='none';
@@ -733,10 +735,10 @@ const LUDO_MAIN_PATH = [
 ];
 
 const HOME_PATHS = [
-  [{x:7,y:13},{x:7,y:12},{x:7,y:11},{x:7,y:10},{x:7,y:9},{x:7,y:8}], // Red
-  [{x:1,y:7},{x:2,y:7},{x:3,y:7},{x:4,y:7},{x:5,y:7},{x:6,y:7}], // Blue
-  [{x:7,y:1},{x:7,y:2},{x:7,y:3},{x:7,y:4},{x:7,y:5},{x:7,y:6}], // Green
-  [{x:13,y:7},{x:12,y:7},{x:11,y:7},{x:10,y:7},{x:9,y:7},{x:8,y:7}]  // Yellow
+  [{x:7,y:13},{x:7,y:12},{x:7,y:11},{x:7,y:10},{x:7,y:9},{x:7,y:8}],
+  [{x:1,y:7},{x:2,y:7},{x:3,y:7},{x:4,y:7},{x:5,y:7},{x:6,y:7}],
+  [{x:7,y:1},{x:7,y:2},{x:7,y:3},{x:7,y:4},{x:7,y:5},{x:7,y:6}],
+  [{x:13,y:7},{x:12,y:7},{x:11,y:7},{x:10,y:7},{x:9,y:7},{x:8,y:7}]
 ];
 
 const START_OFFSETS = [0, 13, 26, 39];
@@ -787,20 +789,17 @@ function drawLudoBoard(){
   const cellSize = 330 / 15;
   ctx.clearRect(0,0,330,330);
 
-  // Background Bases
   ctx.fillStyle='#f33'; ctx.fillRect(0, 9*cellSize, 6*cellSize, 6*cellSize);
   ctx.fillStyle='#3b82f6'; ctx.fillRect(0, 0, 6*cellSize, 6*cellSize);
   ctx.fillStyle='#0f0'; ctx.fillRect(9*cellSize, 0, 6*cellSize, 6*cellSize);
   ctx.fillStyle='#ffb300'; ctx.fillRect(9*cellSize, 9*cellSize, 6*cellSize, 6*cellSize);
 
-  // Inner Base White Circles
   let bases = [{x:3, y:12}, {x:3, y:3}, {x:12, y:3}, {x:12, y:12}];
   bases.forEach((b, i)=>{
     ctx.fillStyle='#fff';
     ctx.beginPath(); ctx.arc(b.x*cellSize, b.y*cellSize, cellSize*1.8, 0, 6.28); ctx.fill();
   });
 
-  // Grid Grid Lines
   ctx.strokeStyle='#ccc'; ctx.lineWidth=1;
   for(let i=0; i<15; i++){
     for(let j=0; j<15; j++){
@@ -809,7 +808,6 @@ function drawLudoBoard(){
     }
   }
 
-  // Home Paths Coloring
   for(let i=1; i<6; i++){
     ctx.fillStyle='#f33'; ctx.fillRect(7*cellSize, (14-i)*cellSize, cellSize, cellSize);
     ctx.fillStyle='#3b82f6'; ctx.fillRect(i*cellSize, 7*cellSize, cellSize, cellSize);
@@ -817,26 +815,22 @@ function drawLudoBoard(){
     ctx.fillStyle='#ffb300'; ctx.fillRect((14-i)*cellSize, 7*cellSize, cellSize, cellSize);
   }
 
-  // Start Positions
   ctx.fillStyle='#f33'; ctx.fillRect(6*cellSize, 13*cellSize, cellSize, cellSize);
   ctx.fillStyle='#3b82f6'; ctx.fillRect(1*cellSize, 6*cellSize, cellSize, cellSize);
   ctx.fillStyle='#0f0'; ctx.fillRect(8*cellSize, 1*cellSize, cellSize, cellSize);
   ctx.fillStyle='#ffb300'; ctx.fillRect(13*cellSize, 8*cellSize, cellSize, cellSize);
 
-  // Safe Stars Placeholder
   SAFE_POSITIONS.forEach(pos=>{
     let coord = LUDO_MAIN_PATH[pos];
     ctx.fillStyle='#ffd700';
     ctx.beginPath(); ctx.arc((coord.x+0.5)*cellSize, (coord.y+0.5)*cellSize, 4, 0, 6.28); ctx.fill();
   });
 
-  // Draw Center Triangle Winner Zone
   ctx.beginPath(); ctx.moveTo(6*cellSize, 6*cellSize); ctx.lineTo(7.5*cellSize, 7.5*cellSize); ctx.lineTo(6*cellSize, 9*cellSize); ctx.fillStyle='#3b82f6'; ctx.fill();
   ctx.beginPath(); ctx.moveTo(6*cellSize, 6*cellSize); ctx.lineTo(7.5*cellSize, 7.5*cellSize); ctx.lineTo(9*cellSize, 6*cellSize); ctx.fillStyle='#0f0'; ctx.fill();
   ctx.beginPath(); ctx.moveTo(9*cellSize, 6*cellSize); ctx.lineTo(7.5*cellSize, 7.5*cellSize); ctx.lineTo(9*cellSize, 9*cellSize); ctx.fillStyle='#ffb300'; ctx.fill();
   ctx.beginPath(); ctx.moveTo(6*cellSize, 9*cellSize); ctx.lineTo(7.5*cellSize, 7.5*cellSize); ctx.lineTo(9*cellSize, 9*cellSize); ctx.fillStyle='#f33'; ctx.fill();
 
-  // Draw Pawns
   ludoPlayers.forEach((p, pi)=>{
     p.pieces.forEach((pos, idx)=>{
       let c = getPieceCoords(pi, pos, idx);
@@ -915,7 +909,7 @@ function checkEating(pIdx, pieceIdx){
         if(pos >= 0 && pos < 52){
           let enemyGlobalPos = (START_OFFSETS[pi] + pos) % 52;
           if(enemyGlobalPos === globalPos){
-            p.pieces[i] = -1; // Send back home
+            p.pieces[i] = -1;
             captured = true;
           }
         }
@@ -993,10 +987,9 @@ function checkLudoWin(){
   });
 }
 
-/* --- تعديل نظام الغرف --- */
 function openCreateRoom(){
   let hasRoom=localStorage.getItem('rafidain_hasRoom');
-  if(hasRoom=='true') return alert("انت عندك غرفة اصلا. كل حساب غرفة وحدة");
+  if(hasRoom=='true') return alert("انت عندك غرفة اصلا. تمسحها تكدر تشتري غيرها");
   document.getElementById('createRoomModal').style.display='block';
 }
 
@@ -1010,7 +1003,6 @@ function createRoom(){
   let newRoom = {id:id, name:name, owner:currentUser};
   rooms.push(newRoom);
   
-  // حفظ الغرف بالـ localStorage
   localStorage.setItem('rafidain_rooms', JSON.stringify(rooms));
   localStorage.setItem('rafidain_hasRoom','true');
   
@@ -1018,12 +1010,11 @@ function createRoom(){
   updateAll();
   closeModal('createRoomModal');
   alert("تم انشاء الغرفة! الايدي: "+id);
-  loadRooms(); // تحديث القائمة
-  enterRoom(id); // دخول الغرفة المشتراة مباشرة
+  loadRooms();
+  enterRoom(id);
 }
 
 function loadRooms(){
-  // جلب الغرف وتحديث القائمة
   rooms = JSON.parse(localStorage.getItem('rafidain_rooms')) || [];
   let html='';
   rooms.forEach(r=>{
@@ -1033,6 +1024,12 @@ function loadRooms(){
   
   let hasRoom=localStorage.getItem('rafidain_hasRoom');
   document.getElementById('myRoomSection').innerHTML=(hasRoom=='true')?'<button class="btn btn-green" onclick="myRoom()">🏠 دخول غرفتي</button>':'';
+  
+  if(hasRoom=='true'){
+    document.getElementById('createRoomBtnSection').style.display='none';
+  } else {
+    document.getElementById('createRoomBtnSection').style.display='block';
+  }
 }
 
 function joinRoomById(){
@@ -1058,8 +1055,13 @@ function enterRoom(id){
   document.getElementById('roomNameTitle').innerText=currentRoom.name;
   document.getElementById('roomIdTitle').innerText='ID: '+currentRoom.id;
   
-  if(currentRoom.owner==currentUser) document.getElementById('editRoomBtn').style.display='block';
-  else document.getElementById('editRoomBtn').style.display='none';
+  if(currentRoom.owner==currentUser){
+    document.getElementById('editRoomBtn').style.display='inline-block';
+    document.getElementById('deleteRoomBtn').style.display='inline-block';
+  } else {
+    document.getElementById('editRoomBtn').style.display='none';
+    document.getElementById('deleteRoomBtn').style.display='none';
+  }
   
   showPage('chatRoom',null);
   loadChat();
@@ -1077,6 +1079,23 @@ function editRoomName(){
     rooms=rooms.map(r=>r.id==currentRoom.id?currentRoom:r);
     localStorage.setItem('rafidain_rooms', JSON.stringify(rooms));
     document.getElementById('roomNameTitle').innerText=nn;
+    loadRooms();
+  }
+}
+
+function deleteMyRoom(){
+  if(!currentRoom) return;
+  if(confirm("هل أنت متأكد من حذف الغرفة؟ ستتمكن من شراء غرفة جديدة بعد الحذف.")){
+    rooms = rooms.filter(r => r.id !== currentRoom.id);
+    localStorage.setItem('rafidain_rooms', JSON.stringify(rooms));
+    
+    delete roomMessages[currentRoom.id];
+    localStorage.setItem('roomMessages', JSON.stringify(roomMessages));
+    
+    localStorage.setItem('rafidain_hasRoom', 'false');
+    
+    alert("تم حذف الغرفة بنجاح! يمكنك الآن شراء غرفة جديدة.");
+    showPage('rooms', null);
     loadRooms();
   }
 }
@@ -1166,23 +1185,12 @@ function sendGlobalMsg(){
         globalMessages.push({u:name,t:reply,time:Date.now()});
         if(globalMessages.length>100) globalMessages.shift();
         localStorage.setItem('globalMessages',JSON.stringify(globalMessages));
-        if(document.getElementById('globalChat').classList.contains('active')) loadGlobalChat();
-      },1500);
+        if(document.getElementById('globalChat').classList.contains('active')){
+          loadGlobalChat();
+        }
+      }, 1000);
     });
   }
-}
-
-function startBots(){
-  setInterval(()=>{
-    if(Math.random()<0.3){
-      let name=botNamesMale[Math.floor(Math.random()*botNamesMale.length)];
-      let msg=botMessages[Math.floor(Math.random()*botMessages.length)];
-      globalMessages.push({u:name,t:msg,time:Date.now()});
-      if(globalMessages.length>100) globalMessages.shift();
-      localStorage.setItem('globalMessages',JSON.stringify(globalMessages));
-      if(document.getElementById('globalChat').classList.contains('active')) loadGlobalChat();
-    }
-  },8000);
 }
 </script>
 </body>
