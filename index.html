@@ -175,8 +175,8 @@ h1{color:#3b82f6;text-shadow:0 0 15px #3b82f6;font-size:26px}
     <h2>🎁 نظام الاحالة</h2>
     <div class="box">
       <h3>🌟 ادعُ اصدقائك واربح</h3>
-      <div id="myReferralCode" class="referralCode">RAF0000</div>
-      <div id="myReferralLink" class="referralCode">link...</div>
+      <div id="myReferralCode" class="referralCode">جاري التحميل...</div>
+      <div id="myReferralLink" class="referralCode">جاري التحميل...</div>
       <button class="btn btn-blue" onclick="copyCode()">📋 نسخ رسالة الدعوة</button>
       <button class="btn btn-blue" onclick="copyLink()">🔗 نسخ الرابط</button>
     </div>
@@ -192,8 +192,8 @@ h1{color:#3b82f6;text-shadow:0 0 15px #3b82f6;font-size:26px}
     <h2>👤 الملف الشخصي</h2>
     <div class="box"><h3 id="userName"></h3></div>
     <div class="box">
-      <h3>🎁 رمز الاحالة</h3>
-      <div id="myReferralCode2" class="referralCode">RAF0000</div>
+      <h3>🎁 رمز الاحالة الخاص بك</h3>
+      <div id="myReferralCode2" class="referralCode">جاري التحميل...</div>
       <button class="btn btn-blue" onclick="copyCode()">📋 نسخ</button>
     </div>
     <button class="btn btn-red" onclick="logout()">🚪 تسجيل خروج</button>
@@ -232,7 +232,6 @@ h1{color:#3b82f6;text-shadow:0 0 15px #3b82f6;font-size:26px}
 <div id="memoryModal" class="modal"><div class="modal-content"><h2>🧠 لعبة الميموري</h2><p>طابق الرموز - الجائزة 250</p><div id="memoryBoard" style="display:grid;grid-template-columns:repeat(4,60px);gap:8px;justify-content:center;margin:20px auto"></div><p id="memoryResult"></p><button class="btn" onclick="closeModal('memoryModal')">خروج</button></div></div>
 <div id="createRoomModal" class="modal"><div class="modal-content"><h2>انشاء غرفة جديدة</h2><input type="text" id="newRoomName" class="input" placeholder="اسم الغرفة"><button class="btn btn-green" onclick="createRoom()">شراء وانشاء - 80000</button><button class="btn btn-red" onclick="closeModal('createRoomModal')">الغاء</button></div></div>
 <div id="toast" class="toast">تم استلام الارباح!</div>
-
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
   import { getFirestore, doc, setDoc, getDoc, updateDoc, deleteDoc, collection, onSnapshot, arrayUnion, arrayRemove, getDocs } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
@@ -264,6 +263,13 @@ h1{color:#3b82f6;text-shadow:0 0 15px #3b82f6;font-size:26px}
   const giftsList=[{icon:"🌹",name:"وردة",price:1000},{icon:"💎",name:"الماس",price:5000},{icon:"👑",name:"تاج",price:10000},{icon:"🚀",name:"صاروخ",price:20000},{icon:"🏆",name:"كاس",price:50000},{icon:"💰",name:"كيس فلوس",price:100000}];
   let dailyTasks={login:{done:false,reward:200},buy:{done:false,reward:300},play:{done:false,reward:150}}, lastTaskReset=0;
   let memoryCards=[], flipped=[], matched=0;
+
+  // توليد رمز إحالة مميز وفريد لكل مستخدم بناءً على الوقت ورقم عشوائي
+  function generateUniqueRefCode() {
+    const timestampStr = Date.now().toString().slice(-4);
+    const randomStr = Math.floor(1000 + Math.random() * 9000).toString();
+    return 'RAF' + timestampStr + randomStr;
+  }
 
   setTimeout(()=>{
     let splash = document.getElementById('splash');
@@ -312,13 +318,14 @@ h1{color:#3b82f6;text-shadow:0 0 15px #3b82f6;font-size:26px}
         alert("كلمة السر غير صحيحة!");
       }
     } else {
+      let uniqueRef = generateUniqueRefCode();
       let initialData = {
         name: name,
         pass: pass,
         coins: 5000,
         dailyProfit: 0,
         lastClaim: Date.now(),
-        referral: 'RAF'+Math.floor(Math.random()*9000+1000),
+        referral: uniqueRef,
         friends: [],
         log: ref ? [{text:`استخدم رمز الاحالة: ${ref}`, amount:500, type:'win', time:new Date().toLocaleString('ar-IQ')}] : []
       };
@@ -342,10 +349,19 @@ h1{color:#3b82f6;text-shadow:0 0 15px #3b82f6;font-size:26px}
       coins = data.coins || 5000;
       dailyProfitTotal = data.dailyProfit || 0;
       lastClaim = data.lastClaim || Date.now();
-      myReferralCode = data.referral || 'RAF1000';
+      
+      // التأكد من جلب الرمز الفريد الخاص بالمستخدم إن وجد أو إنشائه إن كان قديماً
+      if (!data.referral) {
+        myReferralCode = generateUniqueRefCode();
+        await updateDoc(doc(db, "users", currentUser), { referral: myReferralCode });
+      } else {
+        myReferralCode = data.referral;
+      }
+      
       transactionLog = data.log || [];
       myFriends = data.friends || [];
       document.getElementById('userName').innerText = currentUser;
+      setupReferral();
       updateAll();
     }
   }
@@ -437,7 +453,7 @@ h1{color:#3b82f6;text-shadow:0 0 15px #3b82f6;font-size:26px}
     }
   }
 
-  /* --- FRIENDS SYSTEM --- */
+  /* --- نظام الأصدقاء والبحث المعدل بشكل دقيق --- */
   function listenToFriends(){
     onSnapshot(doc(db, "users", currentUser), (snapshot) => {
       if(snapshot.exists()){
@@ -452,7 +468,7 @@ h1{color:#3b82f6;text-shadow:0 0 15px #3b82f6;font-size:26px}
   }
 
   window.searchFriends = async function(){
-    let query = document.getElementById('searchFriendsInput').value.trim().toLowerCase();
+    let query = document.getElementById('searchFriendsInput').value.trim();
     let resContainer = document.getElementById('searchResults');
 
     if(!query){
@@ -461,24 +477,36 @@ h1{color:#3b82f6;text-shadow:0 0 15px #3b82f6;font-size:26px}
     }
 
     resContainer.innerHTML = '<p style="color:#aaa">جاري البحث...</p>';
-    let querySnapshot = await getDocs(collection(db, "users"));
-    let html = '';
-    querySnapshot.forEach((uDoc) => {
-      let uName = uDoc.id;
-      if(uName.toLowerCase().includes(query) && uName !== currentUser){
-        let isFriend = myFriends.includes(uName);
-        html += `<div class="userItem">
-          <div><b>👤 ${uName}</b></div>
-          <div>
-            ${isFriend ? 
-              `<button class="btn btn-red" style="width:auto;padding:8px 15px;margin:0" onclick="removeFriend('${uName}')">حذف</button>` : 
-              `<button class="btn btn-green" style="width:auto;padding:8px 15px;margin:0" onclick="addFriend('${uName}')">إضافة ➕</button>`}
-          </div>
-        </div>`;
-      }
-    });
+    
+    try {
+      let querySnapshot = await getDocs(collection(db, "users"));
+      let html = '';
+      let found = false;
 
-    resContainer.innerHTML = html || '<p style="color:#aaa">لم يتم العثور على مستخدمين</p>';
+      querySnapshot.forEach((uDoc) => {
+        let uData = uDoc.data();
+        let uName = uData.name || uDoc.id;
+
+        // مطابقة النص بأسلوب المرونة بصرف النظر عن حالة الحروف
+        if(uName.toLowerCase().includes(query.toLowerCase()) && uName.toLowerCase() !== currentUser.toLowerCase()){
+          found = true;
+          let isFriend = myFriends.includes(uName);
+          html += `<div class="userItem">
+            <div><b>👤 ${uName}</b></div>
+            <div>
+              ${isFriend ? 
+                `<button class="btn btn-red" style="width:auto;padding:8px 15px;margin:0" onclick="removeFriend('${uName}')">حذف</button>` : 
+                `<button class="btn btn-green" style="width:auto;padding:8px 15px;margin:0" onclick="addFriend('${uName}')">إضافة ➕</button>`}
+            </div>
+          </div>`;
+        }
+      });
+
+      resContainer.innerHTML = found ? html : '<p style="color:#aaa">لم يتم العثور على مستخدم بهذا الاسم</p>';
+    } catch(e) {
+      console.error(e);
+      resContainer.innerHTML = '<p style="color:#f33">حدث خطأ أثناء البحث</p>';
+    }
   }
 
   window.addFriend = async function(friendName){
@@ -538,9 +566,9 @@ h1{color:#3b82f6;text-shadow:0 0 15px #3b82f6;font-size:26px}
   }
 
   function setupReferral(){
-    document.getElementById('myReferralCode').innerText=myReferralCode;
-    document.getElementById('myReferralCode2').innerText=myReferralCode;
-    document.getElementById('myReferralLink').innerText=`rafidain.com/ref=${myReferralCode}`;
+    if(document.getElementById('myReferralCode')) document.getElementById('myReferralCode').innerText=myReferralCode;
+    if(document.getElementById('myReferralCode2')) document.getElementById('myReferralCode2').innerText=myReferralCode;
+    if(document.getElementById('myReferralLink')) document.getElementById('myReferralLink').innerText=`rafidain.com/ref=${myReferralCode}`;
   }
 
   window.copyCode = function(){
