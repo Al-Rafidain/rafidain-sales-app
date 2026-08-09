@@ -66,12 +66,12 @@ h1{color:#3b82f6;text-shadow:0 0 15px #3b82f6;font-size:26px}
 
 <div id="registerPage">
   <div class="logo">🏛️</div>
-  <h1>انشاء حساب</h1>
+  <h1>تسجيل الدخول / انشاء حساب</h1>
   <div class="box" style="max-width:400px;width:100%">
     <input type="text" id="regName" class="input" placeholder="ادخل اسمك">
     <input type="password" id="regPass" class="input" placeholder="ادخل كلمة السر">
     <input type="text" id="regRef" class="input" placeholder="رمز الاحالة - اختياري">
-    <button class="btn btn-green" onclick="createAccount()">تسجيل</button>
+    <button class="btn btn-green" onclick="createAccount()">تسجيل / دخول</button>
   </div>
 </div>
 
@@ -219,974 +219,1006 @@ h1{color:#3b82f6;text-shadow:0 0 15px #3b82f6;font-size:26px}
 <div id="createRoomModal" class="modal"><div class="modal-content"><h2>انشاء غرفة جديدة</h2><input type="text" id="newRoomName" class="input" placeholder="اسم الغرفة"><button class="btn btn-green" onclick="createRoom()">شراء وانشاء - 80000</button><button class="btn btn-red" onclick="closeModal('createRoomModal')">الغاء</button></div></div>
 <div id="toast" class="toast">تم استلام الارباح!</div>
 
-<script>
-let coins=5000, dailyProfitTotal=0, lastClaim=0, myReferralCode='', currentUser='', transactionLog=[], currentRoom=null;
-let rooms=JSON.parse(localStorage.getItem('rafidain_rooms'))||[];
-let roomMessages=JSON.parse(localStorage.getItem('roomMessages'))||{}, globalMessages=JSON.parse(localStorage.getItem('globalMessages'))||[];
-let xoBoard=Array(9).fill(''), gameOver=false, boxOpened=false, dominoSet=[], dominoMy=[], dominoBot=[], dominoTable=[], dominoLeftEnd=0, dominoRightEnd=0;
-const RATE=10000;
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+  import { getFirestore, doc, setDoc, getDoc, updateDoc, deleteDoc, collection, onSnapshot, arrayUnion } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
-let ludoPlayers=[], ludoDice=0, ludoCurrentPlayer=0, ludoGameOver=false, ludoCanMove=false;
-const LUDO_COLORS=['#f33','#3b82f6','#0f0','#ffb300'];
-const LUDO_NAMES=['انت (أحمر)','بوت أزرق','بوت أخضر','بوت أصفر'];
+  const firebaseConfig = {
+    apiKey: "AIzaSyBbkpcBPq8G2OpyKxaVqPO7Mkfla4X9hxU",
+    authDomain: "rafidainapp.firebaseapp.com",
+    projectId: "rafidainapp",
+    storageBucket: "rafidainapp.firebasestorage.app",
+    messagingSenderId: "512875147812",
+    appId: "1:512875147812:web:54f33bda3780db7a4a9eb1",
+    measurementId: "G-X059J6K4L7"
+  };
 
-const countersData=[{name:"عداد 100",price:1000,profit:100},{name:"عداد 200",price:2000,profit:200},{name:"عداد 300",price:3000,profit:300},{name:"عداد 400",price:4000,profit:400},{name:"عداد 500",price:5000,profit:500},{name:"عداد 1000",price:10000,profit:1000},{name:"عداد 2000",price:20000,profit:2000},{name:"عداد 3000",price:30000,profit:3000},{name:"عداد 4000",price:40000,profit:4000},{name:"عداد 5000",price:50000,profit:5000}];
-const wheelPrizes=[{text:"حظ اوفر",value:0},{text:"100",value:100},{text:"250",value:250},{text:"500",value:500},{text:"1000",value:1000},{text:"5000",value:5000}];
-const giftsList=[{icon:"🌹",name:"وردة",price:1000},{icon:"💎",name:"الماس",price:5000},{icon:"👑",name:"تاج",price:10000},{icon:"🚀",name:"صاروخ",price:20000},{icon:"🏆",name:"كاس",price:50000},{icon:"💰",name:"كيس فلوس",price:100000}];
-const botNamesMale=["احمد","علي","حسن","محمود","كرار","سجاد","مصطفى","يوسف","عمر","حمزة"];
-const botNamesFemale=["فاطمة","زينب","مريم","سارة","هدى","نور","رنا","ايات","دعاء","لينا"];
-const botMessages=["هلا شباب","شخباركم","منو فايز","اريد العب","اللعبة حلوة","يلا دوري","ربحت 1000","منو يبيع عداد","السلام عليكم","موفقين"];
-let dailyTasks={login:{done:false,reward:200},buy:{done:false,reward:300},play:{done:false,reward:150}}, lastTaskReset=0;
-let memoryCards=[], flipped=[], matched=0;
+  const app = initializeApp(firebaseConfig);
+  const db = getFirestore(app);
 
-setTimeout(()=>{
-  document.getElementById('splash').style.display='none';
-  checkLogin();
-}, 2500);
+  let coins=5000, dailyProfitTotal=0, lastClaim=0, myReferralCode='', currentUser='', transactionLog=[], currentRoom=null;
+  let rooms=[], roomMessages={}, globalMessages=[];
+  let xoBoard=Array(9).fill(''), gameOver=false, boxOpened=false, dominoSet=[], dominoMy=[], dominoBot=[], dominoTable=[], dominoLeftEnd=0, dominoRightEnd=0;
+  const RATE=10000;
 
-function checkLogin(){
-  currentUser=localStorage.getItem('rafidain_user');
-  if(currentUser){
-    loadUserData();
-    document.getElementById('registerPage').style.display='none';
-    document.getElementById('mainApp').style.display='block';
-  }else{
-    document.getElementById('registerPage').style.display='flex';
-    document.getElementById('mainApp').style.display='none';
-  }
-}
+  let ludoPlayers=[], ludoDice=0, ludoCurrentPlayer=0, ludoGameOver=false, ludoCanMove=false;
+  const LUDO_COLORS=['#f33','#3b82f6','#0f0','#ffb300'];
+  const LUDO_NAMES=['انت (أحمر)','بوت أزرق','بوت أخضر','بوت أصفر'];
 
-function createAccount(){
-  let name=document.getElementById('regName').value.trim();
-  let pass=document.getElementById('regPass').value.trim();
-  let ref=document.getElementById('regRef').value.trim();
-  if(!name||!pass) return alert("دخل الاسم وكلمة السر");
-  localStorage.setItem('rafidain_user',name);
-  localStorage.setItem('rafidain_pass',pass);
-  localStorage.setItem('rafidain_coins',5000);
-  localStorage.setItem('rafidain_dailyProfit',0);
-  localStorage.setItem('rafidain_lastClaim',Date.now());
-  localStorage.setItem('rafidain_referral','RAF'+Math.floor(Math.random()*9000+1000));
-  localStorage.setItem('rafidain_log','[]');
-  if(ref) addLog(`استخدم رمز الاحالة: ${ref}`,500,'win');
-  currentUser=name;
-  loadUserData();
-  document.getElementById('registerPage').style.display='none';
-  document.getElementById('mainApp').style.display='block';
-  showToast('مرحبا بك '+name);
-}
+  const countersData=[{name:"عداد 100",price:1000,profit:100},{name:"عداد 200",price:2000,profit:200},{name:"عداد 300",price:3000,profit:300},{name:"عداد 400",price:4000,profit:400},{name:"عداد 500",price:5000,profit:500},{name:"عداد 1000",price:10000,profit:1000},{name:"عداد 2000",price:20000,profit:2000},{name:"عداد 3000",price:30000,profit:3000},{name:"عداد 4000",price:40000,profit:4000},{name:"عداد 5000",price:50000,profit:5000}];
+  const wheelPrizes=[{text:"حظ اوفر",value:0},{text:"100",value:100},{text:"250",value:250},{text:"500",value:500},{text:"1000",value:1000},{text:"5000",value:5000}];
+  const giftsList=[{icon:"🌹",name:"وردة",price:1000},{icon:"💎",name:"الماس",price:5000},{icon:"👑",name:"تاج",price:10000},{icon:"🚀",name:"صاروخ",price:20000},{icon:"🏆",name:"كاس",price:50000},{icon:"💰",name:"كيس فلوس",price:100000}];
+  let dailyTasks={login:{done:false,reward:200},buy:{done:false,reward:300},play:{done:false,reward:150}}, lastTaskReset=0;
+  let memoryCards=[], flipped=[], matched=0;
 
-function loadUserData(){
-  coins=parseInt(localStorage.getItem('rafidain_coins'))||5000;
-  dailyProfitTotal=parseInt(localStorage.getItem('rafidain_dailyProfit'))||0;
-  lastClaim=parseInt(localStorage.getItem('rafidain_lastClaim'))||0;
-  myReferralCode=localStorage.getItem('rafidain_referral')||'RAF1000';
-  transactionLog=JSON.parse(localStorage.getItem('rafidain_log'))||[];
-  document.getElementById('userName').innerText=currentUser;
-  updateAll();
-}
-
-function logout(){
-  if(confirm('متأكد تريد تسوي تسجيل خروج؟')){
-    localStorage.clear();
-    location.reload();
-  }
-}
-
-function showPage(id,el){
-  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
-  document.querySelectorAll('.navItem').forEach(b=>b.classList.remove('active'));
-  document.getElementById(id).classList.add('active');
-  if(el) el.classList.add('active');
-  if(id=='store') loadStore();
-  if(id=='games') loadTasks();
-  if(id=='referral') setupReferral();
-  if(id=='log') loadLog();
-  if(id=='rooms') loadRooms();
-  if(id=='globalChat') loadGlobalChat();
-}
-
-function toDollar(n){ return (n/RATE).toFixed(2); }
-
-function updateAll(){
-  let dollar=toDollar(coins);
-  document.getElementById('coins').innerText=coins.toLocaleString()+' نقطة';
-  document.getElementById('coinsDollar').innerText=`يعادل $${dollar} دولار`;
-  document.getElementById('coins2').innerText=`رصيدك: ${coins.toLocaleString()} نقطة`;
-  document.getElementById('coins3').innerText=`رصيدك: ${coins.toLocaleString()} نقطة`;
-  document.getElementById('dailyProfit').innerText=dailyProfitTotal.toLocaleString()+' نقطة/يوم';
-  document.getElementById('perDay').innerText='+'+dailyProfitTotal.toLocaleString()+' نقطة/24 ساعة';
-  
-  let now=Date.now(), timeLeft=24*60*60*1000-(now-lastClaim);
-  if(timeLeft<=0 && dailyProfitTotal>0){
-    coins += dailyProfitTotal;
-    lastClaim = now;
-    addLog(`استلام ارباح تلقائية`, dailyProfitTotal, 'win');
-    showToast(`تم استلام ${dailyProfitTotal.toLocaleString()} نقطة!`);
-  }
-  let hours=Math.floor(timeLeft/1000/60/60), mins=Math.floor((timeLeft/1000/60)%60);
-  document.getElementById('nextClaim').innerText=dailyProfitTotal>0?`الارباح الجاية بعد: ${hours}س ${mins}د`:'';
-  
-  localStorage.setItem('rafidain_coins',coins);
-  localStorage.setItem('rafidain_dailyProfit',dailyProfitTotal);
-  localStorage.setItem('rafidain_lastClaim',lastClaim);
-}
-
-setInterval(updateAll, 60000);
-
-function showToast(msg){
-  let t=document.getElementById('toast');
-  t.innerText=msg;
-  t.style.display='block';
-  setTimeout(()=>t.style.display='none',3000);
-}
-
-function closeModal(id){ document.getElementById(id).style.display='none'; }
-
-function addLog(text,amount,type){
-  let time=new Date().toLocaleString('ar-IQ');
-  transactionLog.unshift({text,amount,type,time});
-  if(transactionLog.length>50) transactionLog.pop();
-  localStorage.setItem('rafidain_log',JSON.stringify(transactionLog));
-}
-
-function loadLog(){
-  let html='';
-  if(transactionLog.length==0) html='<p style="color:#aaa">لا توجد معاملات بعد</p>';
-  transactionLog.forEach(log=>{
-    let sign=log.amount>0?'+':'';
-    html+=`<div class="logItem ${log.type}"><b>${log.text}</b><br><span style="color:#0f0">${sign}${log.amount.toLocaleString()} نقطة</span> <span style="font-size:12px;color:#aaa">${log.time}</span></div>`;
-  });
-  document.getElementById('logList').innerHTML=html;
-}
-
-function clearLog(){
-  if(confirm('متأكد تريد تمسح السجل؟')){
-    transactionLog=[];
-    localStorage.setItem('rafidain_log','[]');
-    loadLog();
-  }
-}
-
-function loadStore(){
-  let html='';
-  countersData.forEach(c=>{
-    html+=`<div class="counterItem"><h4>${c.name}</h4><p>السعر: ${c.price.toLocaleString()} نقطة</p><p>الربح: ${c.profit.toLocaleString()} نقطة كل 24 ساعة</p><button class="btn" onclick="buyCounter(${c.price},${c.profit},'${c.name}')" ${coins<c.price?'disabled':''}>شراء</button></div>`;
-  });
-  document.getElementById('storeList').innerHTML=html;
-}
-
-function buyCounter(price,profit,name){
-  if(coins<price) return alert("ما عندك نقاط كافية");
-  coins-=price;
-  dailyProfitTotal+=profit;
-  addLog(`شراء ${name}`,-price,'buy');
-  if(!dailyTasks.buy.done) completeTask('buy');
-  updateAll();
-  loadStore();
-  alert(`✅ تم شراء العداد`);
-}
-
-function setupReferral(){
-  document.getElementById('myReferralCode').innerText=myReferralCode;
-  document.getElementById('myReferralCode2').innerText=myReferralCode;
-  document.getElementById('myReferralLink').innerText=`rafidain.com/ref=${myReferralCode}`;
-}
-
-function copyCode(){
-  let shareText=`👻 انضم لفريقي في تطبيق الرافدين\n👤 ${currentUser}\n🆔 رمز الاحاله: ${myReferralCode}\n🔗 rafidain.com/ref=${myReferralCode}`;
-  navigator.clipboard.writeText(shareText);
-  alert("✅ تم نسخ رسالة الدعوة");
-}
-
-function copyLink(){
-  navigator.clipboard.writeText(`rafidain.com/ref=${myReferralCode}`);
-  alert("✅ تم نسخ الرابط");
-}
-
-function checkTaskReset(){
-  let now=new Date().toDateString();
-  if(lastTaskReset!=now){
-    dailyTasks={login:{done:false,reward:200},buy:{done:false,reward:300},play:{done:false,reward:150}};
-    lastTaskReset=now;
-  }
-}
-
-function loadTasks(){
-  checkTaskReset();
-  let html='';
-  html+=`<div class="counterItem"><h4>📅 تسجيل الدخول</h4><p>المكافأة: ${dailyTasks.login.reward} نقطة</p><button class="btn" onclick="completeTask('login')" ${dailyTasks.login.done?'disabled':''}>${dailyTasks.login.done?'✅ تم':'استلام'}</button></div>`;
-  html+=`<div class="counterItem"><h4>🛒 شراء عداد</h4><p>المكافأة: ${dailyTasks.buy.reward} نقطة</p><button class="btn" onclick="completeTask('buy')" ${dailyTasks.buy.done?'disabled':''}>${dailyTasks.buy.done?'✅ تم':'استلام'}</button></div>`;
-  html+=`<div class="counterItem"><h4>🎮 لعب اي لعبة</h4><p>المكافأة: ${dailyTasks.play.reward} نقطة</p><button class="btn" onclick="completeTask('play')" ${dailyTasks.play.done?'disabled':''}>${dailyTasks.play.done?'✅ تم':'استلام'}</button></div>`;
-  document.getElementById('dailyTasks').innerHTML=html;
-}
-
-function completeTask(task){
-  if(dailyTasks[task].done) return;
-  coins+=dailyTasks[task].reward;
-  addLog(`مهمة ${task}`,dailyTasks[task].reward,'win');
-  dailyTasks[task].done=true;
-  showToast(`+${dailyTasks[task].reward} نقطة`);
-  updateAll();
-  loadTasks();
-}
-
-function getDots(n){
-  const p={0:[],1:[[50,50]],2:[[25,25],[75,75]],3:[[25,25],[50,50],[75,75]],4:[[25,25],[75,25],[25,75],[75,75]],5:[[25,25],[75,25],[50,50],[25,75],[75,75]],6:[[25,20],[75,20],[25,50],[75,50],[25,80],[75,80]]};
-  return p[n]||[];
-}
-
-function renderDots(n){ return getDots(n).map(d=>`<div class="dot" style="left:${d[0]}%;top:${d[1]}%"></div>`).join(''); }
-
-function createDominoSet(){
-  dominoSet=[];
-  for(let i=0;i<=6;i++) for(let j=i;j<=6;j++) dominoSet.push([i,j]);
-}
-
-function openDomino(){
-  if(coins<50) return alert("ما عندك 50 نقطة");
-  coins-=50;
-  addLog('لعب دومينو',-50,'buy');
-  if(!dailyTasks.play.done) completeTask('play');
-  updateAll();
-  createDominoSet();
-  dominoSet.sort(()=>.5-Math.random());
-  dominoMy=dominoSet.splice(0,7);
-  dominoBot=dominoSet.splice(0,7);
-  let first=dominoSet.pop();
-  dominoTable=[first];
-  dominoLeftEnd=first[0];
-  dominoRightEnd=first[1];
-  document.getElementById('dominoModal').style.display='block';
-  document.getElementById('dominoResult').innerText='';
-  renderDomino();
-}
-
-function renderTile(tile,hidden=false){
-  if(hidden) return '<div class="dominoTile"><div class="dominoHalf top"></div><div class="dominoHalf"></div></div>';
-  return `<div class="dominoTile"><div class="dominoHalf top">${renderDots(tile[0])}</div><div class="dominoHalf">${renderDots(tile[1])}</div></div>`;
-}
-
-function renderDomino(){
-  document.getElementById('botTiles').innerHTML=dominoBot.map(_=>renderTile([0,0],true)).join('');
-  document.getElementById('dominoTable').innerHTML=dominoTable.map(t=>renderTile(t)).join('');
-  document.getElementById('myTiles').innerHTML=dominoMy.map((t,i)=>`<div class="dominoTile" onclick="playDomino(${i})"><div class="dominoHalf top">${renderDots(t[0])}</div><div class="dominoHalf">${renderDots(t[1])}</div></div>`).join('');
-}
-
-function canPlayLeft(tile){ return tile[0]==dominoLeftEnd||tile[1]==dominoLeftEnd; }
-function canPlayRight(tile){ return tile[0]==dominoRightEnd||tile[1]==dominoRightEnd; }
-
-function playDomino(i){
-  let tile=[...dominoMy[i]];
-  if(canPlayRight(tile)){
-    if(tile[0]!=dominoRightEnd) tile=[tile[1],tile[0]];
-    dominoTable.push(tile);
-    dominoRightEnd=tile[1];
-  }else if(canPlayLeft(tile)){
-    if(tile[1]!=dominoLeftEnd) tile=[tile[1],tile[0]];
-    dominoTable.unshift(tile);
-    dominoLeftEnd=tile[0];
-  }else{ return; }
-  dominoMy.splice(i,1);
-  renderDomino();
-  checkDominoWin();
-}
-
-function checkDominoWin(){
-  if(dominoMy.length==0){
-    coins+=250;
-    addLog('فوز دومينو',250,'win');
-    document.getElementById('dominoResult').innerText='فزت! +250 نقطة';
-    updateAll();
-  }
-}
-
-function openMemory(){
-  if(coins<50) return alert("ما عندك 50 نقطة");
-  coins-=50;
-  addLog('لعب ميموري',-50,'buy');
-  if(!dailyTasks.play.done) completeTask('play');
-  updateAll();
-  document.getElementById('memoryModal').style.display='block';
-  startMemory();
-}
-
-function startMemory(){
-  matched=0; flipped=[];
-  let emojis=['💎','💰','🏛️','⚡','💎','💰','🏛️','⚡'];
-  memoryCards=emojis.sort(()=>.5-Math.random());
-  let board=document.getElementById('memoryBoard');
-  board.innerHTML='';
-  memoryCards.forEach((card,i)=>{
-    let div=document.createElement('div');
-    div.style.cssText='width:60px;height:60px;background:#3b82f6;border-radius:10px;font-size:28px;display:flex;align-items:center;justify-content:center;cursor:pointer;border:2px solid #fff';
-    div.dataset.index=i;
-    div.dataset.value=card;
-    div.innerText='?';
-    div.onclick=()=>flipCard(div);
-    board.appendChild(div);
-  });
-}
-
-function flipCard(el){
-  if(flipped.length==2 || el.innerText!='?') return;
-  el.innerText=el.dataset.value;
-  flipped.push(el);
-  if(flipped.length==2){
-    setTimeout(()=>{
-      if(flipped[0].dataset.value==flipped[1].dataset.value){
-        flipped.forEach(c=>c.style.background='#0f0');
-        matched++;
-        if(matched==4){
-          coins+=250;
-          addLog('فوز ميموري',250,'win');
-          document.getElementById('memoryResult').innerText='فزت! +250 نقطة';
-          updateAll();
-        }
-      }else{
-        flipped.forEach(c=>c.innerText='?');
-      }
-      flipped=[];
-    },800);
-  }
-}
-
-function openXO(){
-  if(coins<50) return alert("ما عندك 50 نقطة");
-  coins-=50;
-  addLog('لعب XO',-50,'buy');
-  if(!dailyTasks.play.done) completeTask('play');
-  updateAll();
-  xoBoard=Array(9).fill('');
-  gameOver=false;
-  document.getElementById('xoModal').style.display='block';
-  document.getElementById('xoResult').innerText='';
-  renderXO();
-}
-
-function renderXO(){
-  let b=document.getElementById('xoBoard');
-  b.innerHTML='';
-  xoBoard.forEach((cell,i)=>{
-    let div=document.createElement('div');
-    div.className='xoCell';
-    div.innerText=cell;
-    div.onclick=()=>playXO(i);
-    b.appendChild(div);
-  });
-}
-
-function playXO(i){
-  if(xoBoard[i]!=''||gameOver) return;
-  xoBoard[i]='X';
-  if(checkWinner('X')){
-    coins+=200;
-    addLog('فوز XO',200,'win');
-    document.getElementById('xoResult').innerText="فزت! +200 نقطة";
-    gameOver=true;
-    updateAll();
-    renderXO();
-    return;
-  }
-  if(!xoBoard.includes('')){
-    document.getElementById('xoResult').innerText="تعادل";
-    gameOver=true;
-    renderXO();
-    return;
-  }
-  botMove();
-}
-
-function botMove(){
-  let empty=xoBoard.map((v,i)=>v==''?i:null).filter(v=>v!==null);
-  let move=empty[Math.floor(Math.random()*empty.length)];
-  xoBoard[move]='O';
-  if(checkWinner('O')){
-    document.getElementById('xoResult').innerText="خسرت!";
-    gameOver=true;
-  }else if(!xoBoard.includes('')){
-    document.getElementById('xoResult').innerText="تعادل";
-    gameOver=true;
-  }
-  renderXO();
-}
-
-function checkWinner(p){
-  const wins=[[0,1,2],[3,4,5],[6,7,8],[0,3,6],[1,4,7],[2,5,8],[0,4,8],[2,4,6]];
-  return wins.some(w=>w.every(i=>xoBoard[i]==p));
-}
-
-function spinWheel(){
-  if(coins<50) return alert("ما عندك 50 نقطة");
-  coins-=50;
-  addLog('لف العجلة',-50,'buy');
-  if(!dailyTasks.play.done) completeTask('play');
-  updateAll();
-  document.getElementById('wheelModal').style.display='block';
-  document.getElementById('wheelResult').innerText='';
-  drawWheel();
-}
-
-function drawWheel(){
-  const canvas=document.getElementById('wheel'), ctx=canvas.getContext('2d');
-  const centerX=140, centerY=140, radius=130, segmentAngle=2*Math.PI/wheelPrizes.length;
-  ctx.clearRect(0,0,280,280);
-  wheelPrizes.forEach((p,i)=>{
-    const startAngle=i*segmentAngle-Math.PI/2, endAngle=(i+1)*segmentAngle-Math.PI/2;
-    ctx.beginPath();
-    ctx.moveTo(centerX,centerY);
-    ctx.arc(centerX,centerY,radius,startAngle,endAngle);
-    ctx.fillStyle=i%2==0?'#3b82f6':'#1e3a8a';
-    ctx.fill();
-    ctx.strokeStyle='#fff';
-    ctx.lineWidth=2;
-    ctx.stroke();
-    ctx.save();
-    ctx.translate(centerX,centerY);
-    ctx.rotate(startAngle+segmentAngle/2);
-    ctx.textAlign='center';
-    ctx.fillStyle='#fff';
-    ctx.font='bold 14px tahoma';
-    ctx.fillText(p.text,radius-30,5);
-    ctx.restore();
-  });
-}
-
-function doSpin(){
-  document.getElementById('spinBtn').disabled=true;
-  let randomIndex=Math.floor(Math.random()*wheelPrizes.length), segmentDeg=360/wheelPrizes.length;
-  let targetAngle=360-(segmentDeg*randomIndex+segmentDeg/2);
-  let targetDeg=3600+targetAngle;
-  document.getElementById('wheel').style.transform=`rotate(${targetDeg}deg)`;
   setTimeout(()=>{
-    let prize=wheelPrizes[randomIndex];
-    if(prize.value>0){
-      coins+=prize.value;
-      addLog('ربح من العجلة',prize.value,'win');
-    }
-    document.getElementById('wheelResult').innerText=prize.value>0?`ربحت ${prize.text} نقطة`:`حظ اوفر`;
-    updateAll();
-    document.getElementById('spinBtn').disabled=false;
-  },5000);
-}
+    document.getElementById('splash').style.display='none';
+    checkLogin();
+  }, 2500);
 
-function openBox(){
-  if(coins<500) return alert("ما عندك 500 نقطة");
-  coins-=500;
-  addLog('فتح صندوق',-500,'buy');
-  if(!dailyTasks.play.done) completeTask('play');
-  updateAll();
-  boxOpened=false;
-  document.getElementById('boxModal').style.display='block';
-  document.getElementById('boxResult').innerText='اختار صندوق!';
-  let boxes=document.getElementById('boxes');
-  boxes.innerHTML='';
-  let winningBox=Math.floor(Math.random()*3), prize=Math.floor(Math.random()*9901)+100;
-  for(let i=0;i<3;i++){
-    let div=document.createElement('div');
-    div.className='boxItem';
-    div.innerText='?';
-    div.dataset.isWinner=i==winningBox;
-    div.dataset.prize=prize;
-    div.onclick=()=>openMysteryBox(div);
-    boxes.appendChild(div);
-  }
-}
-
-function openMysteryBox(el){
-  if(boxOpened) return;
-  boxOpened=true;
-  let isWinner=el.dataset.isWinner=='true', prize=parseInt(el.dataset.prize);
-  document.querySelectorAll('.boxItem').forEach(b=>{
-    if(b.dataset.isWinner=='true'){
-      b.style.background='#0f0';
-      b.innerText=b.dataset.prize;
+  async function checkLogin(){
+    currentUser=localStorage.getItem('rafidain_user');
+    if(currentUser){
+      await loadUserData();
+      document.getElementById('registerPage').style.display='none';
+      document.getElementById('mainApp').style.display='block';
+      listenToGlobalChat();
+      listenToRooms();
     }else{
-      b.style.background='#333';
-      b.innerText='💀';
-    }
-  });
-  if(isWinner){
-    coins+=prize;
-    addLog('ربح من الصندوق',prize,'win');
-    document.getElementById('boxResult').innerText=`مبروك! ربحت ${prize.toLocaleString()} نقطة`;
-  }else{
-    document.getElementById('boxResult').innerText=`حظ اوفر!`;
-  }
-  updateAll();
-}
-
-/* --- REAL LUDO ENGINE --- */
-const LUDO_MAIN_PATH = [
-  {x:6,y:13},{x:6,y:12},{x:6,y:11},{x:6,y:10},{x:6,y:9},
-  {x:5,y:8},{x:4,y:8},{x:3,y:8},{x:2,y:8},{x:1,y:8},{x:0,y:8},
-  {x:0,y:7},{x:0,y:6},
-  {x:1,y:6},{x:2,y:6},{x:3,y:6},{x:4,y:6},{x:5,y:6},
-  {x:6,y:5},{x:6,y:4},{x:6,y:3},{x:6,y:2},{x:6,y:1},{x:6,y:0},
-  {x:7,y:0},{x:8,y:0},
-  {x:8,y:1},{x:8,y:2},{x:8,y:3},{x:8,y:4},{x:8,y:5},
-  {x:9,y:6},{x:10,y:6},{x:11,y:6},{x:12,y:6},{x:13,y:6},{x:14,y:6},
-  {x:14,y:7},{x:14,y:8},
-  {x:13,y:8},{x:12,y:8},{x:11,y:8},{x:10,y:8},{x:9,y:8},
-  {x:8,y:9},{x:8,y:10},{x:8,y:11},{x:8,y:12},{x:8,y:13},{x:8,y:14},
-  {x:7,y:14},{x:6,y:14}
-];
-
-const HOME_PATHS = [
-  [{x:7,y:13},{x:7,y:12},{x:7,y:11},{x:7,y:10},{x:7,y:9},{x:7,y:8}],
-  [{x:1,y:7},{x:2,y:7},{x:3,y:7},{x:4,y:7},{x:5,y:7},{x:6,y:7}],
-  [{x:7,y:1},{x:7,y:2},{x:7,y:3},{x:7,y:4},{x:7,y:5},{x:7,y:6}],
-  [{x:13,y:7},{x:12,y:7},{x:11,y:7},{x:10,y:7},{x:9,y:7},{x:8,y:7}]
-];
-
-const START_OFFSETS = [0, 13, 26, 39];
-const SAFE_POSITIONS = [0, 8, 13, 21, 26, 34, 39, 47];
-
-function openLudo(){
-  if(coins<100) return alert("ما عندك 100 نقطة");
-  coins-=100;
-  addLog('لعب لودو الحقيقية',-100,'buy');
-  if(!dailyTasks.play.done) completeTask('play');
-  updateAll();
-  initLudo();
-  document.getElementById('ludoModal').style.display='block';
-}
-
-function initLudo(){
-  ludoGameOver=false; ludoCurrentPlayer=0; ludoDice=0; ludoCanMove=false;
-  ludoPlayers=[
-    {color:0, pieces:[-1,-1,-1,-1]},
-    {color:1, pieces:[-1,-1,-1,-1]},
-    {color:2, pieces:[-1,-1,-1,-1]},
-    {color:3, pieces:[-1,-1,-1,-1]}
-  ];
-  drawLudoBoard();
-  document.getElementById('ludoTurn').innerText='دور: '+LUDO_NAMES[0];
-  document.getElementById('ludoDiceBtn').disabled=false;
-}
-
-function getPieceCoords(playerIdx, pieceVal, pieceIdx){
-  if(pieceVal === -1){
-    const bases = [
-      {x:2.5, y:11.5}, {x:2.5, y:2.5}, {x:11.5, y:2.5}, {x:11.5, y:11.5}
-    ];
-    let base = bases[playerIdx];
-    let offsets = [{dx:-1,dy:-1}, {dx:1,dy:-1}, {dx:-1,dy:1}, {dx:1,dy:1}];
-    return {x: base.x + offsets[pieceIdx].dx, y: base.y + offsets[pieceIdx].dy};
-  }
-  if(pieceVal >= 52){
-    let idx = pieceVal - 52;
-    return HOME_PATHS[playerIdx][idx];
-  }
-  let pathIdx = (START_OFFSETS[playerIdx] + pieceVal) % 52;
-  return LUDO_MAIN_PATH[pathIdx];
-}
-
-function drawLudoBoard(){
-  const c=document.getElementById('ludoBoard'), ctx=c.getContext('2d');
-  const cellSize = 330 / 15;
-  ctx.clearRect(0,0,330,330);
-
-  ctx.fillStyle='#f33'; ctx.fillRect(0, 9*cellSize, 6*cellSize, 6*cellSize);
-  ctx.fillStyle='#3b82f6'; ctx.fillRect(0, 0, 6*cellSize, 6*cellSize);
-  ctx.fillStyle='#0f0'; ctx.fillRect(9*cellSize, 0, 6*cellSize, 6*cellSize);
-  ctx.fillStyle='#ffb300'; ctx.fillRect(9*cellSize, 9*cellSize, 6*cellSize, 6*cellSize);
-
-  let bases = [{x:3, y:12}, {x:3, y:3}, {x:12, y:3}, {x:12, y:12}];
-  bases.forEach((b, i)=>{
-    ctx.fillStyle='#fff';
-    ctx.beginPath(); ctx.arc(b.x*cellSize, b.y*cellSize, cellSize*1.8, 0, 6.28); ctx.fill();
-  });
-
-  ctx.strokeStyle='#ccc'; ctx.lineWidth=1;
-  for(let i=0; i<15; i++){
-    for(let j=0; j<15; j++){
-      if((i<6||i>8) && (j<6||j>8)) continue;
-      ctx.strokeRect(i*cellSize, j*cellSize, cellSize, cellSize);
+      document.getElementById('registerPage').style.display='flex';
+      document.getElementById('mainApp').style.display='none';
     }
   }
 
-  for(let i=1; i<6; i++){
-    ctx.fillStyle='#f33'; ctx.fillRect(7*cellSize, (14-i)*cellSize, cellSize, cellSize);
-    ctx.fillStyle='#3b82f6'; ctx.fillRect(i*cellSize, 7*cellSize, cellSize, cellSize);
-    ctx.fillStyle='#0f0'; ctx.fillRect(7*cellSize, i*cellSize, cellSize, cellSize);
-    ctx.fillStyle='#ffb300'; ctx.fillRect((14-i)*cellSize, 7*cellSize, cellSize, cellSize);
-  }
+  window.createAccount = async function(){
+    let name=document.getElementById('regName').value.trim();
+    let pass=document.getElementById('regPass').value.trim();
+    let ref=document.getElementById('regRef').value.trim();
+    if(!name||!pass) return alert("دخل الاسم وكلمة السر");
 
-  ctx.fillStyle='#f33'; ctx.fillRect(6*cellSize, 13*cellSize, cellSize, cellSize);
-  ctx.fillStyle='#3b82f6'; ctx.fillRect(1*cellSize, 6*cellSize, cellSize, cellSize);
-  ctx.fillStyle='#0f0'; ctx.fillRect(8*cellSize, 1*cellSize, cellSize, cellSize);
-  ctx.fillStyle='#ffb300'; ctx.fillRect(13*cellSize, 8*cellSize, cellSize, cellSize);
+    const userRef = doc(db, "users", name);
+    const userSnap = await getDoc(userRef);
 
-  SAFE_POSITIONS.forEach(pos=>{
-    let coord = LUDO_MAIN_PATH[pos];
-    ctx.fillStyle='#ffd700';
-    ctx.beginPath(); ctx.arc((coord.x+0.5)*cellSize, (coord.y+0.5)*cellSize, 4, 0, 6.28); ctx.fill();
-  });
-
-  ctx.beginPath(); ctx.moveTo(6*cellSize, 6*cellSize); ctx.lineTo(7.5*cellSize, 7.5*cellSize); ctx.lineTo(6*cellSize, 9*cellSize); ctx.fillStyle='#3b82f6'; ctx.fill();
-  ctx.beginPath(); ctx.moveTo(6*cellSize, 6*cellSize); ctx.lineTo(7.5*cellSize, 7.5*cellSize); ctx.lineTo(9*cellSize, 6*cellSize); ctx.fillStyle='#0f0'; ctx.fill();
-  ctx.beginPath(); ctx.moveTo(9*cellSize, 6*cellSize); ctx.lineTo(7.5*cellSize, 7.5*cellSize); ctx.lineTo(9*cellSize, 9*cellSize); ctx.fillStyle='#ffb300'; ctx.fill();
-  ctx.beginPath(); ctx.moveTo(6*cellSize, 9*cellSize); ctx.lineTo(7.5*cellSize, 7.5*cellSize); ctx.lineTo(9*cellSize, 9*cellSize); ctx.fillStyle='#f33'; ctx.fill();
-
-  ludoPlayers.forEach((p, pi)=>{
-    p.pieces.forEach((pos, idx)=>{
-      let c = getPieceCoords(pi, pos, idx);
-      ctx.fillStyle = LUDO_COLORS[pi];
-      ctx.beginPath();
-      ctx.arc((c.x + 0.5) * cellSize, (c.y + 0.5) * cellSize, cellSize * 0.4, 0, 6.28);
-      ctx.fill();
-      ctx.strokeStyle = '#fff'; ctx.lineWidth = 2;
-      ctx.stroke();
-    });
-  });
-}
-
-function rollDice(){
-  if(ludoGameOver || ludoCurrentPlayer !== 0) return;
-  ludoDice = Math.floor(Math.random() * 6) + 1;
-  document.getElementById('ludoDice').innerText = ludoDice;
-  document.getElementById('ludoDiceBtn').disabled = true;
-  ludoCanMove = true;
-
-  if(!canPlayerMove(0)){
-    setTimeout(()=>{ nextLudoTurn(); }, 1000);
-  }
-}
-
-function canPlayerMove(pIdx){
-  let p = ludoPlayers[pIdx];
-  return p.pieces.some(pos => {
-    if(pos === -1) return ludoDice === 6;
-    return (pos + ludoDice <= 57);
-  });
-}
-
-function moveLudoPiece(pIdx, pieceIdx){
-  let p = ludoPlayers[pIdx];
-  let cur = p.pieces[pieceIdx];
-
-  if(cur === -1 && ludoDice === 6){
-    p.pieces[pieceIdx] = 0;
-  } else if(cur >= 0 && cur + ludoDice <= 57){
-    p.pieces[pieceIdx] += ludoDice;
-  } else {
-    return false;
-  }
-
-  let eaten = checkEating(pIdx, pieceIdx);
-  drawLudoBoard();
-  checkLudoWin();
-
-  if(!ludoGameOver){
-    if(ludoDice === 6 || eaten){
-      if(pIdx === 0){
-        document.getElementById('ludoDiceBtn').disabled = false;
-        ludoCanMove = false;
+    if (userSnap.exists()) {
+      let data = userSnap.data();
+      if(data.pass === pass){
+        currentUser = name;
+        localStorage.setItem('rafidain_user', name);
+        await loadUserData();
+        document.getElementById('registerPage').style.display='none';
+        document.getElementById('mainApp').style.display='block';
+        showToast('مرحبا بك مجدداً '+name);
+        listenToGlobalChat();
+        listenToRooms();
       } else {
-        setTimeout(()=>{ botPlayTurn(); }, 1000);
+        alert("كلمة السر غير صحيحة!");
       }
     } else {
-      nextLudoTurn();
+      let initialData = {
+        pass: pass,
+        coins: 5000,
+        dailyProfit: 0,
+        lastClaim: Date.now(),
+        referral: 'RAF'+Math.floor(Math.random()*9000+1000),
+        log: ref ? [{text:`استخدم رمز الاحالة: ${ref}`, amount:500, type:'win', time:new Date().toLocaleString('ar-IQ')}] : []
+      };
+      await setDoc(userRef, initialData);
+      currentUser = name;
+      localStorage.setItem('rafidain_user', name);
+      await loadUserData();
+      document.getElementById('registerPage').style.display='none';
+      document.getElementById('mainApp').style.display='block';
+      showToast('مرحبا بك '+name);
+      listenToGlobalChat();
+      listenToRooms();
     }
   }
-  return true;
-}
 
-function checkEating(pIdx, pieceIdx){
-  let targetVal = ludoPlayers[pIdx].pieces[pieceIdx];
-  if(targetVal === -1 || targetVal >= 52) return false;
-
-  let globalPos = (START_OFFSETS[pIdx] + targetVal) % 52;
-  if(SAFE_POSITIONS.includes(globalPos)) return false;
-
-  let captured = false;
-  ludoPlayers.forEach((p, pi)=>{
-    if(pi !== pIdx){
-      p.pieces.forEach((pos, i)=>{
-        if(pos >= 0 && pos < 52){
-          let enemyGlobalPos = (START_OFFSETS[pi] + pos) % 52;
-          if(enemyGlobalPos === globalPos){
-            p.pieces[i] = -1;
-            captured = true;
-          }
-        }
-      });
-    }
-  });
-  return captured;
-}
-
-function nextLudoTurn(){
-  if(ludoGameOver) return;
-  ludoCurrentPlayer = (ludoCurrentPlayer + 1) % 4;
-  document.getElementById('ludoTurn').innerText = 'دور: ' + LUDO_NAMES[ludoCurrentPlayer];
-  ludoCanMove = false;
-
-  if(ludoCurrentPlayer === 0){
-    document.getElementById('ludoDiceBtn').disabled = false;
-  } else {
-    document.getElementById('ludoDiceBtn').disabled = true;
-    setTimeout(()=>{ botPlayTurn(); }, 1200);
-  }
-}
-
-function botPlayTurn(){
-  if(ludoGameOver) return;
-  ludoDice = Math.floor(Math.random() * 6) + 1;
-  document.getElementById('ludoDice').innerText = ludoDice;
-
-  let p = ludoPlayers[ludoCurrentPlayer];
-  let movable = [];
-  p.pieces.forEach((pos, i)=>{
-    if(pos === -1 && ludoDice === 6) movable.push(i);
-    else if(pos >= 0 && pos + ludoDice <= 57) movable.push(i);
-  });
-
-  if(movable.length > 0){
-    let chosen = movable[Math.floor(Math.random() * movable.length)];
-    moveLudoPiece(ludoCurrentPlayer, chosen);
-  } else {
-    setTimeout(()=>{ nextLudoTurn(); }, 1000);
-  }
-}
-
-document.getElementById('ludoBoard').onclick = function(e){
-  if(ludoCurrentPlayer !== 0 || !ludoCanMove) return;
-  let rect = e.target.getBoundingClientRect();
-  let clickX = (e.clientX - rect.left) / (330 / 15);
-  let clickY = (e.clientY - rect.top) / (330 / 15);
-
-  let p = ludoPlayers[0];
-  for(let i=0; i<4; i++){
-    let c = getPieceCoords(0, p.pieces[i], i);
-    if(Math.abs(clickX - (c.x + 0.5)) < 1.2 && Math.abs(clickY - (c.y + 0.5)) < 1.2){
-      if(moveLudoPiece(0, i)){
-        ludoCanMove = false;
-        break;
-      }
-    }
-  }
-};
-
-function checkLudoWin(){
-  ludoPlayers.forEach((p, i)=>{
-    if(p.pieces.every(x => x === 57)){
-      ludoGameOver = true;
-      if(i === 0){
-        coins += 1000;
-        addLog('فوز لودو الحقيقية', 1000, 'win');
-        alert('🏆 مبروك الفوز بلعبة اللودو! +1000 نقطة');
-      } else {
-        alert('خسرت اللعبة! ' + LUDO_NAMES[i] + ' فاز بالمركز الأول');
-      }
+  async function loadUserData(){
+    const userSnap = await getDoc(doc(db, "users", currentUser));
+    if(userSnap.exists()){
+      let data = userSnap.data();
+      coins = data.coins || 5000;
+      dailyProfitTotal = data.dailyProfit || 0;
+      lastClaim = data.lastClaim || Date.now();
+      myReferralCode = data.referral || 'RAF1000';
+      transactionLog = data.log || [];
+      document.getElementById('userName').innerText = currentUser;
       updateAll();
     }
-  });
-}
-
-function openCreateRoom(){
-  document.getElementById('createRoomModal').style.display='block';
-}
-
-function createRoom(){
-  let name=document.getElementById('newRoomName').value.trim();
-  if(!name) return alert("دخل اسم الغرفة");
-  if(coins<80000) return alert("ما عندك 80000 نقطة");
-  coins-=80000;
-  let id='RM'+Math.floor(Math.random()*900000+100000);
-  
-  let newRoom = {id:id, name:name, owner:currentUser};
-  rooms.push(newRoom);
-  
-  localStorage.setItem('rafidain_rooms', JSON.stringify(rooms));
-  
-  addLog(`انشاء غرفة ${name}`,-80000,'buy');
-  updateAll();
-  closeModal('createRoomModal');
-  alert("تم انشاء الغرفة! الايدي: "+id);
-  loadRooms();
-  enterRoom(id);
-}
-
-function loadRooms(){
-  rooms = JSON.parse(localStorage.getItem('rafidain_rooms')) || [];
-  let html='';
-  rooms.forEach(r=>{
-    html+=`<div class="roomItem" onclick="enterRoom('${r.id}')"><h4>${r.name}</h4><div class="roomId">ID: ${r.id}</div><div>المالك: ${r.owner}</div></div>`;
-  });
-  document.getElementById('roomsList').innerHTML=html||'<p style="color:#aaa">لا توجد غرف</p>';
-  
-  let myRoomObj = rooms.find(r => r.owner == currentUser);
-  if(myRoomObj){
-    document.getElementById('myRoomSection').innerHTML=
-      '<button class="btn btn-green" onclick="myRoom()">🏠 دخول غرفتي</button>' +
-      '<button class="btn btn-red" onclick="deleteMyRoomOutside()">🗑️ حذف غرفتي</button>';
-  } else {
-    document.getElementById('myRoomSection').innerHTML='';
   }
-  
-  document.getElementById('createRoomBtnSection').style.display='block';
-}
 
-function joinRoomById(){
-  let id=document.getElementById('searchRoomId').value.trim();
-  rooms = JSON.parse(localStorage.getItem('rafidain_rooms')) || [];
-  let room=rooms.find(r=>r.id==id);
-  if(!room) return alert("الغرفة غير موجودة");
-  enterRoom(id);
-}
-
-function myRoom(){
-  rooms = JSON.parse(localStorage.getItem('rafidain_rooms')) || [];
-  let room=rooms.find(r=>r.owner==currentUser);
-  if(room) enterRoom(room.id);
-  else alert("لم يتم العثور على غرفتك");
-}
-
-function enterRoom(id){
-  rooms = JSON.parse(localStorage.getItem('rafidain_rooms')) || [];
-  currentRoom=rooms.find(r=>r.id==id);
-  if(!currentRoom) return alert("خطأ بالدخول للغرفة");
-
-  document.getElementById('roomNameTitle').innerText=currentRoom.name;
-  document.getElementById('roomIdTitle').innerText='ID: '+currentRoom.id;
-  
-  if(currentRoom.owner==currentUser){
-    document.getElementById('editRoomBtn').style.display='inline-block';
-  } else {
-    document.getElementById('editRoomBtn').style.display='none';
-  }
-  
-  showPage('chatRoom',null);
-  loadChat();
-  let g='';
-  giftsList.forEach(gf=>{
-    g+=`<button class="giftBtn" onclick="sendGift('${gf.icon}','${gf.name}',${gf.price})">${gf.icon}<br>${gf.price}</button>`;
-  });
-  document.getElementById('giftsBar').innerHTML=g;
-}
-
-function editRoomName(){
-  let nn=prompt("الاسم الجديد للغرفة:");
-  if(nn && currentRoom){
-    currentRoom.name=nn;
-    rooms=rooms.map(r=>r.id==currentRoom.id?currentRoom:r);
-    localStorage.setItem('rafidain_rooms', JSON.stringify(rooms));
-    document.getElementById('roomNameTitle').innerText=nn;
-    loadRooms();
-  }
-}
-
-function deleteMyRoomOutside(){
-  rooms = JSON.parse(localStorage.getItem('rafidain_rooms')) || [];
-  let myRoomObj = rooms.find(r => r.owner == currentUser);
-  if(!myRoomObj) return alert("ليس لديك غرفة لحذفها");
-  
-  if(confirm("هل أنت متأكد من حذف الغرفة؟")){
-    rooms = rooms.filter(r => r.id !== myRoomObj.id);
-    localStorage.setItem('rafidain_rooms', JSON.stringify(rooms));
-    
-    delete roomMessages[myRoomObj.id];
-    localStorage.setItem('roomMessages', JSON.stringify(roomMessages));
-    
-    alert("تم حذف الغرفة بنجاح!");
-    loadRooms();
-  }
-}
-
-function sendRoomMsg(){
-  let m=document.getElementById('roomChatInput').value.trim();
-  if(!m || !currentRoom) return;
-  if(!roomMessages[currentRoom.id]) roomMessages[currentRoom.id]=[];
-  roomMessages[currentRoom.id].push({u:currentUser,t:m,time:Date.now()});
-  localStorage.setItem('roomMessages',JSON.stringify(roomMessages));
-  document.getElementById('roomChatInput').value='';
-  loadChat();
-}
-
-function loadChat(){
-  if(!currentRoom) return;
-  let b=document.getElementById('roomChatBox');
-  b.innerHTML='';
-  (roomMessages[currentRoom.id]||[]).forEach(m=>{
-    let cls=m.u==currentUser?'me':'other';
-    b.innerHTML+=`<div class="chatMsg ${cls}"><b>${m.u}:</b> ${m.t}</div>`;
-  });
-  b.scrollTop=b.scrollHeight;
-}
-
-function sendGift(icon,name,price){
-  if(coins<price) return alert("ما عندك نقاط كافية");
-  if(!currentRoom) return;
-  coins-=price;
-  if(!roomMessages[currentRoom.id]) roomMessages[currentRoom.id]=[];
-  roomMessages[currentRoom.id].push({u:currentUser,t:`${icon} ارسل هدية ${name} بـ ${price} نقطة`,time:Date.now()});
-  localStorage.setItem('roomMessages',JSON.stringify(roomMessages));
-  addLog(`ارسال هدية ${name}`,-price,'buy');
-  updateAll();
-  loadChat();
-}
-
-function openGlobalChat(){
-  showPage('globalChat',null);
-  loadGlobalChat();
-}
-
-function loadGlobalChat(){
-  let b=document.getElementById('globalChatBox');
-  b.innerHTML='';
-  globalMessages.forEach(m=>{
-    let cls=m.u==currentUser?'me':'other';
-    b.innerHTML+=`<div class="chatMsg ${cls}"><b>${m.u}:</b> ${m.t}</div>`;
-  });
-  b.scrollTop=b.scrollHeight;
-}
-
-const chatAI=[
-  {keys:["سلام","السلام","هلا","هاي"],replies:["وعليكم السلام ورحمة الله","هلا بيك","ياهلا وغلا"]},
-  {keys:["شخبارك","شلونك","كيفك"],replies:["الحمدلله بخير ونعمة","تمام الحمدلله وانت شلونك؟","ماشي الحال"]},
-  {keys:["منو الادمن","الادمن","مسؤول"],replies:["الادمن هو صاحب التطبيق","ماكو ادمن هسه الكل سواسية"]},
-  {keys:["شلون اشحن","اشحن","رصيد"],replies:["روح للرصيد واضغط سحب","الشحن بعدة مو مفعل بس قريباً"]},
-  {keys:["شلون العب","لعبة","العاب"],replies:["ادخل على قسم الالعاب واختار اللي تريده","اكو XO ودومينو ولودو وعجلة وصندوق"]},
-  {keys:["عداد","شراء عداد"],replies:["العدادات بالمتجر تفيدك تجمع نقاط تلقائي","اشتري اعلى عداد تكدر عليه"]},
-  {keys:["احالة","رمز"],replies:["ادخل قسم الاحالة وانسخ رمزك وارسله لاصدقائك","كل شخص يدخل برمزك تاخذ نقاط"]}
-];
-
-function getAIReply(msg){
-  msg=msg.toLowerCase();
-  for(let item of chatAI){
-    for(let key of item.keys){
-      if(msg.includes(key)) return item.replies[Math.floor(Math.random()*item.replies.length)];
+  window.logout = function(){
+    if(confirm('متأكد تريد تسوي تسجيل خروج؟')){
+      localStorage.clear();
+      location.reload();
     }
   }
-  return botMessages[Math.floor(Math.random()*botMessages.length)];
-}
 
-function sendGlobalMsg(){
-  let m=document.getElementById('globalChatInput').value.trim();
-  if(!m) return;
-  globalMessages.push({u:currentUser,t:m,time:Date.now()});
-  if(globalMessages.length>100) globalMessages.shift();
-  localStorage.setItem('globalMessages',JSON.stringify(globalMessages));
-  document.getElementById('globalChatInput').value='';
-  loadGlobalChat();
-  
-  let reply=getAIReply(m);
-  if(reply){
-    let whoReply=botNamesMale.concat(botNamesFemale).sort(()=>.5-Math.random()).slice(0,1);
-    whoReply.forEach((name)=>{
-      setTimeout(()=>{
-        globalMessages.push({u:name,t:reply,time:Date.now()});
-        if(globalMessages.length>100) globalMessages.shift();
-        localStorage.setItem('globalMessages',JSON.stringify(globalMessages));
-        if(document.getElementById('globalChat').classList.contains('active')){
-          loadGlobalChat();
-        }
-      }, 1000);
+  window.showPage = function(id,el){
+    document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+    document.querySelectorAll('.navItem').forEach(b=>b.classList.remove('active'));
+    document.getElementById(id).classList.add('active');
+    if(el) el.classList.add('active');
+    if(id=='store') loadStore();
+    if(id=='games') loadTasks();
+    if(id=='referral') setupReferral();
+    if(id=='log') loadLog();
+    if(id=='rooms') loadRooms();
+    if(id=='globalChat') loadGlobalChat();
+  }
+
+  function toDollar(n){ return (n/RATE).toFixed(2); }
+
+  async function updateAll(){
+    let dollar=toDollar(coins);
+    document.getElementById('coins').innerText=coins.toLocaleString()+' نقطة';
+    document.getElementById('coinsDollar').innerText=`يعادل $${dollar} دولار`;
+    document.getElementById('coins2').innerText=`رصيدك: ${coins.toLocaleString()} نقطة`;
+    document.getElementById('coins3').innerText=`رصيدك: ${coins.toLocaleString()} نقطة`;
+    document.getElementById('dailyProfit').innerText=dailyProfitTotal.toLocaleString()+' نقطة/يوم';
+    document.getElementById('perDay').innerText='+'+dailyProfitTotal.toLocaleString()+' نقطة/24 ساعة';
+    
+    let now=Date.now(), timeLeft=24*60*60*1000-(now-lastClaim);
+    if(timeLeft<=0 && dailyProfitTotal>0){
+      coins += dailyProfitTotal;
+      lastClaim = now;
+      addLog(`استلام ارباح تلقائية`, dailyProfitTotal, 'win');
+      showToast(`تم استلام ${dailyProfitTotal.toLocaleString()} نقطة!`);
+    }
+    let hours=Math.floor(timeLeft/1000/60/60), mins=Math.floor((timeLeft/1000/60)%60);
+    document.getElementById('nextClaim').innerText=dailyProfitTotal>0?`الارباح الجاية بعد: ${hours}س ${mins}د`:'';
+    
+    if(currentUser){
+      await updateDoc(doc(db, "users", currentUser), {
+        coins: coins,
+        dailyProfit: dailyProfitTotal,
+        lastClaim: lastClaim,
+        log: transactionLog
+      }).catch(()=>{});
+    }
+  }
+
+  setInterval(updateAll, 60000);
+
+  function showToast(msg){
+    let t=document.getElementById('toast');
+    t.innerText=msg;
+    t.style.display='block';
+    setTimeout(()=>t.style.display='none',3000);
+  }
+
+  window.closeModal = function(id){ document.getElementById(id).style.display='none'; }
+
+  function addLog(text,amount,type){
+    let time=new Date().toLocaleString('ar-IQ');
+    transactionLog.unshift({text,amount,type,time});
+    if(transactionLog.length>50) transactionLog.pop();
+  }
+
+  function loadLog(){
+    let html='';
+    if(transactionLog.length==0) html='<p style="color:#aaa">لا توجد معاملات بعد</p>';
+    transactionLog.forEach(log=>{
+      let sign=log.amount>0?'+':'';
+      html+=`<div class="logItem ${log.type}"><b>${log.text}</b><br><span style="color:#0f0">${sign}${log.amount.toLocaleString()} نقطة</span> <span style="font-size:12px;color:#aaa">${log.time}</span></div>`;
+    });
+    document.getElementById('logList').innerHTML=html;
+  }
+
+  window.clearLog = async function(){
+    if(confirm('متأكد تريد تمسح السجل؟')){
+      transactionLog=[];
+      await updateAll();
+      loadLog();
+    }
+  }
+
+  function loadStore(){
+    let html='';
+    countersData.forEach(c=>{
+      html+=`<div class="counterItem"><h4>${c.name}</h4><p>السعر: ${c.price.toLocaleString()} نقطة</p><p>الربح: ${c.profit.toLocaleString()} نقطة كل 24 ساعة</p><button class="btn" onclick="buyCounter(${c.price},${c.profit},'${c.name}')" ${coins<c.price?'disabled':''}>شراء</button></div>`;
+    });
+    document.getElementById('storeList').innerHTML=html;
+  }
+
+  window.buyCounter = function(price,profit,name){
+    if(coins<price) return alert("ما عندك نقاط كافية");
+    coins-=price;
+    dailyProfitTotal+=profit;
+    addLog(`شراء ${name}`,-price,'buy');
+    if(!dailyTasks.buy.done) completeTask('buy');
+    updateAll();
+    loadStore();
+    alert(`✅ تم شراء العداد`);
+  }
+
+  function setupReferral(){
+    document.getElementById('myReferralCode').innerText=myReferralCode;
+    document.getElementById('myReferralCode2').innerText=myReferralCode;
+    document.getElementById('myReferralLink').innerText=`rafidain.com/ref=${myReferralCode}`;
+  }
+
+  window.copyCode = function(){
+    let shareText=`👻 انضم لفريقي في تطبيق الرافدين\n👤 ${currentUser}\n🆔 رمز الاحاله: ${myReferralCode}\n🔗 rafidain.com/ref=${myReferralCode}`;
+    navigator.clipboard.writeText(shareText);
+    alert("✅ تم نسخ رسالة الدعوة");
+  }
+
+  window.copyLink = function(){
+    navigator.clipboard.writeText(`rafidain.com/ref=${myReferralCode}`);
+    alert("✅ تم نسخ الرابط");
+  }
+
+  function checkTaskReset(){
+    let now=new Date().toDateString();
+    if(lastTaskReset!=now){
+      dailyTasks={login:{done:false,reward:200},buy:{done:false,reward:300},play:{done:false,reward:150}};
+      lastTaskReset=now;
+    }
+  }
+
+  function loadTasks(){
+    checkTaskReset();
+    let html='';
+    html+=`<div class="counterItem"><h4>📅 تسجيل الدخول</h4><p>المكافأة: ${dailyTasks.login.reward} نقطة</p><button class="btn" onclick="completeTask('login')" ${dailyTasks.login.done?'disabled':''}>${dailyTasks.login.done?'✅ تم':'استلام'}</button></div>`;
+    html+=`<div class="counterItem"><h4>🛒 شراء عداد</h4><p>المكافأة: ${dailyTasks.buy.reward} نقطة</p><button class="btn" onclick="completeTask('buy')" ${dailyTasks.buy.done?'disabled':''}>${dailyTasks.buy.done?'✅ تم':'استلام'}</button></div>`;
+    html+=`<div class="counterItem"><h4>🎮 لعب اي لعبة</h4><p>المكافأة: ${dailyTasks.play.reward} نقطة</p><button class="btn" onclick="completeTask('play')" ${dailyTasks.play.done?'disabled':''}>${dailyTasks.play.done?'✅ تم':'استلام'}</button></div>`;
+    document.getElementById('dailyTasks').innerHTML=html;
+  }
+
+  window.completeTask = function(task){
+    if(dailyTasks[task].done) return;
+    coins+=dailyTasks[task].reward;
+    addLog(`مهمة ${task}`,dailyTasks[task].reward,'win');
+    dailyTasks[task].done=true;
+    showToast(`+${dailyTasks[task].reward} نقطة`);
+    updateAll();
+    loadTasks();
+  }
+
+  function getDots(n){
+    const p={0:[],1:[[50,50]],2:[[25,25],[75,75]],3:[[25,25],[50,50],[75,75]],4:[[25,25],[75,25],[25,75],[75,75]],5:[[25,25],[75,25],[50,50],[25,75],[75,75]],6:[[25,20],[75,20],[25,50],[75,50],[25,80],[75,80]]};
+    return p[n]||[];
+  }
+
+  function renderDots(n){ return getDots(n).map(d=>`<div class="dot" style="left:${d[0]}%;top:${d[1]}%"></div>`).join(''); }
+
+  function createDominoSet(){
+    dominoSet=[];
+    for(let i=0;i<=6;i++) for(let j=i;j<=6;j++) dominoSet.push([i,j]);
+  }
+
+  window.openDomino = function(){
+    if(coins<50) return alert("ما عندك 50 نقطة");
+    coins-=50;
+    addLog('لعب دومينو',-50,'buy');
+    if(!dailyTasks.play.done) completeTask('play');
+    updateAll();
+    createDominoSet();
+    dominoSet.sort(()=>.5-Math.random());
+    dominoMy=dominoSet.splice(0,7);
+    dominoBot=dominoSet.splice(0,7);
+    let first=dominoSet.pop();
+    dominoTable=[first];
+    dominoLeftEnd=first[0];
+    dominoRightEnd=first[1];
+    document.getElementById('dominoModal').style.display='block';
+    document.getElementById('dominoResult').innerText='';
+    renderDomino();
+  }
+
+  function renderTile(tile,hidden=false){
+    if(hidden) return '<div class="dominoTile"><div class="dominoHalf top"></div><div class="dominoHalf"></div></div>';
+    return `<div class="dominoTile"><div class="dominoHalf top">${renderDots(tile[0])}</div><div class="dominoHalf">${renderDots(tile[1])}</div></div>`;
+  }
+
+  function renderDomino(){
+    document.getElementById('botTiles').innerHTML=dominoBot.map(_=>renderTile([0,0],true)).join('');
+    document.getElementById('dominoTable').innerHTML=dominoTable.map(t=>renderTile(t)).join('');
+    document.getElementById('myTiles').innerHTML=dominoMy.map((t,i)=>`<div class="dominoTile" onclick="playDomino(${i})"><div class="dominoHalf top">${renderDots(t[0])}</div><div class="dominoHalf">${renderDots(t[1])}</div></div>`).join('');
+  }
+
+  function canPlayLeft(tile){ return tile[0]==dominoLeftEnd||tile[1]==dominoLeftEnd; }
+  function canPlayRight(tile){ return tile[0]==dominoRightEnd||tile[1]==dominoRightEnd; }
+
+  window.playDomino = function(i){
+    let tile=[...dominoMy[i]];
+    if(canPlayRight(tile)){
+      if(tile[0]!=dominoRightEnd) tile=[tile[1],tile[0]];
+      dominoTable.push(tile);
+      dominoRightEnd=tile[1];
+    }else if(canPlayLeft(tile)){
+      if(tile[1]!=dominoLeftEnd) tile=[tile[1],tile[0]];
+      dominoTable.unshift(tile);
+      dominoLeftEnd=tile[0];
+    }else{ return; }
+    dominoMy.splice(i,1);
+    renderDomino();
+    checkDominoWin();
+  }
+
+  function checkDominoWin(){
+    if(dominoMy.length==0){
+      coins+=250;
+      addLog('فوز دومينو',250,'win');
+      document.getElementById('dominoResult').innerText='فزت! +250 نقطة';
+      updateAll();
+    }
+  }
+
+  window.openMemory = function(){
+    if(coins<50) return alert("ما عندك 50 نقطة");
+    coins-=50;
+    addLog('لعب ميموري',-50,'buy');
+    if(!dailyTasks.play.done) completeTask('play');
+    updateAll();
+    document.getElementById('memoryModal').style.display='block';
+    startMemory();
+  }
+
+  function startMemory(){
+    matched=0; flipped=[];
+    let emojis=['💎','💰','🏛️','⚡','💎','💰','🏛️','⚡'];
+    memoryCards=emojis.sort(()=>.5-Math.random());
+    let board=document.getElementById('memoryBoard');
+    board.innerHTML='';
+    memoryCards.forEach((card,i)=>{
+      let div=document.createElement('div');
+      div.style.cssText='width:60px;height:60px;background:#3b82f6;border-radius:10px;font-size:28px;display:flex;align-items:center;justify-content:center;cursor:pointer;border:2px solid #fff';
+      div.dataset.index=i;
+      div.dataset.value=card;
+      div.innerText='?';
+      div.onclick=()=>flipCard(div);
+      board.appendChild(div);
     });
   }
-}
+
+  function flipCard(el){
+    if(flipped.length==2 || el.innerText!='?') return;
+    el.innerText=el.dataset.value;
+    flipped.push(el);
+    if(flipped.length==2){
+      setTimeout(()=>{
+        if(flipped[0].dataset.value==flipped[1].dataset.value){
+          flipped.forEach(c=>c.style.background='#0f0');
+          matched++;
+          if(matched==4){
+            coins+=250;
+            addLog('فوز ميموري',250,'win');
+            document.getElementById('memoryResult').innerText='فزت! +250 نقطة';
+            updateAll();
+          }
+        }else{
+          flipped.forEach(c=>c.innerText='?');
+        }
+        flipped=[];
+      },800);
+    }
+  }
+
+  window.openXO = function(){
+    if(coins<50) return alert("ما عندك 50 نقطة");
+    coins-=50;
+    addLog('لعب XO',-50,'buy');
+    if(!dailyTasks.play.done) completeTask('play');
+    updateAll();
+    xoBoard=Array(9).fill('');
+    gameOver=false;
+    document.getElementById('xoModal').style.display='block';
+    document.getElementById('xoResult').innerText='';
+    renderXO();
+  }
+
+  function renderXO(){
+    let b=document.getElementById('xoBoard');
+    b.innerHTML='';
+    xoBoard.forEach((cell,i)=>{
+      let div=document.createElement('div');
+      div.className='xoCell';
+      div.innerText=cell;
+      div.onclick=()=>playXO(i);
+      b.appendChild(div);
+    });
+  }
+
+  function playXO(i){
+    if(xoBoard[i]!=''||gameOver) return;
+    xoBoard[i]='X';
+    if(checkWinner('X')){
+      coins+=200;
+      addLog('فوز XO',200,'win');
+      document.getElementById('xoResult').innerText="فزت! +200 نقطة";
+      gameOver=true;
+      updateAll();
+      renderXO();
+      return;
+    }
+    if(!xoBoard.includes('')){
+      document.getElementById('xoResult').innerText="تعادل";
+      gameOver=true;
+      renderXO();
+      return;
+    }
+    botMove();
+  }
+
+  function botMove(){
+    let empty=xoBoard.map((v,i)=>v==''?i:null).filter(v=>v!==null);
+    let move=empty[Math.floor(Math.random()*empty.length)];
+    xoBoard[move]='O';
+    if(checkWinner('O')){
+      document.getElementById('xoResult').innerText="خسرت!";
+      gameOver=true;
+    }else if(!xoBoard.includes('')){
+      document.getElementById('xoResult').innerText="تعادل";
+      gameOver=true;
+    }
+    renderXO();
+  }
+
+  function checkWinner(p){
+    const wins=[[0,1,2],[3,4,5],[6,7,8],[0,3,6],[1,4,7],[2,5,8],[0,4,8],[2,4,6]];
+    return wins.some(w=>w.every(i=>xoBoard[i]==p));
+  }
+
+  window.spinWheel = function(){
+    if(coins<50) return alert("ما عندك 50 نقطة");
+    coins-=50;
+    addLog('لف العجلة',-50,'buy');
+    if(!dailyTasks.play.done) completeTask('play');
+    updateAll();
+    document.getElementById('wheelModal').style.display='block';
+    document.getElementById('wheelResult').innerText='';
+    drawWheel();
+  }
+
+  function drawWheel(){
+    const canvas=document.getElementById('wheel'), ctx=canvas.getContext('2d');
+    const centerX=140, centerY=140, radius=130, segmentAngle=2*Math.PI/wheelPrizes.length;
+    ctx.clearRect(0,0,280,280);
+    wheelPrizes.forEach((p,i)=>{
+      const startAngle=i*segmentAngle-Math.PI/2, endAngle=(i+1)*segmentAngle-Math.PI/2;
+      ctx.beginPath();
+      ctx.moveTo(centerX,centerY);
+      ctx.arc(centerX,centerY,radius,startAngle,endAngle);
+      ctx.fillStyle=i%2==0?'#3b82f6':'#1e3a8a';
+      ctx.fill();
+      ctx.strokeStyle='#fff';
+      ctx.lineWidth=2;
+      ctx.stroke();
+      ctx.save();
+      ctx.translate(centerX,centerY);
+      ctx.rotate(startAngle+segmentAngle/2);
+      ctx.textAlign='center';
+      ctx.fillStyle='#fff';
+      ctx.font='bold 14px tahoma';
+      ctx.fillText(p.text,radius-30,5);
+      ctx.restore();
+    });
+  }
+
+  window.doSpin = function(){
+    document.getElementById('spinBtn').disabled=true;
+    let randomIndex=Math.floor(Math.random()*wheelPrizes.length), segmentDeg=360/wheelPrizes.length;
+    let targetAngle=360-(segmentDeg*randomIndex+segmentDeg/2);
+    let targetDeg=3600+targetAngle;
+    document.getElementById('wheel').style.transform=`rotate(${targetDeg}deg)`;
+    setTimeout(()=>{
+      let prize=wheelPrizes[randomIndex];
+      if(prize.value>0){
+        coins+=prize.value;
+        addLog('ربح من العجلة',prize.value,'win');
+      }
+      document.getElementById('wheelResult').innerText=prize.value>0?`ربحت ${prize.text} نقطة`:`حظ اوفر`;
+      updateAll();
+      document.getElementById('spinBtn').disabled=false;
+    },5000);
+  }
+
+  window.openBox = function(){
+    if(coins<500) return alert("ما عندك 500 نقطة");
+    coins-=500;
+    addLog('فتح صندوق',-500,'buy');
+    if(!dailyTasks.play.done) completeTask('play');
+    updateAll();
+    boxOpened=false;
+    document.getElementById('boxModal').style.display='block';
+    document.getElementById('boxResult').innerText='اختار صندوق!';
+    let boxes=document.getElementById('boxes');
+    boxes.innerHTML='';
+    let winningBox=Math.floor(Math.random()*3), prize=Math.floor(Math.random()*9901)+100;
+    for(let i=0;i<3;i++){
+      let div=document.createElement('div');
+      div.className='boxItem';
+      div.innerText='?';
+      div.dataset.isWinner=i==winningBox;
+      div.dataset.prize=prize;
+      div.onclick=()=>openMysteryBox(div);
+      boxes.appendChild(div);
+    }
+  }
+
+  function openMysteryBox(el){
+    if(boxOpened) return;
+    boxOpened=true;
+    let isWinner=el.dataset.isWinner=='true', prize=parseInt(el.dataset.prize);
+    document.querySelectorAll('.boxItem').forEach(b=>{
+      if(b.dataset.isWinner=='true'){
+        b.style.background='#0f0';
+        b.innerText=b.dataset.prize;
+      }else{
+        b.style.background='#333';
+        b.innerText='💀';
+      }
+    });
+    if(isWinner){
+      coins+=prize;
+      addLog('ربح من الصندوق',prize,'win');
+      document.getElementById('boxResult').innerText=`مبروك! ربحت ${prize.toLocaleString()} نقطة`;
+    }else{
+      document.getElementById('boxResult').innerText=`حظ اوفر!`;
+    }
+    updateAll();
+  }
+
+  /* --- REAL LUDO ENGINE --- */
+  const LUDO_MAIN_PATH = [
+    {x:6,y:13},{x:6,y:12},{x:6,y:11},{x:6,y:10},{x:6,y:9},
+    {x:5,y:8},{x:4,y:8},{x:3,y:8},{x:2,y:8},{x:1,y:8},{x:0,y:8},
+    {x:0,y:7},{x:0,y:6},
+    {x:1,y:6},{x:2,y:6},{x:3,y:6},{x:4,y:6},{x:5,y:6},
+    {x:6,y:5},{x:6,y:4},{x:6,y:3},{x:6,y:2},{x:6,y:1},{x:6,y:0},
+    {x:7,y:0},{x:8,y:0},
+    {x:8,y:1},{x:8,y:2},{x:8,y:3},{x:8,y:4},{x:8,y:5},
+    {x:9,y:6},{x:10,y:6},{x:11,y:6},{x:12,y:6},{x:13,y:6},{x:14,y:6},
+    {x:14,y:7},{x:14,y:8},
+    {x:13,y:8},{x:12,y:8},{x:11,y:8},{x:10,y:8},{x:9,y:8},
+    {x:8,y:9},{x:8,y:10},{x:8,y:11},{x:8,y:12},{x:8,y:13},{x:8,y:14},
+    {x:7,y:14},{x:6,y:14}
+  ];
+
+  const HOME_PATHS = [
+    [{x:7,y:13},{x:7,y:12},{x:7,y:11},{x:7,y:10},{x:7,y:9},{x:7,y:8}],
+    [{x:1,y:7},{x:2,y:7},{x:3,y:7},{x:4,y:7},{x:5,y:7},{x:6,y:7}],
+    [{x:7,y:1},{x:7,y:2},{x:7,y:3},{x:7,y:4},{x:7,y:5},{x:7,y:6}],
+    [{x:13,y:7},{x:12,y:7},{x:11,y:7},{x:10,y:7},{x:9,y:7},{x:8,y:7}]
+  ];
+
+  const START_OFFSETS = [0, 13, 26, 39];
+  const SAFE_POSITIONS = [0, 8, 13, 21, 26, 34, 39, 47];
+
+  window.openLudo = function(){
+    if(coins<100) return alert("ما عندك 100 نقطة");
+    coins-=100;
+    addLog('لعب لودو الحقيقية',-100,'buy');
+    if(!dailyTasks.play.done) completeTask('play');
+    updateAll();
+    initLudo();
+    document.getElementById('ludoModal').style.display='block';
+  }
+
+  function initLudo(){
+    ludoGameOver=false; ludoCurrentPlayer=0; ludoDice=0; ludoCanMove=false;
+    ludoPlayers=[
+      {color:0, pieces:[-1,-1,-1,-1]},
+      {color:1, pieces:[-1,-1,-1,-1]},
+      {color:2, pieces:[-1,-1,-1,-1]},
+      {color:3, pieces:[-1,-1,-1,-1]}
+    ];
+    drawLudoBoard();
+    document.getElementById('ludoTurn').innerText='دور: '+LUDO_NAMES[0];
+    document.getElementById('ludoDiceBtn').disabled=false;
+  }
+
+  function getPieceCoords(playerIdx, pieceVal, pieceIdx){
+    if(pieceVal === -1){
+      const bases = [
+        {x:2.5, y:11.5}, {x:2.5, y:2.5}, {x:11.5, y:2.5}, {x:11.5, y:11.5}
+      ];
+      let base = bases[playerIdx];
+      let offsets = [{dx:-1,dy:-1}, {dx:1,dy:-1}, {dx:-1,dy:1}, {dx:1,dy:1}];
+      return {x: base.x + offsets[pieceIdx].dx, y: base.y + offsets[pieceIdx].dy};
+    }
+    if(pieceVal >= 52){
+      let idx = pieceVal - 52;
+      return HOME_PATHS[playerIdx][idx];
+    }
+    let pathIdx = (START_OFFSETS[playerIdx] + pieceVal) % 52;
+    return LUDO_MAIN_PATH[pathIdx];
+  }
+
+  function drawLudoBoard(){
+    const c=document.getElementById('ludoBoard'), ctx=c.getContext('2d');
+    const cellSize = 330 / 15;
+    ctx.clearRect(0,0,330,330);
+
+    ctx.fillStyle='#f33'; ctx.fillRect(0, 9*cellSize, 6*cellSize, 6*cellSize);
+    ctx.fillStyle='#3b82f6'; ctx.fillRect(0, 0, 6*cellSize, 6*cellSize);
+    ctx.fillStyle='#0f0'; ctx.fillRect(9*cellSize, 0, 6*cellSize, 6*cellSize);
+    ctx.fillStyle='#ffb300'; ctx.fillRect(9*cellSize, 9*cellSize, 6*cellSize, 6*cellSize);
+
+    let bases = [{x:3, y:12}, {x:3, y:3}, {x:12, y:3}, {x:12, y:12}];
+    bases.forEach((b, i)=>{
+      ctx.fillStyle='#fff';
+      ctx.beginPath(); ctx.arc(b.x*cellSize, b.y*cellSize, cellSize*1.8, 0, 6.28); ctx.fill();
+    });
+
+    ctx.strokeStyle='#ccc'; ctx.lineWidth=1;
+    for(let i=0; i<15; i++){
+      for(let j=0; j<15; j++){
+        if((i<6||i>8) && (j<6||j>8)) continue;
+        ctx.strokeRect(i*cellSize, j*cellSize, cellSize, cellSize);
+      }
+    }
+
+    for(let i=1; i<6; i++){
+      ctx.fillStyle='#f33'; ctx.fillRect(7*cellSize, (14-i)*cellSize, cellSize, cellSize);
+      ctx.fillStyle='#3b82f6'; ctx.fillRect(i*cellSize, 7*cellSize, cellSize, cellSize);
+      ctx.fillStyle='#0f0'; ctx.fillRect(7*cellSize, i*cellSize, cellSize, cellSize);
+      ctx.fillStyle='#ffb300'; ctx.fillRect((14-i)*cellSize, 7*cellSize, cellSize, cellSize);
+    }
+
+    ctx.fillStyle='#f33'; ctx.fillRect(6*cellSize, 13*cellSize, cellSize, cellSize);
+    ctx.fillStyle='#3b82f6'; ctx.fillRect(1*cellSize, 6*cellSize, cellSize, cellSize);
+    ctx.fillStyle='#0f0'; ctx.fillRect(8*cellSize, 1*cellSize, cellSize, cellSize);
+    ctx.fillStyle='#ffb300'; ctx.fillRect(13*cellSize, 8*cellSize, cellSize, cellSize);
+
+    SAFE_POSITIONS.forEach(pos=>{
+      let coord = LUDO_MAIN_PATH[pos];
+      ctx.fillStyle='#ffd700';
+      ctx.beginPath(); ctx.arc((coord.x+0.5)*cellSize, (coord.y+0.5)*cellSize, 4, 0, 6.28); ctx.fill();
+    });
+
+    ctx.beginPath(); ctx.moveTo(6*cellSize, 6*cellSize); ctx.lineTo(7.5*cellSize, 7.5*cellSize); ctx.lineTo(6*cellSize, 9*cellSize); ctx.fillStyle='#3b82f6'; ctx.fill();
+    ctx.beginPath(); ctx.moveTo(6*cellSize, 6*cellSize); ctx.lineTo(7.5*cellSize, 7.5*cellSize); ctx.lineTo(9*cellSize, 6*cellSize); ctx.fillStyle='#0f0'; ctx.fill();
+    ctx.beginPath(); ctx.moveTo(9*cellSize, 6*cellSize); ctx.lineTo(7.5*cellSize, 7.5*cellSize); ctx.lineTo(9*cellSize, 9*cellSize); ctx.fillStyle='#ffb300'; ctx.fill();
+    ctx.beginPath(); ctx.moveTo(6*cellSize, 9*cellSize); ctx.lineTo(7.5*cellSize, 7.5*cellSize); ctx.lineTo(9*cellSize, 9*cellSize); ctx.fillStyle='#f33'; ctx.fill();
+
+    ludoPlayers.forEach((p, pi)=>{
+      p.pieces.forEach((pos, idx)=>{
+        let c = getPieceCoords(pi, pos, idx);
+        ctx.fillStyle = LUDO_COLORS[pi];
+        ctx.beginPath();
+        ctx.arc((c.x + 0.5) * cellSize, (c.y + 0.5) * cellSize, cellSize * 0.4, 0, 6.28);
+        ctx.fill();
+        ctx.strokeStyle = '#fff'; ctx.lineWidth = 2;
+        ctx.stroke();
+      });
+    });
+  }
+
+  window.rollDice = function(){
+    if(ludoGameOver || ludoCurrentPlayer !== 0) return;
+    ludoDice = Math.floor(Math.random() * 6) + 1;
+    document.getElementById('ludoDice').innerText = ludoDice;
+    document.getElementById('ludoDiceBtn').disabled = true;
+    ludoCanMove = true;
+
+    if(!canPlayerMove(0)){
+      setTimeout(()=>{ nextLudoTurn(); }, 1000);
+    }
+  }
+
+  function canPlayerMove(pIdx){
+    let p = ludoPlayers[pIdx];
+    return p.pieces.some(pos => {
+      if(pos === -1) return ludoDice === 6;
+      return (pos + ludoDice <= 57);
+    });
+  }
+
+  function moveLudoPiece(pIdx, pieceIdx){
+    let p = ludoPlayers[pIdx];
+    let cur = p.pieces[pieceIdx];
+
+    if(cur === -1 && ludoDice === 6){
+      p.pieces[pieceIdx] = 0;
+    } else if(cur >= 0 && cur + ludoDice <= 57){
+      p.pieces[pieceIdx] += ludoDice;
+    } else {
+      return false;
+    }
+
+    let eaten = checkEating(pIdx, pieceIdx);
+    drawLudoBoard();
+    checkLudoWin();
+
+    if(!ludoGameOver){
+      if(ludoDice === 6 || eaten){
+        if(pIdx === 0){
+          document.getElementById('ludoDiceBtn').disabled = false;
+          ludoCanMove = false;
+        } else {
+          setTimeout(()=>{ botPlayTurn(); }, 1000);
+        }
+      } else {
+        nextLudoTurn();
+      }
+    }
+    return true;
+  }
+
+  function checkEating(pIdx, pieceIdx){
+    let targetVal = ludoPlayers[pIdx].pieces[pieceIdx];
+    if(targetVal === -1 || targetVal >= 52) return false;
+
+    let globalPos = (START_OFFSETS[pIdx] + targetVal) % 52;
+    if(SAFE_POSITIONS.includes(globalPos)) return false;
+
+    let captured = false;
+    ludoPlayers.forEach((p, pi)=>{
+      if(pi !== pIdx){
+        p.pieces.forEach((pos, i)=>{
+          if(pos >= 0 && pos < 52){
+            let enemyGlobalPos = (START_OFFSETS[pi] + pos) % 52;
+            if(enemyGlobalPos === globalPos){
+              p.pieces[i] = -1;
+              captured = true;
+            }
+          }
+        });
+      }
+    });
+    return captured;
+  }
+
+  function nextLudoTurn(){
+    if(ludoGameOver) return;
+    ludoCurrentPlayer = (ludoCurrentPlayer + 1) % 4;
+    document.getElementById('ludoTurn').innerText = 'دور: ' + LUDO_NAMES[ludoCurrentPlayer];
+    ludoCanMove = false;
+
+    if(ludoCurrentPlayer === 0){
+      document.getElementById('ludoDiceBtn').disabled = false;
+    } else {
+      document.getElementById('ludoDiceBtn').disabled = true;
+      setTimeout(()=>{ botPlayTurn(); }, 1200);
+    }
+  }
+
+  function botPlayTurn(){
+    if(ludoGameOver) return;
+    ludoDice = Math.floor(Math.random() * 6) + 1;
+    document.getElementById('ludoDice').innerText = ludoDice;
+
+    let p = ludoPlayers[ludoCurrentPlayer];
+    let movable = [];
+    p.pieces.forEach((pos, i)=>{
+      if(pos === -1 && ludoDice === 6) movable.push(i);
+      else if(pos >= 0 && pos + ludoDice <= 57) movable.push(i);
+    });
+
+    if(movable.length > 0){
+      let chosen = movable[Math.floor(Math.random() * movable.length)];
+      moveLudoPiece(ludoCurrentPlayer, chosen);
+    } else {
+      setTimeout(()=>{ nextLudoTurn(); }, 1000);
+    }
+  }
+
+  document.getElementById('ludoBoard').onclick = function(e){
+    if(ludoCurrentPlayer !== 0 || !ludoCanMove) return;
+    let rect = e.target.getBoundingClientRect();
+    let clickX = (e.clientX - rect.left) / (330 / 15);
+    let clickY = (e.clientY - rect.top) / (330 / 15);
+
+    let p = ludoPlayers[0];
+    for(let i=0; i<4; i++){
+      let c = getPieceCoords(0, p.pieces[i], i);
+      if(Math.abs(clickX - (c.x + 0.5)) < 1.2 && Math.abs(clickY - (c.y + 0.5)) < 1.2){
+        if(moveLudoPiece(0, i)){
+          ludoCanMove = false;
+          break;
+        }
+      }
+    }
+  };
+
+  function checkLudoWin(){
+    ludoPlayers.forEach((p, i)=>{
+      if(p.pieces.every(x => x === 57)){
+        ludoGameOver = true;
+        if(i === 0){
+          coins += 1000;
+          addLog('فوز لودو الحقيقية', 1000, 'win');
+          alert('🏆 مبروك الفوز بلعبة اللودو! +1000 نقطة');
+        } else {
+          alert('خسرت اللعبة! ' + LUDO_NAMES[i] + ' فاز بالمركز الأول');
+        }
+        updateAll();
+      }
+    });
+  }
+
+  window.openCreateRoom = function(){
+    document.getElementById('createRoomModal').style.display='block';
+  }
+
+  window.createRoom = async function(){
+    let name=document.getElementById('newRoomName').value.trim();
+    if(!name) return alert("دخل اسم الغرفة");
+    if(coins<80000) return alert("ما عندك 80000 نقطة");
+    coins-=80000;
+    let id='RM'+Math.floor(Math.random()*900000+100000);
+    
+    let newRoom = {id:id, name:name, owner:currentUser};
+    await setDoc(doc(db, "rooms", id), newRoom);
+    
+    addLog(`انشاء غرفة ${name}`,-80000,'buy');
+    updateAll();
+    closeModal('createRoomModal');
+    alert("تم انشاء الغرفة! الايدي: "+id);
+    enterRoom(id);
+  }
+
+  function listenToRooms(){
+    onSnapshot(collection(db, "rooms"), (snapshot) => {
+      rooms = [];
+      snapshot.forEach((doc) => {
+        rooms.push(doc.data());
+      });
+      loadRooms();
+    });
+  }
+
+  function loadRooms(){
+    let html='';
+    rooms.forEach(r=>{
+      html+=`<div class="roomItem" onclick="enterRoom('${r.id}')"><h4>${r.name}</h4><div class="roomId">ID: ${r.id}</div><div>المالك: ${r.owner}</div></div>`;
+    });
+    document.getElementById('roomsList').innerHTML=html||'<p style="color:#aaa">لا توجد غرف</p>';
+    
+    let myRoomObj = rooms.find(r => r.owner == currentUser);
+    if(myRoomObj){
+      document.getElementById('myRoomSection').innerHTML=
+        '<button class="btn btn-green" onclick="myRoom()">🏠 دخول غرفتي</button>' +
+        '<button class="btn btn-red" onclick="deleteMyRoomOutside()">🗑️ حذف غرفتي</button>';
+    } else {
+      document.getElementById('myRoomSection').innerHTML='';
+    }
+    
+    document.getElementById('createRoomBtnSection').style.display='block';
+  }
+
+  window.joinRoomById = function(){
+    let id=document.getElementById('searchRoomId').value.trim();
+    let room=rooms.find(r=>r.id==id);
+    if(!room) return alert("الغرفة غير موجودة");
+    enterRoom(id);
+  }
+
+  window.myRoom = function(){
+    let room=rooms.find(r=>r.owner==currentUser);
+    if(room) enterRoom(room.id);
+    else alert("لم يتم العثور على غرفتك");
+  }
+
+  let unsubRoomChat = null;
+  window.enterRoom = function(id){
+    currentRoom=rooms.find(r=>r.id==id);
+    if(!currentRoom) return alert("خطأ بالدخول للغرفة");
+
+    document.getElementById('roomNameTitle').innerText=currentRoom.name;
+    document.getElementById('roomIdTitle').innerText='ID: '+currentRoom.id;
+    
+    if(currentRoom.owner==currentUser){
+      document.getElementById('editRoomBtn').style.display='inline-block';
+    } else {
+      document.getElementById('editRoomBtn').style.display='none';
+    }
+    
+    showPage('chatRoom',null);
+    
+    if(unsubRoomChat) unsubRoomChat();
+    unsubRoomChat = onSnapshot(doc(db, "roomMessages", id), (docSnap) => {
+      if(docSnap.exists()){
+        roomMessages[id] = docSnap.data().messages || [];
+      } else {
+        roomMessages[id] = [];
+      }
+      loadChat();
+    });
+
+    let g='';
+    giftsList.forEach(gf=>{
+      g+=`<button class="giftBtn" onclick="sendGift('${gf.icon}','${gf.name}',${gf.price})">${gf.icon}<br>${gf.price}</button>`;
+    });
+    document.getElementById('giftsBar').innerHTML=g;
+  }
+
+  window.editRoomName = async function(){
+    let nn=prompt("الاسم الجديد للغرفة:");
+    if(nn && currentRoom){
+      await updateDoc(doc(db, "rooms", currentRoom.id), { name: nn });
+      document.getElementById('roomNameTitle').innerText=nn;
+    }
+  }
+
+  window.deleteMyRoomOutside = async function(){
+    let myRoomObj = rooms.find(r => r.owner == currentUser);
+    if(!myRoomObj) return alert("ليس لديك غرفة لحذفها");
+    
+    if(confirm("هل أنت متأكد من حذف الغرفة؟")){
+      await deleteDoc(doc(db, "rooms", myRoomObj.id));
+      alert("تم حذف الغرفة بنجاح!");
+    }
+  }
+
+  window.sendRoomMsg = async function(){
+    let m=document.getElementById('roomChatInput').value.trim();
+    if(!m || !currentRoom) return;
+    
+    const roomChatRef = doc(db, "roomMessages", currentRoom.id);
+    await setDoc(roomChatRef, {
+      messages: arrayUnion({u:currentUser, t:m, time:Date.now()})
+    }, {merge: true});
+
+    document.getElementById('roomChatInput').value='';
+  }
+
+  function loadChat(){
+    if(!currentRoom) return;
+    let b=document.getElementById('roomChatBox');
+    b.innerHTML='';
+    (roomMessages[currentRoom.id]||[]).forEach(m=>{
+      let cls=m.u==currentUser?'me':'other';
+      b.innerHTML+=`<div class="chatMsg ${cls}"><b>${m.u}:</b> ${m.t}</div>`;
+    });
+    b.scrollTop=b.scrollHeight;
+  }
+
+  window.sendGift = async function(icon,name,price){
+    if(coins<price) return alert("ما عندك نقاط كافية");
+    if(!currentRoom) return;
+    coins-=price;
+
+    const roomChatRef = doc(db, "roomMessages", currentRoom.id);
+    await setDoc(roomChatRef, {
+      messages: arrayUnion({u:currentUser, t:`${icon} ارسل هدية ${name} بـ ${price} نقطة`, time:Date.now()})
+    }, {merge: true});
+
+    addLog(`ارسال هدية ${name}`,-price,'buy');
+    updateAll();
+  }
+
+  window.openGlobalChat = function(){
+    showPage('globalChat',null);
+    loadGlobalChat();
+  }
+
+  function listenToGlobalChat(){
+    onSnapshot(doc(db, "globalChat", "main"), (docSnap) => {
+      if(docSnap.exists()){
+        globalMessages = docSnap.data().messages || [];
+        loadGlobalChat();
+      }
+    });
+  }
+
+  function loadGlobalChat(){
+    let b=document.getElementById('globalChatBox');
+    if(!b) return;
+    b.innerHTML='';
+    globalMessages.forEach(m=>{
+      let cls=m.u==currentUser?'me':'other';
+      b.innerHTML+=`<div class="chatMsg ${cls}"><b>${m.u}:</b> ${m.t}</div>`;
+    });
+    b.scrollTop=b.scrollHeight;
+  }
+
+  window.sendGlobalMsg = async function(){
+    let m=document.getElementById('globalChatInput').value.trim();
+    if(!m) return;
+    
+    const globalChatRef = doc(db, "globalChat", "main");
+    await setDoc(g    await setDoc(globalChatRef, {
+      messages: arrayUnion({u:currentUser, t:m, time:Date.now()})
+    }, {merge: true});
+
+    document.getElementById('globalChatInput').value='';
+  }
 </script>
 </body>
 </html>
+
