@@ -171,7 +171,7 @@ h1{color:#3b82f6;text-shadow:0 0 15px #3b82f6;font-size:26px}
       <input type="text" id="roomChatInput" class="input" placeholder="اكتب هنا" style="width:70%" onkeypress="if(event.key=='Enter')sendRoomMsg()">
       <button class="btn" style="width:25%;margin:8px 0" onclick="sendRoomMsg()">ارسال</button>
     </div>
-    <h4 style="color:#ffb300;margin-top:10px">🎁 الهدايا (تخصم منك وتضاف للمستلمين بالغرفة)</h4>
+    <h4 style="color:#ffb300;margin-top:10px">🎁 الهدايا (تتوزع بالتساوي على الموجودين بالغرفة)</h4>
     <div id="giftsBar" style="display:flex;flex-wrap:wrap;justify-content:center"></div>
   </div>
 
@@ -220,7 +220,6 @@ h1{color:#3b82f6;text-shadow:0 0 15px #3b82f6;font-size:26px}
     <div class="navItem" onclick="showPage('profile',this)"><div class="navIcon">👤</div><div>الملف</div></div>
   </div>
 </div>
-
 <!-- Modals -->
 <div id="xoModal" class="modal"><div class="modal-content"><h2>❌⭕ XO</h2><div id="xoBoard"></div><p id="xoResult"></p><button class="btn" onclick="closeModal('xoModal')">خروج</button></div></div>
 <div id="dominoModal" class="modal"><div class="modal-content"><h2>🎲 دومينو ضد البوت</h2><div id="botTiles"></div><hr><div id="dominoTable" class="dominoTableArea"></div><hr><div id="myTiles"></div><p id="dominoResult"></p><button class="btn" onclick="closeModal('dominoModal')">خروج</button></div></div>
@@ -472,10 +471,12 @@ h1{color:#3b82f6;text-shadow:0 0 15px #3b82f6;font-size:26px}
     onSnapshot(doc(db, "users", currentUser), (snapshot) => {
       if(snapshot.exists()){
         let data = snapshot.data();
+        coins = data.coins !== undefined ? data.coins : coins;
         myFriends = data.friends || [];
         friendRequests = data.friendRequests || [];
         sentRequests = data.sentRequests || [];
         renderFriendsPage();
+        updateAll();
       }
     });
   }
@@ -1136,40 +1137,59 @@ h1{color:#3b82f6;text-shadow:0 0 15px #3b82f6;font-size:26px}
     b.scrollTop=b.scrollHeight;
   }
 
-  // --- التعديل الفعلي لإرسال الهدية: خصم من المرسل وإضافة الرصيد الفعلي عبر Firestore ---
-  window.sendGift = async function(icon,name,price){
+  // --- الدالة المعدلة خصيصاً لتوزيع النقاط على الموجودين بالغرفة بالتساوي ---
+  window.sendGift = async function(icon, name, price){
     if(coins < price) return alert("ليس لديك نقاط كافية لإرسال الهدية!");
     if(!currentRoom) return;
-    
-    coins -= price;
-    addLog(`ارسال هدية ${name} في الغرفة`, -price, 'buy');
-    updateAll();
 
     try {
-      // 1. جلب بيانات جميع المستخدمين لتوزيع النقاط على الموجودين أو مالك الغرفة (هنا نضيفها لمالك الغرفة كمثال أو للمشاركين)
-      // التعديل الحالي سيقوم بإضافة النقاط فوراً لمالك الغرفة أو الشخص المعني، ويظهر اعلان الهدية للجميع
+      // 1. استخراج قائمة المستخدمين المتواجدين في الغرفة حالياً بناءً على الرسائل النشطة أو جلبهم
+      let messages = roomMessages[currentRoom.id] || [];
+      let activeUsersSet = new Set();
+      // إضافة مالك الغرفة والرسل الحاليين في الشات كأعضاء في الغرفة
+      activeUsersSet.add(currentRoom.owner);
+      messages.forEach(m => { if(m.u) activeUsersSet.add(m.u); });
+      activeUsersSet.add(currentUser); // ضمان وجود المرسل ضمن الحسبان إذا لزم
+
+      let roomMembers = Array.from(activeUsersSet);
+      let count = roomMembers.length;
+      if(count === 0) count = 1;
+
+      let sharePerPerson = Math.floor(price / count); // التقسيم بالتساوي
+
+      // 2. خصم النقاط الكاملة من المرسل وتحديث رصيده وسجله
+      coins -= price;
+      addLog(`ارسال هدية ${name} وتوزيعها على الغرفة`, -price, 'buy');
+      updateAll();
+
+      // 3. إرسال رسالة تفصيلية في شات الغرفة
       const roomChatRef = doc(db, "roomMessages", currentRoom.id);
       await setDoc(roomChatRef, {
-        messages: arrayUnion({u: currentUser, t: `🎁 أرسل هدية (${icon} ${name}) بقيمة ${price} نقطة!`, time: Date.now()})
+        messages: arrayUnion({
+          u: currentUser, 
+          t: `🎁 أرسل هدية (${icon} ${name}) بقيمة ${price.toLocaleString()} نقطة وتم تقسيمها على ${count} أشخاص (${sharePerPerson.toLocaleString()} لكل شخص)!`, 
+          time: Date.now()
+        })
       }, {merge: true});
 
-      // إضافة النقاط فعلياً لمالك الغرفة (أو يمكنك تخصيصها لشخص معين)
-      if(currentRoom.owner && currentRoom.owner.toLowerCase() !== currentUser.toLowerCase()){
-        const ownerRef = doc(db, "users", currentRoom.owner);
-        const ownerSnap = await getDoc(ownerRef);
-        if(ownerSnap.exists()){
-          let ownerData = ownerSnap.data();
-          let newOwnerCoins = (ownerData.coins || 0) + price;
-          let ownerLog = ownerData.log || [];
-          ownerLog.unshift({text: `استلام هدية (${name}) من ${currentUser}`, amount: price, type: 'win', time: new Date().toLocaleString('ar-IQ')});
-          await updateDoc(ownerRef, { coins: newOwnerCoins, log: ownerLog });
+      // 4. توزيع النقاط (sharePerPerson) على كل مستخدم في الغرفة وتحديث حساباتهم في Firestore
+      for(let memberName of roomMembers){
+        if(memberName === currentUser) continue; // تم خصمها مسبقاً من المرسل
+        const memberRef = doc(db, "users", memberName);
+        let memberSnap = await getDoc(memberRef);
+        if(memberSnap.exists()){
+          let mData = memberSnap.data();
+          let newCoins = (mData.coins || 0) + sharePerPerson;
+          let mLog = mData.log || [];
+          mLog.unshift({text: `استلام حصة من هدية (${name}) في الغرفة من ${currentUser}`, amount: sharePerPerson, type: 'win', time: new Date().toLocaleString('ar-IQ')});
+          await updateDoc(memberRef, { coins: newCoins, log: mLog });
         }
       }
 
-      showToast(`تم إرسال الهدية بنجاح!`);
+      showToast(`تم إرسال الهدية وتوزيعها بنجاح! 🚀`);
     } catch(e) {
       console.error(e);
-      alert("حدث خطأ أثناء إرسال الهدية");
+      alert("حدث خطأ أثناء توزيع الهدية");
     }
   }
 
