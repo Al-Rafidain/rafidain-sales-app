@@ -58,6 +58,7 @@ h1{color:#3b82f6;text-shadow:0 0 15px #3b82f6;font-size:26px}
 </style>
 </head>
 <body>
+
 <div id="splash">
   <div class="logo">🏛️</div>
   <div style="color:#3b82f6;font-size:28px;font-weight:bold;margin-top:20px">AL-RAFIDAIN</div>
@@ -73,7 +74,6 @@ h1{color:#3b82f6;text-shadow:0 0 15px #3b82f6;font-size:26px}
     <button class="btn btn-green" onclick="createAccount()">تسجيل / دخول</button>
   </div>
 </div>
-
 <div id="mainApp" style="display:none">
   <div class="logo">🏛️</div>
   <h1>تطبيق الرافدين</h1>
@@ -209,6 +209,7 @@ h1{color:#3b82f6;text-shadow:0 0 15px #3b82f6;font-size:26px}
     <div class="navItem" onclick="showPage('profile',this)"><div class="navIcon">👤</div><div>الملف</div></div>
   </div>
 </div>
+
 <!-- Modals -->
 <div id="xoModal" class="modal"><div class="modal-content"><h2>❌⭕ XO</h2><div id="xoBoard"></div><p id="xoResult"></p><button class="btn" onclick="closeModal('xoModal')">خروج</button></div></div>
 <div id="dominoModal" class="modal"><div class="modal-content"><h2>🎲 دومينو ضد البوت</h2><div id="botTiles"></div><hr><div id="dominoTable" class="dominoTableArea"></div><hr><div id="myTiles"></div><p id="dominoResult"></p><button class="btn" onclick="closeModal('dominoModal')">خروج</button></div></div>
@@ -261,7 +262,6 @@ h1{color:#3b82f6;text-shadow:0 0 15px #3b82f6;font-size:26px}
   const giftsList=[{icon:"🌹",name:"وردة",price:1000},{icon:"💎",name:"الماس",price:5000},{icon:"👑",name:"تاج",price:10000},{icon:"🚀",name:"صاروخ",price:20000},{icon:"🏆",name:"كاس",price:50000},{icon:"💰",name:"كيس فلوس",price:100000}];
   let dailyTasks={login:{done:false,reward:200},buy:{done:false,reward:300},play:{done:false,reward:150}}, lastTaskReset=0;
   let memoryCards=[], flipped=[], matched=0;
-
   function generateUniqueRefCode() {
     const timestampStr = Date.now().toString().slice(-4);
     const randomStr = Math.floor(1000 + Math.random() * 9000).toString();
@@ -539,10 +539,6 @@ h1{color:#3b82f6;text-shadow:0 0 15px #3b82f6;font-size:26px}
     });
     container.innerHTML = html;
   }
-</script>
-<script type="module">
-  // تكمنة الوظائف والألعاب والمتجر والمحادثات
-  // تم دمج بقية السكربت هنا:
 
   function loadStore(){
     let html='';
@@ -1350,3 +1346,4 @@ h1{color:#3b82f6;text-shadow:0 0 15px #3b82f6;font-size:26px}
 </script>
 </body>
 </html>
+
