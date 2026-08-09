@@ -165,7 +165,9 @@ h1{color:#3b82f6;text-shadow:0 0 15px #3b82f6;font-size:26px}
     <h2 id="roomNameTitle"></h2>
     <p class="roomId" id="roomIdTitle"></p>
     <div style="display:flex;gap:10px;justify-content:center;max-width:400px;margin:auto">
-      <button id="editRoomBtn" class="btn btn-yellow" style="display:none;width:90%" onclick="editRoomName()">✏️ تعديل الاسم</button>
+      <button id="editRoomBtn" class="btn btn-yellow" style="display:none;width:45%" onclick="editRoomName()">✏️ تعديل الاسم</button>
+      <!-- زر حذف الدردشة المضاف حديثاً -->
+      <button id="clearRoomChatBtn" class="btn btn-red" style="display:none;width:45%" onclick="clearRoomChat()">🗑️ حذف الدردشة</button>
     </div>
     <div id="roomChatBox" class="chatBox"></div>
     <div style="display:flex;gap:8px;justify-content:center;max-width:400px;margin:auto">
@@ -255,7 +257,6 @@ h1{color:#3b82f6;text-shadow:0 0 15px #3b82f6;font-size:26px}
     appId: "1:512875147812:web:54f33bda3780db7a4a9eb1",
     measurementId: "G-X059J6K4L7"
   };
-
   const app = initializeApp(firebaseConfig);
   const db = getFirestore(app);
 
@@ -610,7 +611,6 @@ h1{color:#3b82f6;text-shadow:0 0 15px #3b82f6;font-size:26px}
       let newRecipientCoins = (recipientData.coins || 0) + amount;
       let recipientLog = recipientData.log || [];
       recipientLog.unshift({text: `استلام نقاط من ${currentUser}`, amount: amount, type: 'win', time: new Date().toLocaleString('ar-IQ')});
-
       await updateDoc(doc(db, "users", recipientDocId), { coins: newRecipientCoins, log: recipientLog });
       await updateAll();
       document.getElementById('transferRefInput').value = '';
@@ -945,7 +945,6 @@ h1{color:#3b82f6;text-shadow:0 0 15px #3b82f6;font-size:26px}
     }
     updateAll();
   }
-
   const LUDO_MAIN_PATH=[{x:6,y:13},{x:6,y:12},{x:6,y:11},{x:6,y:10},{x:6,y:9},{x:5,y:8},{x:4,y:8},{x:3,y:8},{x:2,y:8},{x:1,y:8},{x:0,y:8},{x:0,y:7},{x:0,y:6},{x:1,y:6},{x:2,y:6},{x:3,y:6},{x:4,y:6},{x:5,y:6},{x:6,y:5},{x:6,y:4},{x:6,y:3},{x:6,y:2},{x:6,y:1},{x:6,y:0},{x:7,y:0},{x:8,y:0},{x:8,y:1},{x:8,y:2},{x:8,y:3},{x:8,y:4},{x:8,y:5},{x:9,y:6},{x:10,y:6},{x:11,y:6},{x:12,y:6},{x:13,y:6},{x:14,y:6},{x:14,y:7},{x:14,y:8},{x:13,y:8},{x:12,y:8},{x:11,y:8},{x:10,y:8},{x:9,y:8},{x:8,y:9},{x:8,y:10},{x:8,y:11},{x:8,y:12},{x:8,y:13},{x:8,y:14},{x:7,y:14},{x:6,y:14}];
   const HOME_PATHS=[[{x:7,y:13},{x:7,y:12},{x:7,y:11},{x:7,y:10},{x:7,y:9},{x:7,y:8}],[{x:1,y:7},{x:2,y:7},{x:3,y:7},{x:4,y:7},{x:5,y:7},{x:6,y:7}],[{x:7,y:1},{x:7,y:2},{x:7,y:3},{x:7,y:4},{x:7,y:5},{x:7,y:6}],[{x:13,y:7},{x:12,y:7},{x:11,y:7},{x:10,y:7},{x:9,y:7},{x:8,y:7}]];
   const START_OFFSETS=[0,13,26,39];
@@ -1104,6 +1103,10 @@ h1{color:#3b82f6;text-shadow:0 0 15px #3b82f6;font-size:26px}
     document.getElementById('roomNameTitle').innerText=currentRoom.name;
     document.getElementById('roomIdTitle').innerText='ID: '+currentRoom.id;
     document.getElementById('editRoomBtn').style.display = (currentRoom.owner==currentUser)?'inline-block':'none';
+    
+    // إظهار زر حذف الدردشة فقط لمالك الغرفة
+    document.getElementById('clearRoomChatBtn').style.display = (currentRoom.owner==currentUser)?'inline-block':'none';
+
     showPage('chatRoom',null);
     
     if(unsubRoomChat) unsubRoomChat();
@@ -1126,6 +1129,19 @@ h1{color:#3b82f6;text-shadow:0 0 15px #3b82f6;font-size:26px}
       messages: arrayUnion({u:currentUser, t:m, time:Date.now()})
     }, {merge: true});
     document.getElementById('roomChatInput').value='';
+  }
+
+  // دالة حذف كل رسائل الغرفة (خاصة بمالك الغرفة)
+  window.clearRoomChat = async function(){
+    if(!currentRoom || currentRoom.owner !== currentUser) return;
+    if(confirm("هل أنت متأكد من رغبتك في حذف جميع رسائل الدردشة في هذه الغرفة؟")){
+      try {
+        await setDoc(doc(db, "roomMessages", currentRoom.id), { messages: [] });
+        showToast("تم مسح محتوى الدردشة بالكامل بنجاح!");
+      } catch(e) {
+        alert("حدث خطأ أثناء محاولة حذف الدردشة");
+      }
+    }
   }
 
   function loadChat(){
