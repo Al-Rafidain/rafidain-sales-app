@@ -37,7 +37,7 @@ h1{color:#3b82f6;text-shadow:0 0 15px #3b82f6;font-size:26px}
 .pointer{width:0;height:0;border-left:15px solid transparent;border-right:15px solid transparent;border-bottom:30px solid red;position:absolute;top:-10px;left:50%;transform:translateX(-50%);z-index:10}
 #wheel{width:100%;height:100%;border-radius:50%;border:6px solid #3b82f6;transition:transform 5s cubic-bezier(.17,.67,.12,.99)}
 .boxItem{width:80px;height:80px;background:#3b82f6;margin:5px;display:inline-block;border-radius:15px;cursor:pointer;font-size:28px;line-height:80px;border:3px solid #fff;font-weight:bold}
-.bottomNav{position:fixed;bottom:15px;left:50%;transform:translateX(-50%);width:95%;max-width:500px;background:linear-gradient(135deg,#1e3a8a,#3b82f6);border-radius:25px;display:flex;justify-content:space-around;padding:10px 5px;z-index:999}
+.bottomNav{position:fixed;bottom:15px;left:50%;transform:translateX(-50%);width:95%;max-width:500px;background:linear-gradient(135deg,#1e3a8a,#3b82f6);border-radius:25px;display:flex;justify-space-around;padding:10px 5px;z-index:999}
 .navItem{display:flex;flex-direction:column;align-items:center;color:#ddd;font-size:10px;cursor:pointer;flex:1}
 .navIcon{font-size:20px;margin-bottom:2px}
 .navItem.active{color:#fff;font-weight:bold}
@@ -264,7 +264,6 @@ h1{color:#3b82f6;text-shadow:0 0 15px #3b82f6;font-size:26px}
   let dailyTasks={login:{done:false,reward:200},buy:{done:false,reward:300},play:{done:false,reward:150}}, lastTaskReset=0;
   let memoryCards=[], flipped=[], matched=0;
 
-  // توليد رمز إحالة مميز وفريد لكل مستخدم بناءً على الوقت ورقم عشوائي
   function generateUniqueRefCode() {
     const timestampStr = Date.now().toString().slice(-4);
     const randomStr = Math.floor(1000 + Math.random() * 9000).toString();
@@ -350,7 +349,6 @@ h1{color:#3b82f6;text-shadow:0 0 15px #3b82f6;font-size:26px}
       dailyProfitTotal = data.dailyProfit || 0;
       lastClaim = data.lastClaim || Date.now();
       
-      // التأكد من جلب الرمز الفريد الخاص بالمستخدم إن وجد أو إنشائه إن كان قديماً
       if (!data.referral) {
         myReferralCode = generateUniqueRefCode();
         await updateDoc(doc(db, "users", currentUser), { referral: myReferralCode });
@@ -453,7 +451,6 @@ h1{color:#3b82f6;text-shadow:0 0 15px #3b82f6;font-size:26px}
     }
   }
 
-  /* --- نظام الأصدقاء والبحث المعدل بشكل دقيق --- */
   function listenToFriends(){
     onSnapshot(doc(db, "users", currentUser), (snapshot) => {
       if(snapshot.exists()){
@@ -487,7 +484,6 @@ h1{color:#3b82f6;text-shadow:0 0 15px #3b82f6;font-size:26px}
         let uData = uDoc.data();
         let uName = uData.name || uDoc.id;
 
-        // مطابقة النص بأسلوب المرونة بصرف النظر عن حالة الحروف
         if(uName.toLowerCase().includes(query.toLowerCase()) && uName.toLowerCase() !== currentUser.toLowerCase()){
           found = true;
           let isFriend = myFriends.includes(uName);
@@ -894,7 +890,6 @@ h1{color:#3b82f6;text-shadow:0 0 15px #3b82f6;font-size:26px}
     updateAll();
   }
 
-  /* --- REAL LUDO ENGINE --- */
   const LUDO_MAIN_PATH = [
     {x:6,y:13},{x:6,y:12},{x:6,y:11},{x:6,y:10},{x:6,y:9},
     {x:5,y:8},{x:4,y:8},{x:3,y:8},{x:2,y:8},{x:1,y:8},{x:0,y:8},
@@ -1353,3 +1348,4 @@ h1{color:#3b82f6;text-shadow:0 0 15px #3b82f6;font-size:26px}
 </script>
 </body>
 </html>
+
