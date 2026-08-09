@@ -268,7 +268,6 @@ function createAccount(){
   localStorage.setItem('rafidain_lastClaim',Date.now());
   localStorage.setItem('rafidain_referral','RAF'+Math.floor(Math.random()*9000+1000));
   localStorage.setItem('rafidain_log','[]');
-  localStorage.setItem('rafidain_hasRoom','false');
   if(ref) addLog(`استخدم رمز الاحالة: ${ref}`,500,'win');
   currentUser=name;
   loadUserData();
@@ -987,8 +986,6 @@ function checkLudoWin(){
 }
 
 function openCreateRoom(){
-  let hasRoom=localStorage.getItem('rafidain_hasRoom');
-  if(hasRoom=='true') return alert("انت عندك غرفة اصلا. تمسحها تكدر تشتري غيرها");
   document.getElementById('createRoomModal').style.display='block';
 }
 
@@ -1003,7 +1000,6 @@ function createRoom(){
   rooms.push(newRoom);
   
   localStorage.setItem('rafidain_rooms', JSON.stringify(rooms));
-  localStorage.setItem('rafidain_hasRoom','true');
   
   addLog(`انشاء غرفة ${name}`,-80000,'buy');
   updateAll();
@@ -1021,20 +1017,16 @@ function loadRooms(){
   });
   document.getElementById('roomsList').innerHTML=html||'<p style="color:#aaa">لا توجد غرف</p>';
   
-  let hasRoom=localStorage.getItem('rafidain_hasRoom');
-  if(hasRoom=='true'){
+  let myRoomObj = rooms.find(r => r.owner == currentUser);
+  if(myRoomObj){
     document.getElementById('myRoomSection').innerHTML=
       '<button class="btn btn-green" onclick="myRoom()">🏠 دخول غرفتي</button>' +
-      '<button class="btn btn-red" onclick="deleteMyRoomOutside()">🗑️ حذف الغرفة</button>';
+      '<button class="btn btn-red" onclick="deleteMyRoomOutside()">🗑️ حذف غرفتي</button>';
   } else {
     document.getElementById('myRoomSection').innerHTML='';
   }
   
-  if(hasRoom=='true'){
-    document.getElementById('createRoomBtnSection').style.display='none';
-  } else {
-    document.getElementById('createRoomBtnSection').style.display='block';
-  }
+  document.getElementById('createRoomBtnSection').style.display='block';
 }
 
 function joinRoomById(){
@@ -1091,16 +1083,14 @@ function deleteMyRoomOutside(){
   let myRoomObj = rooms.find(r => r.owner == currentUser);
   if(!myRoomObj) return alert("ليس لديك غرفة لحذفها");
   
-  if(confirm("هل أنت متأكد من حذف الغرفة؟ ستتمكن من شراء غرفة جديدة بعد الحذف.")){
+  if(confirm("هل أنت متأكد من حذف الغرفة؟")){
     rooms = rooms.filter(r => r.id !== myRoomObj.id);
     localStorage.setItem('rafidain_rooms', JSON.stringify(rooms));
     
     delete roomMessages[myRoomObj.id];
     localStorage.setItem('roomMessages', JSON.stringify(roomMessages));
     
-    localStorage.setItem('rafidain_hasRoom', 'false');
-    
-    alert("تم حذف الغرفة بنجاح! يمكنك الآن شراء غرفة جديدة.");
+    alert("تم حذف الغرفة بنجاح!");
     loadRooms();
   }
 }
@@ -1200,4 +1190,3 @@ function sendGlobalMsg(){
 </script>
 </body>
 </html>
-
