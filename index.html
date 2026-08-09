@@ -137,6 +137,17 @@ h1{color:#3b82f6;text-shadow:0 0 15px #3b82f6;font-size:26px}
     <div id="friendsList"><p style="color:#aaa">ليس لديك أصدقاء بعد</p></div>
   </div>
 
+  <!-- صفحة المراسلة الخاصة مع الأصدقاء -->
+  <div id="privateChat" class="page">
+    <button class="btn" onclick="showPage('friends',null)">🔙 رجوع للأصدقاء</button>
+    <h2 id="privateChatTitle">مراسلة الصديق</h2>
+    <div id="privateChatBox" class="chatBox"></div>
+    <div style="display:flex;gap:8px;justify-content:center;max-width:400px;margin:auto">
+      <input type="text" id="privateChatInput" class="input" placeholder="اكتب رسالة خاصة..." style="width:70%" onkeypress="if(event.key=='Enter')sendPrivateMsg()">
+      <button class="btn" style="width:25%;margin:8px 0" onclick="sendPrivateMsg()">ارسال</button>
+    </div>
+  </div>
+
   <div id="rooms" class="page">
     <h2>🏠 الغرف</h2>
     <div id="myRoomSection"></div>
@@ -166,7 +177,6 @@ h1{color:#3b82f6;text-shadow:0 0 15px #3b82f6;font-size:26px}
     <p class="roomId" id="roomIdTitle"></p>
     <div style="display:flex;gap:10px;justify-content:center;max-width:400px;margin:auto">
       <button id="editRoomBtn" class="btn btn-yellow" style="display:none;width:45%" onclick="editRoomName()">✏️ تعديل الاسم</button>
-      <!-- زر حذف الدردشة المضاف حديثاً -->
       <button id="clearRoomChatBtn" class="btn btn-red" style="display:none;width:45%" onclick="clearRoomChat()">🗑️ حذف الدردشة</button>
     </div>
     <div id="roomChatBox" class="chatBox"></div>
@@ -264,6 +274,10 @@ h1{color:#3b82f6;text-shadow:0 0 15px #3b82f6;font-size:26px}
   let rooms=[], roomMessages={}, globalMessages=[], myFriends=[], friendRequests=[], sentRequests=[];
   let xoBoard=Array(9).fill(''), gameOver=false, boxOpened=false, dominoSet=[], dominoMy=[], dominoBot=[], dominoTable=[], dominoLeftEnd=0, dominoRightEnd=0;
   const RATE=10000;
+
+  // متغيرات المحادثة الخاصة
+  let currentChatFriend = null;
+  let unsubPrivateChat = null;
 
   let ludoPlayers=[], ludoDice=0, ludoCurrentPlayer=0, ludoGameOver=false, ludoCanMove=false;
   const LUDO_COLORS=['#f33','#3b82f6','#0f0','#ffb300'];
@@ -488,6 +502,10 @@ h1{color:#3b82f6;text-shadow:0 0 15px #3b82f6;font-size:26px}
     renderFriendsList();
     renderRequestsList();
   }
+  function renderFriendsPage(){
+    renderFriendsList();
+    renderRequestsList();
+  }
 
   async function searchFriends(){
     let query = document.getElementById('searchFriendsInput').value.trim();
@@ -582,9 +600,50 @@ h1{color:#3b82f6;text-shadow:0 0 15px #3b82f6;font-size:26px}
     if(myFriends.length === 0){ container.innerHTML = '<p style="color:#aaa">ليس لديك أصدقاء بعد</p>'; return; }
     let html = '';
     myFriends.forEach(f => {
-      html += `<div class="userItem"><div><b>👤 ${f}</b></div><div><button class="btn btn-red" style="width:auto;padding:8px 12px;margin:0" onclick="removeFriend('${f}')">حذف</button></div></div>`;
+      html += `<div class="userItem"><div><b>👤 ${f}</b></div><div style="display:flex;gap:5px;"><button class="btn btn-blue" style="width:auto;padding:8px 12px;margin:0" onclick="openPrivateChat('${f}')">💬 مراسلة</button><button class="btn btn-red" style="width:auto;padding:8px 12px;margin:0" onclick="removeFriend('${f}')">حذف</button></div></div>`;
     });
     container.innerHTML = html;
+  }
+
+  // دوال نظام المراسلة الخاصة بين الأصدقاء
+  function getChatId(user1, user2){
+    return user1 < user2 ? `${user1}_${user2}` : `${user2}_${user1}`;
+  }
+
+  window.openPrivateChat = function(friendName){
+    currentChatFriend = friendName;
+    document.getElementById('privateChatTitle').innerText = `مراسلة: ${friendName}`;
+    showPage('privateChat', null);
+
+    let chatId = getChatId(currentUser, friendName);
+    if(unsubPrivateChat) unsubPrivateChat();
+
+    unsubPrivateChat = onSnapshot(doc(db, "privateChats", chatId), (docSnap) => {
+      let box = document.getElementById('privateChatBox');
+      box.innerHTML = '';
+      if(docSnap.exists()){
+        let messages = docSnap.data().messages || [];
+        messages.forEach(m => {
+          let cls = m.u === currentUser ? 'me' : 'other';
+          box.innerHTML += `<div class="chatMsg ${cls}"><b>${m.u}:</b> ${m.t}</div>`;
+        });
+      }
+      box.scrollTop = box.scrollHeight;
+    });
+  }
+
+  window.sendPrivateMsg = async function(){
+    let txt = document.getElementById('privateChatInput').value.trim();
+    if(!txt || !currentChatFriend) return;
+    let chatId = getChatId(currentUser, currentChatFriend);
+    try {
+      await setDoc(doc(db, "privateChats", chatId), {
+        messages: arrayUnion({ u: currentUser, t: txt, time: Date.now() })
+      }, { merge: true });
+      document.getElementById('privateChatInput').value = '';
+    } catch(e) {
+      alert("حدث خطأ أثناء إرسال الرسالة");
+    }
   }
 
   async function transferCoins(){
@@ -1103,8 +1162,6 @@ h1{color:#3b82f6;text-shadow:0 0 15px #3b82f6;font-size:26px}
     document.getElementById('roomNameTitle').innerText=currentRoom.name;
     document.getElementById('roomIdTitle').innerText='ID: '+currentRoom.id;
     document.getElementById('editRoomBtn').style.display = (currentRoom.owner==currentUser)?'inline-block':'none';
-    
-    // إظهار زر حذف الدردشة فقط لمالك الغرفة
     document.getElementById('clearRoomChatBtn').style.display = (currentRoom.owner==currentUser)?'inline-block':'none';
 
     showPage('chatRoom',null);
@@ -1131,7 +1188,6 @@ h1{color:#3b82f6;text-shadow:0 0 15px #3b82f6;font-size:26px}
     document.getElementById('roomChatInput').value='';
   }
 
-  // دالة حذف كل رسائل الغرفة (خاصة بمالك الغرفة)
   window.clearRoomChat = async function(){
     if(!currentRoom || currentRoom.owner !== currentUser) return;
     if(confirm("هل أنت متأكد من رغبتك في حذف جميع رسائل الدردشة في هذه الغرفة؟")){
