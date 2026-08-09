@@ -231,7 +231,6 @@ h1{color:#3b82f6;text-shadow:0 0 15px #3b82f6;font-size:26px}
 <div id="memoryModal" class="modal"><div class="modal-content"><h2>🧠 لعبة الميموري</h2><p>طابق الرموز - الجائزة 250</p><div id="memoryBoard" style="display:grid;grid-template-columns:repeat(4,60px);gap:8px;justify-content:center;margin:20px auto"></div><p id="memoryResult"></p><button class="btn" onclick="closeModal('memoryModal')">خروج</button></div></div>
 <div id="createRoomModal" class="modal"><div class="modal-content"><h2>انشاء غرفة جديدة</h2><input type="text" id="newRoomName" class="input" placeholder="اسم الغرفة"><button class="btn btn-green" onclick="createRoom()">شراء وانشاء - 80000</button><button class="btn btn-red" onclick="closeModal('createRoomModal')">الغاء</button></div></div>
 <div id="toast" class="toast">تم استلام الارباح!</div>
-
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
   import { getFirestore, doc, setDoc, getDoc, updateDoc, deleteDoc, collection, onSnapshot, arrayUnion, arrayRemove, getDocs } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
@@ -263,7 +262,6 @@ h1{color:#3b82f6;text-shadow:0 0 15px #3b82f6;font-size:26px}
   const giftsList=[{icon:"🌹",name:"وردة",price:1000},{icon:"💎",name:"الماس",price:5000},{icon:"👑",name:"تاج",price:10000},{icon:"🚀",name:"صاروخ",price:20000},{icon:"🏆",name:"كاس",price:50000},{icon:"💰",name:"كيس فلوس",price:100000}];
   let dailyTasks={login:{done:false,reward:200},buy:{done:false,reward:300},play:{done:false,reward:150}}, lastTaskReset=0;
   let memoryCards=[], flipped=[], matched=0;
-
   function generateUniqueRefCode() {
     const timestampStr = Date.now().toString().slice(-4);
     const randomStr = Math.floor(1000 + Math.random() * 9000).toString();
@@ -1348,4 +1346,3 @@ h1{color:#3b82f6;text-shadow:0 0 15px #3b82f6;font-size:26px}
 </script>
 </body>
 </html>
-
