@@ -6,9 +6,8 @@
 <title>تطبيق الرافدين</title>
 <style>
 *{box-sizing:border-box}
-body{background:#000;color:#fff;font-family:tahoma;text-align:center;padding:10px;margin:0;padding-bottom:100px}
-#splash{position:fixed;top:0;left:0;width:100%;height:100%;background:linear-gradient(135deg,#0a1a3a 0%,#000 100%);display:flex;flex-direction:column;justify-content:center;align-items:center;z-index:9999;animation:f 1s 2.5s forwards}
-@keyframes f{to{opacity:0;visibility:hidden}}
+body{background:#000;color:#fff;font-family:tahoma,sans-serif;text-align:center;padding:10px;margin:0;padding-bottom:100px}
+#splash{position:fixed;top:0;left:0;width:100%;height:100%;background:linear-gradient(135deg,#0a1a3a 0%,#000 100%);display:flex;flex-direction:column;justify-content:center;align-items:center;z-index:9999;transition:opacity 0.5s, visibility 0.5s}
 .logo{font-size:50px;margin:15px}
 h1{color:#3b82f6;text-shadow:0 0 15px #3b82f6;font-size:26px}
 .page{display:none}.page.active{display:block}
@@ -19,11 +18,11 @@ h1{color:#3b82f6;text-shadow:0 0 15px #3b82f6;font-size:26px}
 #coinsDollar{font-size:18px;color:#3b82f6;font-weight:bold}
 #dailyProfit{font-size:36px;color:#ffb300;font-weight:bold;margin:10px 0}
 #perDay{font-size:24px;color:#3b82f6;font-weight:bold;margin:10px 0}
-.btn{background:#3b82f6;color:#fff;border:0;padding:16px;border-radius:15px;font-size:16px;font-weight:bold;margin:10px auto;cursor:pointer;width:90%;max-width:380px;display:block}
+.btn{background:#3b82f6;color:#fff;border:0;padding:16px;border-radius:15px;font-size:16px;font-weight:bold;margin:10px auto;cursor:pointer;width:90%;max-width:380px;display:block;transition:0.2s}
 .btn:active{transform:scale(.95)}
 .btn-green{background:#0f0;color:#000;width:100%;padding:18px;font-size:18px}
 .btn-blue{background:#3b82f6}
-.btn-red{background:#f33}
+.btn-red{background:#f33;color:#fff}
 .btn-yellow{background:#ffb300;color:#000}
 .btn:disabled{background:#555;color:#999;cursor:not-allowed}
 .modal{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.95);z-index:1000;overflow-y:auto}
@@ -45,12 +44,12 @@ h1{color:#3b82f6;text-shadow:0 0 15px #3b82f6;font-size:26px}
 .logItem{padding:12px;margin:8px 0;background:#222;border-radius:10px;text-align:right;border-right:4px solid #3b82f6}
 .logItem.win{border-right-color:#0f0}.logItem.buy{border-right-color:#ffb300}
 #registerPage{position:fixed;top:0;left:0;width:100%;height:100%;background:#000;z-index:9998;display:flex;flex-direction:column;justify-content:center;align-items:center;padding:20px}
-.roomItem, .userItem{background:#222;padding:15px;margin:10px;border-radius:12px;border:2px solid #3b82f6;text-align:right;display:flex;justify-content:space-between;align-items:center}
+.roomItem, .userItem{background:#222;padding:15px;margin:10px 0;border-radius:12px;border:2px solid #3b82f6;text-align:right;display:flex;justify-content:space-between;align-items:center}
 .roomId{color:#ffb300;font-size:12px}
 .chatBox{height:250px;overflow-y:auto;background:#0a0a0a;border:2px solid #3b82f6;border-radius:15px;padding:10px;margin-bottom:10px;text-align:right}
 .chatMsg{margin:8px 0;padding:8px 12px;border-radius:10px;max-width:85%;position:relative;word-wrap:break-word}
-.chatMsg.me{background:#3b82f6;margin-right:auto;text-align:left}.chatMsg.other{background:#222;margin-left:auto}
-.giftBtn{font-size:20px;padding:6px;margin:3px;border-radius:10px;background:#333;border:2px solid #3b82f6;cursor:pointer;color:#fff}
+.chatMsg.me{background:#3b82f6;margin-right:auto;text-align:left;color:#fff}.chatMsg.other{background:#222;margin-left:auto;color:#fff}
+.giftBtn{font-size:16px;padding:8px;margin:4px;border-radius:10px;background:#333;border:2px solid #3b82f6;cursor:pointer;color:#fff}
 .dominoTile{width:36px;height:72px;background:#f5f5f5;color:#000;border:2px solid #333;border-radius:6px;display:inline-block;margin:2px;position:relative}
 .dominoHalf{height:36px;display:flex;align-items:center;justify-content:center;position:relative}
 .dominoHalf.top{border-bottom:1px solid #333}
@@ -122,11 +121,14 @@ h1{color:#3b82f6;text-shadow:0 0 15px #3b82f6;font-size:26px}
 
   <div id="friends" class="page">
     <h2>👥 الأصدقاء والبحث</h2>
-    <input type="text" id="searchFriendsInput" class="input" placeholder="ابحث عن اسم صديق..." onkeyup="searchFriends()">
-    <h3 style="color:#3b82f6;margin-top:15px;text-align:right;width:90%;margin-x:auto">نتائج البحث / مستخدمون</h3>
+    <div style="display:flex;gap:5px;justify-content:center;max-width:400px;margin:auto">
+      <input type="text" id="searchFriendsInput" class="input" placeholder="ابحث عن اسم صديق..." style="width:70%">
+      <button class="btn btn-blue" style="width:25%;margin:8px 0" onclick="searchFriends()">بحث 🔍</button>
+    </div>
+    <h3 style="color:#3b82f6;margin-top:15px;text-align:right">نتائج البحث / مستخدمون</h3>
     <div id="searchResults"><p style="color:#aaa">اكتب اسم للبحث</p></div>
     <hr style="border-color:#333;margin:20px 0">
-    <h3 style="color:#0f0;text-align:right;width:90%;margin-x:auto">قائمة أصدقائي</h3>
+    <h3 style="color:#0f0;text-align:right">قائمة أصدقائي</h3>
     <div id="friendsList"><p style="color:#aaa">ليس لديك أصدقاء بعد</p></div>
   </div>
 
@@ -230,6 +232,7 @@ h1{color:#3b82f6;text-shadow:0 0 15px #3b82f6;font-size:26px}
 <div id="memoryModal" class="modal"><div class="modal-content"><h2>🧠 لعبة الميموري</h2><p>طابق الرموز - الجائزة 250</p><div id="memoryBoard" style="display:grid;grid-template-columns:repeat(4,60px);gap:8px;justify-content:center;margin:20px auto"></div><p id="memoryResult"></p><button class="btn" onclick="closeModal('memoryModal')">خروج</button></div></div>
 <div id="createRoomModal" class="modal"><div class="modal-content"><h2>انشاء غرفة جديدة</h2><input type="text" id="newRoomName" class="input" placeholder="اسم الغرفة"><button class="btn btn-green" onclick="createRoom()">شراء وانشاء - 80000</button><button class="btn btn-red" onclick="closeModal('createRoomModal')">الغاء</button></div></div>
 <div id="toast" class="toast">تم استلام الارباح!</div>
+
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
   import { getFirestore, doc, setDoc, getDoc, updateDoc, deleteDoc, collection, onSnapshot, arrayUnion, arrayRemove, getDocs } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
@@ -263,9 +266,11 @@ h1{color:#3b82f6;text-shadow:0 0 15px #3b82f6;font-size:26px}
   let memoryCards=[], flipped=[], matched=0;
 
   setTimeout(()=>{
-    document.getElementById('splash').style.display='none';
+    let splash = document.getElementById('splash');
+    splash.style.opacity = '0';
+    splash.style.visibility = 'hidden';
     checkLogin();
-  }, 2500);
+  }, 1500);
 
   async function checkLogin(){
     currentUser=localStorage.getItem('rafidain_user');
@@ -286,7 +291,7 @@ h1{color:#3b82f6;text-shadow:0 0 15px #3b82f6;font-size:26px}
     let name=document.getElementById('regName').value.trim();
     let pass=document.getElementById('regPass').value.trim();
     let ref=document.getElementById('regRef').value.trim();
-    if(!name||!pass) return alert("دخل الاسم وكلمة السر");
+    if(!name||!pass) return alert("يرجى إدخال الاسم وكلمة السر");
 
     const userRef = doc(db, "users", name);
     const userSnap = await getDoc(userRef);
@@ -346,7 +351,7 @@ h1{color:#3b82f6;text-shadow:0 0 15px #3b82f6;font-size:26px}
   }
 
   window.logout = function(){
-    if(confirm('متأكد تريد تسوي تسجيل خروج؟')){
+    if(confirm('هل أنت متأكد من تسجيل الخروج؟')){
       localStorage.clear();
       location.reload();
     }
@@ -444,7 +449,6 @@ h1{color:#3b82f6;text-shadow:0 0 15px #3b82f6;font-size:26px}
 
   function loadFriendsPage(){
     renderFriendsList();
-    searchFriends();
   }
 
   window.searchFriends = async function(){
@@ -456,6 +460,7 @@ h1{color:#3b82f6;text-shadow:0 0 15px #3b82f6;font-size:26px}
       return;
     }
 
+    resContainer.innerHTML = '<p style="color:#aaa">جاري البحث...</p>';
     let querySnapshot = await getDocs(collection(db, "users"));
     let html = '';
     querySnapshot.forEach((uDoc) => {
@@ -522,7 +527,7 @@ h1{color:#3b82f6;text-shadow:0 0 15px #3b82f6;font-size:26px}
   }
 
   window.buyCounter = function(price,profit,name){
-    if(coins<price) return alert("ما عندك نقاط كافية");
+    if(coins<price) return alert("ليس لديك نقاط كافية");
     coins-=price;
     dailyProfitTotal+=profit;
     addLog(`شراء ${name}`,-price,'buy');
@@ -589,7 +594,7 @@ h1{color:#3b82f6;text-shadow:0 0 15px #3b82f6;font-size:26px}
   }
 
   window.openDomino = function(){
-    if(coins<50) return alert("ما عندك 50 نقطة");
+    if(coins<50) return alert("ليس لديك 50 نقطة");
     coins-=50;
     addLog('لعب دومينو',-50,'buy');
     if(!dailyTasks.play.done) completeTask('play');
@@ -647,7 +652,7 @@ h1{color:#3b82f6;text-shadow:0 0 15px #3b82f6;font-size:26px}
   }
 
   window.openMemory = function(){
-    if(coins<50) return alert("ما عندك 50 نقطة");
+    if(coins<50) return alert("ليس لديك 50 نقطة");
     coins-=50;
     addLog('لعب ميموري',-50,'buy');
     if(!dailyTasks.play.done) completeTask('play');
@@ -697,7 +702,7 @@ h1{color:#3b82f6;text-shadow:0 0 15px #3b82f6;font-size:26px}
   }
 
   window.openXO = function(){
-    if(coins<50) return alert("ما عندك 50 نقطة");
+    if(coins<50) return alert("ليس لديك 50 نقطة");
     coins-=50;
     addLog('لعب XO',-50,'buy');
     if(!dailyTasks.play.done) completeTask('play');
@@ -762,7 +767,7 @@ h1{color:#3b82f6;text-shadow:0 0 15px #3b82f6;font-size:26px}
   }
 
   window.spinWheel = function(){
-    if(coins<50) return alert("ما عندك 50 نقطة");
+    if(coins<50) return alert("ليس لديك 50 نقطة");
     coins-=50;
     addLog('لف العجلة',-50,'buy');
     if(!dailyTasks.play.done) completeTask('play');
@@ -816,7 +821,7 @@ h1{color:#3b82f6;text-shadow:0 0 15px #3b82f6;font-size:26px}
   }
 
   window.openBox = function(){
-    if(coins<500) return alert("ما عندك 500 نقطة");
+    if(coins<500) return alert("ليس لديك 500 نقطة");
     coins-=500;
     addLog('فتح صندوق',-500,'buy');
     if(!dailyTasks.play.done) completeTask('play');
@@ -888,7 +893,7 @@ h1{color:#3b82f6;text-shadow:0 0 15px #3b82f6;font-size:26px}
   const SAFE_POSITIONS = [0, 8, 13, 21, 26, 34, 39, 47];
 
   window.openLudo = function(){
-    if(coins<100) return alert("ما عندك 100 نقطة");
+    if(coins<100) return alert("ليس لديك 100 نقطة");
     coins-=100;
     addLog('لعب لودو الحقيقية',-100,'buy');
     if(!dailyTasks.play.done) completeTask('play');
@@ -1136,8 +1141,8 @@ h1{color:#3b82f6;text-shadow:0 0 15px #3b82f6;font-size:26px}
 
   window.createRoom = async function(){
     let name=document.getElementById('newRoomName').value.trim();
-    if(!name) return alert("دخل اسم الغرفة");
-    if(coins<80000) return alert("ما عندك 80000 نقطة");
+    if(!name) return alert("أدخل اسم الغرفة");
+    if(coins<80000) return alert("ليس لديك 80000 نقطة");
     coins-=80000;
     let id='RM'+Math.floor(Math.random()*900000+100000);
     
@@ -1268,7 +1273,7 @@ h1{color:#3b82f6;text-shadow:0 0 15px #3b82f6;font-size:26px}
   }
 
   window.sendGift = async function(icon,name,price){
-    if(coins<price) return alert("ما عندك نقاط كافية");
+    if(coins<price) return alert("ليس لديك نقاط كافية");
     if(!currentRoom) return;
     coins-=price;
 
@@ -1320,4 +1325,3 @@ h1{color:#3b82f6;text-shadow:0 0 15px #3b82f6;font-size:26px}
 </script>
 </body>
 </html>
-
