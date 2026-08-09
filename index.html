@@ -74,6 +74,7 @@ h1{color:#3b82f6;text-shadow:0 0 15px #3b82f6;font-size:26px}
     <button class="btn btn-green" onclick="createAccount()">تسجيل / دخول</button>
   </div>
 </div>
+
 <div id="mainApp" style="display:none">
   <div class="logo">🏛️</div>
   <h1>تطبيق الرافدين</h1>
@@ -220,6 +221,7 @@ h1{color:#3b82f6;text-shadow:0 0 15px #3b82f6;font-size:26px}
     <div class="navItem" onclick="showPage('profile',this)"><div class="navIcon">👤</div><div>الملف</div></div>
   </div>
 </div>
+
 <!-- Modals -->
 <div id="xoModal" class="modal"><div class="modal-content"><h2>❌⭕ XO</h2><div id="xoBoard"></div><p id="xoResult"></p><button class="btn" onclick="closeModal('xoModal')">خروج</button></div></div>
 <div id="dominoModal" class="modal"><div class="modal-content"><h2>🎲 دومينو ضد البوت</h2><div id="botTiles"></div><hr><div id="dominoTable" class="dominoTableArea"></div><hr><div id="myTiles"></div><p id="dominoResult"></p><button class="btn" onclick="closeModal('dominoModal')">خروج</button></div></div>
@@ -1137,32 +1139,27 @@ h1{color:#3b82f6;text-shadow:0 0 15px #3b82f6;font-size:26px}
     b.scrollTop=b.scrollHeight;
   }
 
-  // --- الدالة المعدلة خصيصاً لتوزيع النقاط على الموجودين بالغرفة بالتساوي ---
   window.sendGift = async function(icon, name, price){
     if(coins < price) return alert("ليس لديك نقاط كافية لإرسال الهدية!");
     if(!currentRoom) return;
 
     try {
-      // 1. استخراج قائمة المستخدمين المتواجدين في الغرفة حالياً بناءً على الرسائل النشطة أو جلبهم
       let messages = roomMessages[currentRoom.id] || [];
       let activeUsersSet = new Set();
-      // إضافة مالك الغرفة والرسل الحاليين في الشات كأعضاء في الغرفة
       activeUsersSet.add(currentRoom.owner);
       messages.forEach(m => { if(m.u) activeUsersSet.add(m.u); });
-      activeUsersSet.add(currentUser); // ضمان وجود المرسل ضمن الحسبان إذا لزم
+      activeUsersSet.add(currentUser);
 
       let roomMembers = Array.from(activeUsersSet);
       let count = roomMembers.length;
       if(count === 0) count = 1;
 
-      let sharePerPerson = Math.floor(price / count); // التقسيم بالتساوي
+      let sharePerPerson = Math.floor(price / count);
 
-      // 2. خصم النقاط الكاملة من المرسل وتحديث رصيده وسجله
       coins -= price;
       addLog(`ارسال هدية ${name} وتوزيعها على الغرفة`, -price, 'buy');
       updateAll();
 
-      // 3. إرسال رسالة تفصيلية في شات الغرفة
       const roomChatRef = doc(db, "roomMessages", currentRoom.id);
       await setDoc(roomChatRef, {
         messages: arrayUnion({
@@ -1172,9 +1169,8 @@ h1{color:#3b82f6;text-shadow:0 0 15px #3b82f6;font-size:26px}
         })
       }, {merge: true});
 
-      // 4. توزيع النقاط (sharePerPerson) على كل مستخدم في الغرفة وتحديث حساباتهم في Firestore
       for(let memberName of roomMembers){
-        if(memberName === currentUser) continue; // تم خصمها مسبقاً من المرسل
+        if(memberName === currentUser) continue;
         const memberRef = doc(db, "users", memberName);
         let memberSnap = await getDoc(memberRef);
         if(memberSnap.exists()){
@@ -1222,4 +1218,3 @@ h1{color:#3b82f6;text-shadow:0 0 15px #3b82f6;font-size:26px}
 </script>
 </body>
 </html>
-
