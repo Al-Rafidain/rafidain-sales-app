@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0,user-scalable=no">
-<title>تطبيق الرافدين - النسخة النهائية المحدثة</title>
+<title>تطبيق الرافدين - النسخة النهائية المعدلة</title>
 <style>
 *{box-sizing:border-box}
 body{background:#000;color:#fff;font-family:tahoma,sans-serif;text-align:center;padding:10px;margin:0;padding-bottom:100px}
@@ -73,12 +73,6 @@ h1{color:#3b82f6;text-shadow:0 0 15px #3b82f6;font-size:26px}
   <div class="logo">🏛️</div>
   <h1>تطبيق الرافدين</h1>
   <div id="home" class="page active">
-    <div class="box" style="background:#112211;border-color:#0f0">
-      <h3 style="color:#0f0">🎁 المكافأة اليومية المتتالية</h3>
-      <p id="streakStatus" style="font-size:14px;color:#ffb300">أيام متتالية: 0 يوم</p>
-      <button class="btn btn-green" id="claimStreakBtn" onclick="claimDailyStreak()">استلام مكافأة اليوم 🚀</button>
-    </div>
-
     <div class="stats">
       <div class="box">
         <h3>💰 الرصيد</h3>
@@ -95,7 +89,6 @@ h1{color:#3b82f6;text-shadow:0 0 15px #3b82f6;font-size:26px}
         <div id="perDay">+0 نقطة/24 ساعة</div>
       </div>
     </div>
-    <p id="nextClaim" style="color:#aaa"></p>
   </div>
 
   <div id="store" class="page">
@@ -233,14 +226,14 @@ h1{color:#3b82f6;text-shadow:0 0 15px #3b82f6;font-size:26px}
   </div>
 </div>
 <div id="xoModal" class="modal"><div class="modal-content"><h2>❌⭕ XO ضد البوت</h2><div id="xoBoard"></div><p id="xoResult" style="font-size:18px;margin:10px"></p><button class="btn" onclick="closeModal('xoModal')">خروج</button></div></div>
-<div id="wheelModal" class="modal"><div class="modal-content"><h2>🎡 عجلة الحظ</h2><button class="btn btn-yellow" onclick="doSpin()">لف العجلة - 50 نقطة</button><p id="wheelResult" style="font-size:18px;margin:10px"></p><button class="btn" onclick="closeModal('wheelModal')">اغلاق</button></div></div>
+<div id="wheelModal" class="modal"><div class="modal-content"><h2>🎡 عجلة الحظ</h2><button class="btn btn-yellow" onclick="spinWheel()">لف العجلة - 50 نقطة</button><p id="wheelResult" style="font-size:18px;margin:10px"></p><button class="btn" onclick="closeModal('wheelModal')">اغلاق</button></div></div>
 <div id="boxModal" class="modal"><div class="modal-content"><h2>📦 الصندوق السحري</h2><p>اختر صندوقاً لتربح (التكلفة: 500)</p><div id="boxes" style="display:flex;justify-content:center;flex-wrap:wrap;margin:15px 0"></div><p id="boxResult" style="font-size:18px;margin:10px"></p><button class="btn" onclick="closeModal('boxModal')">اغلاق</button></div></div>
 <div id="memoryModal" class="modal"><div class="modal-content"><h2>🧠 لعبة الذاكرة</h2><p id="memoryResult" style="font-size:18px;margin:10px">جاري اللعب...</p><button class="btn" onclick="closeModal('memoryModal')">خروج</button></div></div>
 <div id="createRoomModal" class="modal"><div class="modal-content"><h2>انشاء غرفة جديدة</h2><input type="text" id="newRoomName" class="input" placeholder="اسم الغرفة"><button class="btn btn-green" onclick="createRoom()">شراء وانشاء - 80000</button><button class="btn btn-red" onclick="closeModal('createRoomModal')">الغاء</button></div></div>
 <div id="toast" class="toast">تم!</div>
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-  import { getFirestore, doc, setDoc, getDoc, updateDoc, collection, onSnapshot, arrayUnion, arrayRemove, getDocs } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+  import { getFirestore, doc, setDoc, getDoc, updateDoc, collection, onSnapshot, arrayUnion, arrayRemove, getDocs, getDocFromCache, getDocFromServer } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
   const firebaseConfig = {
     apiKey: "AIzaSyBbkpcBPq8G2OpyKxaVqPO7Mkfla4X9hxU",
@@ -260,6 +253,7 @@ h1{color:#3b82f6;text-shadow:0 0 15px #3b82f6;font-size:26px}
   const RATE=10000;
   let currentChatFriend = null;
   let unsubPrivateChat = null;
+  let unsubRoomChat = null;
 
   const countersData=[{name:"عداد 100",price:1000,profit:100},{name:"عداد 200",price:2000,profit:200},{name:"عداد 300",price:3000,profit:300},{name:"عداد 400",price:4000,profit:400},{name:"عداد 500",price:5000,profit:500},{name:"عداد 1000",price:10000,profit:1000},{name:"عداد 2000",price:20000,profit:2000},{name:"عداد 3000",price:30000,profit:3000},{name:"عداد 4000",price:40000,profit:4000},{name:"عداد 5000",price:50000,profit:5000}];
   const giftsList=[{icon:"🌹",name:"وردة",price:1000},{icon:"💎",name:"الماس",price:5000},{icon:"👑",name:"تاج",price:10000},{icon:"🐅",name:"شبل",price:20000},{icon:"🐯",name:"نمر",price:50000},{icon:"🦁",name:"اسد",price:100000}];
@@ -618,10 +612,17 @@ h1{color:#3b82f6;text-shadow:0 0 15px #3b82f6;font-size:26px}
 
   window.spinWheel = function(){
     if(coins < 50) return alert("تحتاج 50 نقطة!");
-    coins -= 50; addLog("عجلة الحظ", -50, "buy"); updateAll();
-    let won = [100, 200, 500, 0][Math.floor(Math.random()*4)];
-    if(won > 0){ coins += won; addLog("جائزة العجلة", won, 'win'); updateAll(); }
-    document.getElementById('wheelResult').innerText = won > 0 ? `🎉 ربحت ${won} نقطة!` : "حظاً أوفر!";
+    coins -= 50; 
+    addLog("عجلة الحظ", -50, "buy"); 
+    let prizes = [0, 50, 100, 200, 500, 1000];
+    let won = prizes[Math.floor(Math.random() * prizes.length)];
+    if(won > 0){ 
+      coins += won; 
+      addLog("جائزة العجلة", won, 'win'); 
+    }
+    updateAll();
+    let resultText = won > 0 ? `🎉 ربحت ${won} نقطة!` : "حظاً أوفر، لم تربح شيء!";
+    document.getElementById('wheelResult').innerText = resultText;
     document.getElementById('wheelModal').style.display = 'block';
   }
 
@@ -681,7 +682,6 @@ h1{color:#3b82f6;text-shadow:0 0 15px #3b82f6;font-size:26px}
     if(rooms.find(r=>r.id==id)) enterRoom(id); else alert("الغرفة غير موجودة");
   }
 
-  let unsubRoomChat = null;
   window.enterRoom = function(id){
     currentRoom = rooms.find(r=>r.id==id);
     if(!currentRoom) return;
@@ -731,11 +731,7 @@ h1{color:#3b82f6;text-shadow:0 0 15px #3b82f6;font-size:26px}
   window.toggleMic = async function(i){
     if(!currentRoom) return;
     let mics = [...(currentRoom.mics || Array(7).fill({active:false, user:""}))];
-    if(currentRoom.owner === currentUser){
-      mics[i] = mics[i].active ? {active:false, user:""} : {active:true, user:currentUser};
-    } else {
-      mics[i] = mics[i].active ? {active:false, user:""} : {active:true, user:currentUser};
-    }
+    mics[i] = mics[i].active ? {active:false, user:""} : {active:true, user:currentUser};
     await updateDoc(doc(db, "rooms", currentRoom.id), { mics: mics });
   }
 
