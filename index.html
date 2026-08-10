@@ -77,14 +77,12 @@ h1{color:#3b82f6;text-shadow:0 0 15px #3b82f6;font-size:26px}
   <div class="logo">🏛️</div>
   <h1>تطبيق الرافدين</h1>
 
-  <!-- شاشة إعلانات الإدارة عند الفتح -->
   <div id="adminBroadcastBanner" class="box" style="background:#1e3a8a;display:none">
     <h3 style="color:#ffb300">📢 إعلان الإدارة</h3>
     <p id="adminBroadcastText" style="margin:5px 0;font-size:14px;color:#fff"></p>
   </div>
 
   <div id="home" class="page active">
-    <!-- نظام الـ Streak اليومي المتتالي -->
     <div class="box" style="background:#112211;border-color:#0f0">
       <h3 style="color:#0f0">🎁 المكافأة اليومية المتتالية (Streak)</h3>
       <p id="streakStatus" style="font-size:14px;color:#ffb300">أيام متتالية: 0 يوم</p>
@@ -109,12 +107,12 @@ h1{color:#3b82f6;text-shadow:0 0 15px #3b82f6;font-size:26px}
     </div>
     <p id="nextClaim" style="color:#aaa"></p>
   </div>
-
   <div id="store" class="page">
     <h2>🛒 متجر العدادات</h2>
     <div id="coins2" class="box">رصيدك: 0 نقطة</div>
     <div id="storeList"></div>
   </div>
+
   <div id="games" class="page">
     <h2>🎮 الالعاب والمهمات</h2>
     <div id="coins3" class="box">رصيدك: 0 نقطة</div>
@@ -134,13 +132,11 @@ h1{color:#3b82f6;text-shadow:0 0 15px #3b82f6;font-size:26px}
     <div id="dailyTasks"></div>
   </div>
 
-  <!-- لوحة المتصدرين Leaderboard -->
   <div id="leaderboard" class="page">
     <h2>🏆 لوحة المتصدرين</h2>
     <p style="color:#aaa">أكثر المستخدمين جمعاً للنقاط والتفاعل</p>
     <div id="leaderboardList" style="max-width:400px;margin:auto"></div>
   </div>
-
   <div id="friends" class="page">
     <h2>👥 الأصدقاء والبحث</h2>
     <div style="display:flex;gap:5px;justify-content:center;max-width:400px;margin:auto">
@@ -168,6 +164,7 @@ h1{color:#3b82f6;text-shadow:0 0 15px #3b82f6;font-size:26px}
       <button class="btn" style="width:25%;margin:8px 0" onclick="sendPrivateMsg()">ارسال</button>
     </div>
   </div>
+
   <div id="rooms" class="page">
     <h2>🏠 الغرف</h2>
     <div id="myRoomSection"></div>
@@ -190,13 +187,11 @@ h1{color:#3b82f6;text-shadow:0 0 15px #3b82f6;font-size:26px}
       <button class="btn" style="width:25%;margin:8px 0" onclick="sendGlobalMsg()">ارسال</button>
     </div>
   </div>
-
   <div id="chatRoom" class="page">
     <button class="btn" onclick="showPage('rooms',null)">🔙 رجوع</button>
     <h2 id="roomNameTitle"></h2>
     <p class="roomId" id="roomIdTitle"></p>
 
-    <!-- نظام 7 مايكات مجانية للغرفة يتحكم بها المالك -->
     <div class="box" style="background:#111">
       <h3 style="color:#0f0">🎙️ مايكات الغرفة (7 مايكات مجانية)</h3>
       <p style="font-size:12px;color:#aaa">المالك فقط يمكنه فتح وإغلاق المايكات للمستخدمين</p>
@@ -215,6 +210,7 @@ h1{color:#3b82f6;text-shadow:0 0 15px #3b82f6;font-size:26px}
     <h4 style="color:#ffb300;margin-top:10px">🎁 الهدايا (تتوزع بالتساوي على الموجودين بالغرفة)</h4>
     <div id="giftsBar" style="display:flex;flex-wrap:wrap;justify-content:center"></div>
   </div>
+
   <div id="referral" class="page">
     <h2>🎁 نظام الاحالة والتحويل</h2>
     <div class="box">
@@ -260,7 +256,6 @@ h1{color:#3b82f6;text-shadow:0 0 15px #3b82f6;font-size:26px}
     <div class="navItem" onclick="showPage('profile',this)"><div class="navIcon">👤</div><div>الملف</div></div>
   </div>
 </div>
-<!-- Modals -->
 <div id="xoModal" class="modal"><div class="modal-content"><h2>❌⭕ XO</h2><div id="xoBoard"></div><p id="xoResult"></p><button class="btn" onclick="closeModal('xoModal')">خروج</button></div></div>
 <div id="dominoModal" class="modal"><div class="modal-content"><h2>🎲 دومينو ضد البوت</h2><div id="botTiles"></div><hr><div id="dominoTable" class="dominoTableArea"></div><hr><div id="myTiles"></div><p id="dominoResult"></p><button class="btn" onclick="closeModal('dominoModal')">خروج</button></div></div>
 
@@ -280,7 +275,6 @@ h1{color:#3b82f6;text-shadow:0 0 15px #3b82f6;font-size:26px}
 <div id="memoryModal" class="modal"><div class="modal-content"><h2>🧠 لعبة الميموري</h2><p>طابق الرموز - الجائزة 250</p><div id="memoryBoard" style="display:grid;grid-template-columns:repeat(4,60px);gap:8px;justify-content:center;margin:20px auto"></div><p id="memoryResult"></p><button class="btn" onclick="closeModal('memoryModal')">خروج</button></div></div>
 <div id="createRoomModal" class="modal"><div class="modal-content"><h2>انشاء غرفة جديدة</h2><input type="text" id="newRoomName" class="input" placeholder="اسم الغرفة"><button class="btn btn-green" onclick="createRoom()">شراء وانشاء - 80000</button><button class="btn btn-red" onclick="closeModal('createRoomModal')">الغاء</button></div></div>
 <div id="toast" class="toast">تم استلام الارباح!</div>
-
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
   import { getFirestore, doc, setDoc, getDoc, updateDoc, deleteDoc, collection, onSnapshot, arrayUnion, arrayRemove, getDocs } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
@@ -299,20 +293,16 @@ h1{color:#3b82f6;text-shadow:0 0 15px #3b82f6;font-size:26px}
 
   let coins=5000, dailyProfitTotal=0, lastClaim=0, myReferralCode='', currentUser='', transactionLog=[], currentRoom=null;
   let rooms=[], roomMessages={}, globalMessages=[], myFriends=[], friendRequests=[], sentRequests=[];
-  let xoBoard=Array(9).fill(''), gameOver=false, boxOpened=false, dominoSet=[], dominoMy=[], dominoBot=[], dominoTable=[], dominoLeftEnd=0, dominoRightEnd=0;
+  let xoBoard=Array(9).fill(''), gameOver=false, boxOpened=false;
   const RATE=10000;
 
   let currentChatFriend = null;
   let unsubPrivateChat = null;
-  let ludoPlayers=[], ludoDice=0, ludoCurrentPlayer=0, ludoGameOver=false, ludoCanMove=false;
-  const LUDO_COLORS=['#f33','#3b82f6','#0f0','#ffb300'];
-  const LUDO_NAMES=['انت (أحمر)','بوت أزرق','بوت أخضر','بوت أصفر'];
 
   const countersData=[{name:"عداد 100",price:1000,profit:100},{name:"عداد 200",price:2000,profit:200},{name:"عداد 300",price:3000,profit:300},{name:"عداد 400",price:4000,profit:400},{name:"عداد 500",price:5000,profit:500},{name:"عداد 1000",price:10000,profit:1000},{name:"عداد 2000",price:20000,profit:2000},{name:"عداد 3000",price:30000,profit:3000},{name:"عداد 4000",price:40000,profit:4000},{name:"عداد 5000",price:50000,profit:5000}];
-  const wheelPrizes=[{text:"حظ اوفر",value:0},{text:"100",value:100},{text:"250",value:250},{text:"500",value:500},{text:"1000",value:1000},{text:"5000",value:5000}];
   const giftsList=[{icon:"🌹",name:"وردة",price:1000},{icon:"💎",name:"الماس",price:5000},{icon:"👑",name:"تاج",price:10000},{icon:"🐅",name:"شبل",price:20000},{icon:"🐯",name:"نمر",price:50000},{icon:"🦁",name:"اسد",price:100000}];
-  let dailyTasks={login:{done:false,reward:200},buy:{done:false,reward:300},play:{done:false,reward:150}}, lastTaskReset=0;
-  let memoryCards=[], flipped=[], matched=0;
+  let dailyTasks={login:{done:false,reward:200},buy:{done:false,reward:300},play:{done:false,reward:150}};
+
   function generateUniqueRefCode() {
     const timestampStr = Date.now().toString().slice(-4);
     const randomStr = Math.floor(1000 + Math.random() * 9000).toString();
@@ -328,7 +318,6 @@ h1{color:#3b82f6;text-shadow:0 0 15px #3b82f6;font-size:26px}
     loadLeaderboard();
   }, 1500);
 
-  // 1. نظام لوحة الإعلانات الإدارية Admin Broadcast
   async function loadAdminBroadcast(){
     try {
       let snap = await getDoc(doc(db, "settings", "broadcast"));
@@ -339,7 +328,6 @@ h1{color:#3b82f6;text-shadow:0 0 15px #3b82f6;font-size:26px}
     } catch(e){}
   }
 
-  // 2. نظام المكافآت اليومية المتتالية Daily Streak
   let streakDays = 0, lastStreakTime = 0;
   async function checkStreakData(){
     let snap = await getDoc(doc(db, "users", currentUser));
@@ -385,7 +373,6 @@ h1{color:#3b82f6;text-shadow:0 0 15px #3b82f6;font-size:26px}
     showToast(`مبروك! حصلت على ${reward} نقطة`);
   }
 
-  // 3. لوحة المتصدرين Leaderboard
   async function loadLeaderboard(){
     let container = document.getElementById('leaderboardList');
     if(!container) return;
@@ -409,7 +396,6 @@ h1{color:#3b82f6;text-shadow:0 0 15px #3b82f6;font-size:26px}
     }
   }
 
-  // 4. ألعاب جماعية داخل الغرف Multiplayer Room Games
   window.openMultiplayerGame = function(gameType){
     alert(`جاري بدء تحدي ${gameType.toUpperCase()} المباشر مع أصدقائك في الغرفة قريبًا!`);
   }
@@ -802,7 +788,6 @@ h1{color:#3b82f6;text-shadow:0 0 15px #3b82f6;font-size:26px}
     updateAll(); loadTasks();
   }
 
-  // دوال الغرف والمايكات السبعة المجانية
   window.openCreateRoom = function(){ document.getElementById('createRoomModal').style.display='block'; }
   window.createRoom = async function(){
     let name=document.getElementById('newRoomName').value.trim();
@@ -810,7 +795,6 @@ h1{color:#3b82f6;text-shadow:0 0 15px #3b82f6;font-size:26px}
     if(coins<80000) return alert("ليس لديك 80000 نقطة");
     coins-=80000;
     let id='RM'+Math.floor(Math.random()*900000+100000);
-    // 7 مايكات مجانية مبدئياً مغلقة (false)
     let initialMics = Array(7).fill({active:false, user:""});
     await setDoc(doc(db, "rooms", id), {id:id, name:name, owner:currentUser, mics: initialMics});
     addLog(`انشاء غرفة ${name}`,-80000,'buy');
@@ -875,7 +859,6 @@ h1{color:#3b82f6;text-shadow:0 0 15px #3b82f6;font-size:26px}
     document.getElementById('giftsBar').innerHTML=g;
   }
 
-  // عرض وإدارة المايكات السبعة المجانية
   function renderMics(){
     let grid = document.getElementById('roomMicsGrid');
     if(!grid || !currentRoom) return;
@@ -898,7 +881,6 @@ h1{color:#3b82f6;text-shadow:0 0 15px #3b82f6;font-size:26px}
     let mics = [...(currentRoom.mics || Array(7).fill({active:false, user:""}))];
     
     if(isOwner){
-      // المالك يتحكم بفتح وإغلاق المايك
       if(mics[index].active){
         mics[index] = {active: false, user: ""};
       } else {
@@ -908,7 +890,6 @@ h1{color:#3b82f6;text-shadow:0 0 15px #3b82f6;font-size:26px}
         } else return;
       }
     } else {
-      // المستخدم العادي يطلب الصعود للمايك إذا كان فارغاً
       if(!mics[index].active){
         if(confirm(`هل تريد طلب الصعود على مايك ${index+1}?`)){
           mics[index] = {active: true, user: currentUser};
