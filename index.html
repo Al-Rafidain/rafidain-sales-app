@@ -3,22 +3,24 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0,user-scalable=no">
-<title>الرافدين الكامل</title>
+<title>الرافدين النهائي</title>
 <style>
 *{box-sizing:border-box;margin:0;padding:0}body{background:#000;color:#fff;font-family:tahoma;text-align:center;padding:10px;padding-bottom:100px}
 .logo{font-size:50px;margin:15px}h1{color:#3b82f6;text-shadow:0 0 15px #3b82f6}
 .page{display:none}.page.active{display:block}
 .box{border:3px solid #3b82f6;border-radius:18px;padding:20px;margin:15px auto;background:#111;max-width:420px}
 #coins,#dailyProfit{font-size:36px;font-weight:bold}#coins{color:#0f0}#dailyProfit{color:#ffb300}
-.btn{background:#3b82f6;color:#fff;border:0;padding:16px;border-radius:15px;font-size:16px;font-weight:bold;margin:10px auto;cursor:pointer;width:90%;display:block}
-.btn-green{background:#0f0;color:#000}.btn-red{background:#f33}.btn:disabled{opacity:.5}
+.btn{background:#3b82f6;color:#fff;border:0;padding:14px;border-radius:15px;font-size:15px;font-weight:bold;margin:8px auto;cursor:pointer;width:90%;display:block}
+.btn-green{background:#0f0;color:#000}.btn-red{background:#f33}.btn-yellow{background:#ffb300;color:#000}.btn:disabled{opacity:.5}
 .input{width:90%;padding:12px;margin:8px 0;border-radius:8px;background:#222;color:#fff;border:1px solid #3b82f6}
 .bottomNav{position:fixed;bottom:15px;left:50%;transform:translateX(-50%);width:95%;background:linear-gradient(135deg,#1e3a8a,#3b82f6);border-radius:25px;display:flex;padding:10px}
-.navItem{color:#ddd;font-size:14px;cursor:pointer;flex:1;font-weight:bold}.navItem.active{color:#fff}
+.navItem{color:#ddd;font-size:13px;cursor:pointer;flex:1;font-weight:bold}.navItem.active{color:#fff}
 .chatBox{height:250px;overflow-y:auto;background:#0a0a0a;border:2px solid #3b82f6;border-radius:15px;padding:10px;text-align:right}
-.chatMsg{margin:8px 0;padding:8px 12px;border-radius:10px}.chatMsg.me{background:#3b82f6;margin-right:auto;text-align:left}.chatMsg.other{background:#222;margin-left:auto}
+.chatMsg{margin:8px 0;padding:8px 12px;border-radius:10px;position:relative}.chatMsg.me{background:#3b82f6;margin-right:auto;text-align:left}.chatMsg.other{background:#222;margin-left:auto}
+.delBtn{position:absolute;left:5px;top:5px;background:#f33;border:0;color:#fff;border-radius:5px;font-size:10px;padding:2px 6px;cursor:pointer}
 .micGrid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin:15px 0}
-.micSeat{background:#222;border:2px solid #3b82f6;border-radius:10px;padding:10px;cursor:pointer}.micSeat.active{border-color:#0f0;background:#002200}
+.micSeat{background:#222;border:2px solid #3b82f6;border-radius:10px;padding:10px;cursor:pointer;position:relative}.micSeat.active{border-color:#0f0;background:#002200}
+.giftBtn{position:absolute;bottom:2px;right:2px;background:#ffb300;border:0;border-radius:50%;width:25px;height:25px;font-size:12px;cursor:pointer}
 .modal{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.95);z-index:1000;overflow-y:auto}
 .modal-content{background:#1a1a1a;margin:20px auto;padding:15px;width:95%;max-width:500px;border-radius:15px;border:2px solid #3b82f6}
 .roomItem,.userItem{background:#222;padding:15px;margin:10px 0;border-radius:12px;border:2px solid #3b82f6;text-align:right}
@@ -28,6 +30,7 @@
 #memoryBoard{grid-template-columns:repeat(4,60px)}
 .xoCell,.memCell{width:90px;height:90px;background:#222;font-size:50px;display:flex;align-items:center;justify-content:center;cursor:pointer;border:2px solid #3b82f6;border-radius:10px}
 .memCell{width:60px;height:60px;font-size:30px}
+.wheel{width:250px;height:250px;border-radius:50%;background:conic-gradient(red 0 60deg,yellow 60 120deg,green 120 180deg,blue 180 240deg,purple 240 300deg,orange 300 360deg);margin:20px auto;border:5px solid #fff;transition:transform 3s}
 .counterItem{background:#222;padding:15px;margin:10px auto;border-radius:10px;border:2px solid #333;width:90%}
 </style>
 </head>
@@ -41,28 +44,32 @@
     <div class="box"><h3>الرصيد 💰</h3><div id="coins">0</div><div id="coinsDollar">$0</div><button class="btn btn-green" onclick="openTransfer()">💵 تحويل</button></div>
     <div class="box"><h3>عدادك ⚙️</h3><div id="dailyProfit">0</div><p id="nextClaim" style="font-size:12px;color:#aaa"></p></div>
     <button class="btn btn-green" onclick="claimProfit()">استلام الارباح</button>
-    <button class="btn" onclick="openReferral()">🎁 رابط الاحالة</button>
+    <button class="btn btn-yellow" onclick="openReferral()">🎁 كود الاحالة</button>
   </div>
 
   <div id="store" class="page"><h2>🛒 المتجر</h2><div id="coins2" class="box"></div><div id="storeList"></div></div>
 
-  <div id="games" class="page"><h2>🎮 الالعاب - 6</h2><div id="coins3" class="box"></div>
+  <div id="games" class="page"><h2>🎮 الالعاب - 5</h2><div id="coins3" class="box"></div>
     <button class="btn" onclick="openXO()">❌⭕ XO - 50</button>
-    <button class="btn" onclick="spinWheel()">🎡 العجلة - 50</button>
+    <button class="btn" onclick="spinWheel()">🎡 عجلة الحظ - 50</button>
     <button class="btn" onclick="openBox()">📦 الصندوق - 500</button>
     <button class="btn" onclick="openMemory()">🧠 ميموري - 50</button>
-    <button class="btn" onclick="openScratch()">🎟️ بطاقة خدش - 100</button>
     <button class="btn" onclick="openDice()">🎲 النرد - 50</button>
   </div>
 
-  <div id="friends" class="page"><h2>👥 الاصدقاء</h2><div id="friendsList"></div><h3>طلبات الصداقة</h3><div id="friendRequests"></div><h3>ابحث</h3><input id="searchUser" class="input" placeholder="اسم الصديق"><button class="btn" onclick="sendFriendRequest()">ارسال طلب</button></div>
+  <div id="friends" class="page"><h2>👥 الاصدقاء</h2><div id="friendsList"></div><h3>طلبات الصداقة</h3><div id="friendRequests"></div><h3>بحث بكود الاحالة</h3><input id="searchRef" class="input" placeholder="ادخل كود الاحالة"><button class="btn" onclick="searchByRef()">بحث</button></div>
 
   <div id="rooms" class="page"><h2>🏠 الغرف</h2><button class="btn btn-green" onclick="openCreateRoom()">➕ انشاء غرفة - 80000</button><div id="roomsList"></div></div>
 
   <div id="chatRoom" class="page">
     <button class="btn" onclick="showPage('rooms',null)">🔙 رجوع</button><h2 id="roomNameTitle"></h2>
     <div class="box"><h3 style="color:#0f0">🎙️ مايكات - 7</h3><div class="micGrid" id="roomMicsGrid"></div><button id="kickBtn" class="btn btn-red" style="display:none" onclick="openKickModal()">🚫 طرد من المايك</button></div>
-    <div id="roomChatBox" class="chatBox"></div><input type="text" id="roomChatInput" class="input" placeholder="اكتب"><button class="btn" onclick="sendRoomMsg()">ارسال</button>
+    <div id="roomChatBox" class="chatBox"></div><input type="text" id="roomChatInput" class="input" placeholder="اكتب"><button class="btn" onclick="sendRoomMsg()">ارسال</button><button class="btn btn-red" onclick="clearRoomChat()">🗑️ مسح الدردشة</button>
+  </div>
+
+  <div id="privateChat" class="page">
+    <button class="btn" onclick="showPage('friends',null)">🔙 رجوع</button><h2 id="chatWithName"></h2>
+    <div id="privateChatBox" class="chatBox"></div><input type="text" id="privateChatInput" class="input" placeholder="اكتب"><button class="btn" onclick="sendPrivateMsg()">ارسال</button>
   </div>
 
   <div class="bottomNav">
@@ -76,14 +83,14 @@
 
 <div id="createRoomModal" class="modal"><div class="modal-content"><input id="newRoomName" class="input" placeholder="اسم الغرفة"><button class="btn btn-green" onclick="createRoom()">انشاء - 80000</button><button class="btn btn-red" onclick="closeModal('createRoomModal')">الغاء</button></div></div>
 <div id="kickModal" class="modal"><div class="modal-content"><h2>طرد عضو</h2><div id="kickList"></div><button class="btn btn-red" onclick="closeModal('kickModal')">الغاء</button></div></div>
-<div id="transferModal" class="modal"><div class="modal-content"><h2>تحويل نقاط</h2><input id="transferTo" class="input" placeholder="اسم المستلم"><input id="transferAmount" type="number" class="input" placeholder="الكمية"><button class="btn btn-green" onclick="doTransfer()">تحويل</button><button class="btn btn-red" onclick="closeModal('transferModal')">الغاء</button></div></div>
-<div id="referralModal" class="modal"><div class="modal-content"><h2>رابط الاحالة</h2><p>شارك هذا الرابط: </p><p id="refLink" style="background:#222;padding:10px;border-radius:8px"></p><button class="btn" onclick="navigator.clipboard.writeText(document.getElementById('refLink').innerText)">نسخ</button><button class="btn btn-red" onclick="closeModal('referralModal')">اغلاق</button></div></div>
+<div id="transferModal" class="modal"><div class="modal-content"><h2>تحويل نقاط</h2><input id="transferTo" class="input" placeholder="كود الاحالة للمستلم"><input id="transferAmount" type="number" class="input" placeholder="الكمية"><button class="btn btn-green" onclick="doTransfer()">تحويل</button><button class="btn btn-red" onclick="closeModal('transferModal')">الغاء</button></div></div>
+<div id="referralModal" class="modal"><div class="modal-content"><h2>كود الاحالة</h2><p>كودك:</p><h2 id="myRefCode" style="color:#0f0"></h2><p>الرابط:</p><p id="refLink" style="background:#222;padding:10px;border-radius:8px"></p><button class="btn" onclick="navigator.clipboard.writeText(document.getElementById('refLink').innerText)">نسخ الرابط</button><button class="btn btn-red" onclick="closeModal('referralModal')">اغلاق</button></div></div>
 <div id="xoModal" class="modal"><div class="modal-content"><h2>XO ضد البوت</h2><div id="xoBoard"></div><p id="xoResult"></p><button class="btn" onclick="closeModal('xoModal')">خروج</button></div></div>
-<div id="wheelModal" class="modal"><div class="modal-content"><h2>عجلة الحظ</h2><button class="btn" onclick="doSpin()">لف - 50</button><p id="wheelResult"></p><button class="btn" onclick="closeModal('wheelModal')">اغلاق</button></div></div>
-<div id="boxModal" class="modal"><div class="modal-content"><h2>الصندوق السحري</h2><button class="btn" onclick="doBox()">افتح - 500</button><p id="boxResult"></p><button class="btn" onclick="closeModal('boxModal')">اغلاق</button></div></div>
+<div id="wheelModal" class="modal"><div class="modal-content"><h2>عجلة الحظ</h2><div class="wheel" id="wheel"></div><button class="btn" onclick="doSpin()">لف - 50</button><p id="wheelResult"></p><button class="btn" onclick="closeModal('wheelModal')">اغلاق</button></div></div>
+<div id="boxModal" class="modal"><div class="modal-content"><h2>📦 الصندوق</h2><div style="font-size:80px">📦</div><button class="btn" onclick="doBox()">افتح - 500</button><p id="boxResult"></p><button class="btn" onclick="closeModal('boxModal')">اغلاق</button></div></div>
 <div id="memoryModal" class="modal"><div class="modal-content"><h2>ميموري</h2><div id="memoryBoard"></div><p id="memoryResult"></p><button class="btn" onclick="closeModal('memoryModal')">خروج</button></div></div>
-<div id="scratchModal" class="modal"><div class="modal-content"><h2>بطاقة خدش</h2><button class="btn" onclick="doScratch()">اخدش - 100</button><p id="scratchResult"></p><button class="btn" onclick="closeModal('scratchModal')">اغلاق</button></div></div>
 <div id="diceModal" class="modal"><div class="modal-content"><h2>النرد</h2><button class="btn" onclick="doDice()">ارمي - 50</button><p id="diceResult"></p><button class="btn" onclick="closeModal('diceModal')">اغلاق</button></div></div>
+<div id="giftModal" class="modal"><div class="modal-content"><h2>ارسل هدية</h2><button class="btn" onclick="sendGift('🌹',100)">🌹 وردة - 100</button><button class="btn" onclick="sendGift('👑',500)">👑 تاج - 500</button><button class="btn" onclick="sendGift('🚀',1000)">🚀 صاروخ - 1000</button><button class="btn btn-red" onclick="closeModal('giftModal')">اغلاق</button></div></div>
 <div id="toast" class="toast"></div>
 
 <script type="module">
@@ -93,15 +100,15 @@ import { getFirestore, doc, setDoc, getDoc, updateDoc, collection, onSnapshot, a
 const firebaseConfig = {apiKey: "AIzaSyBbkpcBPq8G2OpyKxaVqPO7Mkfla4X9hxU",authDomain: "rafidainapp.firebaseapp.com",projectId: "rafidainapp",appId: "1:512875147812:web:54f33bda3780db7a4a9eb1"};
 const app = initializeApp(firebaseConfig); const db = getFirestore(app);
 
-let coins=5000,dailyProfitTotal=0,lastClaim=0,currentUser='',rooms=[],currentRoom=null,friends=[],friendRequests=[],sentRequests=[];
-const RATE=10000; let unsubRoomChat=null, unsubRoomDoc=null;
+let coins=5000,dailyProfitTotal=0,lastClaim=0,currentUser='',refCode='',rooms=[],currentRoom=null,friends=[],friendRequests=[],sentRequests=[];
+const RATE=10000; let unsubRoomChat=null, unsubRoomDoc=null, unsubPrivateChat=null, chattingWith='';
 const countersData = [{name:"عداد 100", price:1000, profit:100},{name:"عداد 500", price:5000, profit:500},{name:"عداد 1000", price:10000, profit:1000},{name:"عداد 5000", price:50000, profit:5000}];
 
 window.onload = checkLogin;
 async function checkLogin(){currentUser=localStorage.getItem('rafidain_user');if(currentUser){await loadUserData();document.getElementById('registerPage').style.display='none';document.getElementById('mainApp').style.display='block';listenToRooms();listenToFriends();}else{document.getElementById('registerPage').style.display='block';}}
 
-async function createAccount(){let name=document.getElementById('regName').value.trim();let pass=document.getElementById('regPass').value.trim();if(!name||!pass)return alert("دخل البيانات");await setDoc(doc(db,"users",name),{name,pass,coins:5000,dailyProfit:0,lastClaim:Date.now(),friends:[],friendRequests:[],sentRequests:[]},{merge:true});currentUser=name;localStorage.setItem('rafidain_user',name);location.reload();}
-async function loadUserData(){const snap=await getDoc(doc(db,"users",currentUser));if(snap.exists()){let d=snap.data();coins=d.coins||5000;dailyProfitTotal=d.dailyProfit||0;lastClaim=d.lastClaim||0;friends=d.friends||[];friendRequests=d.friendRequests||[];sentRequests=d.sentRequests||[];updateUI();}}
+async function createAccount(){let name=document.getElementById('regName').value.trim();let pass=document.getElementById('regPass').value.trim();if(!name||!pass)return alert("دخل البيانات");refCode='REF'+Math.random().toString(36).substr(2,6).toUpperCase();await setDoc(doc(db,"users",name),{name,pass,coins:5000,dailyProfit:0,lastClaim:Date.now(),friends:[],friendRequests:[],sentRequests:[],refCode,privateChats:{}},{merge:true});currentUser=name;localStorage.setItem('rafidain_user',name);location.reload();}
+async function loadUserData(){const snap=await getDoc(doc(db,"users",currentUser));if(snap.exists()){let d=snap.data();coins=d.coins||5000;dailyProfitTotal=d.dailyProfit||0;lastClaim=d.lastClaim||0;friends=d.friends||[];friendRequests=d.friendRequests||[];sentRequests=d.sentRequests||[];refCode=d.refCode||'';updateUI();}}
 function updateUI(){document.getElementById('coins').innerText=coins.toLocaleString();document.getElementById('coins2').innerText='رصيدك: '+coins.toLocaleString();document.getElementById('coins3').innerText='رصيدك: '+coins.toLocaleString();document.getElementById('coinsDollar').innerText=`$${(coins/RATE).toFixed(2)}`;document.getElementById('dailyProfit').innerText=dailyProfitTotal.toLocaleString();let next=lastClaim+86400000-Date.now();document.getElementById('nextClaim').innerText=next>0?`الاستلام بعد: ${Math.floor(next/3600000)}س`:'جاهز للاستلام';if(currentUser)setDoc(doc(db,"users",currentUser),{coins,dailyProfit:dailyProfitTotal,lastClaim,friends,friendRequests,sentRequests},{merge:true});}
 window.showPage=(id,el)=>{document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));document.querySelectorAll('.navItem').forEach(b=>b.classList.remove('active'));document.getElementById(id).classList.add('active');if(el)el.classList.add('active');if(id=='store')loadStore();if(id=='friends')loadFriends();}
 window.closeModal=(id)=>document.getElementById(id).style.display='none';
@@ -116,28 +123,37 @@ function listenToRooms(){onSnapshot(collection(db,"rooms"),snap=>{rooms=[];snap.
 window.openCreateRoom=()=>document.getElementById('createRoomModal').style.display='block';
 window.createRoom=async()=>{let name=document.getElementById('newRoomName').value.trim();if(!name)return;if(coins<80000)return alert("تحتاج 80000");coins-=80000;let id='RM'+Date.now();await setDoc(doc(db,"rooms",id),{id,name,owner:currentUser,mics:Array(7).fill(null)});updateUI();closeModal('createRoomModal');enterRoom(id);}
 
-window.enterRoom=(id)=>{currentRoom=rooms.find(r=>r.id==id);document.getElementById('roomNameTitle').innerText=currentRoom.name;document.getElementById('kickBtn').style.display=currentRoom.owner==currentUser?'block':'none';showPage('chatRoom',null);if(unsubRoomDoc)unsubRoomDoc();unsubRoomDoc=onSnapshot(doc(db,"rooms",id),snap=>{if(snap.exists()){currentRoom=snap.data();renderMics()}});if(unsubRoomChat)unsubRoomChat();unsubRoomChat=onSnapshot(doc(db,"roomMessages",id),snap=>{let msgs=snap.exists()?snap.data().messages||[]:[];let box=document.getElementById('roomChatBox');box.innerHTML='';msgs.forEach(m=>box.innerHTML+=`<div class="chatMsg ${m.u==currentUser?'me':'other'}"><b>${m.u}:</b> ${m.t}</div>`);box.scrollTop=box.scrollHeight;});}
-window.sendRoomMsg=async()=>{let txt=document.getElementById('roomChatInput').value.trim();if(!txt||!currentRoom)return;await setDoc(doc(db,"roomMessages",currentRoom.id),{messages:arrayUnion({u:currentUser,t:txt,time:Date.now()})},{merge:true});document.getElementById('roomChatInput').value='';}
+window.enterRoom=(id)=>{currentRoom=rooms.find(r=>r.id==id);document.getElementById('roomNameTitle').innerText=currentRoom.name;document.getElementById('kickBtn').style.display=currentRoom.owner==currentUser?'block':'none';showPage('chatRoom',null);if(unsubRoomDoc)unsubRoomDoc();unsubRoomDoc=onSnapshot(doc(db,"rooms",id),snap=>{if(snap.exists()){currentRoom=snap.data();renderMics()}});if(unsubRoomChat)unsubRoomChat();unsubRoomChat=onSnapshot(doc(db,"roomMessages",id),snap=>{let msgs=snap.exists()?snap.data().messages||[]:[];let box=document.getElementById('roomChatBox');box.innerHTML='';msgs.forEach((m,idx)=>box.innerHTML+=`<div class="chatMsg ${m.u==currentUser?'me':'other'}"><b>${m.u}:</b> ${m.t} ${m.g?' '+m.g:''} ${currentRoom.owner==currentUser?`<button class="delBtn" onclick="deleteRoomMsg(${idx})">X</button>`:''}</div>`);box.scrollTop=box.scrollHeight;});}
+window.sendRoomMsg=async()=>{let txt=document.getElementById('roomChatInput').value.trim();if(!txt||!currentRoom)return;await setDoc(doc(db,"roomMessages",currentRoom.id),{messages:arrayUnion({u:currentUser,t:txt,time:Date.now(),g:null})},{merge:true});document.getElementById('roomChatInput').value='';}
+window.clearRoomChat=async()=>{if(currentRoom.owner!=currentUser)return alert("بس المالك");await setDoc(doc(db,"roomMessages",currentRoom.id),{messages:[]});}
+window.deleteRoomMsg=async(idx)=>{let snap=await getDoc(doc(db,"roomMessages",currentRoom.id));let msgs=snap.data().messages;msgs.splice(idx,1);await setDoc(doc(db,"roomMessages",currentRoom.id),{messages});}
 
-function renderMics(){let grid=document.getElementById('roomMicsGrid');let mics=currentRoom.mics||Array(7).fill(null);let html='';mics.forEach((m,idx)=>{html+=`<div class="micSeat ${m?'active':''}" onclick="toggleMic(${idx})">${m?m:'مايك '+(idx+1)}</div>`});grid.innerHTML=html;}
+function renderMics(){let grid=document.getElementById('roomMicsGrid');let mics=currentRoom.mics||Array(7).fill(null);let html='';mics.forEach((m,idx)=>{html+=`<div class="micSeat ${m?'active':''}">${m?m:'مايك '+(idx+1)} <button class="giftBtn" onclick="openGiftModal(${idx})">🎁</button></div>`});grid.innerHTML=html;}
 window.toggleMic=async(idx)=>{let mics=[...currentRoom.mics];if(mics[idx]==currentUser){mics[idx]=null;}else if(mics[idx]==null){mics[idx]=currentUser;}else{return alert("المايك مشغول")}await updateDoc(doc(db,"rooms",currentRoom.id),{mics});}
 window.openKickModal=()=>{let users=new Set();(currentRoom.mics||[]).forEach(m=>{if(m)users.add(m)});let html='';users.forEach(u=>{if(u!=currentUser)html+=`<button class="btn btn-red" onclick="kickUser('${u}')">طرد ${u}</button>`});document.getElementById('kickList').innerHTML=html;document.getElementById('kickModal').style.display='block';}
 window.kickUser=async(u)=>{let mics=[...currentRoom.mics];mics=mics.map(x=>x==u?null:x);await updateDoc(doc(db,"rooms",currentRoom.id),{mics});closeModal('kickModal');showToast('تم الطرد')}
 
+let giftMicIndex=0;
+window.openGiftModal=(idx)=>{giftMicIndex=idx;document.getElementById('giftModal').style.display='block';}
+window.sendGift=async(gift,price)=>{if(coins<price)return alert("نقاطك لا تكفي");coins-=price;await setDoc(doc(db,"roomMessages",currentRoom.id),{messages:arrayUnion({u:currentUser,t:'ارسل هدية',time:Date.now(),g:gift})},{merge:true});updateUI();closeModal('giftModal');}
+
 // الاصدقاء
 function listenToFriends(){onSnapshot(doc(db,"users",currentUser),snap=>{if(snap.exists()){let d=snap.data();friends=d.friends||[];friendRequests=d.friendRequests||[];sentRequests=d.sentRequests||[];loadFriends()}})}
-function loadFriends(){let fhtml='',rhtml='';friends.forEach(f=>fhtml+=`<div class="userItem">${f} <button class="btn" onclick="openChatWith('${f}')">مراسلة</button></div>`);friendRequests.forEach(r=>rhtml+=`<div class="userItem">${r} <button class="btn btn-green" onclick="acceptFriend('${r}')">قبول</button> <button class="btn btn-red" onclick="rejectFriend('${r}')">رفض</button></div>`);document.getElementById('friendsList').innerHTML=fhtml||'لا اصدقاء';document.getElementById('friendRequests').innerHTML=rhtml||'لا طلبات';}
-window.sendFriendRequest=async()=>{let u=document.getElementById('searchUser').value.trim();if(!u||u==currentUser)return;let snap=await getDoc(doc(db,"users",u));if(!snap.exists())return alert("المستخدم غير موجود");await updateDoc(doc(db,"users",u),{friendRequests:arrayUnion(currentUser)});await updateDoc(doc(db,"users",currentUser),{sentRequests:arrayUnion(u)});showToast("تم ارسال الطلب")}
+function loadFriends(){let fhtml='',rhtml='';friends.forEach(f=>fhtml+=`<div class="userItem">${f} <button class="btn" onclick="openPrivateChat('${f}')">مراسلة</button> <button class="btn btn-red" onclick="removeFriend('${f}')">حذف</button></div>`);friendRequests.forEach(r=>rhtml+=`<div class="userItem">${r} <button class="btn btn-green" onclick="acceptFriend('${r}')">قبول</button> <button class="btn btn-red" onclick="rejectFriend('${r}')">رفض</button></div>`);document.getElementById('friendsList').innerHTML=fhtml||'لا اصدقاء';document.getElementById('friendRequests').innerHTML=rhtml||'لا طلبات';}
+window.searchByRef=async()=>{let code=document.getElementById('searchRef').value.trim();if(!code)return;let snap=await getDoc(collection(db,"users"));let found=null;snap.forEach(d=>{if(d.data().refCode==code)found=d.id});if(!found)return alert("الكود غير موجود");await updateDoc(doc(db,"users",found),{friendRequests:arrayUnion(currentUser)});await updateDoc(doc(db,"users",currentUser),{sentRequests:arrayUnion(found)});showToast("تم ارسال الطلب")}
 window.acceptFriend=async(u)=>{await updateDoc(doc(db,"users",currentUser),{friends:arrayUnion(u),friendRequests:arrayRemove(u)});await updateDoc(doc(db,"users",u),{friends:arrayUnion(currentUser),sentRequests:arrayRemove(currentUser)});}
 window.rejectFriend=async(u)=>{await updateDoc(doc(db,"users",currentUser),{friendRequests:arrayRemove(u)});await updateDoc(doc(db,"users",u),{sentRequests:arrayRemove(currentUser)});}
-window.openChatWith=(u)=>{alert("شات خاص قريبا")}
+window.removeFriend=async(u)=>{await updateDoc(doc(db,"users",currentUser),{friends:arrayRemove(u)});await updateDoc(doc(db,"users",u),{friends:arrayRemove(currentUser)});}
+
+window.openPrivateChat=(u)=>{chattingWith=u;document.getElementById('chatWithName').innerText='الشات مع: '+u;showPage('privateChat',null);if(unsubPrivateChat)unsubPrivateChat();unsubPrivateChat=onSnapshot(doc(db,"users",currentUser),snap=>{let chats=snap.data().privateChats||{};let msgs=chats[u]||[];let box=document.getElementById('privateChatBox');box.innerHTML='';msgs.forEach(m=>box.innerHTML+=`<div class="chatMsg ${m.u==currentUser?'me':'other'}"><b>${m.u}:</b> ${m.t}</div>`);box.scrollTop=box.scrollHeight;});}
+window.sendPrivateMsg=async()=>{let txt=document.getElementById('privateChatInput').value.trim();if(!txt)return;let snap=await getDoc(doc(db,"users",currentUser));let chats=snap.data().privateChats||{};if(!chats[chattingWith])chats[chattingWith]=[];chats[chattingWith].push({u:currentUser,t:txt,time:Date.now()});await updateDoc(doc(db,"users",currentUser),{privateChats:chats});let snap2=await getDoc(doc(db,"users",chattingWith));let chats2=snap2.data().privateChats||{};if(!chats2[currentUser])chats2[currentUser]=[];chats2[currentUser].push({u:currentUser,t:txt,time:Date.now()});await updateDoc(doc(db,"users",chattingWith),{privateChats:chats2});document.getElementById('privateChatInput').value='';}
 
 // التحويل والاحالة
 window.openTransfer=()=>document.getElementById('transferModal').style.display='block';
-window.doTransfer=async()=>{let to=document.getElementById('transferTo').value.trim();let amount=parseInt(document.getElementById('transferAmount').value);if(coins<amount)return alert("نقاطك لا تكفي");let snap=await getDoc(doc(db,"users",to));if(!snap.exists())return alert("المستخدم غير موجود");coins-=amount;await updateDoc(doc(db,"users",to),{coins:snap.data().coins+amount});updateUI();closeModal('transferModal');showToast("تم التحويل")}
-window.openReferral=()=>{document.getElementById('refLink').innerText=`rafidain.com?ref=${currentUser}`;document.getElementById('referralModal').style.display='block';}
+window.doTransfer=async()=>{let code=document.getElementById('transferTo').value.trim();let amount=parseInt(document.getElementById('transferAmount').value);if(coins<amount)return alert("نقاطك لا تكفي");let snap=await getDoc(collection(db,"users"));let toUser=null;snap.forEach(d=>{if(d.data().refCode==code)toUser=d.id});if(!toUser)return alert("كود الاحالة غير موجود");let toSnap=await getDoc(doc(db,"users",toUser));await updateDoc(doc(db,"users",toUser),{coins:toSnap.data().coins+amount});coins-=amount;updateUI();closeModal('transferModal');showToast("تم التحويل")}
+window.openReferral=()=>{document.getElementById('myRefCode').innerText=refCode;document.getElementById('refLink').innerText=`rafidain.com?ref=${refCode}`;document.getElementById('referralModal').style.display='block';}
 
-// الالعاب 6
+// الالعاب 5
 let xoBoard=Array(9).fill('');
 window.openXO=()=>{if(coins<50)return alert("تحتاج 50");coins-=50;updateUI();xoBoard=Array(9).fill('');document.getElementById('xoModal').style.display='block';renderXO()}
 function renderXO(){let b=document.getElementById('xoBoard');b.innerHTML='';xoBoard.forEach((v,i)=>b.innerHTML+=`<div class="xoCell" onclick="playXO(${i})">${v}</div>`)}
@@ -145,7 +161,7 @@ window.playXO=(i)=>{if(xoBoard[i])return;xoBoard[i]='X';renderXO();if(checkWin('
 function checkWin(p){const w=[[0,1,2],[3,4,5],[6,7,8],[0,3,6],[1,4,7],[2,5,8],[0,4,8],[2,4,6]];return w.some(x=>xoBoard[x[0]]==p&&xoBoard[x[1]]==p&&xoBoard[x[2]]==p)}
 
 window.spinWheel=()=>{if(coins<50)return alert("50");coins-=50;updateUI();document.getElementById('wheelModal').style.display='block';}
-window.doSpin=()=>{let p=[100,200,0,300,500][Math.floor(Math.random()*5)];coins+=p;document.getElementById('wheelResult').innerText=p?`ربحت ${p}`:'حظ اوفر';updateUI();}
+window.doSpin=()=>{let deg=Math.floor(Math.random()*360)+720;document.getElementById('wheel').style.transform=`rotate(${deg}deg)`;setTimeout(()=>{let p=[100,200,0,300,500][Math.floor(Math.random()*5)];coins+=p;document.getElementById('wheelResult').innerText=p?`ربحت ${p}`:'حظ اوفر';updateUI();},3000);}
 
 window.openBox=()=>{if(coins<500)return alert("500");coins-=500;updateUI();document.getElementById('boxModal').style.display='block';}
 window.doBox=()=>{let p=[200,800,1000,50][Math.floor(Math.random()*4)];coins+=p;document.getElementById('boxResult').innerText=`ربحت ${p}`;updateUI();}
@@ -154,11 +170,8 @@ let memCards=[],flipped=[],matched=0;
 window.openMemory=()=>{if(coins<50)return alert("50");coins-=50;updateUI();matched=0;flipped=[];let icons=['🍎','🍌','🍇','🍓'];memCards=[...icons,...icons].sort(()=>0.5-Math.random());let b=document.getElementById('memoryBoard');b.innerHTML='';memCards.forEach((c,i)=>b.innerHTML+=`<div class="memCell" onclick="flipMem(${i},this)">?</div>`);document.getElementById('memoryModal').style.display='block';}
 window.flipMem=(i,el)=>{if(flipped.length==2||el.innerText!='?')return;el.innerText=memCards[i];flipped.push({i,el});if(flipped.length==2){setTimeout(()=>{if(memCards[flipped[0].i]==memCards[flipped[1].i]){matched++;flipped.forEach(f=>f.el.style.background='#0f0');if(matched==4){coins+=250;updateUI();document.getElementById('memoryResult').innerText='فزت 250'}}else{flipped.forEach(f=>f.el.innerText='?')}flipped=[]},800)}}
 
-window.openScratch=()=>{if(coins<100)return alert("100");coins-=100;updateUI();document.getElementById('scratchModal').style.display='block';}
-window.doScratch=()=>{let p=[0,50,200,500][Math.floor(Math.random()*4)];coins+=p;document.getElementById('scratchResult').innerText=p?`ربحت ${p}`:'خسرت';updateUI();}
-
 window.openDice=()=>{if(coins<50)return alert("50");coins-=50;updateUI();document.getElementById('diceModal').style.display='block';}
 window.doDice=()=>{let roll=Math.floor(Math.random()*6)+1;let win=roll>=4?roll*100:0;coins+=win;document.getElementById('diceResult').innerText=`طلع ${roll} - ربحت ${win}`;updateUI();}
 </script>
 </body>
-</html>
+                                        </html>
