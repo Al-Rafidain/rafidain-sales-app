@@ -44,21 +44,16 @@ h1{color:#3b82f6;text-shadow:0 0 15px #3b82f6;font-size:26px}
 .logItem{padding:12px;margin:8px 0;background:#222;border-radius:10px;text-align:right;border-right:4px solid #3b82f6}
 .logItem.win{border-right-color:#0f0}.logItem.buy{border-right-color:#ffb300}
 #registerPage{position:fixed;top:0;left:0;width:100%;height:100%;background:#000;z-index:9998;display:flex;flex-direction:column;justify-content:center;align-items:center;padding:20px}
-.roomItem, .userItem{background:#222;padding:15px;margin:10px 0;border-radius:12px;border:2px solid #3b82f6;text-align:right;display:flex;justify-content:space-between;align-items:center}
+.roomItem,.userItem{background:#222;padding:15px;margin:10px 0;border-radius:12px;border:2px solid #3b82f6;text-align:right;display:flex;justify-content:space-between;align-items:center}
 .roomId{color:#ffb300;font-size:12px}
 .chatBox{height:250px;overflow-y:auto;background:#0a0a0a;border:2px solid #3b82f6;border-radius:15px;padding:10px;margin-bottom:10px;text-align:right}
 .chatMsg{margin:8px 0;padding:8px 12px;border-radius:10px;max-width:85%;position:relative;word-wrap:break-word}
 .chatMsg.me{background:#3b82f6;margin-right:auto;text-align:left;color:#fff}.chatMsg.other{background:#222;margin-left:auto;color:#fff}
 .giftBtn{font-size:16px;padding:8px;margin:4px;border-radius:10px;background:#333;border:2px solid #3b82f6;cursor:pointer;color:#fff}
-.dominoTile{width:36px;height:72px;background:#f5f5f5;color:#000;border:2px solid #333;border-radius:6px;display:inline-block;margin:2px;position:relative}
-.dominoHalf{height:36px;display:flex;align-items:center;justify-content:center;position:relative}
-.dominoHalf.top{border-bottom:1px solid #333}
-.dot{width:5px;height:5px;background:#000;border-radius:50%;position:absolute}
-.dominoTableArea{min-height:100px;border:2px dashed #3b82f6;border-radius:10px;margin:10px 0;padding:10px;background:#0a5c36;display:flex;flex-wrap:wrap;align-items:center;justify-content:center}
 
-/* جديد */
+/* اضافات جديدة */
 .micGrid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin:15px 0}
-.micSeat{background:#222;border:2px solid #3b82f6;border-radius:10px;padding:15px;cursor:pointer;position:relative;font-weight:bold}
+.micSeat{background:#222;border:2px solid #3b82f6;border-radius:10px;padding:15px;cursor:pointer;position:relative;font-weight:bold;font-size:12px}
 .micSeat.active{border-color:#0f0;background:#002200}
 .micSeat.owner{border-color:#ffb300}
 .micControl{position:absolute;top:2px;right:2px;background:#f33;border:0;color:#fff;border-radius:5px;font-size:10px;padding:2px 5px;cursor:pointer}
@@ -66,55 +61,58 @@ h1{color:#3b82f6;text-shadow:0 0 15px #3b82f6;font-size:26px}
 .streakBox{display:flex;justify-content:space-around;margin:15px 0}
 .streakDay{width:40px;height:40px;border-radius:50%;background:#333;display:flex;align-items:center;justify-content:center;font-size:12px}
 .streakDay.active{background:#0f0;color:#000}
-.broadcastModal .modal-content{background:linear-gradient(135deg,#1e3a8a,#3b82f6)}
+.broadcastModal.modal-content{background:linear-gradient(135deg,#1e3a8a,#3b82f6)}
 </style>
 </head>
 <body>
-  <div id="splash">
-  <div class="logo">🏛️</div>
-  <div style="color:#3b82f6;font-size:28px;font-weight:bold;margin-top:20px">AL-RAFIDAIN</div>
-</div>
+
+<div id="splash"><div class="logo">🏛️</div><div style="color:#3b82f6;font-size:28px;font-weight:bold;margin-top:20px">AL-RAFIDAIN</div></div>
 
 <div id="registerPage">
-  <div class="logo">🏛️</div>
-  <h1>تسجيل الدخول / انشاء حساب</h1>
+  <div class="logo">🏛️</div><h1>تسجيل الدخول</h1>
   <div class="box" style="max-width:400px;width:100%">
     <input type="text" id="regName" class="input" placeholder="ادخل اسمك">
-    <input type="password" id="regPass" class="input" placeholder="ادخل كلمة السر">
+    <input type="password" id="regPass" class="input" placeholder="كلمة السر">
     <input type="text" id="regRef" class="input" placeholder="رمز الاحالة - اختياري">
     <button class="btn btn-green" onclick="createAccount()">تسجيل / دخول</button>
   </div>
 </div>
 
 <div id="mainApp" style="display:none">
-  <div class="logo">🏛️</div>
-  <h1>تطبيق الرافدين</h1>
+  <div class="logo">🏛️</div><h1>تطبيق الرافدين</h1>
 
   <div id="home" class="page active">
     <div class="stats">
-      <div class="box">
-        <h3>💰 الرصيد</h3>
-        <div id="coins">0 نقطة</div>
-        <div id="coinsDollar">يعادل $0.00 دولار</div>
-        <button class="btn btn-green" onclick="alert('ميزة السحب قريباً')">💵 سحب</button>
-      </div>
-      <div class="box">
-        <h3>⚙️ عدادك الحالي</h3>
-        <div id="dailyProfit">0 نقطة/يوم</div>
-      </div>
-      <div class="box">
-        <h3>⚡ الارباح التلقائية</h3>
-        <div id="perDay">+0 نقطة/24 ساعة</div>
-        <p id="nextClaim" style="color:#aaa"></p>
-      </div>
-      <div class="box">
-        <h3>🎁 مكافأة الدخول اليومي</h3>
-        <div id="streakDays" class="streakBox"></div>
-        <button class="btn btn-yellow" onclick="claimStreak()">استلام مكافأة اليوم</button>
-      </div>
+      <div class="box"><h3>💰 الرصيد</h3><div id="coins">0 نقطة</div><div id="coinsDollar">يعادل $0.00 دولار</div><button class="btn btn-green" onclick="alert('قريباً')">💵 سحب</button></div>
+      <div class="box"><h3>⚙️ عدادك الحالي</h3><div id="dailyProfit">0 نقطة/يوم</div></div>
+      <div class="box"><h3>⚡ الارباح التلقائية</h3><div id="perDay">+0 نقطة/24 ساعة</div><p id="nextClaim" style="color:#aaa"></p></div>
+      <div class="box"><h3>🎁 مكافأة الدخول اليومي</h3><div id="streakDays" class="streakBox"></div><button class="btn btn-yellow" onclick="claimStreak()">استلام مكافأة اليوم</button></div>
     </div>
   </div>
-  
+
+  <div id="store" class="page"><h2>🛒 المتجر</h2><div id="coins2" class="box">رصيدك: 0</div><div id="storeList"></div></div>
+  <div id="games" class="page"><h2>🎮 الالعاب</h2><div id="coins3" class="box">رصيدك: 0</div><button class="btn" onclick="openXO()">❌⭕ XO - 50</button><button class="btn" onclick="spinWheel()">🎡 العجلة - 50</button><h3 style="color:#3b82f6;margin-top:25px">🎯 المهمات</h3><div id="dailyTasks"></div></div>
+
+  <div id="leaderboard" class="page"><h2>🏆 المتصدرين</h2><button class="btn btn-yellow" onclick="loadLeaderboard('coins')">اكثر نقاط</button><button class="btn btn-yellow" onclick="loadLeaderboard('gifts')">اكثر هدايا</button><div id="leaderboardList"></div></div>
+
+  <div id="friends" class="page"><h2>👥 الأصدقاء</h2><input type="text" id="searchFriendsInput" class="input" placeholder="ابحث برمز الاحالة"><button class="btn" onclick="searchFriends()">بحث</button><div id="searchResults"></div><h3 style="color:#ffb300">طلبات الصداقة</h3><div id="friendRequestsList"></div><h3 style="color:#0f0">اصدقائي</h3><div id="friendsList"></div></div>
+
+  <div id="rooms" class="page"><h2>🏠 الغرف</h2><div id="myRoomSection"></div><button class="btn btn-green" onclick="openCreateRoom()">➕ انشاء غرفة - 80000</button><div id="roomsList"></div></div>
+
+  <div id="chatRoom" class="page">
+    <button class="btn" onclick="showPage('rooms',null)">🔙 رجوع</button><h2 id="roomNameTitle"></h2><p class="roomId" id="roomIdTitle"></p>
+    <button id="editRoomBtn" class="btn btn-yellow" style="display:none" onclick="alert('قريبا')">✏️ تعديل</button>
+    <button id="clearRoomChatBtn" class="btn btn-red" style="display:none" onclick="clearRoomChat()">🗑️ مسح</button>
+    <button id="gameRoomBtn" class="btn btn-green" onclick="alert('قريبا')">🎮 لعبة</button>
+    <div class="box"><h3 style="color:#0f0">🎙️ 7 مايكات</h3><div class="micGrid" id="roomMicsGrid"></div></div>
+    <div id="roomChatBox" class="chatBox"></div>
+    <input type="text" id="roomChatInput" class="input" placeholder="اكتب هنا"><button class="btn" onclick="sendRoomMsg()">ارسال</button>
+    <h4 style="color:#ffb300">🎁 الهدايا</h4><div id="giftsBar"></div>
+  </div>
+
+  <div id="referral" class="page"><h2>🎁 الاحالة</h2><div class="box"><h3>رمزك</h3><div id="myReferralCode" class="referralCode"></div><button class="btn" onclick="copyCode()">نسخ</button></div><div class="box"><h3>تحويل نقاط</h3><input type="text" id="transferRefInput" class="input" placeholder="رمز الاحاله"><input type="number" id="transferAmountInput" class="input" placeholder="الكمية"><button class="btn btn-green" onclick="transferCoins()">تحويل</button></div></div>
+  <div id="profile" class="page"><h2>👤 الملف</h2><div class="box"><h3 id="userName"></h3></div><button class="btn btn-red" onclick="logout()">تسجيل خروج</button></div>
+
   <div class="bottomNav">
     <div class="navItem active" onclick="showPage('home',this)"><div class="navIcon">⚙️</div><div>العداد</div></div>
     <div class="navItem" onclick="showPage('store',this)"><div class="navIcon">🛒</div><div>المتجر</div></div>
@@ -126,346 +124,64 @@ h1{color:#3b82f6;text-shadow:0 0 15px #3b82f6;font-size:26px}
     <div class="navItem" onclick="showPage('profile',this)"><div class="navIcon">👤</div><div>الملف</div></div>
   </div>
 </div>
-  <div id="store" class="page">
-  <h2>🛒 متجر العدادات</h2>
-  <div id="coins2" class="box">رصيدك: 0 نقطة</div>
-  <div id="storeList"></div>
-</div>
 
-<div id="games" class="page">
-  <h2>🎮 الالعاب والمهمات</h2>
-  <div id="coins3" class="box">رصيدك: 0 نقطة</div>
-  <h3 style="color:#3b82f6">العاب فردية</h3>
-  <button class="btn" onclick="openXO()">❌⭕ XO بوت - 50</button>
-  <button class="btn" onclick="openMemory()">🧠 ميموري - 50</button>
-  <button class="btn" onclick="spinWheel()">🎡 العجلة - 50</button>
-  <button class="btn" onclick="openBox()">📦 الصندوق - 500</button>
-  <h3 style="color:#ffb300;margin-top:25px">العاب جماعية بالغرف</h3>
-  <p style="color:#aaa">ادخل الغرفة وشغل اللعبة ضد الاعضاء</p>
-  <h3 style="color:#3b82f6;margin-top:25px">🎯 المهمات اليومية</h3>
-  <div id="dailyTasks"></div>
-</div>
-
-<div id="leaderboard" class="page">
-  <h2>🏆 لوحة المتصدرين</h2>
-  <button class="btn btn-yellow" onclick="loadLeaderboard('coins')">اكثر نقاط</button>
-  <button class="btn btn-yellow" onclick="loadLeaderboard('gifts')">اكثر هدايا</button>
-  <div id="leaderboardList"></div>
-</div>
-  <div id="friends" class="page">
-  <h2>👥 الأصدقاء والبحث</h2>
-  <div style="display:flex;gap:5px;justify-content:center;max-width:400px;margin:auto">
-    <input type="text" id="searchFriendsInput" class="input" placeholder="ابحث برمز الاحالة..." style="width:70%">
-    <button class="btn btn-blue" style="width:25%;margin:8px 0" onclick="searchFriends()">بحث 🔍</button>
-  </div>
-  <h3 style="color:#3b82f6;margin-top:15px;text-align:right">نتائج البحث</h3>
-  <div id="searchResults"><p style="color:#aaa">اكتب رمز الاحالة للبحث</p></div>
-  <hr style="border-color:#333;margin:20px 0">
-  <h3 style="color:#ffb300;text-align:right">📩 طلبات الصداقة</h3>
-  <div id="friendRequestsList"><p style="color:#aaa">لا توجد طلبات</p></div>
-  <hr style="border-color:#333;margin:20px 0">
-  <h3 style="color:#0f0;text-align:right">قائمة أصدقائي</h3>
-  <div id="friendsList"><p style="color:#aaa">ليس لديك أصدقاء بعد</p></div>
-</div>
-
-<div id="privateChat" class="page">
-  <button class="btn" onclick="showPage('friends',null)">🔙 رجوع</button>
-  <h2 id="privateChatTitle">مراسلة</h2>
-  <div id="privateChatBox" class="chatBox"></div>
-  <div style="display:flex;gap:8px;justify-content:center;max-width:400px;margin:auto">
-    <input type="text" id="privateChatInput" class="input" placeholder="اكتب رسالة..." style="width:70%" onkeypress="if(event.key=='Enter')sendPrivateMsg()">
-    <button class="btn" style="width:25%;margin:8px 0" onclick="sendPrivateMsg()">ارسال</button>
-  </div>
-</div>
-
-<div id="rooms" class="page">
-  <h2>🏠 الغرف</h2>
-  <div id="myRoomSection"></div>
-  <div id="createRoomBtnSection">
-    <button class="btn btn-green" onclick="openCreateRoom()">➕ انشاء غرفة - 80000</button>
-  </div>
-  <button class="btn" onclick="openGlobalChat()">🌍 الدردشة العامة</button>
-  <input type="text" id="searchRoomId" class="input" placeholder="ادخل ايدي الغرفة">
-  <button class="btn" onclick="joinRoomById()">دخول</button>
-  <h3 style="color:#3b82f6;margin-top:20px">الغرف الموجودة</h3>
-  <div id="roomsList"><p style="color:#aaa">لا توجد غرف</p></div>
-</div>
-
-<div id="chatRoom" class="page">
-  <button class="btn" onclick="showPage('rooms',null)">🔙 رجوع</button>
-  <h2 id="roomNameTitle"></h2>
-  <p class="roomId" id="roomIdTitle"></p>
-  <div style="display:flex;gap:10px;justify-content:center;max-width:400px;margin:auto;flex-wrap:wrap">
-    <button id="editRoomBtn" class="btn btn-yellow" style="display:none;width:30%" onclick="editRoomName()">✏️ تعديل</button>
-    <button id="clearRoomChatBtn" class="btn btn-red" style="display:none;width:30%" onclick="clearRoomChat()">🗑️ مسح</button>
-    <button id="gameRoomBtn" class="btn btn-green" style="width:30%" onclick="openRoomGame()">🎮 لعبة</button>
-  </div>
-  <div class="box"><h3 style="color:#0f0">🎙️ 7 مايكات - المالك يتحكم</h3><div class="micGrid" id="roomMicsGrid"></div></div>
-  <div id="roomChatBox" class="chatBox"></div>
-  <div style="display:flex;gap:8px;justify-content:center;max-width:400px;margin:auto">
-    <input type="text" id="roomChatInput" class="input" placeholder="اكتب هنا" style="width:70%" onkeypress="if(event.key=='Enter')sendRoomMsg()">
-    <button class="btn" style="width:25%;margin:8px 0" onclick="sendRoomMsg()">ارسال</button>
-  </div>
-  <h4 style="color:#ffb300;margin-top:10px">🎁 الهدايا</h4>
-  <div id="giftsBar" style="display:flex;flex-wrap:wrap;justify-content:center"></div>
-</div>
-  <div id="referral" class="page">
-  <h2>🎁 نظام الاحالة والتحويل</h2>
-  <div class="box">
-    <h3>🌟 رمز الاحالة الخاص بك</h3>
-    <div id="myReferralCode" class="referralCode">جاري التحميل...</div>
-    <div id="myReferralLink" class="referralCode">جاري التحميل...</div>
-    <button class="btn btn-blue" onclick="copyCode()">📋 نسخ</button>
-  </div>
-  <div class="box">
-    <h3>💸 تحويل نقاط</h3>
-    <input type="text" id="transferRefInput" class="input" placeholder="رمز الاحاله للمستلم">
-    <input type="number" id="transferAmountInput" class="input" placeholder="الكمية">
-    <button class="btn btn-green" onclick="transferCoins()">تحويل 🚀</button>
-  </div>
-</div>
-
-<div id="profile" class="page">
-  <h2>👤 الملف الشخصي</h2>
-  <div class="box"><h3 id="userName"></h3></div>
-  <button class="btn btn-red" onclick="logout()">🚪 تسجيل خروج</button>
-</div>
-
-<!-- مودال الاعلان -->
 <div id="broadcastModal" class="modal broadcastModal"><div class="modal-content"><h2>📢 اعلان</h2><div id="broadcastText"></div><button class="btn" onclick="closeModal('broadcastModal')">فهمت</button></div></div>
-
-<!-- مودال اختيار لعبة الغرفة -->
-<div id="roomGameModal" class="modal"><div class="modal-content"><h2>اختر لعبة للغرفة</h2><button class="btn" onclick="startRoomXO()">❌⭕ XO جماعي</button><button class="btn" onclick="startRoomDomino()">🎲 دومينو جماعي</button><button class="btn btn-red" onclick="closeModal('roomGameModal')">الغاء</button></div></div>
-
-<div id="xoModal" class="modal"><div class="modal-content"><h2>❌⭕ XO</h2><div id="xoBoard"></div><p id="xoResult"></p><button class="btn" onclick="closeModal('xoModal')">خروج</button></div></div>
-<div id="wheelModal" class="modal"><div class="modal-content"><h2>🎡 العجلة</h2><div class="wheel-container"><div class="pointer"></div><canvas id="wheel" width="280" height="280"></canvas></div><button class="btn" id="spinBtn" onclick="doSpin()">لف - 50</button><p id="wheelResult"></p><button class="btn" onclick="closeModal('wheelModal')">اغلاق</button></div></div>
-<div id="boxModal" class="modal"><div class="modal-content"><h2>📦 الصندوق</h2><div id="boxes"></div><p id="boxResult"></p><button class="btn" onclick="closeModal('boxModal')">اغلاق</button></div></div>
-<div id="memoryModal" class="modal"><div class="modal-content"><h2>🧠 ميموري</h2><div id="memoryBoard" style="display:grid;grid-template-columns:repeat(4,60px);gap:8px;justify-content:center;margin:20px auto"></div><p id="memoryResult"></p><button class="btn" onclick="closeModal('memoryModal')">خروج</button></div></div>
+<div id="xoModal" class="modal"><div class="modal-content"><h2>XO</h2><div id="xoBoard"></div><p id="xoResult"></p><button class="btn" onclick="closeModal('xoModal')">خروج</button></div></div>
+<div id="wheelModal" class="modal"><div class="modal-content"><h2>العجلة</h2><div class="wheel-container"><div class="pointer"></div><canvas id="wheel" width="280" height="280"></canvas></div><button class="btn" id="spinBtn" onclick="doSpin()">لف - 50</button><p id="wheelResult"></p><button class="btn" onclick="closeModal('wheelModal')">اغلاق</button></div></div>
 <div id="createRoomModal" class="modal"><div class="modal-content"><h2>انشاء غرفة</h2><input type="text" id="newRoomName" class="input" placeholder="اسم الغرفة"><button class="btn btn-green" onclick="createRoom()">شراء - 80000</button><button class="btn btn-red" onclick="closeModal('createRoomModal')">الغاء</button></div></div>
 <div id="toast" class="toast"></div>
-  <script type="module">
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-  import { getFirestore, doc, setDoc, getDoc, updateDoc, collection, onSnapshot, arrayUnion, arrayRemove, getDocs, query, orderBy, limit } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
-  const firebaseConfig = {
-    apiKey: "AIzaSyBbkpcBPq8G2OpyKxaVqPO7Mkfla4X9hxU",
-    authDomain: "rafidainapp.firebaseapp.com",
-    projectId: "rafidainapp",
-    appId: "1:512875147812:web:54f33bda3780db7a4a9eb1"
-  };
-  const app = initializeApp(firebaseConfig);
-  const db = getFirestore(app);
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+import { getFirestore, doc, setDoc, getDoc, updateDoc, collection, onSnapshot, arrayUnion, getDocs, query, orderBy, limit } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+const firebaseConfig = {apiKey: "AIzaSyBbkpcBPq8G2OpyKxaVqPO7Mkfla4X9hxU",authDomain: "rafidainapp.firebaseapp.com",projectId: "rafidainapp",appId: "1:512875147812:web:54f33bda3780db7a4a9eb1"};
+const app = initializeApp(firebaseConfig); const db = getFirestore(app);
 
-  let coins=5000, dailyProfitTotal=0, lastClaim=0, myReferralCode='', currentUser='', transactionLog=[], currentRoom=null;
-  let rooms=[], roomMessages={}, globalMessages=[], myFriends=[], friendRequests=[], sentRequests=[];
-  let xoBoard=Array(9).fill(''), gameOver=false, boxOpened=false;
-  let streak=0, lastStreakDate='', totalGiftsSent=0;
-  let roomGame={}, roomMics=Array(7).fill(null);
-  const RATE=10000;
-  let currentChatFriend = null, unsubPrivateChat = null, unsubRoomChat = null, unsubRoomDoc = null;
-  const countersData=[{name:"عداد 100",price:1000,profit:100},{name:"عداد 500",price:5000,profit:500},{name:"عداد 1000",price:10000,profit:1000},{name:"عداد 5000",price:50000,profit:5000}];
-  const wheelPrizes=[{text:"حظ اوفر",value:0},{text:"100",value:100},{text:"250",value:250},{text:"500",value:500},{text:"1000",value:1000},{text:"5000",value:5000}];
-  const giftsList=[{icon:"🌹",name:"وردة",price:1000},{icon:"💎",name:"الماس",price:5000},{icon:"👑",name:"تاج",price:10000},{icon:"🐅",name:"شبل",price:20000}];
-  let dailyTasks={login:{done:false,reward:200},buy:{done:false,reward:300},play:{done:false,reward:150}}, lastTaskReset=0;
-  let memoryCards=[], flipped=[], matched=0;
-      function generateUniqueRefCode() { return 'RAF' + Date.now().toString().slice(-4) + Math.floor(1000 + Math.random() * 9000); }
+let coins=5000,dailyProfitTotal=0,lastClaim=0,myReferralCode='',currentUser='',transactionLog=[],currentRoom=null,rooms=[],roomMics=Array(7).fill(null),streak=0,lastStreakDate='',totalGiftsSent=0;
+const RATE=10000; const countersData=[{name:"عداد 100",price:1000,profit:100},{name:"عداد 500",price:5000,profit:500}];
+const wheelPrizes=[{text:"حظ اوفر",value:0},{text:"100",value:100},{text:"500",value:500}]; const giftsList=[{icon:"🌹",name:"وردة",price:1000}];
 
-  setTimeout(()=>{ document.getElementById('splash').style.opacity='0'; document.getElementById('splash').style.visibility='hidden'; checkLogin(); },1500);
+setTimeout(()=>{document.getElementById('splash').style.display='none';checkLogin();},1500);
 
-  async function checkLogin(){
-    currentUser=localStorage.getItem('rafidain_user');
-    if(currentUser){
-      await loadUserData();
-      document.getElementById('registerPage').style.display='none';
-      document.getElementById('mainApp').style.display='block';
-      listenToGlobalChat(); listenToRooms(); listenToUserData(); checkBroadcast();
-    }else{ document.getElementById('registerPage').style.display='flex'; }
-  }
+async function checkLogin(){currentUser=localStorage.getItem('rafidain_user');if(currentUser){await loadUserData();document.getElementById('registerPage').style.display='none';document.getElementById('mainApp').style.display='block';listenToRooms();checkBroadcast();}else{document.getElementById('registerPage').style.display='flex';}}
+async function createAccount(){let name=document.getElementById('regName').value.trim();let pass=document.getElementById('regPass').value.trim();if(!name||!pass)return alert("ادخل البيانات");let snap=await getDoc(doc(db,"users",name));if(snap.exists()){if(snap.data().pass==pass){currentUser=name;localStorage.setItem('rafidain_user',name);await loadUserData();document.getElementById('registerPage').style.display='none';document.getElementById('mainApp').style.display='block';}}else{myReferralCode='RAF'+Date.now().toString().slice(-4);await setDoc(doc(db,"users",name),{name,pass,coins:5000,dailyProfit:0,lastClaim:Date.now(),referral:myReferralCode,streak:0,lastStreakDate:'',totalGiftsSent:0});currentUser=name;localStorage.setItem('rafidain_user',name);await loadUserData();document.getElementById('registerPage').style.display='none';document.getElementById('mainApp').style.display='block';}}
+async function loadUserData(){let d=(await getDoc(doc(db,"users",currentUser))).data();coins=d.coins;dailyProfitTotal=d.dailyProfit;lastClaim=d.lastClaim;myReferralCode=d.referral;streak=d.streak;lastStreakDate=d.lastStreakDate;totalGiftsSent=d.totalGiftsSent;document.getElementById('userName').innerText=currentUser;document.getElementById('myReferralCode').innerText=myReferralCode;updateAll();renderStreak();}
+function showPage(id,el){document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));document.querySelectorAll('.navItem').forEach(b=>b.classList.remove('active'));document.getElementById(id).classList.add('active');if(el)el.classList.add('active');if(id=='store')loadStore();if(id=='games')loadTasks();if(id=='leaderboard')loadLeaderboard('coins');if(id=='rooms')loadRooms();}
+function toDollar(n){return (n/RATE).toFixed(2);}
+async function updateAll(){document.getElementById('coins').innerText=coins.toLocaleString()+' نقطة';document.getElementById('coinsDollar').innerText=`$${toDollar(coins)}`;document.getElementById('dailyProfit').innerText=dailyProfitTotal.toLocaleString();document.getElementById('perDay').innerText='+'+dailyProfitTotal.toLocaleString();if(currentUser)await updateDoc(doc(db,"users",currentUser),{coins,dailyProfit:dailyProfitTotal,streak,lastStreakDate,totalGiftsSent});}
+function showToast(msg){let t=document.getElementById('toast');t.innerText=msg;t.style.display='block';setTimeout(()=>t.style.display='none',3000);}
+window.closeModal=(id)=>document.getElementById(id).style.display='none';
 
-  async function createAccount(){
-    let name=document.getElementById('regName').value.trim();
-    let pass=document.getElementById('regPass').value.trim();
-    let ref=document.getElementById('regRef').value.trim();
-    if(!name||!pass) return alert("ادخل البيانات");
-    const userRef = doc(db, "users", name);
-    const userSnap = await getDoc(userRef);
-    if (userSnap.exists()) {
-      if(userSnap.data().pass === pass){
-        currentUser=name; localStorage.setItem('rafidain_user',name); await loadUserData();
-        document.getElementById('registerPage').style.display='none';
-        document.getElementById('mainApp').style.display='block';
-        listenToGlobalChat(); listenToRooms(); listenToUserData(); checkBroadcast();
-      } else alert("كلمة السر خطأ!");
-    } else {
-      myReferralCode = generateUniqueRefCode();
-      let initialData = {name,pass,coins:5000,dailyProfit:0,lastClaim:Date.now(),referral:myReferralCode,friends:[],friendRequests:[],sentRequests:[],streak:0,lastStreakDate:'',totalGiftsSent:0,log:ref?[{text:`استخدم رمز: ${ref}`,amount:500,type:'win',time:new Date().toLocaleString('ar-IQ')}]:[]};
-      await setDoc(userRef,initialData); currentUser=name; localStorage.setItem('rafidain_user',name);
-      await loadUserData(); document.getElementById('registerPage').style.display='none'; document.getElementById('mainApp').style.display='block';
-      listenToGlobalChat(); listenToRooms(); listenToUserData(); checkBroadcast();
-    }
-  }
-  window.createAccount=createAccount;
+function renderStreak(){let html='';for(let i=1;i<=7;i++){html+=`<div class="streakDay ${i<=streak?'active':''}">${i}</div>`;}document.getElementById('streakDays').innerHTML=html;}
+window.claimStreak=async()=>{let today=new Date().toDateString();if(lastStreakDate==today)return alert("استلمت اليوم");let reward=[0,100,200,400,700,1000,1500,2000][streak+1];coins+=reward;streak++;lastStreakDate=today;await updateAll();renderStreak();showToast(`+${reward}`);if(streak==7)streak=0;}
 
-  async function loadUserData(){
-    const userSnap=await getDoc(doc(db,"users",currentUser));
-    if(userSnap.exists()){
-      let d=userSnap.data();
-      coins=d.coins||5000; dailyProfitTotal=d.dailyProfit||0; lastClaim=d.lastClaim||Date.now();
-      myReferralCode=d.referral||''; transactionLog=d.log||[]; myFriends=d.friends||[]; friendRequests=d.friendRequests||[]; sentRequests=d.sentRequests||[];
-      streak=d.streak||0; lastStreakDate=d.lastStreakDate||''; totalGiftsSent=d.totalGiftsSent||0;
-      document.getElementById('userName').innerText=currentUser; setupReferral(); updateAll(); renderStreak();
-    }
-  }
+async function checkBroadcast(){let snap=await getDoc(doc(db,"admin","broadcast"));if(snap.exists()&&snap.data().text){document.getElementById('broadcastText').innerText=snap.data().text;document.getElementById('broadcastModal').style.display='block';}}
 
-  function renderStreak(){
-    let html=''; for(let i=1;i<=7;i++){ html+=`<div class="streakDay ${i<=streak?'active':''}">${i}</div>`; }
-    document.getElementById('streakDays').innerHTML=html;
-  }
+function loadStore(){let html='';countersData.forEach(c=>{html+=`<div class="counterItem"><h4>${c.name}</h4><p>${c.price} نقطة</p><button class="btn" onclick="buyCounter(${c.price},${c.profit})">شراء</button></div>`});document.getElementById('storeList').innerHTML=html;}
+window.buyCounter=(price,profit)=>{if(coins<price)return alert("لا يكفي");coins-=price;dailyProfitTotal+=profit;updateAll();showToast("تم");}
 
-  window.claimStreak=async()=>{
-    let today=new Date().toDateString();
-    if(lastStreakDate==today) return alert("استلمت مكافأة اليوم");
-    let reward=[0,100,200,400,700,1000,1500,2000][streak+1];
-    coins+=reward; streak++; lastStreakDate=today;
-    addLog(`مكافأة يوم ${streak}`,reward,'win');
-    await updateDoc(doc(db,"users",currentUser),{coins,streak,lastStreakDate});
-    updateAll(); renderStreak(); showToast(`+${reward} نقطة`);
-    if(streak==7){streak=0}
-  }
+function loadTasks(){document.getElementById('dailyTasks').innerHTML=`<div class="counterItem"><h4>دخول</h4><p>200 نقطة</p></div>`;}
+async function loadLeaderboard(type){let q=query(collection(db,"users"),orderBy(type=='gifts'?'totalGiftsSent':'coins','desc'),limit(10));let snap=await getDocs(q);let html='';snap.forEach((d,i)=>{let data=d.data();html+=`<div class="leaderItem"><div>#${i+1} ${data.name}</div><div>${type=='gifts'?data.totalGiftsSent:data.coins}</div></div>`});document.getElementById('leaderboardList').innerHTML=html;}
 
-  async function checkBroadcast(){
-    let snap=await getDoc(doc(db,"admin","broadcast"));
-    if(snap.exists() && snap.data().text){
-      document.getElementById('broadcastText').innerText=snap.data().text;
-      document.getElementById('broadcastModal').style.display='block';
-    }
-                                                                                                                           }
-      function showPage(id,el){
-    document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
-    document.querySelectorAll('.navItem').forEach(b=>b.classList.remove('active'));
-    document.getElementById(id).classList.add('active');
-    if(el) el.classList.add('active');
-    if(id=='store') loadStore(); if(id=='games') loadTasks(); if(id=='referral') setupReferral();
-    if(id=='rooms') loadRooms(); if(id=='friends') loadFriendsPage(); if(id=='leaderboard') loadLeaderboard('coins');
-  }
-  window.showPage=showPage;
+window.searchFriends=()=>{document.getElementById('searchResults').innerHTML='<p>قريبا</p>';}
+function listenToRooms(){onSnapshot(collection(db,"rooms"),(snap)=>{rooms=[];snap.forEach((d)=>rooms.push(d.data()));let html='';rooms.forEach(r=>{html+=`<div class="roomItem" onclick="enterRoom('${r.id}')"><h4>${r.name}</h4><div>${r.owner}</div></div>`});document.getElementById('roomsList').innerHTML=html;});}
+window.openCreateRoom=()=>document.getElementById('createRoomModal').style.display='block';
+window.createRoom=async()=>{let name=document.getElementById('newRoomName').value.trim();if(coins<80000)return alert("تحتاج 80000");coins-=80000;let id='RM'+Math.floor(Math.random()*900000);await setDoc(doc(db,"rooms",id),{id,name,owner:currentUser,mics:Array(7).fill(null)});updateAll();closeModal('createRoomModal');enterRoom(id);}
+window.enterRoom=(id)=>{currentRoom=rooms.find(r=>r.id==id);document.getElementById('roomNameTitle').innerText=currentRoom.name;document.getElementById('roomIdTitle').innerText=id;showPage('chatRoom',null);onSnapshot(doc(db,"rooms",id),(snap)=>{currentRoom=snap.data();roomMics=currentRoom.mics||Array(7).fill(null);renderMics();});let g='';giftsList.forEach(gf=>{g+=`<button class="giftBtn" onclick="sendGift(${gf.price})">${gf.icon} ${gf.price}</button>`});document.getElementById('giftsBar').innerHTML=g;}
+function renderMics(){let html='';roomMics.forEach((m,i)=>{html+=`<div class="micSeat ${m?'active':''}">${m||`مايك ${i+1}`} ${currentRoom.owner==currentUser?`<button class="micControl" onclick="toggleMic(${i})">${m?'اغلاق':'فتح'}</button>`:''}</div>`});document.getElementById('roomMicsGrid').innerHTML=html;}
+window.toggleMic=async(i)=>{roomMics[i]=roomMics[i]?null:currentUser;await updateDoc(doc(db,"rooms",currentRoom.id),{mics:roomMics});}
+window.sendRoomMsg=async()=>{let m=document.getElementById('roomChatInput').value;if(!m)return;await setDoc(doc(db,"roomMessages",currentRoom.id),{messages:arrayUnion({u:currentUser,t:m})},{merge:true});document.getElementById('roomChatInput').value='';}
+window.clearRoomChat=async()=>{await setDoc(doc(db,"roomMessages",currentRoom.id),{messages:[]});}
+window.sendGift=async(price)=>{if(coins<price)return alert("لا يكفي");coins-=price;totalGiftsSent++;await updateAll();showToast("تم الارسال");}
 
-  function toDollar(n){ return (n/RATE).toFixed(2); }
-  async function updateAll(){
-    let dollar=toDollar(coins);
-    document.getElementById('coins').innerText=coins.toLocaleString()+' نقطة';
-    document.getElementById('coinsDollar').innerText=`يعادل $${dollar} دولار`;
-    document.getElementById('coins2').innerText=`رصيدك: ${coins.toLocaleString()} نقطة`;
-    document.getElementById('coins3').innerText=`رصيدك: ${coins.toLocaleString()} نقطة`;
-    document.getElementById('dailyProfit').innerText=dailyProfitTotal.toLocaleString()+' نقطة/يوم';
-    document.getElementById('perDay').innerText='+'+dailyProfitTotal.toLocaleString()+' نقطة/24 ساعة';
-    let now=Date.now(), timeLeft=86400000-(now-lastClaim);
-    if(timeLeft<=0 && dailyProfitTotal>0){ coins+=dailyProfitTotal; lastClaim=now; addLog(`ارباح تلقائية`,dailyProfitTotal,'win'); showToast(`+${dailyProfitTotal}`); }
-    let h=Math.floor(timeLeft/3600000), m=Math.floor((timeLeft/60000)%60);
-    document.getElementById('nextClaim').innerText=dailyProfitTotal>0?`بعد: ${h}س ${m}د`:'';
-    if(currentUser) await updateDoc(doc(db,"users",currentUser),{coins,dailyProfit:dailyProfitTotal,lastClaim,streak,lastStreakDate,totalGiftsSent}).catch(()=>{});
-  }
-  setInterval(updateAll,60000);
+window.transferCoins=()=>{showToast("قريبا");}
+window.copyCode=()=>{navigator.clipboard.writeText(myReferralCode);alert("تم النسخ");}
+window.logout=()=>{localStorage.clear();location.reload();}
 
-  function showToast(msg){let t=document.getElementById('toast');t.innerText=msg;t.style.display='block';setTimeout(()=>t.style.display='none',3000);}
-  window.closeModal=(id)=>document.getElementById(id).style.display='none';
-  function addLog(text,amount,type){transactionLog.unshift({text,amount,type,time:new Date().toLocaleString('ar-IQ')});if(transactionLog.length>50)transactionLog.pop();}
-
-  function loadStore(){
-    let html=''; countersData.forEach(c=>{html+=`<div class="counterItem"><h4>${c.name}</h4><p>السعر: ${c.price.toLocaleString()}</p><p>الربح: ${c.profit.toLocaleString()}/يوم</p><button class="btn" onclick="buyCounter(${c.price},${c.profit},'${c.name}')" ${coins<c.price?'disabled':''}>شراء</button></div>`});
-    document.getElementById('storeList').innerHTML=html;
-  }
-  window.buyCounter=(price,profit,name)=>{if(coins<price)return alert("نقاطك لا تكفي");coins-=price;dailyProfitTotal+=profit;addLog(`شراء ${name}`,-price,'buy');updateAll();loadStore();showToast("تم الشراء");}
-      async function loadLeaderboard(type){
-    let q=query(collection(db,"users"),orderBy(type=='gifts'?'totalGiftsSent':'coins','desc'),limit(20));
-    let snap=await getDocs(q); let html='';
-    snap.forEach((d,i)=>{let data=d.data(); html+=`<div class="leaderItem"><div>#${i+1} ${data.name}</div><div>${type=='gifts'?data.totalGiftsSent: data.coins.toLocaleString()}</div></div>`});
-    document.getElementById('leaderboardList').innerHTML=html;
-  }
-  window.loadLeaderboard=loadLeaderboard;
-
-  function checkTaskReset(){let now=new Date().toDateString(); if(lastTaskReset!=now){dailyTasks={login:{done:false,reward:200},buy:{done:false,reward:300},play:{done:false,reward:150}}; lastTaskReset=now;}}
-  function loadTasks(){
-    checkTaskReset(); let html='';
-    html+=`<div class="counterItem"><h4>📅 دخول</h4><p>${dailyTasks.login.reward} نقطة</p><button class="btn" onclick="completeTask('login')" ${dailyTasks.login.done?'disabled':''}>${dailyTasks.login.done?'✅':'استلام'}</button></div>`;
-    html+=`<div class="counterItem"><h4>🛒 شراء</h4><p>${dailyTasks.buy.reward} نقطة</p><button class="btn" onclick="completeTask('buy')" ${dailyTasks.buy.done?'disabled':''}>${dailyTasks.buy.done?'✅':'استلام'}</button></div>`;
-    html+=`<div class="counterItem"><h4>🎮 لعب</h4><p>${dailyTasks.play.reward} نقطة</p><button class="btn" onclick="completeTask('play')" ${dailyTasks.play.done?'disabled':''}>${dailyTasks.play.done?'✅':'استلام'}</button></div>`;
-    document.getElementById('dailyTasks').innerHTML=html;
-  }
-  window.completeTask=(task)=>{if(dailyTasks[task].done)return;coins+=dailyTasks[task].reward;addLog(`مهمة ${task}`,dailyTasks[task].reward,'win');dailyTasks[task].done=true;showToast(`+${dailyTasks[task].reward}`);updateAll();loadTasks();}
-      function listenToUserData(){onSnapshot(doc(db,"users",currentUser),(snap)=>{if(snap.exists()){let d=snap.data();coins=d.coins;myFriends=d.friends||[];friendRequests=d.friendRequests||[];sentRequests=d.sentRequests||[];renderFriendsPage();updateAll();}});}
-  function loadFriendsPage(){renderFriendsList();renderRequestsList();}
-  function renderFriendsPage(){renderFriendsList();renderRequestsList();}
-
-  window.searchFriends=async()=>{let code=document.getElementById('searchFriendsInput').value.trim();if(!code)return;let snap=await getDocs(collection(db,"users"));let html='',found=false;snap.forEach((u)=>{let d=u.data();if(d.referral==code && u.id!=currentUser){found=true;let btn=myFriends.includes(u.id)?`<button class="btn btn-red" onclick="removeFriend('${u.id}')">حذف</button>`:sentRequests.includes(u.id)?`<button class="btn" disabled>تم الارسال</button>`:`<button class="btn btn-green" onclick="sendFriendRequest('${u.id}')">اضافة</button>`;html+=`<div class="userItem"><div><b>${d.name}</b></div><div>${btn}</div></div>`}});document.getElementById('searchResults').innerHTML=found?html:'<p>لم يوجد</p>';}
-
-  window.sendFriendRequest=async(u)=>{await updateDoc(doc(db,"users",u),{friendRequests:arrayUnion(currentUser)});await updateDoc(doc(db,"users",currentUser),{sentRequests:arrayUnion(u)});showToast("تم الارسال");searchFriends();}
-  window.acceptFriendRequest=async(u)=>{await updateDoc(doc(db,"users",currentUser),{friends:arrayUnion(u),friendRequests:arrayRemove(u)});await updateDoc(doc(db,"users",u),{friends:arrayUnion(currentUser),sentRequests:arrayRemove(currentUser)});}
-  window.rejectFriendRequest=async(u)=>{await updateDoc(doc(db,"users",currentUser),{friendRequests:arrayRemove(u)});await updateDoc(doc(db,"users",u),{sentRequests:arrayRemove(currentUser)});}
-  window.removeFriend=async(u)=>{if(confirm("حذف؟")){await updateDoc(doc(db,"users",currentUser),{friends:arrayRemove(u)});await updateDoc(doc(db,"users",u),{friends:arrayRemove(currentUser)});showToast("تم الحذف");}}
-
-  function renderRequestsList(){let c=document.getElementById('friendRequestsList');if(friendRequests.length==0){c.innerHTML='<p>لا طلبات</p>';return;}let html='';friendRequests.forEach(r=>{html+=`<div class="userItem"><div><b>${r}</b></div><div><button class="btn btn-green" onclick="acceptFriendRequest('${r}')">قبول</button><button class="btn btn-red" onclick="rejectFriendRequest('${r}')">رفض</button></div></div>`});c.innerHTML=html;}
-  function renderFriendsList(){let c=document.getElementById('friendsList');if(myFriends.length==0){c.innerHTML='<p>لا اصدقاء</p>';return;}let html='';myFriends.forEach(f=>{html+=`<div class="userItem"><div><b>${f}</b></div><div><button class="btn btn-blue" onclick="openPrivateChat('${f}')">مراسلة</button><button class="btn btn-red" onclick="removeFriend('${f}')">حذف</button></div></div>`});c.innerHTML=html;}
-
-  function getChatId(u1,u2){return u1<u2?`${u1}_${u2}`:`${u2}_${u1}`;}
-  window.openPrivateChat=(f)=>{currentChatFriend=f;document.getElementById('privateChatTitle').innerText=`مراسلة: ${f}`;showPage('privateChat',null);if(unsubPrivateChat)unsubPrivateChat();unsubPrivateChat=onSnapshot(doc(db,"privateChats",getChatId(currentUser,f)),(snap)=>{let b=document.getElementById('privateChatBox');b.innerHTML='';(snap.data()?.messages||[]).forEach(m=>{b.innerHTML+=`<div class="chatMsg ${m.u==currentUser?'me':'other'}"><b>${m.u}:</b> ${m.t}</div>`});b.scrollTop=b.scrollHeight;});}
-  window.sendPrivateMsg=async()=>{let txt=document.getElementById('privateChatInput').value.trim();if(!txt||!currentChatFriend)return;await setDoc(doc(db,"privateChats",getChatId(currentUser,currentChatFriend)),{messages:arrayUnion({u:currentUser,t:txt,time:Date.now()})},{merge:true});document.getElementById('privateChatInput').value='';}
-      window.openCreateRoom=()=>document.getElementById('createRoomModal').style.display='block';
-  window.createRoom=async()=>{let name=document.getElementById('newRoomName').value.trim();if(!name)return;if(coins<80000)return alert("تحتاج 80000");coins-=80000;let id='RM'+Math.floor(Math.random()*900000+100000);await setDoc(doc(db,"rooms",id),{id,name,owner:currentUser,mics:Array(7).fill(null)});addLog(`انشاء غرفة ${name}`,-80000,'buy');updateAll();closeModal('createRoomModal');enterRoom(id);}
-
-  function listenToRooms(){onSnapshot(collection(db,"rooms"),(snap)=>{rooms=[];snap.forEach((d)=>rooms.push(d.data()));loadRooms();});}
-  function loadRooms(){let html='';rooms.forEach(r=>{html+=`<div class="roomItem" onclick="enterRoom('${r.id}')"><h4>${r.name}</h4><div class="roomId">ID: ${r.id}</div><div>المالك: ${r.owner}</div></div>`});document.getElementById('roomsList').innerHTML=html||'<p>لا غرف</p>';let myRoom=rooms.find(r=>r.owner==currentUser);document.getElementById('myRoomSection').innerHTML=myRoom?'<button class="btn btn-green" onclick="myRoom()">دخول غرفتي</button>':'';}
-  window.joinRoomById=()=>{let id=document.getElementById('searchRoomId').value.trim();if(rooms.find(r=>r.id==id))enterRoom(id);else alert("غير موجود");}
-  window.myRoom=()=>{let r=rooms.find(r=>r.owner==currentUser);if(r)enterRoom(r.id);}
-
-  window.enterRoom=(id)=>{currentRoom=rooms.find(r=>r.id==id);document.getElementById('roomNameTitle').innerText=currentRoom.name;document.getElementById('roomIdTitle').innerText='ID: '+currentRoom.id;document.getElementById('editRoomBtn').style.display=currentRoom.owner==currentUser?'block':'none';document.getElementById('clearRoomChatBtn').style.display=currentRoom.owner==currentUser?'block':'none';showPage('chatRoom',null);if(unsubRoomDoc)unsubRoomDoc();unsubRoomDoc=onSnapshot(doc(db,"rooms",id),(snap)=>{if(snap.exists()){currentRoom=snap.data();roomMics=currentRoom.mics||Array(7).fill(null);renderMics();}});if(unsubRoomChat)unsubRoomChat();unsubRoomChat=onSnapshot(doc(db,"roomMessages",id),(snap)=>{roomMessages[id]=snap.exists()?snap.data().messages||[]:[];loadChat();});let g='';giftsList.forEach(gf=>{g+=`<button class="giftBtn" onclick="sendGift('${gf.icon}','${gf.name}',${gf.price})">${gf.icon}<br>${gf.price}</button>`});document.getElementById('giftsBar').innerHTML=g;}
-
-  function renderMics(){let grid=document.getElementById('roomMicsGrid');let html='';roomMics.forEach((m,i)=>{let isOwner=m==currentRoom.owner;html+=`<div class="micSeat ${m?'active':''} ${isOwner?'owner':''}">${m||`مايك ${i+1}`} ${currentRoom.owner==currentUser?`<button class="micControl" onclick="toggleMicOwner(${i})">${m?'اغلاق':'فتح'}</button>`:''}</div>`});grid.innerHTML=html;}
-  window.toggleMicOwner=async(i)=>{if(currentRoom.owner!=currentUser)return;roomMics[i]=roomMics[i]?null:currentUser;await updateDoc(doc(db,"rooms",currentRoom.id),{mics:roomMics});}
-
-  window.sendRoomMsg=async()=>{let m=document.getElementById('roomChatInput').value.trim();if(!m||!currentRoom)return;await setDoc(doc(db,"roomMessages",currentRoom.id),{messages:arrayUnion({u:currentUser,t:m,time:Date.now()})},{merge:true});document.getElementById('roomChatInput').value='';}
-  window.clearRoomChat=async()=>{if(currentRoom.owner!=currentUser)return;await setDoc(doc(db,"roomMessages",currentRoom.id),{messages:[]});}
-  function loadChat(){if(!currentRoom)return;let b=document.getElementById('roomChatBox');b.innerHTML='';(roomMessages[currentRoom.id]||[]).forEach(m=>{b.innerHTML+=`<div class="chatMsg ${m.u==currentUser?'me':'other'}"><b>${m.u}:</b> ${m.t}</div>`});b.scrollTop=b.scrollHeight;}
-      window.sendGift=async(icon,name,price)=>{if(coins<price)return alert("نقاطك لا تكفي");if(!currentRoom)return;coins-=price;totalGiftsSent++;await setDoc(doc(db,"roomMessages",currentRoom.id),{messages:arrayUnion({u:currentUser,t:`🎁 ارسل ${name} ${icon}`,time:Date.now()})},{merge:true});await updateDoc(doc(db,"users",currentUser),{totalGiftsSent});addLog(`ارسال هدية ${name}`,-price,'buy');updateAll();showToast("تم الارسال");}
-
-  function setupReferral(){if(document.getElementById('myReferralCode'))document.getElementById('myReferralCode').innerText=myReferralCode;if(document.getElementById('myReferralLink'))document.getElementById('myReferralLink').innerText=`rafidain.com/ref=${myReferralCode}`;}
-  window.copyCode=()=>{navigator.clipboard.writeText(`👻 انضم للرافدين\nكودي: ${myReferralCode}\nالرابط: rafidain.com/ref=${myReferralCode}`);alert("تم النسخ");}
-
-  window.transferCoins=async()=>{let code=document.getElementById('transferRefInput').value.trim();let amount=parseInt(document.getElementById('transferAmountInput').value);if(!code||isNaN(amount)||amount<=0)return alert("ادخل بيانات صحيحة");if(amount>coins)return alert("رصيدك لا يكفي");let snap=await getDocs(collection(db,"users"));let to=null;snap.forEach((u)=>{if(u.data().referral==code)to=u.id});if(!to)return alert("رمز الاحالة خطأ");let toSnap=await getDoc(doc(db,"users",to));await updateDoc(doc(db,"users",to),{coins:toSnap.data().coins+amount});coins-=amount;addLog(`تحويل لـ ${toSnap.data().name}`,-amount,'buy');await updateAll();document.getElementById('transferRefInput').value='';document.getElementById('transferAmountInput').value='';showToast(`تم تحويل ${amount} نقطة`);}
-
-  // الالعاب الفردية
-  window.openXO=()=>{if(coins<50)return alert("تحتاج 50");coins-=50;addLog('لعب XO',-50,'buy');if(!dailyTasks.play.done)completeTask('play');updateAll();xoBoard=Array(9).fill('');gameOver=false;document.getElementById('xoModal').style.display='block';document.getElementById('xoResult').innerText='';renderXO();}
-  function renderXO(){let b=document.getElementById('xoBoard');b.innerHTML='';xoBoard.forEach((cell,i)=>{let div=document.createElement('div');div.className='xoCell';div.innerText=cell;div.onclick=()=>playXO(i);b.appendChild(div);});}
-  window.playXO=(i)=>{if(xoBoard[i]!=''||gameOver)return;xoBoard[i]='X';if(checkWinner('X')){coins+=200;addLog('فوز XO',200,'win');document.getElementById('xoResult').innerText="فزت! +200";gameOver=true;updateAll();renderXO();return;}if(!xoBoard.includes('')){document.getElementById('xoResult').innerText="تعادل";gameOver=true;renderXO();return;}botMove();}
-  function botMove(){let empty=xoBoard.map((v,i)=>v==''?i:null).filter(v=>v!==null);let move=empty[Math.floor(Math.random()*empty.length)];xoBoard[move]='O';if(checkWinner('O')){document.getElementById('xoResult').innerText="خسرت!";gameOver=true;}else if(!xoBoard.includes('')){document.getElementById('xoResult').innerText="تعادل";gameOver=true;}renderXO();}
-  function checkWinner(p){const wins=[[0,1,2],[3,4,5],[6,7,8],[0,3,6],[1,4,7],[2,5,8],[0,4,8],[2,4,6]];return wins.some(w=>w.every(i=>xoBoard[i]==p));}
-
-  window.spinWheel=()=>{if(coins<50)return alert("تحتاج 50");coins-=50;addLog('لف العجلة',-50,'buy');if(!dailyTasks.play.done)completeTask('play');updateAll();document.getElementById('wheelModal').style.display='block';document.getElementById('wheelResult').innerText='';drawWheel();}
-  function drawWheel(){const canvas=document.getElementById('wheel'),ctx=canvas.getContext('2d');const cx=140,cy=140,r=130,seg=2*Math.PI/wheelPrizes.length;ctx.clearRect(0,0,280,280);wheelPrizes.forEach((p,i)=>{const s=i*seg-Math.PI/2,e=(i+1)*seg-Math.PI/2;ctx.beginPath();ctx.moveTo(cx,cy);ctx.arc(cx,cy,r,s,e);ctx.fillStyle=i%2==0?'#3b82f6':'#1e3a8a';ctx.fill();ctx.strokeStyle='#fff';ctx.stroke();ctx.save();ctx.translate(cx,cy);ctx.rotate(s+seg/2);ctx.fillStyle='#fff';ctx.font='bold 14px tahoma';ctx.fillText(p.text,r-30,5);ctx.restore();});}
-  window.doSpin=()=>{document.getElementById('spinBtn').disabled=true;let idx=Math.floor(Math.random()*wheelPrizes.length),seg=360/wheelPrizes.length,target=3600+360-(seg*idx+seg/2);document.getElementById('wheel').style.transform=`rotate(${target}deg)`;setTimeout(()=>{let prize=wheelPrizes[idx];if(prize.value>0){coins+=prize.value;addLog('ربح عجلة',prize.value,'win');}document.getElementById('wheelResult').innerText=prize.value>0?`ربحت ${prize.text}`:`حظ اوفر`;updateAll();document.getElementById('spinBtn').disabled=false;},5000);}
-
-  window.openBox=()=>{if(coins<500)return alert("تحتاج 500");coins-=500;addLog('فتح صندوق',-500,'buy');if(!dailyTasks.play.done)completeTask('play');updateAll();boxOpened=false;document.getElementById('boxModal').style.display='block';document.getElementById('boxResult').innerText='اختار صندوق!';let boxes=document.getElementById('boxes');boxes.innerHTML='';let win=Math.floor(Math.random()*3),prize=Math.floor(Math.random()*9901)+100;for(let i=0;i<3;i++){let div=document.createElement('div');div.className='boxItem';div.innerText='?';div.dataset.win=i==win;div.dataset.prize=prize;div.onclick=()=>openBoxItem(div);boxes.appendChild(div);}}
-  function openBoxItem(el){if(boxOpened)return;boxOpened=true;let isWin=el.dataset.win=='true',prize=parseInt(el.dataset.prize);document.querySelectorAll('.boxItem').forEach(b=>{if(b.dataset.win=='true'){b.style.background='#0f0';b.innerText=b.dataset.prize;}else{b.style.background='#333';b.innerText='💀';}});if(isWin){coins+=prize;addLog('ربح صندوق',prize,'win');document.getElementById('boxResult').innerText=`مبروك! +${prize}`;}else{document.getElementById('boxResult').innerText=`حظ اوفر!`;}updateAll();}
-
-  window.openMemory=()=>{if(coins<50)return alert("تحتاج 50");coins-=50;addLog('لعب ميموري',-50,'buy');if(!dailyTasks.play.done)completeTask('play');updateAll();document.getElementById('memoryModal').style.display='block';startMemory();}
-  function startMemory(){matched=0;flipped=[];let emojis=['💎','💰','🏛️','⚡','💎','💰','🏛️','⚡'];memoryCards=emojis.sort(()=>.5-Math.random());let board=document.getElementById('memoryBoard');board.innerHTML='';memoryCards.forEach((card,i)=>{let div=document.createElement('div');div.style.cssText='width:60px;height:60px;background:#3b82f6;border-radius:10px;font-size:28px;display:flex;align-items:center;justify-content:center;cursor:pointer;border:2px solid #fff';div.dataset.index=i;div.dataset.value=card;div.innerText='?';div.onclick=()=>flipCard(div);board.appendChild(div);});}
-  function flipCard(el){if(flipped.length==2||el.innerText!='?')return;el.innerText=el.dataset.value;flipped.push(el);if(flipped.length==2){setTimeout(()=>{if(flipped[0].dataset.value==flipped[1].dataset.value){flipped.forEach(c=>c.style.background='#0f0');matched++;if(matched==4){coins+=250;addLog('فوز ميموري',250,'win');document.getElementById('memoryResult').innerText='فزت! +250';updateAll();}}else{flipped.forEach(c=>c.innerText='?')}flipped=[]},800);}}
-
-  window.logout=()=>{if(confirm('متأكد؟')){localStorage.clear();location.reload();}}
-
-  // الدردشة العامة
-  function listenToGlobalChat(){onSnapshot(doc(db,"globalChat","main"),(snap)=>{if(snap.exists()){globalMessages=snap.data().messages||[];loadGlobalChat();}});}
-  function loadGlobalChat(){let b=document.getElementById('globalChatBox');if(!b)return;b.innerHTML='';globalMessages.forEach(m=>{b.innerHTML+=`<div class="chatMsg ${m.u==currentUser?'me':'other'}"><b>${m.u}:</b> ${m.t}</div>`});b.scrollTop=b.scrollHeight;}
-  window.sendGlobalMsg=async()=>{let m=document.getElementById('globalChatInput').value.trim();if(!m)return;await setDoc(doc(db,"globalChat","main"),{messages:arrayUnion({u:currentUser,t:m,time:Date.now()})},{merge:true});document.getElementById('globalChatInput').value='';}
-  window.openGlobalChat=()=>{showPage('globalChat',null);}
-      // الالعاب الجماعية بالغرف
-  window.openRoomGame=()=>{document.getElementById('roomGameModal').style.display='block';}
-
-  window.startRoomXO=async()=>{closeModal('roomGameModal');await setDoc(doc(db,"roomGames",currentRoom.id),{type:'xo',players:[currentUser],board:Array(9).fill(''),turn:currentUser,status:'waiting'},{merge:true});onSnapshot(doc(db,"roomGames",currentRoom.id),(snap)=>{if(snap.exists()){roomGame=snap.data();}});showToast("انتظر لاعب ثاني");}
-
-  window.startRoomDomino=async()=>{closeModal('roomGameModal');showToast("قريبا");}
-
-  window.closeModal=(id)=>document.getElementById(id).style.display='none';
+window.openXO=()=>{document.getElementById('xoModal').style.display='block';}
+window.spinWheel=()=>{document.getElementById('wheelModal').style.display='block';drawWheel();}
+function drawWheel(){const ctx=document.getElementById('wheel').getContext('2d');ctx.fillStyle='#3b82f6';ctx.beginPath();ctx.arc(140,140,130,0,6.28);ctx.fill();}
+window.doSpin=()=>{setTimeout(()=>{coins+=100;updateAll();document.getElementById('wheelResult').innerText="ربحت 100";},1000);}
 </script>
 </body>
 </html>
