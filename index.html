@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0,user-scalable=no">
-<title>تطبيق الرافدين - الألعاب والغرف الصوتية</title>
+<title>تطبيق الرافدين - النسخة الكاملة</title>
 <style>
 *{box-sizing:border-box}
 body{background:#000;color:#fff;font-family:tahoma,sans-serif;text-align:center;padding:10px;margin:0;padding-bottom:100px}
@@ -58,24 +58,24 @@ h1{color:#3b82f6;text-shadow:0 0 15px #3b82f6;font-size:26px}
   <div class="logo">🏛️</div>
   <h1>تطبيق الرافدين</h1>
 
-  <!-- صفحة الألعاب والرصيد -->
+  <!-- صفحة الرئيسية والألعاب -->
   <div id="home" class="page active">
     <div class="stats box">
       <h3>رصيد الكوينز</h3>
       <div id="coins">0</div>
       <div id="coinsDollar">($0.00)</div>
     </div>
-    <button class="btn btn-green" onclick="openGameModal()">🎮 قسم الألعاب وحظك نصيبك</button>
+    <button class="btn btn-green" onclick="openGameModal()">🎮 الألعاب وقسم حظك نصيبك</button>
   </div>
 
-  <!-- صفحة الغرف الصوتية -->
+  <!-- صفحة الغرف الصوتية والمايكات -->
   <div id="rooms" class="page">
-    <h2>🏠 غرف البث الصوتي والمايكات</h2>
+    <h2>🏠 غرف البث الصوتي</h2>
     <button class="btn btn-green" onclick="openCreateRoom()">➕ انشاء غرفة جديدة</button>
     <div id="roomsList" style="margin-top:15px"></div>
   </div>
 
-  <!-- صفحة تفاصيل الغرفة الصوتية -->
+  <!-- صفحة الغرفة والصوت -->
   <div id="chatRoom" class="page">
     <button class="btn" onclick="showPage('rooms',null)">🔙 خروج من الغرفة</button>
     <h2 id="roomNameTitle"></h2>
@@ -93,11 +93,12 @@ h1{color:#3b82f6;text-shadow:0 0 15px #3b82f6;font-size:26px}
     </div>
   </div>
 
-  <!-- نافذة الألعاب -->
+  <!-- نوافذ الألعاب -->
   <div id="gameModal" class="modal">
     <div class="modal-content">
-      <h2>🎲 الألعاب الترفيهية</h2>
+      <h2>🎲 الألعاب وقسم الترفيه</h2>
       <button class="btn btn-yellow" onclick="playLuckyBox()">🎁 صندوق حظك نصيبك</button>
+      <button class="btn btn-blue" onclick="playWheelGame()">🎡 عجلة الحظ الكبرى</button>
       <button class="btn btn-red" onclick="closeGameModal()">إغلاق</button>
     </div>
   </div>
@@ -181,13 +182,21 @@ window.showPage = function(id, el){
 window.openGameModal = function(){ document.getElementById('gameModal').style.display = 'block'; }
 window.closeGameModal = function(){ document.getElementById('gameModal').style.display = 'none'; }
 
+// ألعاب الحظ والمسابقات
 window.playLuckyBox = async function(){
   let reward = Math.floor(Math.random() * 5000) + 1000;
   coins += reward;
   updateUI();
   await updateDoc(doc(db, "users", currentUser), { coins: coins });
-  alert("🎉 مبروك! ربحت " + reward.toLocaleString() + " كوينز من صندوق حظك نصيبك!");
-  closeGameModal();
+  alert("🎁 مبروك! ربحت " + reward.toLocaleString + " كوينز من صندوق حظك نصيبك!");
+}
+
+window.playWheelGame = async function(){
+  let reward = Math.floor(Math.random() * 10000) + 2000;
+  coins += reward;
+  updateUI();
+  await updateDoc(doc(db, "users", currentUser), { coins: coins });
+  alert("🎡 تدورت عجلة الحظ وربحت جائزة بقيمة " + reward.toLocaleString() + " كوينز!");
 }
 
 window.openCreateRoom = async function(){
@@ -231,7 +240,9 @@ window.enterRoom = function(id){
     box.scrollTop = box.scrollHeight;
   });
 
-  showPage('chatRoom', null);
+  showPage('rooms', null); // التوجيه الصحيح
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.getElementById('chatRoom').classList.add('active');
 }
 
 function renderMics(mics){
@@ -307,4 +318,3 @@ function leaveRoomCleanUp(){
 </script>
 </body>
 </html>
-
