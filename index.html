@@ -3,93 +3,124 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0,user-scalable=no">
-<title>تطبيق الرافدين - v2</title>
+<title>تطبيق الرافدين - الإصدار المحدث</title>
 <style>
 *{box-sizing:border-box}
 body{background:#000;color:#fff;font-family:tahoma,sans-serif;text-align:center;padding:10px;margin:0;padding-bottom:100px}
-#splash{position:fixed;top:0;left:0;width:100%;height:100%;background:linear-gradient(135deg,#0a1a3a 0%,#000 100%);display:flex;flex-direction:column;justify-content:center;align-items:center;z-index:9999;transition:opacity 0.5s}
-.logo{font-size:50px;margin:15px}h1{color:#3b82f6;text-shadow:0 0 15px #3b82f6;font-size:26px}
+#splash{position:fixed;top:0;left:0;width:100%;height:100%;background:linear-gradient(135deg,#0a1a3a 0%,#000 100%);display:flex;flex-direction:column;justify-content:center;align-items:center;z-index:9999}
+.logo{font-size:50px;margin:15px}
+h1{color:#3b82f6;text-shadow:0 0 15px #3b82f6;font-size:26px}
 .page{display:none}.page.active{display:block}
-.box{border:3px solid #3b82f6;border-radius:18px;padding:20px;margin:15px auto;background:#111;max-width:420px}
-#coins{font-size:36px;color:#0f0;font-weight:bold}#dailyProfit{font-size:36px;color:#ffb300;font-weight:bold}
+.stats{margin:15px auto;max-width:420px}
+.box{border:3px solid #3b82f6;border-radius:18px;padding:20px;margin:15px 0;background:#111}
+.box h3{margin:5px;font-size:16px;color:#aaa}
+#coins{font-size:36px;color:#0f0;font-weight:bold;margin:10px 0}
+#coinsDollar{font-size:18px;color:#3b82f6;font-weight:bold}
+#dailyProfit{font-size:36px;color:#ffb300;font-weight:bold;margin:10px 0}
 .btn{background:#3b82f6;color:#fff;border:0;padding:16px;border-radius:15px;font-size:16px;font-weight:bold;margin:10px auto;cursor:pointer;width:90%;max-width:380px;display:block}
-.btn-green{background:#0f0;color:#000}.btn-yellow{background:#ffb300;color:#000}.btn-red{background:#f33}
+.btn-green{background:#0f0;color:#000}
+.btn-red{background:#f33}
+.btn-yellow{background:#ffb300;color:#000}
+.btn:disabled{background:#555;color:#999;cursor:not-allowed}
 .modal{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.95);z-index:1000;overflow-y:auto}
 .modal-content{background:#1a1a1a;margin:20px auto;padding:15px;width:95%;max-width:500px;border-radius:15px;border:2px solid #3b82f6}
-.input{width:90%;padding:12px;margin:8px 0;border-radius:8px;background:#222;color:#fff;border:1px solid #3b82f6}
-.chatBox{height:250px;overflow-y:auto;background:#0a0a0a;border:2px solid #3b82f6;border-radius:15px;padding:10px;text-align:right}
-.chatMsg{margin:8px 0;padding:8px 12px;border-radius:10px;max-width:85%}
-.chatMsg.me{background:#3b82f6;margin-right:auto;text-align:left}.chatMsg.other{background:#222;margin-left:auto}
+.input{width:90%;padding:12px;margin:8px 0;border-radius:8px;background:#222;color:#fff;border:1px solid #3b82f6;font-size:16px}
+.toast{position:fixed;bottom:100px;left:50%;transform:translateX(-50%);background:#0c0;color:#000;padding:15px 25px;border-radius:10px;font-weight:bold;display:none;z-index:2000}
+#xoBoard{display:grid;grid-template-columns:repeat(3,90px);gap:5px;margin:20px auto;width:280px;justify-content:center}
+.xoCell{width:90px;height:90px;background:#222;font-size:50px;display:flex;align-items:center;justify-content:center;cursor:pointer;border-radius:10px;border:2px solid #3b82f6}
 .bottomNav{position:fixed;bottom:15px;left:50%;transform:translateX(-50%);width:95%;max-width:500px;background:linear-gradient(135deg,#1e3a8a,#3b82f6);border-radius:25px;display:flex;justify-content:space-around;padding:10px 5px;z-index:999}
 .navItem{display:flex;flex-direction:column;align-items:center;color:#ddd;font-size:10px;cursor:pointer;flex:1}
+.navIcon{font-size:20px;margin-bottom:2px}
 .navItem.active{color:#fff;font-weight:bold}
-#xoBoard{display:grid;grid-template-columns:repeat(3,90px);gap:5px;margin:20px auto;width:280px}
-.xoCell{width:90px;height:90px;background:#222;font-size:50px;display:flex;align-items:center;justify-content:center;cursor:pointer;border-radius:10px;border:2px solid #3b82f6}
-.dominoTile{width:40px;height:80px;background:#eee;color:#000;border:2px solid #333;border-radius:6px;display:inline-block;margin:2px;cursor:pointer}
-.ludoBoard{width:300px;height:300px;background:#fff;margin:10px auto;border:3px solid #3b82f6}
-.toast{position:fixed;bottom:100px;left:50%;transform:translateX(-50%);background:#0c0;color:#000;padding:15px 25px;border-radius:10px;display:none;z-index:2000}
+.logItem{padding:12px;margin:8px 0;background:#222;border-radius:10px;text-align:right;border-right:4px solid #3b82f6}
+.roomItem{background:#222;padding:15px;margin:10px 0;border-radius:12px;border:2px solid #3b82f6;text-align:right;display:flex;justify-content:space-between;align-items:center}
+.chatBox{height:250px;overflow-y:auto;background:#0a0a0a;border:2px solid #3b82f6;border-radius:15px;padding:10px;margin-bottom:10px;text-align:right}
+.chatMsg{margin:8px 0;padding:8px 12px;border-radius:10px;max-width:85%}
+.chatMsg.me{background:#3b82f6;margin-right:auto;text-align:left;color:#fff}.chatMsg.other{background:#222;margin-left:auto;color:#fff}
+.micGrid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin:15px 0}
+.micSeat{background:#222;border:2px solid #3b82f6;border-radius:10px;padding:10px;text-align:center;font-size:12px;cursor:pointer}
+.micSeat.active{border-color:#0f0;background:#002200}
 </style>
 </head>
 <body>
-<div id="splash"><div class="logo">🏛️</div><div style="color:#3b82f6;font-size:28px;font-weight:bold">AL-RAFIDAIN</div></div>
-  <div id="registerPage">
-  <div class="logo">🏛️</div><h1>تسجيل الدخول</h1>
-  <div class="box">
-    <input type="text" id="regName" class="input" placeholder="اسمك">
-    <input type="password" id="regPass" class="input" placeholder="كلمة السر">
-    <button class="btn btn-green" onclick="createAccount()">دخول / تسجيل</button>
+<div id="splash"><div class="logo">🏛️</div><div style="color:#3b82f6;font-size:28px;font-weight:bold;margin-top:20px">AL-RAFIDAIN</div></div>
+<div id="registerPage">
+  <div class="logo">🏛️</div>
+  <h1>تسجيل الدخول / انشاء حساب</h1>
+  <div class="box" style="max-width:400px;width:100%">
+    <input type="text" id="regName" class="input" placeholder="ادخل اسمك">
+    <input type="password" id="regPass" class="input" placeholder="ادخل كلمة السر">
+    <button class="btn btn-green" onclick="createAccount()">تسجيل / دخول</button>
   </div>
 </div>
-
 <div id="mainApp" style="display:none">
-  <div class="logo">🏛️</div><h1>تطبيق الرافدين</h1>
+  <div class="logo">🏛️</div>
+  <h1>تطبيق الرافدين</h1>
+
   <div id="home" class="page active">
-    <div class="box"><h3>💰 الرصيد</h3><div id="coins">0</div><div id="coinsDollar"></div></div>
-    <div class="box"><h3>⚙️ عدادك</h3><div id="dailyProfit">0</div></div>
+    <div class="stats">
+      <div class="box">
+        <h3>💰 الرصيد</h3>
+        <div id="coins">0 نقطة</div>
+        <div id="coinsDollar">يعادل $0.00 دولار</div>
+      </div>
+      <div class="box">
+        <h3>⚙️ عدادك الحالي</h3>
+        <div id="dailyProfit">0 نقطة/يوم</div>
+      </div>
+    </div>
     <button class="btn btn-green" onclick="claimProfit()">استلام الارباح</button>
   </div>
-    <div id="games" class="page">
-    <h2>🎮 الالعاب</h2>
-    <div class="box">رصيدك: <span id="coins3">0</span></div>
-    <h3>فردي</h3>
-    <button class="btn" onclick="openXO()">XO - 50</button>
-    <button class="btn" onclick="spinWheel()">العجلة - 50</button>
-    <button class="btn" onclick="openBox()">الصندوق - 500</button>
-    <button class="btn" onclick="openMemory()">ميموري - 50</button>
-    <h3>جماعي</h3>
-    <button class="btn btn-yellow" onclick="openMultiplayerGame('domino')">دومينو جماعي</button>
-    <button class="btn btn-yellow" onclick="openMultiplayerGame('ludo')">لودو جماعي</button>
-  </div>
-
-  <div id="rooms" class="page">
+    <div id="store" class="page">
+    <h2>🛒 متجر العدادات</h2>
+    <div id="coins2" class="box">رصيدك: 0 نقطة</div>
+    <div id="storeList"></div>
+    </div>
+      <div id="games" class="page">
+    <h2>🎮 الالعاب والمهمات</h2>
+    <div id="coins3" class="box">رصيدك: 0 نقطة</div>
+    <button class="btn" onclick="openXO()">❌⭕ XO - 50</button>
+    <button class="btn" onclick="spinWheel()">🎡 العجلة - 50</button>
+    <button class="btn" onclick="openBox()">📦 الصندوق - 500</button>
+    <button class="btn" onclick="openMemory()">🧠 ميموري - 50</button>
+      </div>
+        <div id="rooms" class="page">
     <h2>🏠 الغرف</h2>
-    <button class="btn btn-green" onclick="openCreateRoom()">انشاء غرفة - 80000</button>
-    <div id="roomsList"></div>
-  </div>
-
-  <div id="chatRoom" class="page">
+    <button class="btn btn-green" onclick="openCreateRoom()">➕ انشاء غرفة - 80000</button>
+    <div id="roomsList"><p style="color:#aaa">لا توجد غرف</p></div>
+        </div>
+          <div id="chatRoom" class="page">
     <button class="btn" onclick="showPage('rooms',null)">🔙 رجوع</button>
     <h2 id="roomNameTitle"></h2>
+    <p class="roomId" id="roomIdTitle"></p>
+
+    <div class="box">
+      <h3 style="color:#0f0">🎙️ مايكات الغرفة - 7 مايكات</h3>
+      <div class="micGrid" id="roomMicsGrid"></div>
+      <button id="kickBtn" class="btn btn-red" style="display:none;width:100%" onclick="openKickModal()">🚫 طرد من المايك</button>
+    </div>
+
     <div id="roomChatBox" class="chatBox"></div>
-    <input type="text" id="roomChatInput" class="input" placeholder="اكتب">
+    <input type="text" id="roomChatInput" class="input" placeholder="اكتب هنا" onkeypress="if(event.key=='Enter')sendRoomMsg()">
     <button class="btn" onclick="sendRoomMsg()">ارسال</button>
+          </div>
+            <div class="bottomNav">
+    <div class="navItem active" onclick="showPage('home',this)"><div class="navIcon">⚙️</div><div>العداد</div></div>
+    <div class="navItem" onclick="showPage('store',this)"><div class="navIcon">🛒</div><div>المتجر</div></div>
+    <div class="navItem" onclick="showPage('games',this)"><div class="navIcon">🎮</div><div>الالعاب</div></div>
+    <div class="navItem" onclick="showPage('rooms',this)"><div class="navIcon">🏠</div><div>الغرف</div></div>
   </div>
-  <div id="xoModal" class="modal"><div class="modal-content"><h2>XO</h2><div id="xoBoard"></div><p id="xoResult"></p><button class="btn" onclick="closeModal('xoModal')">خروج</button></div></div>
-<div id="wheelModal" class="modal"><div class="modal-content"><h2>العجلة</h2><button class="btn" onclick="doSpin()">لف - 50</button><p id="wheelResult"></p><button class="btn" onclick="closeModal('wheelModal')">اغلاق</button></div></div>
-<div id="boxModal" class="modal"><div class="modal-content"><h2>الصندوق</h2><button class="btn" onclick="openBox()">افتح - 500</button><p id="boxResult"></p><button class="btn" onclick="closeModal('boxModal')">اغلاق</button></div></div>
-<div id="memoryModal" class="modal"><div class="modal-content"><h2>ميموري</h2><div id="memoryBoard"></div><button class="btn" onclick="closeModal('memoryModal')">خروج</button></div></div>
-<div id="dominoMPModal" class="modal"><div class="modal-content"><h2>دومينو جماعي</h2><div id="dominoTable"></div><div id="myDominoTiles"></div><button class="btn" onclick="closeModal('dominoMPModal')">خروج</button></div></div>
-<div id="ludoMPModal" class="modal"><div class="modal-content"><h2>لودو جماعي</h2><canvas id="ludoBoard" class="ludoBoard" width="300" height="300"></canvas><button class="btn" onclick="rollLudoDice()">ارمي النرد</button><button class="btn" onclick="closeModal('ludoMPModal')">خروج</button></div></div>
-<div id="createRoomModal" class="modal"><div class="modal-content"><input id="newRoomName" class="input" placeholder="اسم الغرفة"><button class="btn btn-green" onclick="createRoom()">انشاء</button><button class="btn btn-red" onclick="closeModal('createRoomModal')">الغاء</button></div></div>
-<div id="toast" class="toast"></div>
-<div class="bottomNav">
-  <div class="navItem active" onclick="showPage('home',this)"><div>العداد</div></div>
-  <div class="navItem" onclick="showPage('games',this)"><div>الالعاب</div></div>
-  <div class="navItem" onclick="showPage('rooms',this)"><div>الغرف</div></div>
-</div></div>
-  <script type="module">
+</div>
+<div id="createRoomModal" class="modal"><div class="modal-content"><h2>انشاء غرفة جديدة</h2><input type="text" id="newRoomName" class="input" placeholder="اسم الغرفة"><button class="btn btn-green" onclick="createRoom()">شراء وانشاء - 80000</button><button class="btn btn-red" onclick="closeModal('createRoomModal')">الغاء</button></div></div>
+<div id="kickModal" class="modal"><div class="modal-content"><h2>طرد عضو من المايك</h2><div id="kickList"></div><button class="btn btn-red" onclick="closeModal('kickModal')">الغاء</button></div></div>
+<div id="xoModal" class="modal"><div class="modal-content"><h2>❌⭕ XO ضد البوت</h2><div id="xoBoard"></div><p id="xoResult"></p><button class="btn" onclick="closeModal('xoModal')">خروج</button></div></div>
+<div id="wheelModal" class="modal"><div class="modal-content"><h2>🎡 عجلة الحظ</h2><button class="btn btn-yellow" onclick="doSpin()">لف العجلة - 50</button><p id="wheelResult"></p><button class="btn" onclick="closeModal('wheelModal')">اغلاق</button></div></div>
+<div id="boxModal" class="modal"><div class="modal-content"><h2>📦 الصندوق</h2><button class="btn" onclick="openBox()">افتح - 500</button><p id="boxResult"></p><button class="btn" onclick="closeModal('boxModal')">اغلاق</button></div></div>
+<div id="memoryModal" class="modal"><div class="modal-content"><h2>🧠 ميموري</h2><div id="memoryBoard"></div><button class="btn" onclick="closeModal('memoryModal')">خروج</button></div></div>
+<div id="toast" class="toast">تم!</div>
+<script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-import { getFirestore, doc, setDoc, getDoc, updateDoc, collection, onSnapshot, arrayUnion, deleteField } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+import { getFirestore, doc, setDoc, getDoc, updateDoc, collection, onSnapshot, arrayUnion } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyBbkpcBPq8G2OpyKxaVqPO7Mkfla4X9hxU",
@@ -102,125 +133,163 @@ const db = getFirestore(app);
 
 let coins=5000,dailyProfitTotal=0,lastClaim=0,currentUser='',rooms=[],currentRoom=null;
 const RATE=10000;
-let unsubRoomChat=null;
-setTimeout(()=>{document.getElementById('splash').style.opacity='0';checkLogin()},1500);
+let unsubRoomChat=null, unsubRoomDoc=null;
+const countersData = [
+  {name:"عداد 100", price:1000, profit:100}, {name:"عداد 500", price:5000, profit:500},
+  {name:"عداد 1000", price:10000, profit:1000}, {name:"عداد 5000", price:50000, profit:5000}
+];
+  setTimeout(() => {document.getElementById('splash').style.opacity='0';checkLogin()},1000);
 
-async function checkLogin(){
-  currentUser=localStorage.getItem('rafidain_user');
-  if(currentUser){await loadUserData();document.getElementById('registerPage').style.display='none';document.getElementById('mainApp').style.display='block';listenToRooms();}
-  else{document.getElementById('registerPage').style.display='flex';}
+async function checkLogin() {
+  currentUser = localStorage.getItem('rafidain_user');
+  if (currentUser) {
+    await loadUserData();
+    document.getElementById('registerPage').style.display = 'none';
+    document.getElementById('mainApp').style.display = 'block';
+    listenToRooms();
+  } else {
+    document.getElementById('registerPage').style.display = 'flex';
+  }
 }
 
-async function createAccount(){
-  let name=document.getElementById('regName').value.trim();
-  let pass=document.getElementById('regPass').value.trim();
-  if(!name||!pass)return alert("دخل البيانات");
-  const userRef=doc(db,"users",name);
-  const snap=await getDoc(userRef);
-  if(!snap.exists()){await setDoc(userRef,{name,pass,coins:5000,dailyProfit:0,lastClaim:Date.now()})}
-  currentUser=name;localStorage.setItem('rafidain_user',name);
-  location.reload();
+async function createAccount() {
+  let name = document.getElementById('regName').value.trim();
+  let pass = document.getElementById('regPass').value.trim();
+  if(!name ||!pass) return alert("دخل البيانات");
+  const userRef = doc(db, "users", name);
+  const snap = await getDoc(userRef);
+  if (!snap.exists()) {await setDoc(userRef, {name,pass,coins:5000,dailyProfit:0,lastClaim:Date.now()})}
+  currentUser = name; localStorage.setItem('rafidain_user', name); location.reload();
 }
-window.createAccount=createAccount;
-
-async function loadUserData(){
-  const snap=await getDoc(doc(db,"users",currentUser));
+window.createAccount = createAccount;
+  async function loadUserData() {
+  const snap = await getDoc(doc(db, "users", currentUser));
   if(snap.exists()){
-    let d=snap.data();
-    coins=d.coins||5000;dailyProfitTotal=d.dailyProfit||0;lastClaim=d.lastClaim||0;
-    updateUI();
+    let data = snap.data();
+    coins = data.coins?? 5000;
+    dailyProfitTotal = data.dailyProfit || 0;
+    lastClaim = data.lastClaim || 0;
+    updateAllUI();
   }
-    }
-    function updateUI(){
-  document.getElementById('coins').innerText=coins.toLocaleString();
-  document.getElementById('coins3').innerText=coins.toLocaleString();
-  document.getElementById('coinsDollar').innerText=`$${(coins/RATE).toFixed(2)}`;
-  document.getElementById('dailyProfit').innerText=dailyProfitTotal.toLocaleString();
-  if(currentUser)setDoc(doc(db,"users",currentUser),{coins,dailyProfit:dailyProfitTotal,lastClaim},{merge:true});
 }
 
-function showPage(id,el){
-  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
-  document.querySelectorAll('.navItem').forEach(b=>b.classList.remove('active'));
-  document.getElementById(id).classList.add('active');if(el)el.classList.add('active');
+function updateAllUI() {
+  let dollar = (coins / RATE).toFixed(2);
+  ['coins', 'coins2', 'coins3'].forEach(id => {let el=document.getElementById(id);if(el)el.innerText=coins.toLocaleString()+' نقطة'});
+  document.getElementById('coinsDollar').innerText=`يعادل $${dollar} دولار`;
+  document.getElementById('dailyProfit').innerText=dailyProfitTotal.toLocaleString()+' نقطة/يوم';
+  if(currentUser){setDoc(doc(db, "users", currentUser), {coins,dailyProfit:dailyProfitTotal,lastClaim},{merge:true})}
 }
-window.showPage=showPage;
-window.closeModal=(id)=>document.getElementById(id).style.display='none';
 
-window.claimProfit=()=>{
+function showPage(id, el) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.navItem').forEach(b => b.classList.remove('active'));
+  document.getElementById(id).classList.add('active'); if(el)el.classList.add('active');
+  if(id=='store') loadStore();
+}
+window.showPage = showPage;
+window.closeModal = (id) => document.getElementById(id).style.display = 'none';
+function showToast(msg) {let t=document.getElementById('toast');t.innerText=msg;t.style.display='block';setTimeout(()=>t.style.display='none',2000)}
+  window.claimProfit=()=>{
   let now=Date.now();
-  if(now-lastClaim>24*60*60*1000 && dailyProfitTotal>0){
-    coins+=dailyProfitTotal;lastClaim=now;updateUI();showToast(`+${dailyProfitTotal}`);
-  }
+  if(now-lastClaim>24*60*60*1000){
+    coins+=dailyProfitTotal;lastClaim=now;updateAllUI();showToast(`+${dailyProfitTotal}`);
+  }else{alert("تعال بعد 24 ساعة")}
 }
-function showToast(msg){let t=document.getElementById('toast');t.innerText=msg;t.style.display='block';setTimeout(()=>t.style.display='none',2000)}
-    function listenToRooms(){
-  onSnapshot(collection(db,"rooms"),snap=>{
-    rooms=[];snap.forEach(d=>rooms.push(d.data()));
-    let html='';rooms.forEach(r=>html+=`<div class="box" onclick="enterRoom('${r.id}')"><b>${r.name}</b><br>المالك: ${r.owner}</div>`);
-    document.getElementById('roomsList').innerHTML=html||'<p>لا توجد غرف</p>';
+
+function loadStore() {
+  let html = '';
+  countersData.forEach(c => {
+    html += `<div class="box"><h4>${c.name}</h4><p>السعر: ${c.price.toLocaleString()}</p><p>الربح: ${c.profit}/يوم</p><button class="btn" onclick="buyCounter(${c.price},${c.profit})" ${coins < c.price? 'disabled' : ''}>شراء</button></div>`;
+  });
+  document.getElementById('storeList').innerHTML = html;
+}
+window.buyCounter = function(price, profit) {
+  if(coins < price) return alert("نقاطك لا تكفي");
+  coins -= price; dailyProfitTotal += profit; updateAllUI(); loadStore(); showToast("تم الشراء");
+}
+  function listenToRooms() {
+  onSnapshot(collection(db, "rooms"), (snap) => {
+    rooms = []; snap.forEach(d => rooms.push(d.data()));
+    let html = ''; rooms.forEach(r => {html += `<div class="roomItem" onclick="enterRoom('${r.id}')"><h4>${r.name}</h4><div>المالك: ${r.owner}</div></div>`});
+    document.getElementById('roomsList').innerHTML = html || '<p style="color:#aaa">لا توجد غرف</p>';
   });
 }
 
-window.openCreateRoom=()=>document.getElementById('createRoomModal').style.display='block';
-window.createRoom=async()=>{
-  let name=document.getElementById('newRoomName').value.trim();
-  if(!name)return;if(coins<80000)return alert("تحتاج 80000");
-  coins-=80000;let id='RM'+Math.floor(100000+Math.random()*900000);
-  await setDoc(doc(db,"rooms",id),{id,name,owner:currentUser});
-  updateUI();closeModal('createRoomModal');enterRoom(id);
+window.openCreateRoom = () => document.getElementById('createRoomModal').style.display = 'block';
+window.createRoom = async () => {
+  let name = document.getElementById('newRoomName').value.trim();
+  if(!name) return; if(coins < 80000) return alert("تحتاج 80000");
+  coins -= 80000; let id = 'RM' + Math.floor(100000 + Math.random() * 900000);
+  await setDoc(doc(db, "rooms", id), {id, name, owner: currentUser, mics: Array(7).fill(null)});
+  updateAllUI(); closeModal('createRoomModal'); enterRoom(id);
 }
+  window.enterRoom = (id) => {
+  currentRoom = rooms.find(r => r.id == id);
+  document.getElementById('roomNameTitle').innerText = currentRoom.name;
+  document.getElementById('roomIdTitle').innerText = 'ID: ' + currentRoom.id;
+  document.getElementById('kickBtn').style.display = (currentRoom.owner === currentUser)? 'block' : 'none';
+  showPage('chatRoom', null);
 
-window.enterRoom=(id)=>{
-  currentRoom=rooms.find(r=>r.id==id);
-  document.getElementById('roomNameTitle').innerText=currentRoom.name;
-  showPage('chatRoom',null);
-  if(unsubRoomChat)unsubRoomChat();
-  unsubRoomChat=onSnapshot(doc(db,"roomMessages",id),snap=>{
-    let msgs=snap.exists()?snap.data().messages||[]:[];
-    let box=document.getElementById('roomChatBox');box.innerHTML='';
-    msgs.forEach(m=>box.innerHTML+=`<div class="chatMsg ${m.u==currentUser?'me':'other'}"><b>${m.u}:</b> ${m.t}</div>`);
-    box.scrollTop=box.scrollHeight;
+  if(unsubRoomDoc) unsubRoomDoc();
+  unsubRoomDoc = onSnapshot(doc(db, "rooms", id), (snap) => {if(snap.exists()){currentRoom=snap.data();renderMics()}});
+
+  if(unsubRoomChat) unsubRoomChat();
+  unsubRoomChat = onSnapshot(doc(db, "roomMessages", id), (snap) => {
+    let msgs = snap.exists()? (snap.data().messages || []) : [];
+    let box = document.getElementById('roomChatBox'); box.innerHTML = '';
+    msgs.forEach(m => {box.innerHTML += `<div class="chatMsg ${m.u==currentUser?'me':'other'}"><b>${m.u}:</b> ${m.t}</div>`});
+    box.scrollTop = box.scrollHeight;
   });
 }
 
-window.sendRoomMsg=async()=>{
-  let txt=document.getElementById('roomChatInput').value.trim();if(!txt||!currentRoom)return;
-  await setDoc(doc(db,"roomMessages",currentRoom.id),{messages:arrayUnion({u:currentUser,t:txt,time:Date.now()})},{merge:true});
-  document.getElementById('roomChatInput').value='';
-    }
-    // XO
-let xoBoard=Array(9).fill(''),xoTurn='X';
-window.openXO=()=>{if(coins<50)return alert("50");coins-=50;updateUI();xoBoard=Array(9).fill('');document.getElementById('xoModal').style.display='block';renderXO()}
+window.sendRoomMsg = async () => {
+  let input = document.getElementById('roomChatInput');
+  let text = input.value.trim(); if(!text ||!currentRoom) return;
+  await setDoc(doc(db, "roomMessages", currentRoom.id), {messages: arrayUnion({u: currentUser, t: text, time: Date.now()})}, {merge:true});
+  input.value = '';
+}
+  function renderMics() {
+  let grid = document.getElementById('roomMicsGrid'); if(!grid) return;
+  let mics = currentRoom.mics || Array(7).fill(null);
+  let html = '';
+  mics.forEach((m, idx) => {
+    let cls = m? 'active' : '';
+    let txt = m? m : `مايك ${idx+1} فاضي`;
+    html += `<div class="micSeat ${cls}" onclick="toggleMic(${idx})">${txt}</div>`;
+  });
+  grid.innerHTML = html;
+}
+
+window.toggleMic = async (idx) => {
+  if(!currentRoom) return;
+  let mics = [...currentRoom.mics];
+  if(mics[idx] == currentUser){mics[idx] = null;}
+  else if(mics[idx] == null){mics[idx] = currentUser;}
+  else{return alert("المايك مشغول")}
+  await updateDoc(doc(db, "rooms", currentRoom.id), {mics});
+}
+  window.openKickModal = () => {
+  if(currentRoom.owner!= currentUser) return;
+  let users = new Set(); (currentRoom.mics||[]).forEach(m=>{if(m)users.add(m)});
+  let html = ''; users.forEach(u=>{if(u!=currentUser)html+=`<button class="btn btn-red" onclick="kickUser('${u}')">طرد ${u}</button>`});
+  document.getElementById('kickList').innerHTML = html || '<p>لا يوجد احد</p>';
+  document.getElementById('kickModal').style.display='block';
+}
+
+window.kickUser = async (u) => {
+  let mics = [...currentRoom.mics]; mics = mics.map(x=>x==u?null:x);
+  await updateDoc(doc(db,"rooms",currentRoom.id),{mics}); closeModal('kickModal'); showToast(`تم طرد ${u}`);
+}
+
+// XO
+let xoBoard=Array(9).fill('');
+window.openXO=()=>{if(coins<50)return alert("50");coins-=50;updateAllUI();xoBoard=Array(9).fill('');document.getElementById('xoModal').style.display='block';renderXO()}
 function renderXO(){let b=document.getElementById('xoBoard');b.innerHTML='';xoBoard.forEach((v,i)=>b.innerHTML+=`<div class="xoCell" onclick="playXO(${i})">${v}</div>`)}
-window.playXO=(i)=>{if(xoBoard[i]||checkXO())return;xoBoard[i]='X';renderXO();botXO()}
-
-// العجلة والصندوق والميموري نفس كودك السابق بس مضاف updateUI()
-
-// دومينو جماعي
-window.openMultiplayerGame=async(type)=>{
-  if(type=='domino'){
-    let gameId='DOM'+Date.now();
-    await setDoc(doc(db,"games",gameId),{type,players:[currentUser],turn:currentUser,tiles:[],table:[]});
-    document.getElementById('dominoMPModal').style.display='block';
-    onSnapshot(doc(db,"games",gameId),snap=>{/* رسم الدومينو */})
-  }
-  if(type=='ludo'){
-    document.getElementById('ludoMPModal').style.display='block';
-  }
-}
-    function checkXO(){
-  const wins=[[0,1,2],[3,4,5],[6,7,8],[0,3,6],[1,4,7],[2,5,8],[0,4,8],[2,4,6]];
-  for(let w of wins){if(xoBoard[w[0]]&&xoBoard[w[0]]==xoBoard[w[1]]&&xoBoard[w[1]]==xoBoard[w[2]]){document.getElementById('xoResult').innerText='فزت';coins+=150;updateUI();return true}}
-  if(!xoBoard.includes('')){document.getElementById('xoResult').innerText='تعادل';return true}
-  return false;
-}
-function botXO(){let e=xoBoard.map((v,i)=>v==''?i:null).filter(v=>v!=null);if(e.length){xoBoard[e[0]]='O';renderXO();checkXO()}}
-
-window.spinWheel=()=>{if(coins<50)return;coins-=50;let p=[100,200,0,300][Math.floor(Math.random()*4)];coins+=p;document.getElementById('wheelResult').innerText=p?`ربحت ${p}`:'حظ اوفر';document.getElementById('wheelModal').style.display='block';updateUI()}
-window.openBox=()=>{if(coins<500)return;coins-=500;let p=[200,800,1000][Math.floor(Math.random()*3)];coins+=p;document.getElementById('boxResult').innerText=`ربحت ${p}`;document.getElementById('boxModal').style.display='block';updateUI()}
+window.playXO=(i)=>{if(xoBoard[i])return;xoBoard[i]='X';renderXO();coins+=100;updateAllUI();document.getElementById('xoResult').innerText='فزت 100';}
+  window.spinWheel=()=>{if(coins<50)return;coins-=50;let p=[100,200,0,300][Math.floor(Math.random()*4)];coins+=p;document.getElementById('wheelResult').innerText=p?`ربحت ${p}`:'حظ اوفر';document.getElementById('wheelModal').style.display='block';updateAllUI()}
+window.openBox=()=>{if(coins<500)return;coins-=500;let p=[200,800,1000][Math.floor(Math.random()*3)];coins+=p;document.getElementById('boxResult').innerText=`ربحت ${p}`;document.getElementById('boxModal').style.display='block';updateAllUI()}
 window.openMemory=()=>{document.getElementById('memoryModal').style.display='block';}
 </script>
 </body>
 </html>
-
