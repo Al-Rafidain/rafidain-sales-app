@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0,user-scalable=no">
-<title>تطبيق الرافدين - النسخة الكاملة</title>
+<title>تطبيق الرافدين - النسخة الكاملة مع 7 مايكات</title>
 <style>
 *{box-sizing:border-box}
 body{background:#000;color:#fff;font-family:tahoma,sans-serif;text-align:center;padding:10px;margin:0;padding-bottom:100px}
@@ -16,305 +16,1574 @@ h1{color:#3b82f6;text-shadow:0 0 15px #3b82f6;font-size:26px}
 .box h3{margin:5px;font-size:16px;color:#aaa}
 #coins{font-size:36px;color:#0f0;font-weight:bold;margin:10px 0}
 #coinsDollar{font-size:18px;color:#3b82f6;font-weight:bold}
+#dailyProfit{font-size:36px;color:#ffb300;font-weight:bold;margin:10px 0}
+#perDay{font-size:24px;color:#3b82f6;font-weight:bold;margin:10px 0}
 .btn{background:#3b82f6;color:#fff;border:0;padding:16px;border-radius:15px;font-size:16px;font-weight:bold;margin:10px auto;cursor:pointer;width:90%;max-width:380px;display:block;transition:0.2s}
 .btn:active{transform:scale(.95)}
 .btn-green{background:#0f0;color:#000;width:100%;padding:18px;font-size:18px}
 .btn-blue{background:#3b82f6}
 .btn-red{background:#f33;color:#fff}
 .btn-yellow{background:#ffb300;color:#000}
+.btn:disabled{background:#555;color:#999;cursor:not-allowed}
 .modal{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.95);z-index:1000;overflow-y:auto}
 .modal-content{background:#1a1a1a;margin:20px auto;padding:15px;width:95%;max-width:500px;border-radius:15px;border:2px solid #3b82f6}
+.counterItem{background:#222;padding:15px;margin:10px auto;border-radius:10px;border:2px solid #333;width:90%;max-width:350px;text-align:right}
 .input{width:90%;padding:12px;margin:8px 0;border-radius:8px;background:#222;color:#fff;border:1px solid #3b82f6;font-size:16px}
+.referralCode{font-size:18px;color:#f0f;font-weight:bold;padding:12px;background:#000;border-radius:10px;border:2px dashed #f0f;margin:10px 0;word-break:break-all}
+.toast{position:fixed;bottom:100px;left:50%;transform:translateX(-50%);background:#0c0;color:#000;padding:15px 25px;border-radius:10px;font-weight:bold;display:none;z-index:2000}
+#xoBoard{display:grid;grid-template-columns:repeat(3,90px);gap:5px;margin:20px auto;width:280px;justify-content:center}
+.xoCell{width:90px;height:90px;background:#222;font-size:50px;display:flex;align-items:center;justify-content:center;cursor:pointer;border-radius:10px;border:2px solid #3b82f6}
+.wheel-container{position:relative;width:280px;height:280px;margin:20px auto}
+.pointer{width:0;height:0;border-left:15px solid transparent;border-right:15px solid transparent;border-bottom:30px solid red;position:absolute;top:-10px;left:50%;transform:translateX(-50%);z-index:10}
+#wheel{width:100%;height:100%;border-radius:50%;border:6px solid #3b82f6;transition:transform 5s cubic-bezier(.17,.67,.12,.99)}
+.boxItem{width:80px;height:80px;background:#3b82f6;margin:5px;display:inline-block;border-radius:15px;cursor:pointer;font-size:28px;line-height:80px;border:3px solid #fff;font-weight:bold}
 .bottomNav{position:fixed;bottom:15px;left:50%;transform:translateX(-50%);width:95%;max-width:500px;background:linear-gradient(135deg,#1e3a8a,#3b82f6);border-radius:25px;display:flex;justify-content:space-around;padding:10px 5px;z-index:999}
 .navItem{display:flex;flex-direction:column;align-items:center;color:#ddd;font-size:10px;cursor:pointer;flex:1}
 .navIcon{font-size:20px;margin-bottom:2px}
 .navItem.active{color:#fff;font-weight:bold}
-.roomItem{background:#222;padding:15px;margin:10px 0;border-radius:12px;border:2px solid #3b82f6;text-align:right;display:flex;justify-content:space-between;align-items:center}
-.chatBox{height:200px;overflow-y:auto;background:#0a0a0a;border:2px solid #3b82f6;border-radius:15px;padding:10px;margin-bottom:10px;text-align:right}
-.chatMsg{margin:8px 0;padding:8px 12px;border-radius:10px;max-width:85%;word-wrap:break-word}
-.chatMsg.me{background:#3b82f6;margin-right:auto;text-align:left;color:#fff}
-.chatMsg.other{background:#222;margin-left:auto;color:#fff}
-.mic-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin:15px 0}
-.mic-slot{background:#111;border:2px dashed #3b82f6;border-radius:12px;padding:15px 5px;text-align:center;cursor:pointer;position:relative}
-.mic-slot.active{border-style:solid;border-color:#0f0;background:#052e16}
-.mic-icon{font-size:24px;margin-bottom:5px}
-.mic-name{font-size:11px;color:#aaa;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.logItem{padding:12px;margin:8px 0;background:#222;border-radius:10px;text-align:right;border-right:4px solid #3b82f6}
+.logItem.win{border-right-color:#0f0}.logItem.buy{border-right-color:#ffb300}
+#registerPage{position:fixed;top:0;left:0;width:100%;height:100%;background:#000;z-index:9998;display:flex;flex-direction:column;justify-content:center;align-items:center;padding:20px}
+.roomItem, .userItem{background:#222;padding:15px;margin:10px 0;border-radius:12px;border:2px solid #3b82f6;text-align:right;display:flex;justify-content:space-between;align-items:center}
+.roomId{color:#ffb300;font-size:12px}
+.chatBox{height:250px;overflow-y:auto;background:#0a0a0a;border:2px solid #3b82f6;border-radius:15px;padding:10px;margin-bottom:10px;text-align:right}
+.chatMsg{margin:8px 0;padding:8px 12px;border-radius:10px;max-width:85%;position:relative;word-wrap:break-word}
+.chatMsg.me{background:#3b82f6;margin-right:auto;text-align:left;color:#fff}.chatMsg.other{background:#222;margin-left:auto;color:#fff}
+.giftBtn{font-size:16px;padding:8px;margin:4px;border-radius:10px;background:#333;border:2px solid #3b82f6;cursor:pointer;color:#fff}
+.dominoTile{width:36px;height:72px;background:#f5f5f5;color:#000;border:2px solid #333;border-radius:6px;display:inline-block;margin:2px;position:relative}
+.dominoHalf{height:36px;display:flex;align-items:center;justify-content:center;position:relative}
+.dominoHalf.top{border-bottom:1px solid #333}
+.dot{width:5px;height:5px;background:#000;border-radius:50%;position:absolute}
+.dominoTableArea{min-height:100px;border:2px dashed #3b82f6;border-radius:10px;margin:10px 0;padding:10px;background:#0a5c36;display:flex;flex-wrap:wrap;align-items:center;justify-content:center}
+#broadcastModal{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.85);z-index:10000;justify-content:center;align-items:center;}
+.broadcast-content{background:#1e293b;padding:25px;border-radius:15px;width:90%;max-width:400px;text-align:center;border:2px solid #3b82f6;}
+.leaderboard-table{width:100%;border-collapse:collapse;margin-top:10px;}
+.leaderboard-th, .leaderboard-td{padding:10px;text-align:center;border-bottom:1px solid #334155;font-size:14px;}
+.leaderboard-th{background:#334155;color:#38bdf8;}
+/* تنسيق المايكات الـ 7 داخل الغرفة */
+.mics-container{display:flex;flex-wrap:wrap;justify-content:center;gap:8px;background:#111;border:2px solid #3b82f6;border-radius:15px;padding:12px;margin:10px 0}
+.mic-slot{width:65px;height:65px;background:#222;border:2px dashed #3b82f6;border-radius:50%;display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;font-size:11px;color:#aaa;position:relative;transition:0.2s}
+.mic-slot.occupied{background:#1e3a8a;border-style:solid;color:#fff;font-weight:bold}
 </style>
 </head>
 <body>
 
-<div id="splash"><div class="logo">🏛️</div><h1>AL-RAFIDAIN</h1></div>
-
-<div id="registerPage" style="position:fixed;top:0;left:0;width:100%;height:100%;background:#000;z-index:9998;display:flex;flex-direction:column;justify-content:center;align-items:center;padding:20px">
+<div id="splash">
   <div class="logo">🏛️</div>
-  <h1>تسجيل الدخول لتطبيق الرافدين</h1>
-  <div class="box" style="max-width:400px;width:100%">
-    <input type="text" id="regName" class="input" placeholder="ادخل اسمك المستعار">
-    <button class="btn btn-green" onclick="createAccount()">دخول التطبيق</button>
+  <div style="color:#3b82f6;font-size:28px;font-weight:bold;margin-top:20px">AL-RAFIDAIN</div>
+</div>
+
+<div id="broadcastModal">
+  <div class="broadcast-content">
+    <h3 style="color:#38bdf8;margin-top:0;">إعلان إداري هام 📢</h3>
+    <p id="broadcastText" style="line-height:1.6;color:#cbd5e1;"></p>
+    <button class="btn btn-green" onclick="closeBroadcast()" style="margin-top:15px;">حسناً، فهمت</button>
   </div>
 </div>
 
+<div id="registerPage">
+  <div class="logo">🏛️</div>
+  <h1>تسجيل الدخول / انشاء حساب</h1>
+  <div class="box" style="max-width:400px;width:100%">
+    <input type="text" id="regName" class="input" placeholder="ادخل اسمك">
+    <input type="password" id="regPass" class="input" placeholder="ادخل كلمة السر">
+    <input type="text" id="regRef" class="input" placeholder="رمز الاحالة - اختياري">
+    <button class="btn btn-green" onclick="createAccount()">تسجيل / دخول</button>
+  </div>
+</div>
 <div id="mainApp" style="display:none">
   <div class="logo">🏛️</div>
   <h1>تطبيق الرافدين</h1>
 
-  <!-- صفحة الرئيسية والألعاب -->
   <div id="home" class="page active">
-    <div class="stats box">
-      <h3>رصيد الكوينز</h3>
-      <div id="coins">0</div>
-      <div id="coinsDollar">($0.00)</div>
+    <div class="stats">
+      <div class="box">
+        <h3>💰 الرصيد</h3>
+        <div id="coins">0 نقطة</div>
+        <div id="coinsDollar">يعادل $0.00 دولار</div>
+        <button class="btn btn-green" onclick="alert('ميزة السحب قريباً')">💵 سحب</button>
+      </div>
+      <div class="box">
+        <h3>⚙️ عدادك الحالي</h3>
+        <div id="dailyProfit">0 نقطة/يوم</div>
+      </div>
+      <div class="box">
+        <h3>⚡ الارباح التلقائية</h3>
+        <div id="perDay">+0 نقطة/24 ساعة</div>
+      </div>
     </div>
-    <button class="btn btn-green" onclick="openGameModal()">🎮 الألعاب وقسم حظك نصيبك</button>
+    <p id="nextClaim" style="color:#aaa"></p>
   </div>
 
-  <!-- صفحة الغرف الصوتية والمايكات -->
-  <div id="rooms" class="page">
-    <h2>🏠 غرف البث الصوتي</h2>
-    <button class="btn btn-green" onclick="openCreateRoom()">➕ انشاء غرفة جديدة</button>
-    <div id="roomsList" style="margin-top:15px"></div>
+  <div id="store" class="page">
+    <h2>🛒 متجر العدادات</h2>
+    <div id="coins2" class="box">رصيدك: 0 نقطة</div>
+    <div id="storeList"></div>
   </div>
 
-  <!-- صفحة الغرفة والصوت -->
-  <div id="chatRoom" class="page">
-    <button class="btn" onclick="showPage('rooms',null)">🔙 خروج من الغرفة</button>
-    <h2 id="roomNameTitle"></h2>
+  <div id="streak" class="page">
+    <h2>🎁 المكافآت اليومية المتتالية</h2>
+    <div class="box" style="text-align:center;">
+      <h3>سجل دخولك يومياً دون انقطاع</h3>
+      <p style="font-size:13px; color:#aaa;">احصل على نقاط متصاعدة كل يوم متتالي</p>
+      <div id="streakDaysBox" style="display:flex; justify-content:center; gap:8px; margin:15px 0; flex-wrap:wrap;"></div>
+      <button class="btn btn-green" onclick="claimStreakReward()">استلام مكافأة اليوم</button>
+    </div>
+  </div>
+
+  <div id="leaderboard" class="page">
+    <h2>🏆 لوحة المتصدرين</h2>
+    <div class="box">
+      <h3>أكثر المستخدمين جمعاً للنقاط</h3>
+      <table class="leaderboard-table">
+        <thead>
+          <tr>
+            <th class="leaderboard-th">المرتبة</th>
+            <th class="leaderboard-th">المستخدم</th>
+            <th class="leaderboard-th">النقاط</th>
+          </tr>
+        </thead>
+        <tbody id="leaderboardTableBody">
+          <tr><td colspan="3" class="leaderboard-td">جاري تحميل المتصدرين...</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div id="games" class="page">
+    <h2>🎮 الالعاب والمهمات</h2>
+    <div id="coins3" class="box">رصيدك: 0 نقطة</div>
+    <h3 style="color:#3b82f6">العاب</h3>
+    <button class="btn" onclick="openXO()">❌⭕ XO - 50</button>
+    <button class="btn" onclick="openDomino()">🎲 دومينو - 50</button>
+    <button class="btn" onclick="openLudo()">🎲 لودو الحقيقية - 100</button>
+    <button class="btn" onclick="spinWheel()">🎡 العجلة - 50</button>
+    <button class="btn" onclick="openBox()">📦 الصندوق - 500</button>
+    <button class="btn" onclick="openMemory()">🧠 ميموري - 50</button>
+    <h3 style="color:#3b82f6;margin-top:25px">🎯 المهمات اليومية</h3>
+    <div id="dailyTasks"></div>
+  </div>
+
+  <div id="friends" class="page">
+    <h2>👥 الأصدقاء والبحث</h2>
+    <div style="display:flex;gap:5px;justify-content:center;max-width:400px;margin:auto">
+      <input type="text" id="searchFriendsInput" class="input" placeholder="ابحث عن اسم صديق..." style="width:70%">
+      <button class="btn btn-blue" style="width:25%;margin:8px 0" onclick="searchFriends()">بحث 🔍</button>
+    </div>
+    <h3 style="color:#3b82f6;margin-top:15px;text-align:right">نتائج البحث / مستخدمون</h3>
+    <div id="searchResults"><p style="color:#aaa">اكتب اسم للبحث</p></div>
     
-    <div class="box" style="background:#0a0a0a;">
-      <h3 style="color:#0f0;">🎙️ مقاعد التحدث الصوتي</h3>
-      <div class="mic-grid" id="micGrid"></div>
-      <button class="btn btn-yellow" id="toggleMicBtn" onclick="toggleMyMic()">🎤 فتح المايك للتحدث</button>
+    <hr style="border-color:#333;margin:20px 0">
+    <h3 style="color:#ffb300;text-align:right">📩 طلبات الصداقة الواردة</h3>
+    <div id="friendRequestsList"><p style="color:#aaa">لا توجد طلبات صداقة جديدة</p></div>
+
+    <hr style="border-color:#333;margin:20px 0">
+    <h3 style="color:#0f0;text-align:right">قائمة أصدقائي</h3>
+    <div id="friendsList"><p style="color:#aaa">ليس لديك أصدقاء بعد</p></div>
+  </div>
+
+  <div id="privateChat" class="page">
+    <button class="btn" onclick="showPage('friends',null)">🔙 رجوع للأصدقاء</button>
+    <h2 id="privateChatTitle">مراسلة الصديق</h2>
+    <div id="privateChatBox" class="chatBox"></div>
+    <div style="display:flex;gap:8px;justify-content:center;max-width:400px;margin:auto">
+      <input type="text" id="privateChatInput" class="input" placeholder="اكتب رسالة خاصة..." style="width:70%" onkeypress="if(event.key=='Enter')sendPrivateMsg()">
+      <button class="btn" style="width:25%;margin:8px 0" onclick="sendPrivateMsg()">ارسال</button>
+    </div>
+  </div>
+
+  <div id="rooms" class="page">
+    <h2>🏠 الغرف</h2>
+    <div id="myRoomSection"></div>
+    <div id="createRoomBtnSection">
+      <button class="btn btn-green" onclick="openCreateRoom()">➕ انشاء غرفة - 80000</button>
+    </div>
+    <button class="btn" onclick="openGlobalChat()">🌍 الدردشة العامة</button>
+    <input type="text" id="searchRoomId" class="input" placeholder="ادخل ايدي الغرفة للبحث">
+    <button class="btn" onclick="joinRoomById()">دخول</button>
+    <h3 style="color:#3b82f6;margin-top:20px">الغرف الموجودة</h3>
+    <div id="roomsList"><p style="color:#aaa">لا توجد غرف</p></div>
+  </div>
+
+  <div id="globalChat" class="page">
+    <button class="btn" onclick="showPage('rooms',null)">🔙 رجوع</button>
+    <h2>🌍 الدردشة العامة</h2>
+    <div id="globalChatBox" class="chatBox"></div>
+    <div style="display:flex;gap:8px;justify-content:center;max-width:400px;margin:auto">
+      <input type="text" id="globalChatInput" class="input" placeholder="اكتب هنا" style="width:70%" onkeypress="if(event.key=='Enter')sendGlobalMsg()">
+      <button class="btn" style="width:25%;margin:8px 0" onclick="sendGlobalMsg()">ارسال</button>
+    </div>
+  </div>
+
+  <div id="chatRoom" class="page">
+    <button class="btn" onclick="showPage('rooms',null)">🔙 رجوع</button>
+    <h2 id="roomNameTitle"></h2>
+    <p class="roomId" id="roomIdTitle"></p>
+    <div style="display:flex;gap:10px;justify-content:center;max-width:400px;margin:auto">
+      <button id="editRoomBtn" class="btn btn-yellow" style="display:none;width:45%" onclick="editRoomName()">✏️ تعديل الاسم</button>
+      <button id="clearRoomChatBtn" class="btn btn-red" style="display:none;width:45%" onclick="clearRoomChat()">🗑️ حذف الدردشة</button>
+    </div>
+    
+    <!-- قسم المايكات الـ 7 المجانية داخل الغرفة -->
+    <h4 style="color:#38bdf8;margin:10px 0 5px 0;">🎙️ مايكات الغرفة (7 مايكات مجانية)</h4>
+    <div id="roomMicsContainer" class="mics-container"></div>
+    
+    <div id="roomMultiplayerGameBox" style="background:#111; border:2px dashed #3b82f6; padding:10px; border-radius:12px; margin:10px 0;">
+      <h4 style="color:#38bdf8; margin:5px 0;">تحدي الألعاب الجماعية داخل الغرفة (XO)</h4>
+      <button class="btn btn-yellow" onclick="startRoomXoGame()" style="width:auto; padding:8px 15px; font-size:14px; margin:5px auto;">بدء تحدي XO الجماعي</button>
+      <div id="roomXoBoard" style="display:grid; grid-template-columns:repeat(3,60px); gap:4px; justify-content:center; margin-top:8px;"></div>
+      <p id="roomXoStatus" style="font-size:13px; margin:5px 0; color:#ffb300;"></p>
     </div>
 
     <div id="roomChatBox" class="chatBox"></div>
     <div style="display:flex;gap:8px;justify-content:center;max-width:400px;margin:auto">
-      <input type="text" id="roomChatInput" class="input" placeholder="اكتب رسالة نصية..." style="width:70%">
-      <button class="btn" style="width:25%;margin:8px 0" onclick="sendRoomMsg()">إرسال</button>
+      <input type="text" id="roomChatInput" class="input" placeholder="اكتب هنا" style="width:70%" onkeypress="if(event.key=='Enter')sendRoomMsg()">
+      <button class="btn" style="width:25%;margin:8px 0" onclick="sendRoomMsg()">ارسال</button>
+    </div>
+    <h4 style="color:#ffb300;margin-top:10px">🎁 الهدايا (تتوزع بالتساوي على الموجودين بالغرفة)</h4>
+    <div id="giftsBar" style="display:flex;flex-wrap:wrap;justify-content:center"></div>
+  </div>
+
+  <div id="referral" class="page">
+    <h2>🎁 نظام الاحالة والتحويل</h2>
+    <div class="box">
+      <h3>🌟 ادعُ اصدقائك واربح</h3>
+      <div id="myReferralCode" class="referralCode">جاري التحميل...</div>
+      <div id="myReferralLink" class="referralCode">جاري التحميل...</div>
+      <button class="btn btn-blue" onclick="copyCode()">📋 نسخ رسالة الدعوة</button>
+      <button class="btn btn-blue" onclick="copyLink()">🔗 نسخ الرابط</button>
+    </div>
+    <div class="box">
+      <h3>💸 تحويل نقاط لصديق</h3>
+      <input type="text" id="transferRefInput" class="input" placeholder="ادخل رمز الاحاله لصديقك">
+      <input type="number" id="transferAmountInput" class="input" placeholder="كمية النقاط">
+      <button class="btn btn-green" onclick="transferCoins()">تحويل النقاط 🚀</button>
     </div>
   </div>
 
-  <!-- نوافذ الألعاب -->
-  <div id="gameModal" class="modal">
-    <div class="modal-content">
-      <h2>🎲 الألعاب وقسم الترفيه</h2>
-      <button class="btn btn-yellow" onclick="playLuckyBox()">🎁 صندوق حظك نصيبك</button>
-      <button class="btn btn-blue" onclick="playWheelGame()">🎡 عجلة الحظ الكبرى</button>
-      <button class="btn btn-red" onclick="closeGameModal()">إغلاق</button>
+  <div id="log" class="page">
+    <h2>📜 سجل المعاملات</h2>
+    <div id="logList"></div>
+    <button class="btn btn-red" onclick="clearLog()">🗑️ مسح السجل</button>
+  </div>
+
+  <div id="profile" class="page">
+    <h2>👤 الملف الشخصي</h2>
+    <div class="box"><h3 id="userName"></h3></div>
+    <div class="box">
+      <h3>🎁 رمز الاحالة الخاص بك</h3>
+      <div id="myReferralCode2" class="referralCode">جاري التحميل...</div>
+      <button class="btn btn-blue" onclick="copyCode()">📋 نسخ</button>
     </div>
+    <button class="btn btn-red" onclick="logout()">🚪 تسجيل خروج</button>
   </div>
 
   <div class="bottomNav">
-    <div class="navItem active" onclick="showPage('home',this)"><div class="navIcon">🎮</div><div>الرئيسية</div></div>
-    <div class="navItem" onclick="showPage('rooms',this)"><div class="navIcon">🎙️</div><div>الغرف</div></div>
+    <div class="navItem active" onclick="showPage('home',this)"><div class="navIcon">⚙️</div><div>العداد</div></div>
+    <div class="navItem" onclick="showPage('store',this)"><div class="navIcon">🛒</div><div>المتجر</div></div>
+    <div class="navItem" onclick="showPage('streak',this)"><div class="navIcon">🎁</div><div>الـ Streak</div></div>
+    <div class="navItem" onclick="showPage('games',this)"><div class="navIcon">🎮</div><div>الالعاب</div></div>
+    <div class="navItem" onclick="showPage('leaderboard',this)"><div class="navIcon">🏆</div><div>المتصدّرين</div></div>
+    <div class="navItem" onclick="showPage('friends',this)"><div class="navIcon">👥</div><div>أصدقاء</div></div>
+    <div class="navItem" onclick="showPage('rooms',this)"><div class="navIcon">🏠</div><div>الغرف</div></div>
+    <div class="navItem" onclick="showPage('referral',this)"><div class="navIcon">🎁</div><div>احالة</div></div>
+    <div class="navItem" onclick="showPage('log',this)"><div class="navIcon">📜</div><div>السجل</div></div>
+    <div class="navItem" onclick="showPage('profile',this)"><div class="navIcon">👤</div><div>الملف</div></div>
   </div>
 </div>
+<div id="xoModal" class="modal"><div class="modal-content"><h2>❌⭕ XO</h2><div id="xoBoard"></div><p id="xoResult"></p><button class="btn" onclick="closeModal('xoModal')">خروج</button></div></div>
+<div id="dominoModal" class="modal"><div class="modal-content"><h2>🎲 دومينو ضد البوت</h2><div id="botTiles"></div><hr><div id="dominoTable" class="dominoTableArea"></div><hr><div id="myTiles"></div><p id="dominoResult"></p><button class="btn" onclick="closeModal('dominoModal')">خروج</button></div></div>
+
+<div id="ludoModal" class="modal">
+  <div class="modal-content" style="max-width:380px">
+    <h2>🎲 لودو الحقيقية</h2>
+    <p id="ludoTurn" style="color:#ffb300;font-size:18px;font-weight:bold"></p>
+    <canvas id="ludoBoard" width="330" height="330" style="background:#fff;border:3px solid #3b82f6;border-radius:10px;margin:10px auto;display:block;cursor:pointer"></canvas>
+    <button class="btn btn-yellow" id="ludoDiceBtn" onclick="rollDice()">🎲 ارمي النرد</button>
+    <p id="ludoDice" style="font-size:40px;margin:5px">🎲</p>
+    <button class="btn" onclick="closeModal('ludoModal')">خروج</button>
+  </div>
+</div>
+
+<div id="wheelModal" class="modal"><div class="modal-content"><h2>🎡 العجلة</h2><div class="wheel-container"><div class="pointer"></div><canvas id="wheel" width="280" height="280"></canvas></div><button class="btn" id="spinBtn" onclick="doSpin()">لف - 50</button><p id="wheelResult"></p><button class="btn" onclick="closeModal('wheelModal')">اغلاق</button></div></div>
+<div id="boxModal" class="modal"><div class="modal-content"><h2>📦 الصندوق</h2><div id="boxes"></div><p id="boxResult"></p><button class="btn" onclick="closeModal('boxModal')">اغلاق</button></div></div>
+<div id="memoryModal" class="modal"><div class="modal-content"><h2>🧠 لعبة الميموري</h2><p>طابق الرموز - الجائزة 250</p><div id="memoryBoard" style="display:grid;grid-template-columns:repeat(4,60px);gap:8px;justify-content:center;margin:20px auto"></div><p id="memoryResult"></p><button class="btn" onclick="closeModal('memoryModal')">خروج</button></div></div>
+<div id="createRoomModal" class="modal"><div class="modal-content"><h2>انشاء غرفة جديدة</h2><input type="text" id="newRoomName" class="input" placeholder="اسم الغرفة"><button class="btn btn-green" onclick="createRoom()">شراء وانشاء - 80000</button><button class="btn btn-red" onclick="closeModal('createRoomModal')">الغاء</button></div></div>
+<div id="toast" class="toast">تم استلام الارباح!</div>
 <script type="module">
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-import { getFirestore, doc, setDoc, getDoc, updateDoc, collection, onSnapshot, arrayUnion } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+  import { getFirestore, doc, setDoc, getDoc, updateDoc, deleteDoc, collection, onSnapshot, arrayUnion, arrayRemove, getDocs } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
-const firebaseConfig = {
-  apiKey: "AIzaSyBbkpcBPq8G2OpyKxaVqPO7Mkfla4X9hxU",
-  authDomain: "rafidainapp.firebaseapp.com",
-  projectId: "rafidainapp",
-  storageBucket: "rafidainapp.firebasestorage.app",
-  messagingSenderId: "512875147812",
-  appId: "1:512875147812:web:54f33bda3780db7a4a9eb1"
-};
-const app = initializeApp(firebaseConfig);
-const db = getFirestore(app);
+  const firebaseConfig = {
+    apiKey: "AIzaSyBbkpcBPq8G2OpyKxaVqPO7Mkfla4X9hxU",
+    authDomain: "rafidainapp.firebaseapp.com",
+    projectId: "rafidainapp",
+    storageBucket: "rafidainapp.firebasestorage.app",
+    messagingSenderId: "512875147812",
+    appId: "1:512875147812:web:54f33bda3780db7a4a9eb1",
+    measurementId: "G-X059J6K4L7"
+  };
+  const app = initializeApp(firebaseConfig);
+  const db = getFirestore(app);
 
-let currentUser = '', currentRoom = null, coins = 100000;
+  let coins=5000, dailyProfitTotal=0, lastClaim=0, myReferralCode='', currentUser='', transactionLog=[], currentRoom=null;
+  let rooms=[], roomMessages={}, globalMessages=[], myFriends=[], friendRequests=[], sentRequests=[];
+  let xoBoard=Array(9).fill(''), gameOver=false, boxOpened=false, dominoSet=[], dominoMy=[], dominoBot=[], dominoTable=[], dominoLeftEnd=0, dominoRightEnd=0;
+  const RATE=10000;
 
-setTimeout(()=>{
-  document.getElementById('splash').style.opacity = '0';
-  document.getElementById('splash').style.visibility = 'hidden';
-  checkLogin();
-}, 1000);
+  let currentChatFriend = null;
+  let unsubPrivateChat = null;
 
-function checkLogin(){
-  currentUser = localStorage.getItem('rafidain_user');
-  if(currentUser){
-    document.getElementById('registerPage').style.display = 'none';
-    document.getElementById('mainApp').style.display = 'block';
-    loadUserData();
-    listenToRooms();
+  let ludoPlayers=[], ludoDice=0, ludoCurrentPlayer=0, ludoGameOver=false, ludoCanMove=false;
+  const LUDO_COLORS=['#f33','#3b82f6','#0f0','#ffb300'];
+  const LUDO_NAMES=['انت (أحمر)','بوت أزرق','بوت أخضر','بوت أصفر'];
+
+  const countersData=[{name:"عداد 100",price:1000,profit:100},{name:"عداد 200",price:2000,profit:200},{name:"عداد 300",price:3000,profit:300},{name:"عداد 400",price:4000,profit:400},{name:"عداد 500",price:5000,profit:500},{name:"عداد 1000",price:10000,profit:1000},{name:"عداد 2000",price:20000,profit:2000},{name:"عداد 3000",price:30000,profit:3000},{name:"عداد 4000",price:40000,profit:4000},{name:"عداد 5000",price:50000,profit:5000}];
+  const wheelPrizes=[{text:"حظ اوفر",value:0},{text:"100",value:100},{text:"250",value:250},{text:"500",value:500},{text:"1000",value:1000},{text:"5000",value:5000}];
+  const giftsList=[{icon:"🌹",name:"وردة",price:1000},{icon:"💎",name:"الماس",price:5000},{icon:"👑",name:"تاج",price:10000},{icon:"🐅",name:"شبل",price:20000},{icon:"🐯",name:"نمر",price:50000},{icon:"🦁",name:"اسد",price:100000}];
+  let dailyTasks={login:{done:false,reward:200},buy:{done:false,reward:300},play:{done:false,reward:150}}, lastTaskReset=0;
+  let memoryCards=[], flipped=[], matched=0;
+
+  let streakDays = 0;
+  let lastStreakClaimDate = "";
+
+  function generateUniqueRefCode() {
+    const timestampStr = Date.now().toString().slice(-4);
+    const randomStr = Math.floor(1000 + Math.random() * 9000).toString();
+    return 'RAF' + timestampStr + randomStr;
   }
-}
 
-window.createAccount = async function(){
-  let name = document.getElementById('regName').value.trim();
-  if(!name) return alert("يرجى إدخال الاسم");
-  currentUser = name;
-  localStorage.setItem('rafidain_user', name);
-  const userRef = doc(db, "users", name);
-  let snap = await getDoc(userRef);
-  if(!snap.exists()){
-    await setDoc(userRef, { name: name, coins: 100000 });
-  }
-  document.getElementById('registerPage').style.display = 'none';
-  document.getElementById('mainApp').style.display = 'block';
-  loadUserData();
-  listenToRooms();
-}
+  setTimeout(()=>{
+    let splash = document.getElementById('splash');
+    splash.style.opacity = '0';
+    splash.style.visibility = 'hidden';
+    checkLogin();
+    checkAdminBroadcast();
+  }, 1500);
 
-async function loadUserData(){
-  const userRef = doc(db, "users", currentUser);
-  let snap = await getDoc(userRef);
-  if(snap.exists()){
-    coins = snap.data().coins || 100000;
-    updateUI();
-  }
-}
-
-function updateUI(){
-  document.getElementById('coins').innerText = coins.toLocaleString();
-  document.getElementById('coinsDollar').innerText = '$' + (coins / 10000).toFixed(2);
-}
-
-window.showPage = function(id, el){
-  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
-  document.getElementById(id).classList.add('active');
-  document.querySelectorAll('.navItem').forEach(n=>n.classList.remove('active'));
-  if(el) el.classList.add('active');
-  if(id == 'rooms') leaveRoomCleanUp();
-}
-
-window.openGameModal = function(){ document.getElementById('gameModal').style.display = 'block'; }
-window.closeGameModal = function(){ document.getElementById('gameModal').style.display = 'none'; }
-
-// ألعاب الحظ والمسابقات
-window.playLuckyBox = async function(){
-  let reward = Math.floor(Math.random() * 5000) + 1000;
-  coins += reward;
-  updateUI();
-  await updateDoc(doc(db, "users", currentUser), { coins: coins });
-  alert("🎁 مبروك! ربحت " + reward.toLocaleString + " كوينز من صندوق حظك نصيبك!");
-}
-
-window.playWheelGame = async function(){
-  let reward = Math.floor(Math.random() * 10000) + 2000;
-  coins += reward;
-  updateUI();
-  await updateDoc(doc(db, "users", currentUser), { coins: coins });
-  alert("🎡 تدورت عجلة الحظ وربحت جائزة بقيمة " + reward.toLocaleString() + " كوينز!");
-}
-
-window.openCreateRoom = async function(){
-  let name = prompt("ادخل اسم الغرفة الصوتية:");
-  if(!name) return;
-  let id = 'RM' + Math.floor(Math.random()*900000+100000);
-  let initialMics = Array(8).fill({ user: null });
-  await setDoc(doc(db, "rooms", id), { id, name, owner: currentUser, mics: initialMics });
-  enterRoom(id);
-}
-
-function listenToRooms(){
-  onSnapshot(collection(db, "rooms"), (snapshot) => {
-    let html = '';
-    snapshot.forEach((d) => {
-      let r = d.data();
-      html += `<div class="roomItem" onclick="enterRoom('${r.id}')"><div><h4>🎙️ ${r.name}</h4><small style="color:#aaa">المالك: ${r.owner}</small></div><button class="btn btn-blue" style="width:auto;margin:0">دخول الغرفة</button></div>`;
-    });
-    document.getElementById('roomsList').innerHTML = html || '<p style="color:#aaa">لا توجد غرف متاحة حالياً</p>';
-  });
-}
-let localStream = null;
-let myMicIndex = -1;
-
-window.enterRoom = function(id){
-  onSnapshot(doc(db, "rooms", id), (docSnap) => {
-    if(!docSnap.exists()) return;
-    currentRoom = docSnap.data();
-    document.getElementById('roomNameTitle').innerText = currentRoom.name;
-    renderMics(currentRoom.mics || Array(8).fill({user:null}));
-  });
-
-  onSnapshot(doc(db, "roomMessages", id), (docSnap) => {
-    let box = document.getElementById('roomChatBox');
-    box.innerHTML = '';
-    let msgs = docSnap.exists() ? (docSnap.data().messages || []) : [];
-    msgs.forEach(m => {
-      let cls = m.u === currentUser ? 'me' : 'other';
-      box.innerHTML += `<div class="chatMsg ${cls}"><b>${m.u}:</b> ${m.t}</div>`;
-    });
-    box.scrollTop = box.scrollHeight;
-  });
-
-  showPage('rooms', null); // التوجيه الصحيح
-  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
-  document.getElementById('chatRoom').classList.add('active');
-}
-
-function renderMics(mics){
-  let grid = document.getElementById('micGrid');
-  grid.innerHTML = '';
-  mics.forEach((mic, index) => {
-    let isActive = mic.user !== null;
-    grid.innerHTML += `
-      <div class="mic-slot ${isActive ? 'active' : ''}" onclick="occupyMic(${index})">
-        <div class="mic-icon">${isActive ? '🎙️' : '🎧'}</div>
-        <div class="mic-name">${mic.user || 'مايك ' + (index+1)}</div>
-      </div>`;
-  });
-}
-
-window.occupyMic = async function(index){
-  if(!currentRoom) return;
-  let mics = [...currentRoom.mics];
-  
-  if(mics[index].user === null){
-    mics.forEach((m, i) => { if(m.user === currentUser) mics[i] = {user: null}; });
-    mics[index] = { user: currentUser };
-    myMicIndex = index;
-    
+  async function checkAdminBroadcast(){
     try {
-      localStream = await navigator.mediaDevices.getUserMedia({ audio: true });
-      document.getElementById('toggleMicBtn').innerText = '🔴 كتم الصوت (Mute)';
+      let bSnap = await getDoc(doc(db, "settings", "broadcast"));
+      if(bSnap.exists()){
+        let data = bSnap.data();
+        if(data.active && data.text){
+          document.getElementById('broadcastText').innerText = data.text;
+          document.getElementById('broadcastModal').style.display = 'flex';
+        }
+      }
+    }catch(e){}
+  }
+  window.closeBroadcast = function(){
+    document.getElementById('broadcastModal').style.display = 'none';
+  }
+
+  async function checkLogin(){
+    currentUser=localStorage.getItem('rafidain_user');
+    if(currentUser){
+      await loadUserData();
+      document.getElementById('registerPage').style.display='none';
+      document.getElementById('mainApp').style.display='block';
+      listenToGlobalChat();
+      listenToRooms();
+      listenToUserData();
+    }else{
+      document.getElementById('registerPage').style.display='flex';
+      document.getElementById('mainApp').style.display='none';
+    }
+  }
+
+  async function createAccount(){
+    let name=document.getElementById('regName').value.trim();
+    let pass=document.getElementById('regPass').value.trim();
+    let ref=document.getElementById('regRef').value.trim();
+    if(!name||!pass) return alert("يرجى إدخال الاسم وكلمة السر");
+
+    const userRef = doc(db, "users", name);
+    const userSnap = await getDoc(userRef);
+
+    if (userSnap.exists()) {
+      let data = userSnap.data();
+      if(data.pass === pass){
+        currentUser = name;
+        localStorage.setItem('rafidain_user', name);
+        await loadUserData();
+        document.getElementById('registerPage').style.display='none';
+        document.getElementById('mainApp').style.display='block';
+        showToast('مرحبا بك مجدداً '+name);
+        listenToGlobalChat();
+        listenToRooms();
+        listenToUserData();
+      } else {
+        alert("كلمة السر غير صحيحة!");
+      }
+    } else {
+      let uniqueRef = generateUniqueRefCode();
+      let initialData = {
+        name: name,
+        pass: pass,
+        coins: 5000,
+        dailyProfit: 0,
+        lastClaim: Date.now(),
+        referral: uniqueRef,
+        friends: [],
+        friendRequests: [],
+        sentRequests: [],
+        streakDays: 0,
+        lastStreakDate: "",
+        log: ref ? [{text:`استخدم رمز الاحالة: ${ref}`, amount:500, type:'win', time:new Date().toLocaleString('ar-IQ')}] : []
+      };
+      await setDoc(userRef, initialData);
+      currentUser = name;
+      localStorage.setItem('rafidain_user', name);
+      await loadUserData();
+      document.getElementById('registerPage').style.display='none';
+      document.getElementById('mainApp').style.display='block';
+      showToast('مرحبا بك '+name);
+      listenToGlobalChat();
+      listenToRooms();
+      listenToUserData();
+    }
+  }
+  window.createAccount = createAccount;
+
+  async function loadUserData(){
+    const userSnap = await getDoc(doc(db, "users", currentUser));
+    if(userSnap.exists()){
+      let data = userSnap.data();
+      coins = data.coins || 5000;
+      dailyProfitTotal = data.dailyProfit || 0;
+      lastClaim = data.lastClaim || Date.now();
+      
+      if (!data.referral) {
+        myReferralCode = generateUniqueRefCode();
+        await updateDoc(doc(db, "users", currentUser), { referral: myReferralCode });
+      } else {
+        myReferralCode = data.referral;
+      }
+      
+      streakDays = data.streakDays || 0;
+      lastStreakClaimDate = data.lastStreakDate || "";
+      
+      transactionLog = data.log || [];
+      myFriends = data.friends || [];
+      friendRequests = data.friendRequests || [];
+      sentRequests = data.sentRequests || [];
+      
+      document.getElementById('userName').innerText = currentUser;
+      setupReferral();
+      updateAll();
+    }
+  }
+
+  function logout(){
+    if(confirm('هل أنت متأكد من تسجيل الخروج؟')){
+      localStorage.clear();
+      location.reload();
+    }
+  }
+  window.logout = logout;
+
+  function showPage(id,el){
+    document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+    document.querySelectorAll('.navItem').forEach(b=>b.classList.remove('active'));
+    document.getElementById(id).classList.add('active');
+    if(el) el.classList.add('active');
+    if(id=='store') loadStore();
+    if(id=='games') loadTasks();
+    if(id=='referral') setupReferral();
+    if(id=='log') loadLog();
+    if(id=='rooms') loadRooms();
+    if(id=='globalChat') loadGlobalChat();
+    if(id=='friends') loadFriendsPage();
+    if(id=='leaderboard') loadLeaderboard();
+    if(id=='streak') renderStreakUI();
+  }
+  window.showPage = showPage;
+
+  function toDollar(n){ return (n/RATE).toFixed(2); }
+
+  async function updateAll(){
+    let dollar=toDollar(coins);
+    document.getElementById('coins').innerText=coins.toLocaleString()+' نقطة';
+    document.getElementById('coinsDollar').innerText=`يعادل $${dollar} دولار`;
+    document.getElementById('coins2').innerText=`رصيدك: ${coins.toLocaleString()} نقطة`;
+    document.getElementById('coins3').innerText=`رصيدك: ${coins.toLocaleString()} نقطة`;
+    document.getElementById('dailyProfit').innerText=dailyProfitTotal.toLocaleString()+' نقطة/يوم';
+    document.getElementById('perDay').innerText='+'+dailyProfitTotal.toLocaleString()+' نقطة/24 ساعة';
+    
+    let now=Date.now(), timeLeft=24*60*60*1000-(now-lastClaim);
+    if(timeLeft<=0 && dailyProfitTotal>0){
+      coins += dailyProfitTotal;
+      lastClaim = now;
+      addLog(`استلام ارباح تلقائية`, dailyProfitTotal, 'win');
+      showToast(`تم استلام ${dailyProfitTotal.toLocaleString()} نقطة!`);
+    }
+    let hours=Math.floor(timeLeft/1000/60/60), mins=Math.floor((timeLeft/1000/60)%60);
+    document.getElementById('nextClaim').innerText=dailyProfitTotal>0?`الارباح الجاية بعد: ${hours}س ${mins}د`:'';
+    
+    if(currentUser){
+      await updateDoc(doc(db, "users", currentUser), {
+        coins: coins,
+        dailyProfit: dailyProfitTotal,
+        lastClaim: lastClaim,
+        log: transactionLog,
+        streakDays: streakDays,
+        lastStreakDate: lastStreakClaimDate
+      }).catch(()=>{});
+    }
+  }
+
+  setInterval(updateAll, 60000);
+
+  function showToast(msg){
+    let t=document.getElementById('toast');
+    t.innerText=msg;
+    t.style.display='block';
+    setTimeout(()=>t.style.display='none',3000);
+  }
+
+  function closeModal(id){ document.getElementById(id).style.display='none'; }
+  window.closeModal = closeModal;
+
+  function addLog(text,amount,type){
+    let time=new Date().toLocaleString('ar-IQ');
+    transactionLog.unshift({text,amount,type,time});
+    if(transactionLog.length>50) transactionLog.pop();
+  }
+
+  function loadLog(){
+    let html='';
+    if(transactionLog.length==0) html='<p style="color:#aaa">لا توجد معاملات بعد</p>';
+    transactionLog.forEach(log=>{
+      let sign=log.amount>0?'+':'';
+      html+=`<div class="logItem ${log.type}"><b>${log.text}</b><br><span style="color:#0f0">${sign}${log.amount.toLocaleString()} نقطة</span> <span style="font-size:12px;color:#aaa">${log.time}</span></div>`;
+    });
+    document.getElementById('logList').innerHTML=html;
+  }
+  window.clearLog = async function(){
+    if(confirm('متأكد تريد تمسح السجل؟')){
+      transactionLog=[];
+      await updateAll();
+      loadLog();
+    }
+  }
+
+  function renderStreakUI(){
+    let box = document.getElementById('streakDaysBox');
+    let rewards = [100, 200, 350, 500, 750, 1000, 1500];
+    let html = '';
+    for(let i=0; i<7; i++){
+      let dayNum = i+1;
+      let isDone = dayNum <= streakDays;
+      let bg = isDone ? '#10b981' : '#222';
+      html += `<div style="background:${bg}; border:1px solid #3b82f6; border-radius:8px; padding:10px; width:55px; text-align:center;">
+        <div style="font-size:11px; color:#aaa;">اليوم ${dayNum}</div>
+        <div style="font-size:12px; font-weight:bold; color:#ffb300; margin-top:4px;">${rewards[i]}</div>
+      </div>`;
+    }
+    box.innerHTML = html;
+  }
+
+  window.claimStreakReward = async function(){
+    let todayStr = new Date().toDateString();
+    if(lastStreakClaimDate === todayStr){
+      return alert("لقد استلمت مكافأة اليوم بالفعل، عُد غداً!");
+    }
+    let rewards = [100, 200, 350, 500, 750, 1000, 1500];
+    if(lastStreakClaimDate){
+      let lastDate = new Date(lastStreakClaimDate);
+      let nowDate = new Date(todayStr);
+      let diffTime = Math.abs(nowDate - lastDate);
+      let diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+      if(diffDays > 1) streakDays = 0;
+    }
+    if(streakDays >= 7) streakDays = 0;
+    let rewardAmount = rewards[streakDays];
+    streakDays++;
+    lastStreakClaimDate = todayStr;
+    coins += rewardAmount;
+    addLog(`مكافأة الـ Streak اليومية (${streakDays})`, rewardAmount, 'win');
+    showToast(`تم استلام مكافأة اليوم بقيمة ${rewardAmount} نقطة! 🎁`);
+    updateAll();
+    renderStreakUI();
+  }
+
+  async function loadLeaderboard(){
+    let tbody = document.getElementById('leaderboardTableBody');
+    tbody.innerHTML = '<tr><td colspan="3" class="leaderboard-td">جاري تحميل المتصدرين...</td></tr>';
+    try {
+      let querySnapshot = await getDocs(collection(db, "users"));
+      let usersArr = [];
+      querySnapshot.forEach((docSnap) => {
+        let uData = docSnap.data();
+        usersArr.push({ name: uData.name || docSnap.id, coins: uData.coins || 0 });
+      });
+      usersArr.sort((a, b) => b.coins - a.coins);
+      let html = '';
+      usersArr.slice(0, 10).forEach((u, index) => {
+        let medal = index === 0 ? '🥇' : index === 1 ? '🥈' : index === 2 ? '🥉' : (index + 1);
+        html += `<tr>
+          <td class="leaderboard-td" style="font-weight:bold;color:#ffb300;">${medal}</td>
+          <td class="leaderboard-td">${u.name}</td>
+          <td class="leaderboard-td" style="color:#0f0;font-weight:bold;">${u.coins.toLocaleString()}</td>
+        </tr>`;
+      });
+      tbody.innerHTML = html || '<tr><td colspan="3" class="leaderboard-td">لا توجد بيانات متاحة</td></tr>';
     } catch(e) {
-      alert("يرجى السماح بالوصول للميكروفون من متصفحك");
+      tbody.innerHTML = '<tr><td colspan="3" class="leaderboard-td" style="color:#f33;">حدث خطأ في جلب المتصدرين</td></tr>';
+    }
+  }
+
+  function listenToUserData(){
+    onSnapshot(doc(db, "users", currentUser), (snapshot) => {
+      if(snapshot.exists()){
+        let data = snapshot.data();
+        coins = data.coins !== undefined ? data.coins : coins;
+        myFriends = data.friends || [];
+        friendRequests = data.friendRequests || [];
+        sentRequests = data.sentRequests || [];
+        renderFriendsPage();
+        updateAll();
+      }
+    });
+  }
+
+  function loadFriendsPage(){
+    renderFriendsList();
+    renderRequestsList();
+  }
+  function renderFriendsPage(){
+    renderFriendsList();
+    renderRequestsList();
+  }
+
+  async function searchFriends(){
+    let query = document.getElementById('searchFriendsInput').value.trim();
+    let resContainer = document.getElementById('searchResults');
+    if(!query){
+      resContainer.innerHTML = '<p style="color:#aaa">اكتب اسم للبحث</p>';
       return;
     }
-  } else if(mics[index].user === currentUser){
-    mics[index] = { user: null };
-    myMicIndex = -1;
-    if(localStream) localStream.getTracks().forEach(track => track.stop());
-    document.getElementById('toggleMicBtn').innerText = '🎤 فتح المايك للتحدث';
-  } else {
-    alert("هذا المايك مشغول حالياً!");
-    return;
+    resContainer.innerHTML = '<p style="color:#aaa">جاري البحث...</p>';
+    try {
+      let querySnapshot = await getDocs(collection(db, "users"));
+      let html = '';
+      let found = false;
+      querySnapshot.forEach((uDoc) => {
+        let uData = uDoc.data();
+        let uName = uData.name || uDoc.id;
+        if(uName.toLowerCase().includes(query.toLowerCase()) && uName.toLowerCase() !== currentUser.toLowerCase()){
+          found = true;
+          let isFriend = myFriends.includes(uName);
+          let hasSent = sentRequests.includes(uName);
+          let btnHtml = '';
+          if(isFriend){
+            btnHtml = `<button class="btn btn-red" style="width:auto;padding:8px 15px;margin:0" onclick="removeFriend('${uName}')">إزالة صديق</button>`;
+          } else if(hasSent){
+            btnHtml = `<button class="btn" style="width:auto;padding:8px 15px;margin:0;background:#555" disabled>تم إرسال الطلب</button>`;
+          } else {
+            btnHtml = `<button class="btn btn-green" style="width:auto;padding:8px 15px;margin:0" onclick="sendFriendRequest('${uName}')">إضافة طلب ➕</button>`;
+          }
+          html += `<div class="userItem"><div><b>👤 ${uName}</b></div><div>${btnHtml}</div></div>`;
+        }
+      });
+      resContainer.innerHTML = found ? html : '<p style="color:#aaa">لم يتم العثور على مستخدم بهذا الاسم</p>';
+    } catch(e) {
+      resContainer.innerHTML = '<p style="color:#f33">حدث خطأ أثناء البحث</p>';
+    }
+  }
+  window.searchFriends = searchFriends;
+
+  async function sendFriendRequest(targetName){
+    try {
+      const targetRef = doc(db, "users", targetName);
+      await updateDoc(targetRef, { friendRequests: arrayUnion(currentUser) });
+      await updateDoc(doc(db, "users", currentUser), { sentRequests: arrayUnion(targetName) });
+      showToast(`تم إرسال طلب الصداقة إلى ${targetName}`);
+      searchFriends();
+    } catch(e) { alert("حدث خطأ أثناء إرسال الطلب"); }
+  }
+  window.sendFriendRequest = sendFriendRequest;
+
+  async function acceptFriendRequest(requesterName){
+    try {
+      await updateDoc(doc(db, "users", currentUser), { friends: arrayUnion(requesterName), friendRequests: arrayRemove(requesterName) });
+      await updateDoc(doc(db, "users", requesterName), { friends: arrayUnion(currentUser), sentRequests: arrayRemove(currentUser) });
+      showToast(`تمت الموافقة على طلب ${requesterName}`);
+    } catch(e) { alert("حدث خطأ"); }
+  }
+  window.acceptFriendRequest = acceptFriendRequest;
+
+  async function rejectFriendRequest(requesterName){
+    try {
+      await updateDoc(doc(db, "users", currentUser), { friendRequests: arrayRemove(requesterName) });
+      await updateDoc(doc(db, "users", requesterName), { sentRequests: arrayRemove(currentUser) });
+      showToast("تم رفض الطلب");
+    } catch(e) { alert("حدث خطأ"); }
+  }
+  window.rejectFriendRequest = rejectFriendRequest;
+
+  async function removeFriend(friendName){
+    if(confirm(`هل تريد حذف ${friendName} من الأصدقاء؟`)){
+      await updateDoc(doc(db, "users", currentUser), { friends: arrayRemove(friendName) });
+      await updateDoc(doc(db, "users", friendName), { friends: arrayRemove(currentUser) });
+      showToast(`تم حذف ${friendName}`);
+      searchFriends();
+    }
+  }
+  window.removeFriend = removeFriend;
+
+  function renderRequestsList(){
+    let container = document.getElementById('friendRequestsList');
+    if(!container) return;
+    if(friendRequests.length === 0){ container.innerHTML = '<p style="color:#aaa">لا توجد طلبات صداقة جديدة</p>'; return; }
+    let html = '';
+    friendRequests.forEach(req => {
+      html += `<div class="userItem"><div><b>👤 ${req}</b></div><div style="display:flex;gap:5px;"><button class="btn btn-green" style="width:auto;padding:6px 10px;margin:0" onclick="acceptFriendRequest('${req}')">قبول ✔️</button><button class="btn btn-red" style="width:auto;padding:6px 10px;margin:0" onclick="rejectFriendRequest('${req}')">رفض ❌</button></div></div>`;
+    });
+    container.innerHTML = html;
   }
 
-  await updateDoc(doc(db, "rooms", currentRoom.id), { mics: mics });
-}
+  function renderFriendsList(){
+    let container = document.getElementById('friendsList');
+    if(!container) return;
+    if(myFriends.length === 0){ container.innerHTML = '<p style="color:#aaa">ليس لديك أصدقاء بعد</p>'; return; }
+    let html = '';
+    myFriends.forEach(f => {
+      html += `<div class="userItem"><div><b>👤 ${f}</b></div><div style="display:flex;gap:5px;"><button class="btn btn-blue" style="width:auto;padding:8px 12px;margin:0" onclick="openPrivateChat('${f}')">💬 مراسلة</button><button class="btn btn-red" style="width:auto;padding:8px 12px;margin:0" onclick="removeFriend('${f}')">حذف</button></div></div>`;
+    });
+    container.innerHTML = html;
+  }
 
-window.toggleMyMic = function(){
-  if(myMicIndex === -1){
-    let emptyIdx = currentRoom.mics.findIndex(m => m.user === null);
-    if(emptyIdx !== -1) occupyMic(emptyIdx);
-    else alert("عذراً، جميع المايكات مشغولة حالياً!");
-  } else {
-    occupyMic(myMicIndex);
+  function getChatId(user1, user2){
+    return user1 < user2 ? `${user1}_${user2}` : `${user2}_${user1}`;
+  }
+
+  window.openPrivateChat = function(friendName){
+    currentChatFriend = friendName;
+    document.getElementById('privateChatTitle').innerText = `مراسلة: ${friendName}`;
+    showPage('privateChat', null);
+    let chatId = getChatId(currentUser, friendName);
+    if(unsubPrivateChat) unsubPrivateChat();
+    unsubPrivateChat = onSnapshot(doc(db, "privateChats", chatId), (docSnap) => {
+      let box = document.getElementById('privateChatBox');
+      box.innerHTML = '';
+      if(docSnap.exists()){
+        let messages = docSnap.data().messages || [];
+        messages.forEach(m => {
+          let cls = m.u === currentUser ? 'me' : 'other';
+          box.innerHTML += `<div class="chatMsg ${cls}"><b>${m.u}:</b> ${m.t}</div>`;
+        });
+      }
+      box.scrollTop = box.scrollHeight;
+    });
+  }
+
+  window.sendPrivateMsg = async function(){
+    let txt = document.getElementById('privateChatInput').value.trim();
+    if(!txt || !currentChatFriend) return;
+    let chatId = getChatId(currentUser, currentChatFriend);
+    try {
+      await setDoc(doc(db, "privateChats", chatId), {
+        messages: arrayUnion({ u: currentUser, t: txt, time: Date.now() })
+      }, { merge: true });
+      document.getElementById('privateChatInput').value = '';
+    } catch(e) { alert("حدث خطأ أثناء إرسال الرسالة"); }
+  }
+
+  async function transferCoins(){
+    let refCode = document.getElementById('transferRefInput').value.trim();
+    let amount = parseInt(document.getElementById('transferAmountInput').value);
+    if(!refCode || isNaN(amount) || amount <= 0) return alert("يرجى إدخال رمز إحالة صحيح وكمية نقاط صالحة");
+    if(amount > coins) return alert("رصيدك غير كافٍ لإتمام التحويل");
+    try {
+      let querySnapshot = await getDocs(collection(db, "users"));
+      let recipientDocId = null, recipientData = null, recipientName = "";
+      querySnapshot.forEach((uDoc) => {
+        let uData = uDoc.data();
+        if(uData.referral && uData.referral.toString().trim().toLowerCase() === refCode.toLowerCase()){
+          recipientDocId = uDoc.id;
+          recipientData = uData;
+          recipientName = uData.name || uDoc.id;
+        }
+      });
+      if(!recipientDocId || !recipientData) return alert("رمز الإحالة غير صحيح أو المستخدم غير موجود");
+      if(recipientName.toLowerCase() === currentUser.toLowerCase()) return alert("لا يمكنك التحويل لنفسك!");
+
+      coins -= amount;
+      addLog(`تحويل نقاط إلى ${recipientName}`, -amount, 'buy');
+      let newRecipientCoins = (recipientData.coins || 0) + amount;
+      let recipientLog = recipientData.log || [];
+      recipientLog.unshift({text: `استلام نقاط من ${currentUser}`, amount: amount, type: 'win', time: new Date().toLocaleString('ar-IQ')});
+      await updateDoc(doc(db, "users", recipientDocId), { coins: newRecipientCoins, log: recipientLog });
+      await updateAll();
+      document.getElementById('transferRefInput').value = '';
+      document.getElementById('transferAmountInput').value = '';
+      showToast(`تم تحويل ${amount} نقطة بنجاح إلى ${recipientName}!`);
+    } catch(e) { alert("حدث خطأ أثناء عملية التحويل"); }
+  }
+  window.transferCoins = transferCoins;
+
+  function loadStore(){
+    let html='';
+    countersData.forEach(c=>{
+      html+=`<div class="counterItem"><h4>${c.name}</h4><p>السعر: ${c.price.toLocaleString()} نقطة</p><p>الربح: ${c.profit.toLocaleString()} نقطة كل 24 ساعة</p><button class="btn" onclick="buyCounter(${c.price},${c.profit},'${c.name}')" ${coins<c.price?'disabled':''}>شراء</button></div>`;
+    });
+    document.getElementById('storeList').innerHTML=html;
+  }
+  window.buyCounter = function(price,profit,name){
+    if(coins<price) return alert("ليس لديك نقاط كافية");
+    coins-=price;
+    dailyProfitTotal+=profit;
+    addLog(`شراء ${name}`,-price,'buy');
+    if(!dailyTasks.buy.done) completeTask('buy');
+    updateAll();
+    loadStore();
+    alert(`✅ تم شراء العداد`);
+  }
+
+  function setupReferral(){
+    if(document.getElementById('myReferralCode')) document.getElementById('myReferralCode').innerText=myReferralCode;
+    if(document.getElementById('myReferralCode2')) document.getElementById('myReferralCode2').innerText=myReferralCode;
+    if(document.getElementById('myReferralLink')) document.getElementById('myReferralLink').innerText=`rafidain.com/ref=${myReferralCode}`;
+  }
+  window.copyCode = function(){
+    let shareText=`👻 انضم لفريقي في تطبيق الرافدين\n👤 ${currentUser}\n🆔 رمز الاحاله: ${myReferralCode}\n🔗 rafidain.com/ref=${myReferralCode}`;
+    navigator.clipboard.writeText(shareText);
+    alert("✅ تم نسخ رسالة الدعوة");
+  }
+  window.copyLink = function(){
+    navigator.clipboard.writeText(`rafidain.com/ref=${myReferralCode}`);
+    alert("✅ تم نسخ الرابط");
+  }
+
+  function checkTaskReset(){
+    let now=new Date().toDateString();
+    if(lastTaskReset!=now){
+      dailyTasks={login:{done:false,reward:200},buy:{done:false,reward:300},play:{done:false,reward:150}};
+      lastTaskReset=now;
+    }
+  }
+  function loadTasks(){
+    checkTaskReset();
+    let html='';
+    html+=`<div class="counterItem"><h4>📅 تسجيل الدخول</h4><p>المكافأة: ${dailyTasks.login.reward} نقطة</p><button class="btn" onclick="completeTask('login')" ${dailyTasks.login.done?'disabled':''}>${dailyTasks.login.done?'✅ تم':'استلام'}</button></div>`;
+    html+=`<div class="counterItem"><h4>🛒 شراء عداد</h4><p>المكافأة: ${dailyTasks.buy.reward} نقطة</p><button class="btn" onclick="completeTask('buy')" ${dailyTasks.buy.done?'disabled':''}>${dailyTasks.buy.done?'✅ تم':'استلام'}</button></div>`;
+    html+=`<div class="counterItem"><h4>🎮 لعب اي لعبة</h4><p>المكافأة: ${dailyTasks.play.reward} نقطة</p><button class="btn" onclick="completeTask('play')" ${dailyTasks.play.done?'disabled':''}>${dailyTasks.play.done?'✅ تم':'استلام'}</button></div>`;
+    document.getElementById('dailyTasks').innerHTML=html;
+  }
+  window.completeTask = function(task){
+    if(dailyTasks[task].done) return;
+    coins+=dailyTasks[task].reward;
+    addLog(`مهمة ${task}`,dailyTasks[task].reward,'win');
+    dailyTasks[task].done=true;
+    showToast(`+${dailyTasks[task].reward} نقطة`);
+    updateAll();
+    loadTasks();
+  }
+
+  function getDots(n){
+    const p={0:[],1:[[50,50]],2:[[25,25],[75,75]],3:[[25,25],[50,50],[75,75]],4:[[25,25],[75,25],[25,75],[75,75]],5:[[25,25],[75,25],[50,50],[25,75],[75,75]],6:[[25,20],[75,20],[25,50],[75,50],[25,80],[75,80]]};
+    return p[n]||[];
+  }
+  function renderDots(n){ return getDots(n).map(d=>`<div class="dot" style="left:${d[0]}%;top:${d[1]}%"></div>`).join(''); }
+  function createDominoSet(){
+    dominoSet=[];
+    for(let i=0;i<=6;i++) for(let j=i;j<=6;j++) dominoSet.push([i,j]);
+  }
+  window.openDomino = function(){
+    if(coins<50) return alert("ليس لديك 50 نقطة");
+    coins-=50;
+    addLog('لعب دومينو',-50,'buy');
+    if(!dailyTasks.play.done) completeTask('play');
+    updateAll();
+    createDominoSet();
+    dominoSet.sort(()=>.5-Math.random());
+    dominoMy=dominoSet.splice(0,7);
+    dominoBot=dominoSet.splice(0,7);
+    let first=dominoSet.pop();
+    dominoTable=[first];
+    dominoLeftEnd=first[0];
+    dominoRightEnd=first[1];
+    document.getElementById('dominoModal').style.display='block';
+    document.getElementById('dominoResult').innerText='';
+    renderDomino();
+  }
+  function renderTile(tile,hidden=false){
+    if(hidden) return '<div class="dominoTile"><div class="dominoHalf top"></div><div class="dominoHalf"></div></div>';
+    return `<div class="dominoTile"><div class="dominoHalf top">${renderDots(tile[0])}</div><div class="dominoHalf">${renderDots(tile[1])}</div></div>`;
+  }
+  function renderDomino(){
+    document.getElementById('botTiles').innerHTML=dominoBot.map(_=>renderTile([0,0],true)).join('');
+    document.getElementById('dominoTable').innerHTML=dominoTable.map(t=>renderTile(t)).join('');
+    document.getElementById('myTiles').innerHTML=dominoMy.map((t,i)=>`<div class="dominoTile" onclick="playDomino(${i})"><div class="dominoHalf top">${renderDots(t[0])}</div><div class="dominoHalf">${renderDots(t[1])}</div></div>`).join('');
+  }
+  function canPlayLeft(tile){ return tile[0]==dominoLeftEnd||tile[1]==dominoLeftEnd; }
+  function canPlayRight(tile){ return tile[0]==dominoRightEnd||tile[1]==dominoRightEnd; }
+  window.playDomino = function(i){
+    let tile=[...dominoMy[i]];
+    if(canPlayRight(tile)){
+      if(tile[0]!=dominoRightEnd) tile=[tile[1],tile[0]];
+      dominoTable.push(tile);
+      dominoRightEnd=tile[1];
+    }else if(canPlayLeft(tile)){
+      if(tile[1]!=dominoLeftEnd) tile=[tile[1],tile[0]];
+      dominoTable.unshift(tile);
+      dominoLeftEnd=tile[0];
+    }else{ return; }
+    dominoMy.splice(i,1);
+    renderDomino();
+    checkDominoWin();
+  }
+  function checkDominoWin(){
+    if(dominoMy.length==0){
+      coins+=250;
+      addLog('فوز دومينو',250,'win');
+      document.getElementById('dominoResult').innerText='فزت! +250 نقطة';
+      updateAll();
+    }
+  }
+
+  window.openMemory = function(){
+    if(coins<50) return alert("ليس لديك 50 نقطة");
+    coins-=50;
+    addLog('لعب ميموري',-50,'buy');
+    if(!dailyTasks.play.done) completeTask('play');
+    updateAll();
+    document.getElementById('memoryModal').style.display='block';
+    startMemory();
+  }
+  function startMemory(){
+    matched=0; flipped=[];
+    let emojis=['💎','💰','🏛️','⚡','💎','💰','🏛️','⚡'];
+    memoryCards=emojis.sort(()=>.5-Math.random());
+    let board=document.getElementById('memoryBoard');
+    board.innerHTML='';
+    memoryCards.forEach((card,i)=>{
+      let div=document.createElement('div');
+      div.style.cssText='width:60px;height:60px;background:#3b82f6;border-radius:10px;font-size:28px;display:flex;align-items:center;justify-content:center;cursor:pointer;border:2px solid #fff';
+      div.dataset.index=i;
+      div.dataset.value=card;
+      div.innerText='?';
+      div.onclick=()=>flipCard(div);
+      board.appendChild(div);
+    });
+  }
+  function flipCard(el){
+    if(flipped.length==2 || el.innerText!='?') return;
+    el.innerText=el.dataset.value;
+    flipped.push(el);
+    if(flipped.length==2){
+      setTimeout(()=>{
+        if(flipped[0].dataset.value==flipped[1].dataset.value){
+          flipped.forEach(c=>c.style.background='#0f0');
+          matched++;
+          if(matched==4){
+            coins+=250;
+            addLog('فوز ميموري',250,'win');
+            document.getElementById('memoryResult').innerText='فزت! +250 نقطة';
+            updateAll();
+          }
+        }else{
+          flipped.forEach(c=>c.innerText='?');
+        }
+        flipped=[];
+      },800);
+    }
+  }
+
+  window.openXO = function(){
+    if(coins<50) return alert("ليس لديك 50 نقطة");
+    coins-=50;
+    addLog('لعب XO',-50,'buy');
+    if(!dailyTasks.play.done) completeTask('play');
+    updateAll();
+    xoBoard=Array(9).fill('');
+    gameOver=false;
+    document.getElementById('xoModal').style.display='block';
+    document.getElementById('xoResult').innerText='';
+    renderXO();
+  }
+  function renderXO(){
+    let b=document.getElementById('xoBoard');
+    b.innerHTML='';
+    xoBoard.forEach((cell,i)=>{
+      let div=document.createElement('div');
+      div.className='xoCell';
+      div.innerText=cell;
+      div.onclick=()=>playXO(i);
+      b.appendChild(div);
+    });
+  }
+  function playXO(i){
+    if(xoBoard[i]!=''||gameOver) return;
+    xoBoard[i]='X';
+    if(checkWinner('X')){
+      coins+=200;
+      addLog('فوز XO',200,'win');
+      document.getElementById('xoResult').innerText="فزت! +200 نقطة";
+      gameOver=true;
+      updateAll();
+      renderXO();
+      return;
+    }
+    if(!xoBoard.includes('')){
+      document.getElementById('xoResult').innerText="تعادل";
+      gameOver=true;
+      renderXO();
+      return;
+    }
+    botMove();
+  }
+  function botMove(){
+    let empty=xoBoard.map((v,i)=>v==''?i:null).filter(v=>v!==null);
+    let move=empty[Math.floor(Math.random()*empty.length)];
+    xoBoard[move]='O';
+    if(checkWinner('O')){
+      document.getElementById('xoResult').innerText="خسرت!";
+      gameOver=true;
+    }else if(!xoBoard.includes('')){
+      document.getElementById('xoResult').innerText="تعادل";
+      gameOver=true;
+    }
+    renderXO();
+  }
+  function checkWinner(p){
+    const wins=[[0,1,2],[3,4,5],[6,7,8],[0,3,6],[1,4,7],[2,5,8],[0,4,8],[2,4,6]];
+    return wins.some(w=>w.every(i=>xoBoard[i]==p));
+  }
+
+  let roomXoGrid = Array(9).fill('');
+  let roomXoActive = false;
+  window.startRoomXoGame = function(){
+    roomXoGrid = Array(9).fill('');
+    roomXoActive = true;
+    document.getElementById('roomXoStatus').innerText = "بدأ التحدي! العب بحرية داخل الغرفة";
+    renderRoomXoBoard();
+  }
+  function renderRoomXoBoard(){
+    let b = document.getElementById('roomXoBoard');
+    if(!b) return;
+    b.innerHTML = '';
+    roomXoGrid.forEach((val, i) => {
+      let cell = document.createElement('div');
+      cell.style.cssText = "width:60px; height:60px; background:#222; font-size:30px; display:flex; align-items:center; justify-content:center; cursor:pointer; border:1px solid #3b82f6; border-radius:6px; color:#fff;";
+      cell.innerText = val;
+      cell.onclick = () => playRoomXoCell(i);
+      b.appendChild(cell);
+    });
+  }
+  function playRoomXoCell(i){
+    if(!roomXoActive || roomXoGrid[i] !== '') return;
+    roomXoGrid[i] = 'X';
+    renderRoomXoBoard();
+    if(checkRoomWinner('X')){
+      document.getElementById('roomXoStatus').innerText = "لقد ربحت التحدي الجماعي!";
+      coins += 150;
+      addLog('فوز تحدي غرفة XO', 150, 'win');
+      updateAll();
+      roomXoActive = false;
+    } else if(!roomXoGrid.includes('')){
+      document.getElementById('roomXoStatus').innerText = "انتهت الجولة تعادلاً!";
+      roomXoActive = false;
+    } else {
+      setTimeout(() => {
+        if(!roomXoActive) return;
+        let empty = roomXoGrid.map((v, idx) => v === '' ? idx : null).filter(v => v !== null);
+        if(empty.length > 0){
+          let rand = empty[Math.floor(Math.random() * empty.length)];
+          roomXoGrid[rand] = 'O';
+          renderRoomXoBoard();
+          if(checkRoomWinner('O')){
+            document.getElementById('roomXoStatus').innerText = "خسرت التحدي الجماعي أمام الخصم!";
+            roomXoActive = false;
+          }
+        }
+      }, 500);
+    }
+  }
+  function checkRoomWinner(p){
+    const wins=[[0,1,2],[3,4,5],[6,7,8],[0,3,6],[1,4,7],[2,5,8],[0,4,8],[2,4,6]];
+    return wins.some(w=>w.every(i=>roomXoGrid[i]==p));
+  }
+
+  window.spinWheel = function(){
+    if(coins<50) return alert("ليس لديك 50 نقطة");
+    coins-=50;
+    addLog('لف العجلة',-50,'buy');
+    if(!dailyTasks.play.done) completeTask('play');
+    updateAll();
+    document.getElementById('wheelModal').style.display='block';
+    document.getElementById('wheelResult').innerText='';
+    drawWheel();
+  }
+  function drawWheel(){
+    const canvas=document.getElementById('wheel'), ctx=canvas.getContext('2d');
+    const centerX=140, centerY=140, radius=130, segmentAngle=2*Math.PI/wheelPrizes.length;
+    ctx.clearRect(0,0,280,280);
+    wheelPrizes.forEach((p,i)=>{
+      const startAngle=i*segmentAngle-Math.PI/2, endAngle=(i+1)*segmentAngle-Math.PI/2;
+      ctx.beginPath();
+      ctx.moveTo(centerX,centerY);
+      ctx.arc(centerX,centerY,radius,startAngle,endAngle);
+      ctx.fillStyle=i%2==0?'#3b82f6':'#1e3a8a';
+      ctx.fill();
+      ctx.strokeStyle='#fff';
+      ctx.lineWidth=2;
+      ctx.stroke();
+      ctx.save();
+      ctx.translate(centerX,centerY);
+      ctx.rotate(startAngle+segmentAngle/2);
+      ctx.textAlign='center';
+      ctx.fillStyle='#fff';
+      ctx.font='bold 14px tahoma';
+      ctx.fillText(p.text,radius-30,5);
+      ctx.restore();
+    });
+  }
+  window.doSpin = function(){
+    document.getElementById('spinBtn').disabled=true;
+    let randomIndex=Math.floor(Math.random()*wheelPrizes.length), segmentDeg=360/wheelPrizes.length;
+    let targetAngle=360-(segmentDeg*randomIndex+segmentDeg/2);
+    let targetDeg=3600+targetAngle;
+    document.getElementById('wheel').style.transform=`rotate(${targetDeg}deg)`;
+    setTimeout(()=>{
+      let prize=wheelPrizes[randomIndex];
+      if(prize.value>0){
+        coins+=prize.value;
+        addLog('ربح من العجلة',prize.value,'win');
+      }
+      document.getElementById('wheelResult').innerText=prize.value>0?`ربحت ${prize.text} نقطة`:`حظ اوفر`;
+      updateAll();
+      document.getElementById('spinBtn').disabled=false;
+    },5000);
+  }
+
+  window.openBox = function(){
+    if(coins<500) return alert("ليس لديك 500 نقطة");
+    coins-=500;
+    addLog('فتح صندوق',-500,'buy');
+    if(!dailyTasks.play.done) completeTask('play');
+    updateAll();
+    boxOpened=false;
+    document.getElementById('boxModal').style.display='block';
+    document.getElementById('boxResult').innerText='اختار صندوق!';
+    let boxes=document.getElementById('boxes');
+    boxes.innerHTML='';
+    let winningBox=Math.floor(Math.random()*3), prize=Math.floor(Math.random()*9901)+100;
+    for(let i=0;i<3;i++){
+      let div=document.createElement('div');
+      div.className='boxItem';
+      div.innerText='?';
+      div.dataset.isWinner=i==winningBox;
+      div.dataset.prize=prize;
+      div.onclick=()=>openMysteryBox(div);
+      boxes.appendChild(div);
+    }
+  }
+  function openMysteryBox(el){
+    if(boxOpened) return;
+    boxOpened=true;
+    let isWinner=el.dataset.isWinner=='true', prize=parseInt(el.dataset.prize);
+    document.querySelectorAll('.boxItem').forEach(b=>{
+      if(b.dataset.isWinner=='true'){
+        b.style.background='#0f0';
+        b.innerText=b.dataset.prize;
+      }else{
+        b.style.background='#333';
+        b.innerText='💀';
+      }
+    });
+    if(isWinner){
+      coins+=prize;
+      addLog('ربح من الصندوق',prize,'win');
+      document.getElementById('boxResult').innerText=`مبروك! ربحت ${prize.toLocaleString()} نقطة`;
+    }else{
+      document.getElementById('boxResult').innerText=`حظ اوفر!`;
+    }
+    updateAll();
+  }
+
+  const LUDO_MAIN_PATH=[{x:6,y:13},{x:6,y:12},{x:6,y:11},{x:6,y:10},{x:6,y:9},{x:5,y:8},{x:4,y:8},{x:3,y:8},{x:2,y:8},{x:1,y:8},{x:0,y:8},{x:0,y:7},{x:0,y:6},{x:1,y:6},{x:2,y:6},{x:3,y:6},{x:4,y:6},{x:5,y:6},{x:6,y:5},{x:6,y:4},{x:6,y:3},{x:6,y:2},{x:6,y:1},{x:6,y:0},{x:7,y:0},{x:8,y:0},{x:8,y:1},{x:8,y:2},{x:8,y:3},{x:8,y:4},{x:8,y:5},{x:9,y:6},{x:10,y:6},{x:11,y:6},{x:12,y:6},{x:13,y:6},{x:14,y:6},{x:14,y:7},{x:14,y:8},{x:13,y:8},{x:12,y:8},{x:11,y:8},{x:10,y:8},{x:9,y:8},{x:8,y:9},{x:8,y:10},{x:8,y:11},{x:8,y:12},{x:8,y:13},{x:8,y:14},{x:7,y:14},{x:6,y:14}];
+  const HOME_PATHS=[[{x:7,y:13},{x:7,y:12},{x:7,y:11},{x:7,y:10},{x:7,y:9},{x:7,y:8}],[{x:1,y:7},{x:2,y:7},{x:3,y:7},{x:4,y:7},{x:5,y:7},{x:6,y:7}],[{x:7,y:1},{x:7,y:2},{x:7,y:3},{x:7,y:4},{x:7,y:5},{x:7,y:6}],[{x:13,y:7},{x:12,y:7},{x:11,y:7},{x:10,y:7},{x:9,y:7},{x:8,y:7}]];
+  const START_OFFSETS=[0,13,26,39];
+
+  window.openLudo = function(){
+    if(coins<100) return alert("ليس لديك 100 نقطة");
+    coins-=100;
+    addLog('لعب لودو الحقيقية',-100,'buy');
+    if(!dailyTasks.play.done) completeTask('play');
+    updateAll();
+    initLudo();
+    document.getElementById('ludoModal').style.display='block';
+  }
+  function initLudo(){
+    ludoGameOver=false; ludoCurrentPlayer=0; ludoDice=0; ludoCanMove=false;
+    ludoPlayers=[{color:0, pieces:[-1,-1,-1,-1]},{color:1, pieces:[-1,-1,-1,-1]},{color:2, pieces:[-1,-1,-1,-1]},{color:3, pieces:[-1,-1,-1,-1]}];
+    drawLudoBoard();
+    document.getElementById('ludoTurn').innerText='دور: '+LUDO_NAMES[0];
+    document.getElementById('ludoDiceBtn').disabled=false;
+  }
+  function getPieceCoords(playerIdx, pieceVal, pieceIdx){
+    if(pieceVal === -1){
+      const bases = [{x:2.5, y:11.5}, {x:2.5, y:2.5}, {x:11.5, y:2.5}, {x:11.5, y:11.5}];
+      let base = bases[playerIdx];
+      let offsets = [{dx:-1,dy:-1}, {dx:1,dy:-1}, {dx:-1,dy:1}, {dx:1,dy:1}];
+      return {x: base.x + offsets[pieceIdx].dx, y: base.y + offsets[pieceIdx].dy};
+    }
+    if(pieceVal >= 52) return HOME_PATHS[playerIdx][pieceVal - 52];
+    let pathIdx = (START_OFFSETS[playerIdx] + pieceVal) % 52;
+    return LUDO_MAIN_PATH[pathIdx];
+  }
+  function drawLudoBoard(){
+    const c=document.getElementById('ludoBoard'), ctx=c.getContext('2d');
+    const cellSize = 330 / 15;
+    ctx.clearRect(0,0,330,330);
+    ctx.fillStyle='#f33'; ctx.fillRect(0, 9*cellSize, 6*cellSize, 6*cellSize);
+    ctx.fillStyle='#3b82f6'; ctx.fillRect(0, 0, 6*cellSize, 6*cellSize);
+    ctx.fillStyle='#0f0'; ctx.fillRect(9*cellSize, 0, 6*cellSize, 6*cellSize);
+    ctx.fillStyle='#ffb300'; ctx.fillRect(9*cellSize, 9*cellSize, 6*cellSize, 6*cellSize);
+    let bases = [{x:3, y:12}, {x:3, y:3}, {x:12, y:3}, {x:12, y:12}];
+    bases.forEach((b)=>{
+      ctx.fillStyle='#fff';
+      ctx.beginPath(); ctx.arc(b.x*cellSize, b.y*cellSize, cellSize*1.8, 0, 6.28); ctx.fill();
+    });
+    ludoPlayers.forEach((p, pi)=>{
+      p.pieces.forEach((pos, idx)=>{
+        let coord = getPieceCoords(pi, pos, idx);
+        ctx.fillStyle = LUDO_COLORS[pi];
+        ctx.beginPath();
+        ctx.arc((coord.x + 0.5) * cellSize, (coord.y + 0.5) * cellSize, cellSize * 0.4, 0, 6.28);
+        ctx.fill();
+        ctx.strokeStyle = '#fff'; ctx.lineWidth = 2;
+        ctx.stroke();
+      });
+    });
+  }
+  window.rollDice = function(){
+    if(ludoGameOver || ludoCurrentPlayer !== 0) return;
+    ludoDice = Math.floor(Math.random() * 6) + 1;
+    document.getElementById('ludoDice').innerText = ludoDice;
+    document.getElementById('ludoDiceBtn').disabled = true;
+    ludoCanMove = true;
+    if(!canPlayerMove(0)) setTimeout(()=>{ nextLudoTurn(); }, 1000);
+  }
+  function canPlayerMove(pIdx){
+    let p = ludoPlayers[pIdx];
+    return p.pieces.some(pos => {
+      if(pos === -1) return ludoDice === 6;
+      return (pos + ludoDice <= 57);
+    });
+  }
+  function moveLudoPiece(pIdx, pieceIdx){
+    let p = ludoPlayers[pIdx];
+    let cur = p.pieces[pieceIdx];
+    if(cur === -1 && ludoDice === 6) p.pieces[pieceIdx] = 0;
+    else if(cur >= 0 && cur + ludoDice <= 57) p.pieces[pieceIdx] += ludoDice;
+    else return false;
+    drawLudoBoard();
+    if(!ludoGameOver){
+      if(ludoDice === 6){
+        if(pIdx === 0){ document.getElementById('ludoDiceBtn').disabled = false; ludoCanMove = false; }
+      } else { nextLudoTurn(); }
+    }
+    return true;
+  }
+  function nextLudoTurn(){
+    if(ludoGameOver) return;
+    ludoCurrentPlayer = (ludoCurrentPlayer + 1) % 4;
+    document.getElementById('ludoTurn').innerText = 'دور: ' + LUDO_NAMES[ludoCurrentPlayer];
+    ludoCanMove = false;
+    if(ludoCurrentPlayer === 0) document.getElementById('ludoDiceBtn').disabled = false;
+    else setTimeout(()=>{ botPlayTurn(); }, 1200);
+  }
+  function botPlayTurn(){
+    if(ludoGameOver) return;
+    ludoDice = Math.floor(Math.random() * 6) + 1;
+    document.getElementById('ludoDice').innerText = ludoDice;
+    let p = ludoPlayers[ludoCurrentPlayer];
+    let movable = [];
+    p.pieces.forEach((pos, i)=>{
+      if(pos === -1 && ludoDice === 6) movable.push(i);
+      else if(pos >= 0 && pos + ludoDice <= 57) movable.push(i);
+    });
+    if(movable.length > 0) moveLudoPiece(ludoCurrentPlayer, movable[Math.floor(Math.random() * movable.length)]);
+    else setTimeout(()=>{ nextLudoTurn(); }, 1000);
+  }
+
+  window.openCreateRoom = function(){ document.getElementById('createRoomModal').style.display='block'; }
+  window.createRoom = async function(){
+    let name=document.getElementById('newRoomName').value.trim();
+    if(!name) return alert("أدخل اسم الغرفة");
+    if(coins<80000) return alert("ليس لديك 80000 نقطة");
+    coins-=80000;
+    let id='RM'+Math.floor(Math.random()*900000+100000);
+    await setDoc(doc(db, "rooms", id), {id:id, name:name, owner:currentUser});
+    addLog(`انشاء غرفة ${name}`,-80000,'buy');
+    updateAll();
+    closeModal('createRoomModal');
+    enterRoom(id);
+  }
+  function listenToRooms(){
+    onSnapshot(collection(db, "rooms"), (snapshot) => {
+      rooms = [];
+      snapshot.forEach((doc) => { rooms.push(doc.data()); });
+      loadRooms();
+    });
+  }
+  function loadRooms(){
+    let html='';
+    rooms.forEach(r=>{
+      html+=`<div class="roomItem" onclick="enterRoom('${r.id}')"><h4>${r.name}</h4><div class="roomId">ID: ${r.id}</div><div>المالك: ${r.owner}</div></div>`;
+    });
+    document.getElementById('roomsList').innerHTML=html||'<p style="color:#aaa">لا توجد غرف</p>';
+    let myRoomObj = rooms.find(r => r.owner == currentUser);
+    if(myRoomObj){
+      document.getElementById('myRoomSection').innerHTML='<button class="btn btn-green" onclick="myRoom()">🏠 دخول غرفتي</button>';
+    } else {
+      document.getElementById('myRoomSection').innerHTML='';
+    }
+  }
+  window.joinRoomById = function(){
+    let id=document.getElementById('searchRoomId').value.trim();
+    if(rooms.find(r=>r.id==id)) enterRoom(id);
+    else alert("الغرفة غير موجودة");
+  }
+  window.myRoom = function(){
+    let room=rooms.find(r=>r.owner==currentUser);
+    if(room) enterRoom(room.id);
+  }
+
+  let unsubRoomChat = null;
+  window.enterRoom = function(id){
+    currentRoom=rooms.find(r=>r.id==id);
+    if(!currentRoom) return;
+    document.getElementById('roomNameTitle').innerText=currentRoom.name;
+    document.getElementById('roomIdTitle').innerText='ID: '+currentRoom.id;
+    document.getElementById('editRoomBtn').style.display = (currentRoom.owner==currentUser)?'inline-block':'none';
+    document.getElementById('clearRoomChatBtn').style.display = (currentRoom.owner==currentUser)?'inline-block':'none';
+
+    showPage('chatRoom',null);
+    renderRoomMics(id);
+    
+    if(unsubRoomChat) unsubRoomChat();
+    unsubRoomChat = onSnapshot(doc(db, "roomMessages", id), (docSnap) => {
+      roomMessages[id] = docSnap.exists() ? (docSnap.data().messages || []) : [];
+      loadChat();
+    });
+
+    let g='';
+    giftsList.forEach(gf=>{
+      g+=`<button class="giftBtn" onclick="sendGift('${gf.icon}','${gf.name}',${gf.price})">${gf.icon}<br>${gf.price}</button>`;
+    });
+    document.getElementById('giftsBar').innerHTML=g;
+  }
+
+  function renderRoomMics(roomId){
+    let container = document.getElementById('roomMicsContainer');
+    if(!container) return;
+    
+    getDoc(doc(db, "roomMics", roomId)).then((snap)=>{
+      let micsData = snap.exists() ? (snap.data().mics || Array(7).fill(null)) : Array(7).fill(null);
+      let html = '';
+      for(let i=0; i<7; i++){
+        let occupant = micsData[i];
+        let isOccupied = occupant !== null && occupant !== undefined;
+        let cls = isOccupied ? 'mic-slot occupied' : 'mic-slot';
+        let label = isOccupied ? occupant : `مايك ${i+1}`;
+        let action = isOccupied ? `leaveMic(${i})` : `takeMic(${i})`;
+        html += `<div class="${cls}" onclick="${action}">
+          <div style="font-size:16px;">🎙️</div>
+          <div style="font-size:10px; margin-top:2px; overflow:hidden; text-overflow:ellipsis; width:100%; white-space:nowrap;">${label}</div>
+        </div>`;
+      }
+      container.innerHTML = html;
+    });
+  }
+
+  window.takeMic = async function(micIndex){
+    if(!currentRoom) return;
+    let roomMicRef = doc(db, "roomMics", currentRoom.id);
+    let snap = await getDoc(roomMicRef);
+    let micsData = snap.exists() ? (snap.data().mics || Array(7).fill(null)) : Array(7).fill(null);
+    
+    if(micsData.includes(currentUser)) return alert("أنت صاعد على مايك بالفعل!");
+    if(micsData[micIndex]) return alert("هذا المايك مشغول!");
+
+    micsData[micIndex] = currentUser;
+    await setDoc(roomMicRef, { mics: micsData }, { merge: true });
+    renderRoomMics(currentRoom.id);
+    showToast(`صعدت على المايك ${micIndex + 1} بنجاح! 🎙️`);
+  }
+
+  window.leaveMic = async function(micIndex){
+    if(!currentRoom) return;
+    let roomMicRef = doc(db, "roomMics", currentRoom.id);
+    let snap = await getDoc(roomMicRef);
+    if(!snap.exists()) return;
+    let micsData = snap.data().mics || Array(7).fill(null);
+
+    if(micsData[micIndex] === currentUser){
+      micsData[micIndex] = null;
+      await setDoc(roomMicRef, { mics: micsData }, { merge: true });
+      renderRoomMics(currentRoom.id);
+      showToast("نزلت من المايك");
+    }
+  }
+
+  window.sendRoomMsg = async function(){
+    let m=document.getElementById('roomChatInput').value.trim();
+    if(!m || !currentRoom) return;
+    await setDoc(doc(db, "roomMessages", currentRoom.id), {
+      messages: arrayUnion({u:currentUser, t:m, time:Date.now()})
+    }, {merge: true});
+    document.getElementById('roomChatInput').value='';
+  }
+
+  window.clearRoomChat = async function(){
+    if(!currentRoom || currentRoom.owner !== currentUser) return;
+    if(confirm("هل أنت متأكد من رغبتك في حذف جميع رسائل الدردشة في هذه الغرفة؟")){
+      try {
+        await setDoc(doc(db, "roomMessages", currentRoom.id), { messages: [] });
+        showToast("تم مسح محتوى الدردشة بالكامل بنجاح!");
+      } catch(e) { alert("حدث خطأ"); }
+    }
+  }
+
+  function loadChat(){
+    if(!currentRoom) return;
+    let b=document.getElementById('roomChatBox');
+    b.innerHTML='';
+    (roomMessages[currentRoom.id]||[]).forEach(m=>{
+      let cls=m.u==currentUser?'me':'other';
+      b.innerHTML+=`<div class="chatMsg ${cls}"><b>${m.u}:</b> ${m.t}</div>`;
+    });
+    b.scrollTop=b.scrollHeight;
+  }
+
+  window.sendGift = async function(icon, name, price){
+    if(coins < price) return alert("ليس لديك نقاط كافية لإرسال الهدية!");
+    if(!currentRoom) return;
+    try {
+      let messages = roomMessages[currentRoom.id] || [];
+      let activeUsersSet = new Set();
+      activeUsersSet.add(currentRoom.owner);
+      messages.forEach(m => { if(m.u) activeUsersSet.add(m.u); });
+      activeUsersSet.add(currentUser);
+
+      let roomMembers = Array.from(activeUsersSet);
+      let count = roomMembers.length;
+      if(count === 0) count = 1;
+      let sharePerPerson = Math.floor(price / count);
+
+      coins -= price;
+      addLog(`ارسال هدية ${name} وتوزيعها على الغرفة`, -price, 'buy');
+      updateAll();
+
+      const roomChatRef = doc(db, "roomMessages", currentRoom.id);
+      await setDoc(roomChatRef, {
+        messages: arrayUnion({
+          u: currentUser, 
+          t: `🎁 أرسل هدية (${icon} ${name}) بقيمة ${price.toLocaleString()} نقطة وتم تقسيمها على ${count} أشخاص (${sharePerPerson.toLocaleString()} لكل شخص)!`, 
+          time: Date.now()
+        })
+      }, {merge: true});
+
+      for(let memberName of roomMembers){
+        if(memberName === currentUser) continue;
+        const memberRef = doc(db, "users", memberName);
+        let memberSnap = await getDoc(memberRef);
+        if(memberSnap.exists()){
+          let mData = memberSnap.data();
+          let newCoins = (mData.coins || 0) + sharePerPerson;
+          let mLog = mData.log || [];
+          mLog.unshift({text: `استلام حصة من هدية (${name}) في الغرفة من ${currentUser}`, amount: sharePerPerson, type: 'win', time: new Date().toLocaleString('ar-IQ')});
+          await updateDoc(memberRef, { coins: newCoins, log: mLog });
+        }
+      }
+      showToast(`تم إرسال الهدية وتوزيعها بنجاح! 🚀`);
+    } catch(e) { alert("حدث خطأ"); }
+  }
+
+  function listenToGlobalChat(){
+    onSnapshot(doc(db, "globalChat", "main"), (docSnap) => {
+      if(docSnap.exists()){
+        globalMessages = docSnap.data().messages || [];
+        loadGlobalChat();
+      }
+    });
+  }
+  
+  function loadGlobalChat(){
+    let b=document.getElementById('globalChatBox');
+    if(!b) return;
+    b.innerHTML='';
+    globalMessages.forEach(m=>{
+      let cls=m.u==currentUser?'me':'other';
+      b.innerHTML+=`<div class="chatMsg ${cls}"><b>${m.u}:</b> ${m.t}</div>`;
+    });
+    b.scrollTop=b.scrollHeight;
+  }
+
+  window.sendGlobalMsg = async function(){
+  let txt = document.getElementById('globalChatInput').value.trim();
+  if(!txt) return;
+  try {
+    await setDoc(doc(db, "globalChat", "main"), {
+      messages: arrayUnion({ u: currentUser, t: txt, time: Date.now() })
+    }, { merge: true });
+    document.getElementById('globalChatInput').value = '';
+  } catch(e) {
+    alert("حدث خطأ أثناء إرسال الرسالة");
   }
 }
+  <script type="module">
+    // ... التكملة البرمجية المتبقية لتهيئة باقي النطاقات والمستمعين في تطبيق الرافدين ...
+    
+    // استكمال دوال إدارة الغرف المتقدمة
+    window.openEditRoom = function(){
+      if(!currentRoom || currentRoom.owner !== currentUser) return;
+      document.getElementById('editRoomNameInput').value = currentRoom.name;
+      document.getElementById('editRoomModal').style.display = 'flex';
+    }
 
-window.sendRoomMsg = async function(){
-  let txt = document.getElementById('roomChatInput').value.trim();
-  if(!txt || !currentRoom) return;
-  await setDoc(doc(db, "roomMessages", currentRoom.id), {
-    messages: arrayUnion({ u: currentUser, t: txt, time: Date.now() })
-  }, { merge: true });
-  document.getElementById('roomChatInput').value = '';
-}
+    window.saveRoomSettings = async function(){
+      let newName = document.getElementById('editRoomNameInput').value.trim();
+      if(!newName || !currentRoom) return;
+      try {
+        await updateDoc(doc(db, "rooms", currentRoom.id), { name: newName });
+        currentRoom.name = newName;
+        document.getElementById('roomNameTitle').innerText = newName;
+        closeModal('editRoomModal');
+        showToast("تم تحديث اسم الغرفة بنجاح!");
+      } catch(e) {
+        alert("حدث خطأ أثناء التحديث");
+      }
+    }
 
-function leaveRoomCleanUp(){
-  if(localStream) localStream.getTracks().forEach(t => t.stop());
-  if(currentRoom && myMicIndex !== -1){
-    let mics = [...currentRoom.mics];
-    mics[myMicIndex] = { user: null };
-    updateDoc(doc(db, "rooms", currentRoom.id), { mics: mics }).catch(()=>{});
-    myMicIndex = -1;
-  }
-}
-</script>
+    window.deleteRoom = async function(){
+      if(!currentRoom || currentRoom.owner !== currentUser) return;
+      if(confirm("هل أنت متأكد من حذف هذه الغرفة نهائياً؟")){
+        try {
+          await deleteDoc(doc(db, "rooms", currentRoom.id));
+          await deleteDoc(doc(db, "roomMessages", currentRoom.id));
+          await deleteDoc(doc(db, "roomMics", currentRoom.id));
+          closeModal('editRoomModal');
+          showPage('rooms', document.querySelectorAll('.navItem')[3]);
+          showToast("تم حذف الغرفة بنجاح");
+        } catch(e) {
+          alert("حدث خطأ أثناء الحذف");
+        }
+      }
+    }
+
+    // تهيئة الأحداث العامة للأزرار وإغلاق النوافذ عند النقر خارجها
+    window.onclick = function(event) {
+      if(event.target.classList && event.target.classList.contains('modal')){
+        event.target.style.display = 'none';
+      }
+    }
+
+  </script>
 </body>
 </html>
