@@ -111,7 +111,6 @@ h1{color:#3b82f6;text-shadow:0 0 15px #3b82f6;font-size:26px}
     <div id="coins2" class="box">رصيدك: 0 نقطة</div>
     <div id="storeList"></div>
   </div>
-
   <div id="games" class="page">
     <h2>🎮 الالعاب والمهمات</h2>
     <div id="coins3" class="box">رصيدك: 0 نقطة</div>
@@ -128,6 +127,7 @@ h1{color:#3b82f6;text-shadow:0 0 15px #3b82f6;font-size:26px}
     <h3 style="color:#3b82f6;margin-top:25px">🎯 المهمات اليومية</h3>
     <div id="dailyTasks"></div>
   </div>
+
   <div id="leaderboard" class="page">
     <h2>🏆 لوحة المتصدرين</h2>
     <p style="color:#aaa">أكثر المستخدمين جمعاً للنقاط والتفاعل</p>
@@ -161,7 +161,6 @@ h1{color:#3b82f6;text-shadow:0 0 15px #3b82f6;font-size:26px}
       <button class="btn" style="width:25%;margin:8px 0" onclick="sendPrivateMsg()">ارسال</button>
     </div>
   </div>
-
   <div id="rooms" class="page">
     <h2>🏠 الغرف</h2>
     <div id="myRoomSection"></div>
@@ -253,6 +252,7 @@ h1{color:#3b82f6;text-shadow:0 0 15px #3b82f6;font-size:26px}
     <div class="navItem" onclick="showPage('profile',this)"><div class="navIcon">👤</div><div>الملف</div></div>
   </div>
 </div>
+
 <div id="xoModal" class="modal"><div class="modal-content"><h2>❌⭕ XO ضد البوت</h2><div id="xoBoard"></div><p id="xoResult" style="font-size:18px;margin:10px"></p><button class="btn" onclick="closeModal('xoModal')">خروج</button></div></div>
 <div id="wheelModal" class="modal"><div class="modal-content"><h2>🎡 عجلة الحظ</h2><div class="wheel-container"><div class="pointer"></div><canvas id="wheel" width="280" height="280"></canvas></div><button class="btn btn-yellow" id="spinBtn" onclick="doSpin()">لف العجلة - 50 نقطة</button><p id="wheelResult" style="font-size:18px;margin:10px"></p><button class="btn" onclick="closeModal('wheelModal')">اغلاق</button></div></div>
 <div id="boxModal" class="modal"><div class="modal-content"><h2>📦 الصندوق السحري</h2><p>اختر صندوقاً لتربح جوائز قيمة (التكلفة: 500)</p><div id="boxes" style="display:flex;justify-content:center;flex-wrap:wrap;margin:15px 0"></div><p id="boxResult" style="font-size:18px;margin:10px"></p><button class="btn" onclick="closeModal('boxModal')">اغلاق</button></div></div>
@@ -774,7 +774,6 @@ h1{color:#3b82f6;text-shadow:0 0 15px #3b82f6;font-size:26px}
     updateAll(); loadTasks();
   }
 
-  // دوام الألعاب الفردية
   window.openXO = function(){
     if(coins < 50) return alert("تحتاج إلى 50 نقطة للعب!");
     coins -= 50;
@@ -815,7 +814,6 @@ h1{color:#3b82f6;text-shadow:0 0 15px #3b82f6;font-size:26px}
       return;
     }
 
-    // حركة البوت
     document.getElementById('xoResult').innerText = "دور البوت (O)...";
     setTimeout(() => {
       if(gameOver) return;
@@ -1119,3 +1117,4 @@ h1{color:#3b82f6;text-shadow:0 0 15px #3b82f6;font-size:26px}
 </script>
 </body>
 </html>
+
