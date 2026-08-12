@@ -159,7 +159,7 @@ h1{color:#3b82f6;text-shadow:0 0 15px #3b82f6;font-size:26px}
   const app = initializeApp(firebaseConfig); 
   const db = getFirestore(app);
   
-  let coins=5000, dailyProfitTotal=0, lastClaim=0, myReferralCode='', currentUser='', transactionLog=[], currentRoom=null;
+  let coins=5000, dailyProfitTotal=0, lastClaim=0, myReferralCode='', currentUser='', currentUserId='', transactionLog=[], currentRoom=null;
   let rooms=[], roomMessages={}, globalMessages=[], myFriends=[], friendRequests=[], sentRequests=[];
   let xoBoard=Array(9).fill(''), gameOver=false, boxOpened=false, dominoSet=[], dominoMy=[], dominoBot=[], dominoTable=[], dominoLeftEnd=0, dominoRightEnd=0;
   const RATE=10000; let currentChatFriend = null, unsubPrivateChat = null, unsubRoomChat = null;
@@ -172,7 +172,6 @@ h1{color:#3b82f6;text-shadow:0 0 15px #3b82f6;font-size:26px}
   let memoryCards=[], flipped=[], matched=0;
   let streak=0, lastStreakDate='', totalGiftsSent=0, roomMics=Array(7).fill(null);  
   
-  // متجر الاحالات المميزة (من 1 إلى 9 تنازلياً بالسعر)
   const referralStoreData = [
     {code: "1", price: 600000},
     {code: "2", price: 500000},
@@ -185,15 +184,12 @@ h1{color:#3b82f6;text-shadow:0 0 15px #3b82f6;font-size:26px}
     {code: "9", price: 100}
   ];
 
-  const LUDO_MAIN_PATH=[{x:6,y:13},{x:6,y:12},{x:6,y:11},{x:6,y:10},{x:6,y:9},{x:5,y:8},{x:4,y:8},{x:3,y:8},{x:2,y:8},{x:1,y:8},{x:0,y:8},{x:0,y:7},{x:0,y:6},{x:1,y:6},{x:2,y:6},{x:3,y:6},{x:4,y:6},{x:5,y:6},{x:6,y:5},{x:6,y:4},{x:6,y:3},{x:6,y:2},{x:6,y:1},{x:6,y:0},{x:7,y:0},{x:8,y:0},{x:8,y:1},{x:8,y:2},{x:8,y:3},{x:8,y:4},{x:8,y:5},{x:9,y:6},{x:10,y:6},{x:11,y:6},{x:12,y:6},{x:13,y:6},{x:14,y:6},{x:14,y:7},{x:14,y:8},{x:13,y:8},{x:12,y:8},{x:11,y:8},{x:10,y:8},{x:9,y:8},{x:8,y:9},{x:8,y:10},{x:8,y:11},{x:8,y:12},{x:8,y:13},{x:8,y:14},{x:7,y:14},{x:6,y:14}];
-  const HOME_PATHS=[[{x:7,y:13},{x:7,y:12},{x:7,y:11},{x:7,y:10},{x:7,y:9},{x:7,y:8}],[{x:1,y:7},{x:2,y:7},{x:3,y:7},{x:4,y:7},{x:5,y:7},{x:6,y:7}],[{x:7,y:1},{x:7,y:2},{x:7,y:3},{x:7,y:4},{x:7,y:5},{x:7,y:6}],[{x:13,y:7},{x:12,y:7},{x:11,y:7},{x:10,y:7},{x:9,y:7},{x:8,y:7}]];
-  const START_OFFSETS=[0,13,26,39];
   function generateUniqueRefCode(){return 'RAF' + Date.now().toString().slice(-4) + Math.floor(1000 + Math.random() * 9000);}
 
   async function saveUserData(){
-    if(!currentUser)return;
+    if(!currentUserId)return;
     try{
-      await setDoc(doc(db,"users",currentUser),{
+      await setDoc(doc(db,"users",currentUserId),{
         coins,dailyProfit:dailyProfitTotal,lastClaim,referral:myReferralCode,
         log:transactionLog,friends:myFriends,friendRequests,sentRequests,
         streak,lastStreakDate,totalGiftsSent,name:currentUser,pass:localStorage.getItem('rafidain_pass')
@@ -208,8 +204,9 @@ h1{color:#3b82f6;text-shadow:0 0 15px #3b82f6;font-size:26px}
   },1500);
 
   async function checkLogin(){
+    currentUserId=localStorage.getItem('rafidain_uid');
     currentUser=localStorage.getItem('rafidain_user');
-    if(currentUser){
+    if(currentUserId){
       await loadUserData();
       document.getElementById('registerPage').style.display='none';
       document.getElementById('mainApp').style.display='block';
@@ -225,22 +222,59 @@ h1{color:#3b82f6;text-shadow:0 0 15px #3b82f6;font-size:26px}
     let pass=document.getElementById('regPass').value.trim();
     let ref=document.getElementById('regRef').value.trim();
     if(!name||!pass)return alert("يرجى إدخال الاسم وكلمة السر");
-    localStorage.setItem('rafidain_pass',pass);
-    const userRef=doc(db,"users",name);
-    const userSnap=await getDoc(userRef);
-    if(userSnap.exists()){
-      if(userSnap.data().pass===pass){
-        currentUser=name;
-        localStorage.setItem('rafidain_user',name);
-        await loadUserData();
-        document.getElementById('registerPage').style.display='none';
-        document.getElementById('mainApp').style.display='block';
-        showToast('مرحبا بك مجدداً '+name);
-        listenToGlobalChat();listenToRooms();listenToUserData();checkBroadcast();
-      }else{alert("كلمة السر غير صحيحة!");}
-    }else{
-      let uniqueRef=generateUniqueRefCode();
-      currentUser=name;myReferralCode=uniqueRef;
+    
+    // البحث في قاعدة البيانات عن مستخدم بنفس الاسم وكلمة السر بالضبط
+    let querySnapshot = await getDocs(collection(db, "users"));
+    let foundUserId = null;
+    let foundUserData = null;
+
+    querySnapshot.forEach((uDoc)=>{
+      let uData = uDoc.data();
+      if(uData.name === name && uData.pass === pass){
+        foundUserId = uDoc.id;
+        foundUserData = uData;
+      }
+    });
+
+    if(foundUserId){
+      // المستخدم موجود وكلمة السر صحيحة (تسجيل دخول)
+      currentUserId = foundUserId;
+      currentUser = name;
+      localStorage.setItem('rafidain_uid', currentUserId);
+      localStorage.setItem('rafidain_user', currentUser);
+      localStorage.setItem('rafidain_pass', pass);
+      await loadUserData();
+      document.getElementById('registerPage').style.display='none';
+      document.getElementById('mainApp').style.display='block';
+      showToast('مرحبا بك مجدداً '+name);
+      listenToGlobalChat();listenToRooms();listenToUserData();checkBroadcast();
+    } else {
+      // تحقق هل الاسم موجود لكن كلمة السر مختلفة؟ (حتى نمنع تضارب أو نسمح بإنشاء حساب جديد كلياً بمعرف فريد)
+      let nameExistsWithDifferentPass = false;
+      querySnapshot.forEach((uDoc)=>{
+        let uData = uDoc.data();
+        if(uData.name === name){
+          nameExistsWithDifferentPass = true;
+        }
+      });
+
+      if(nameExistsWithDifferentPass){
+        // الاسم موجود مسبقاً بكلمة سر أخرى -> يعني هذا الشخص يحاول الدخول باسم شخص آخر بكلمة سر خطأ
+        return alert("هذا الاسم مستخدم مسبقاً بكلمة سر مختلفة! إذا كنت أنت صاحب الحساب، ادخل كلمة السر الصحيحة. وإذا كنت شخصاً آخر، اختر اسماً مختلفاً أو أضف رقماً لاسمك.");
+      }
+
+      // إنشاء حساب جديد كلياً بمعرف فريد (UID) يسمح بتكرار الاسم بشرط كلمة السر
+      let newUid = 'USER_' + Date.now() + '_' + Math.floor(1000 + Math.random() * 9000);
+      let uniqueRef = generateUniqueRefCode();
+      
+      currentUserId = newUid;
+      currentUser = name;
+      myReferralCode = uniqueRef;
+      
+      localStorage.setItem('rafidain_uid', currentUserId);
+      localStorage.setItem('rafidain_user', currentUser);
+      localStorage.setItem('rafidain_pass', pass);
+
       await saveUserData();
       document.getElementById('registerPage').style.display='none';
       document.getElementById('mainApp').style.display='block';
@@ -250,7 +284,7 @@ h1{color:#3b82f6;text-shadow:0 0 15px #3b82f6;font-size:26px}
   }
 
   async function loadUserData(){
-    const userSnap=await getDoc(doc(db,"users",currentUser));
+    const userSnap=await getDoc(doc(db,"users",currentUserId));
     if(userSnap.exists()){
       let data=userSnap.data();
       coins=data.coins||5000;
@@ -264,6 +298,7 @@ h1{color:#3b82f6;text-shadow:0 0 15px #3b82f6;font-size:26px}
       streak=data.streak||0;
       lastStreakDate=data.lastStreakDate||'';
       totalGiftsSent=data.totalGiftsSent||0;
+      currentUser=data.name||currentUser;
       document.getElementById('userName').innerText=currentUser;
       setupReferral();updateAll();renderStreak();
     }
@@ -424,13 +459,13 @@ h1{color:#3b82f6;text-shadow:0 0 15px #3b82f6;font-size:26px}
     if(coins < price) return alert("ليس لديك نقاط كافية!");
     coins -= price;totalGiftsSent++;
     await setDoc(doc(db, "roomMessages", currentRoom.id), {messages: arrayUnion({u:currentUser, t:`🎁 ارسل ${name} ${icon}`, time:Date.now()})}, {merge: true});
-    await updateDoc(doc(db, "users", currentUser), {totalGiftsSent});
+    await updateDoc(doc(db, "users", currentUserId), {totalGiftsSent});
     addLog(`ارسال هدية ${name}`, -price, 'buy');
     await saveUserData();updateAll();showToast("تم الارسال");
   }
 
   function listenToUserData(){
-    onSnapshot(doc(db,"users",currentUser),(snapshot)=>{
+    onSnapshot(doc(db,"users",currentUserId),(snapshot)=>{
       if(snapshot.exists()){
         let data=snapshot.data();
         coins=data.coins!==undefined?data.coins:coins;
@@ -473,30 +508,58 @@ h1{color:#3b82f6;text-shadow:0 0 15px #3b82f6;font-size:26px}
   }
 
   async function sendFriendRequest(targetName){
-    await updateDoc(doc(db,"users",targetName),{friendRequests:arrayUnion(currentUser)});
-    await updateDoc(doc(db,"users",currentUser),{sentRequests:arrayUnion(targetName)});
-    showToast(`تم إرسال طلب الصداقة إلى ${targetName}`);
-    searchFriends();
+    let querySnapshot=await getDocs(collection(db,"users"));
+    let targetDocId=null;
+    querySnapshot.forEach((uDoc)=>{
+      if(uDoc.data().name === targetName){targetDocId = uDoc.id;}
+    });
+    if(targetDocId){
+      await updateDoc(doc(db,"users",targetDocId),{friendRequests:arrayUnion(currentUser)});
+      await updateDoc(doc(db,"users",currentUserId),{sentRequests:arrayUnion(targetName)});
+      showToast(`تم إرسال طلب الصداقة إلى ${targetName}`);
+      searchFriends();
+    }
   }
 
   async function acceptFriendRequest(requesterName){
-    await updateDoc(doc(db,"users",currentUser),{friends:arrayUnion(requesterName),friendRequests:arrayRemove(requesterName)});
-    await updateDoc(doc(db,"users",requesterName),{friends:arrayUnion(currentUser),sentRequests:arrayRemove(currentUser)});
-    showToast(`تمت الموافقة على طلب ${requesterName}`);
+    let querySnapshot=await getDocs(collection(db,"users"));
+    let reqDocId=null;
+    querySnapshot.forEach((uDoc)=>{
+      if(uDoc.data().name === requesterName){reqDocId = uDoc.id;}
+    });
+    if(reqDocId){
+      await updateDoc(doc(db,"users",currentUserId),{friends:arrayUnion(requesterName),friendRequests:arrayRemove(requesterName)});
+      await updateDoc(doc(db,"users",reqDocId),{friends:arrayUnion(currentUser),sentRequests:arrayRemove(currentUser)});
+      showToast(`تمت الموافقة على طلب ${requesterName}`);
+    }
   }
 
   async function rejectFriendRequest(requesterName){
-    await updateDoc(doc(db,"users",currentUser),{friendRequests:arrayRemove(requesterName)});
-    await updateDoc(doc(db,"users",requesterName),{sentRequests:arrayRemove(currentUser)});
-    showToast("تم رفض الطلب");
+    let querySnapshot=await getDocs(collection(db,"users"));
+    let reqDocId=null;
+    querySnapshot.forEach((uDoc)=>{
+      if(uDoc.data().name === requesterName){reqDocId = uDoc.id;}
+    });
+    if(reqDocId){
+      await updateDoc(doc(db,"users",currentUserId),{friendRequests:arrayRemove(requesterName)});
+      await updateDoc(doc(db,"users",reqDocId),{sentRequests:arrayRemove(currentUser)});
+      showToast("تم رفض الطلب");
+    }
   }
 
   async function removeFriend(friendName){
     if(confirm(`هل تريد حذف ${friendName} من الأصدقاء؟`)){
-      await updateDoc(doc(db,"users",currentUser),{friends:arrayRemove(friendName)});
-      await updateDoc(doc(db,"users",friendName),{friends:arrayRemove(currentUser)});
-      showToast(`تم حذف ${friendName}`);
-      searchFriends();
+      let querySnapshot=await getDocs(collection(db,"users"));
+      let friendDocId=null;
+      querySnapshot.forEach((uDoc)=>{
+        if(uDoc.data().name === friendName){friendDocId = uDoc.id;}
+      });
+      if(friendDocId){
+        await updateDoc(doc(db,"users",currentUserId),{friends:arrayRemove(friendName)});
+        await updateDoc(doc(db,"users",friendDocId),{friends:arrayRemove(currentUser)});
+        showToast(`تم حذف ${friendName}`);
+        searchFriends();
+      }
     }
   }
 
@@ -635,7 +698,6 @@ h1{color:#3b82f6;text-shadow:0 0 15px #3b82f6;font-size:26px}
     });
     document.getElementById('storeList').innerHTML=html;
 
-    // تحميل متجر رموز الإحالة المميزة
     let refHtml='';
     referralStoreData.forEach(r=>{
       refHtml+=`<div class="counterItem"><h4>رمز إحالة مميز: (${r.code})</h4><p>السعر: ${r.price.toLocaleString()} نقطة</p><button class="btn btn-yellow" onclick="buySpecialReferral('${r.code}', ${r.price})" ${coins<r.price?'disabled':''}>شراء واستبدال الكود</button></div>`;
@@ -646,7 +708,6 @@ h1{color:#3b82f6;text-shadow:0 0 15px #3b82f6;font-size:26px}
   async function buySpecialReferral(newCode, price){
     if(coins < price) return alert("ليس لديك نقاط كافية!");
     
-    // التحقق هل الرمز مستخدم من قبل مستخدم آخر
     let querySnapshot = await getDocs(collection(db, "users"));
     let isTaken = false;
     querySnapshot.forEach((uDoc)=>{
