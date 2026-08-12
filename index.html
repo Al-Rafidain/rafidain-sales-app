@@ -4,6 +4,67 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0,user-scalable=no">
 <title>تطبيق الرافدين</title>
+<style>
+*{box-sizing:border-box}
+body{background:#000;color:#fff;font-family:tahoma,sans-serif;text-align:center;padding:10px;margin:0;padding-bottom:100px}
+#splash{position:fixed;top:0;left:0;width:100%;height:100%;background:linear-gradient(135deg,#0a1a3a 0%,#000 100%);display:flex;flex-direction:column;justify-content:center;align-items:center;z-index:9999;transition:opacity 0.5s, visibility 0.5s}
+.logo{font-size:50px;margin:15px}
+h1{color:#3b82f6;text-shadow:0 0 15px #3b82f6;font-size:26px}
+.page{display:none}.page.active{display:block}
+.stats{margin:15px auto;max-width:420px}
+.box{border:3px solid #3b82f6;border-radius:18px;padding:20px;margin:15px 0;background:#111}
+.box h3{margin:5px;font-size:16px;color:#aaa}
+#coins{font-size:36px;color:#0f0;font-weight:bold;margin:10px 0}
+#coinsDollar{font-size:18px;color:#3b82f6;font-weight:bold}
+#dailyProfit{font-size:36px;color:#ffb300;font-weight:bold;margin:10px 0}
+#perDay{font-size:24px;color:#3b82f6;font-weight:bold;margin:10px 0}
+.btn{background:#3b82f6;color:#fff;border:0;padding:16px;border-radius:15px;font-size:16px;font-weight:bold;margin:10px auto;cursor:pointer;width:90%;max-width:380px;display:block;transition:0.2s}
+.btn:active{transform:scale(.95)}
+.btn-green{background:#0f0;color:#000;width:100%;padding:18px;font-size:18px}
+.btn-blue{background:#3b82f6}
+.btn-red{background:#f33;color:#fff}
+.btn-yellow{background:#ffb300;color:#000}
+.btn:disabled{background:#555;color:#999;cursor:not-allowed}
+.modal{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.95);z-index:1000;overflow-y:auto}
+.modal-content{background:#1a1a1a;margin:20px auto;padding:15px;width:95%;max-width:500px;border-radius:15px;border:2px solid #3b82f6}
+.counterItem{background:#222;padding:15px;margin:10px auto;border-radius:10px;border:2px solid #333;width:90%;max-width:350px;text-align:right}
+.input{width:90%;padding:12px;margin:8px 0;border-radius:8px;background:#222;color:#fff;border:1px solid #3b82f6;font-size:16px}
+.referralCode{font-size:18px;color:#f0f;font-weight:bold;padding:12px;background:#000;border-radius:10px;border:2px dashed #f0f;margin:10px 0;word-break:break-all}
+.toast{position:fixed;bottom:100px;left:50%;transform:translateX(-50%);background:#0c0;color:#000;padding:15px 25px;border-radius:10px;font-weight:bold;display:none;z-index:2000}
+#xoBoard{display:grid;grid-template-columns:repeat(3,90px);gap:5px;margin:20px auto;width:280px;justify-content:center}
+.xoCell{width:90px;height:90px;background:#222;font-size:50px;display:flex;align-items:center;justify-content:center;cursor:pointer;border-radius:10px;border:2px solid #3b82f6}
+.wheel-container{position:relative;width:280px;height:280px;margin:20px auto}
+.pointer{width:0;height:0;border-left:15px solid transparent;border-right:15px solid transparent;border-bottom:30px solid red;position:absolute;top:-10px;left:50%;transform:translateX(-50%);z-index:10}
+#wheel{width:100%;height:100%;border-radius:50%;border:6px solid #3b82f6;transition:transform 5s cubic-bezier(.17,.67,.12,.99)}
+.boxItem{width:80px;height:80px;background:#3b82f6;margin:5px;display:inline-block;border-radius:15px;cursor:pointer;font-size:28px;line-height:80px;border:3px solid #fff;font-weight:bold}
+.bottomNav{position:fixed;bottom:15px;left:50%;transform:translateX(-50%);width:95%;max-width:500px;background:linear-gradient(135deg,#1e3a8a,#3b82f6);border-radius:25px;display:flex;justify-content:space-around;padding:10px 5px;z-index:999}
+.navItem{display:flex;flex-direction:column;align-items:center;color:#ddd;font-size:10px;cursor:pointer;flex:1}
+.navIcon{font-size:20px;margin-bottom:2px}
+.navItem.active{color:#fff;font-weight:bold}
+.logItem{padding:12px;margin:8px 0;background:#222;border-radius:10px;text-align:right;border-right:4px solid #3b82f6}
+.logItem.win{border-right-color:#0f0}.logItem.buy{border-right-color:#ffb300}
+#registerPage{position:fixed;top:0;left:0;width:100%;height:100%;background:#000;z-index:9998;display:flex;flex-direction:column;justify-content:center;align-items:center;padding:20px}
+.roomItem, .userItem{background:#222;padding:15px;margin:10px 0;border-radius:12px;border:2px solid #3b82f6;text-align:right;display:flex;justify-content:space-between;align-items:center}
+.roomId{color:#ffb300;font-size:12px}
+.chatBox{height:250px;overflow-y:auto;background:#0a0a0a;border:2px solid #3b82f6;border-radius:15px;padding:10px;margin-bottom:10px;text-align:right}
+.chatMsg{margin:8px 0;padding:8px 12px;border-radius:10px;max-width:85%;position:relative;word-wrap:break-word}
+.chatMsg.me{background:#3b82f6;margin-right:auto;text-align:left;color:#fff}.chatMsg.other{background:#222;margin-left:auto;color:#fff}
+.giftBtn{font-size:16px;padding:8px;margin:4px;border-radius:10px;background:#333;border:2px solid #3b82f6;cursor:pointer;color:#fff}
+.dominoTile{width:36px;height:72px;background:#f5f5f5;color:#000;border:2px solid #333;border-radius:6px;display:inline-block;margin:2px;position:relative}
+.dominoHalf{height:36px;display:flex;align-items:center;justify-content:center;position:relative}
+.dominoHalf.top{border-bottom:1px solid #333}
+.dot{width:5px;height:5px;background:#000;border-radius:50%;position:absolute}
+.dominoTableArea{min-height:100px;border:2px dashed #3b82f6;border-radius:10px;margin:10px 0;padding:10px;background:#0a5c36;display:flex;flex-wrap:wrap;align-items:center;justify-content:center}
+.micGrid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin:15px 0}
+.micSeat{background:#222;border:2px solid #3b82f6;border-radius:10px;padding:15px;cursor:pointer;position:relative;font-weight:bold;font-size:12px}
+.micSeat.active{border-color:#0f0;background:#002200}
+.micControl{position:absolute;top:2px;right:2px;background:#f33;border:0;color:#fff;border-radius:5px;font-size:10px;padding:2px 5px;cursor:pointer}
+.leaderItem{background:#222;padding:12px;margin:8px 0;border-radius:10px;text-align:right;border-right:4px solid #ffb300;display:flex;justify-content:space-between}
+.streakBox{display:flex;justify-content:space-around;margin:15px 0}
+.streakDay{width:40px;height:40px;border-radius:50%;background:#333;display:flex;align-items:center;justify-content:center;font-size:12px}
+.streakDay.active{background:#0f0;color:#000}
+.broadcastModal .modal-content{background:linear-gradient(135deg,#1e3a8a,#3b82f6)}
+</style>
 </head>
 <body>
 <div id="splash"><div class="logo">🏛️</div><div style="color:#3b82f6;font-size:28px;font-weight:bold;margin-top:20px">AL-RAFIDAIN</div></div>
@@ -90,67 +151,6 @@
 <div id="memoryModal" class="modal"><div class="modal-content"><h2>🧠 لعبة الميموري</h2><p>طابق الرموز - الجائزة 250</p><div id="memoryBoard" style="display:grid;grid-template-columns:repeat(4,60px);gap:8px;justify-content:center;margin:20px auto"></div><p id="memoryResult"></p><button class="btn" onclick="closeModal('memoryModal')">خروج</button></div></div>
 <div id="createRoomModal" class="modal"><div class="modal-content"><h2>انشاء غرفة جديدة</h2><input type="text" id="newRoomName" class="input" placeholder="اسم الغرفة"><button class="btn btn-green" onclick="createRoom()">شراء وانشاء - 80000</button><button class="btn btn-red" onclick="closeModal('createRoomModal')">الغاء</button></div></div>
 <div id="toast" class="toast">تم استلام الارباح!</div>
-<style>
-*{box-sizing:border-box}
-body{background:#000;color:#fff;font-family:tahoma,sans-serif;text-align:center;padding:10px;margin:0;padding-bottom:100px}
-#splash{position:fixed;top:0;left:0;width:100%;height:100%;background:linear-gradient(135deg,#0a1a3a 0%,#000 100%);display:flex;flex-direction:column;justify-content:center;align-items:center;z-index:9999;transition:opacity 0.5s, visibility 0.5s}
-.logo{font-size:50px;margin:15px}
-h1{color:#3b82f6;text-shadow:0 0 15px #3b82f6;font-size:26px}
-.page{display:none}.page.active{display:block}
-.stats{margin:15px auto;max-width:420px}
-.box{border:3px solid #3b82f6;border-radius:18px;padding:20px;margin:15px 0;background:#111}
-.box h3{margin:5px;font-size:16px;color:#aaa}
-#coins{font-size:36px;color:#0f0;font-weight:bold;margin:10px 0}
-#coinsDollar{font-size:18px;color:#3b82f6;font-weight:bold}
-#dailyProfit{font-size:36px;color:#ffb300;font-weight:bold;margin:10px 0}
-#perDay{font-size:24px;color:#3b82f6;font-weight:bold;margin:10px 0}
-.btn{background:#3b82f6;color:#fff;border:0;padding:16px;border-radius:15px;font-size:16px;font-weight:bold;margin:10px auto;cursor:pointer;width:90%;max-width:380px;display:block;transition:0.2s}
-.btn:active{transform:scale(.95)}
-.btn-green{background:#0f0;color:#000;width:100%;padding:18px;font-size:18px}
-.btn-blue{background:#3b82f6}
-.btn-red{background:#f33;color:#fff}
-.btn-yellow{background:#ffb300;color:#000}
-.btn:disabled{background:#555;color:#999;cursor:not-allowed}
-.modal{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.95);z-index:1000;overflow-y:auto}
-.modal-content{background:#1a1a1a;margin:20px auto;padding:15px;width:95%;max-width:500px;border-radius:15px;border:2px solid #3b82f6}
-.counterItem{background:#222;padding:15px;margin:10px auto;border-radius:10px;border:2px solid #333;width:90%;max-width:350px;text-align:right}
-.input{width:90%;padding:12px;margin:8px 0;border-radius:8px;background:#222;color:#fff;border:1px solid #3b82f6;font-size:16px}
-.referralCode{font-size:18px;color:#f0f;font-weight:bold;padding:12px;background:#000;border-radius:10px;border:2px dashed #f0f;margin:10px 0;word-break:break-all}
-.toast{position:fixed;bottom:100px;left:50%;transform:translateX(-50%);background:#0c0;color:#000;padding:15px 25px;border-radius:10px;font-weight:bold;display:none;z-index:2000}
-#xoBoard{display:grid;grid-template-columns:repeat(3,90px);gap:5px;margin:20px auto;width:280px;justify-content:center}
-.xoCell{width:90px;height:90px;background:#222;font-size:50px;display:flex;align-items:center;justify-content:center;cursor:pointer;border-radius:10px;border:2px solid #3b82f6}
-.wheel-container{position:relative;width:280px;height:280px;margin:20px auto}
-.pointer{width:0;height:0;border-left:15px solid transparent;border-right:15px solid transparent;border-bottom:30px solid red;position:absolute;top:-10px;left:50%;transform:translateX(-50%);z-index:10}
-#wheel{width:100%;height:100%;border-radius:50%;border:6px solid #3b82f6;transition:transform 5s cubic-bezier(.17,.67,.12,.99)}
-.boxItem{width:80px;height:80px;background:#3b82f6;margin:5px;display:inline-block;border-radius:15px;cursor:pointer;font-size:28px;line-height:80px;border:3px solid #fff;font-weight:bold}
-.bottomNav{position:fixed;bottom:15px;left:50%;transform:translateX(-50%);width:95%;max-width:500px;background:linear-gradient(135deg,#1e3a8a,#3b82f6);border-radius:25px;display:flex;justify-content:space-around;padding:10px 5px;z-index:999}
-.navItem{display:flex;flex-direction:column;align-items:center;color:#ddd;font-size:10px;cursor:pointer;flex:1}
-.navIcon{font-size:20px;margin-bottom:2px}
-.navItem.active{color:#fff;font-weight:bold}
-.logItem{padding:12px;margin:8px 0;background:#222;border-radius:10px;text-align:right;border-right:4px solid #3b82f6}
-.logItem.win{border-right-color:#0f0}.logItem.buy{border-right-color:#ffb300}
-#registerPage{position:fixed;top:0;left:0;width:100%;height:100%;background:#000;z-index:9998;display:flex;flex-direction:column;justify-content:center;align-items:center;padding:20px}
-.roomItem, .userItem{background:#222;padding:15px;margin:10px 0;border-radius:12px;border:2px solid #3b82f6;text-align:right;display:flex;justify-content:space-between;align-items:center}
-.roomId{color:#ffb300;font-size:12px}
-.chatBox{height:250px;overflow-y:auto;background:#0a0a0a;border:2px solid #3b82f6;border-radius:15px;padding:10px;margin-bottom:10px;text-align:right}
-.chatMsg{margin:8px 0;padding:8px 12px;border-radius:10px;max-width:85%;position:relative;word-wrap:break-word}
-.chatMsg.me{background:#3b82f6;margin-right:auto;text-align:left;color:#fff}.chatMsg.other{background:#222;margin-left:auto;color:#fff}
-.giftBtn{font-size:16px;padding:8px;margin:4px;border-radius:10px;background:#333;border:2px solid #3b82f6;cursor:pointer;color:#fff}
-.dominoTile{width:36px;height:72px;background:#f5f5f5;color:#000;border:2px solid #333;border-radius:6px;display:inline-block;margin:2px;position:relative}
-.dominoHalf{height:36px;display:flex;align-items:center;justify-content:center;position:relative}
-.dominoHalf.top{border-bottom:1px solid #333}
-.dot{width:5px;height:5px;background:#000;border-radius:50%;position:absolute}
-.dominoTableArea{min-height:100px;border:2px dashed #3b82f6;border-radius:10px;margin:10px 0;padding:10px;background:#0a5c36;display:flex;flex-wrap:wrap;align-items:center;justify-content:center}
-.micGrid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin:15px 0}
-.micSeat{background:#222;border:2px solid #3b82f6;border-radius:10px;padding:15px;cursor:pointer;position:relative;font-weight:bold;font-size:12px}
-.micSeat.active{border-color:#0f0;background:#002200}
-.micControl{position:absolute;top:2px;right:2px;background:#f33;border:0;color:#fff;border-radius:5px;font-size:10px;padding:2px 5px;cursor:pointer}
-.leaderItem{background:#222;padding:12px;margin:8px 0;border-radius:10px;text-align:right;border-right:4px solid #ffb300;display:flex;justify-content:space-between}
-.streakBox{display:flex;justify-content:space-around;margin:15px 0}
-.streakDay{width:40px;height:40px;border-radius:50%;background:#333;display:flex;align-items:center;justify-content:center;font-size:12px}
-.streakDay.active{background:#0f0;color:#000}
-.broadcastModal .modal-content{background:linear-gradient(135deg,#1e3a8a,#3b82f6)}
-</style>
 <script type="module">  
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
   import { getFirestore, doc, setDoc, getDoc, updateDoc, deleteDoc, collection, onSnapshot, arrayUnion, arrayRemove, getDocs, query, orderBy, limit } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
@@ -217,7 +217,6 @@ h1{color:#3b82f6;text-shadow:0 0 15px #3b82f6;font-size:26px}
     }
   }
 
-  // 👇 تم تعديل هذه الدالة لتتخطى مشكلة كلمة المرور تماماً وتسمح بالدخول بحسابك القديم مباشرة
   async function createAccount(){
     let name=document.getElementById('regName').value.trim();
     let pass=document.getElementById('regPass').value.trim();
@@ -228,14 +227,12 @@ h1{color:#3b82f6;text-shadow:0 0 15px #3b82f6;font-size:26px}
 
     querySnapshot.forEach((uDoc)=>{
       let uData = uDoc.data();
-      // البحث بالاسم فقط بغض النظر عن كلمة المرور لضمان استرجاع حسابك
       if(uData.name && uData.name.trim().toLowerCase() === name.toLowerCase()){
         foundUserId = uDoc.id;
       }
     });
 
     if(foundUserId){
-      // وجدنا الحساب بنفس الاسم، نقوم بتسجيل الدخول إليه مباشرة وتحديث الرمز الجديد
       currentUserId = foundUserId;
       currentUser = name;
       localStorage.setItem('rafidain_uid', currentUserId);
@@ -247,7 +244,6 @@ h1{color:#3b82f6;text-shadow:0 0 15px #3b82f6;font-size:26px}
       showToast('مرحبا بك مجدداً '+name);
       listenToGlobalChat();listenToRooms();listenToUserData();checkBroadcast();
     } else {
-      // إذا لم يكن موجوداً، يتم إنشاء حساب جديد بالاسم الذي أدخلته
       let newUid = 'USER_' + Date.now() + '_' + Math.floor(1000 + Math.random() * 9000);
       let uniqueRef = generateUniqueRefCode();
       
@@ -266,6 +262,7 @@ h1{color:#3b82f6;text-shadow:0 0 15px #3b82f6;font-size:26px}
       listenToGlobalChat();listenToRooms();listenToUserData();checkBroadcast();
     }
   }
+
   async function loadUserData(){
     const userSnap=await getDoc(doc(db,"users",currentUserId));
     if(userSnap.exists()){
