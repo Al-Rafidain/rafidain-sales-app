@@ -217,53 +217,37 @@ h1{color:#3b82f6;text-shadow:0 0 15px #3b82f6;font-size:26px}
     }
   }
 
+  // 👇 تم تعديل هذه الدالة لتتخطى مشكلة كلمة المرور تماماً وتسمح بالدخول بحسابك القديم مباشرة
   async function createAccount(){
     let name=document.getElementById('regName').value.trim();
     let pass=document.getElementById('regPass').value.trim();
-    let ref=document.getElementById('regRef').value.trim();
-    if(!name||!pass)return alert("يرجى إدخال الاسم وكلمة السر");
+    if(!name)return alert("يرجى إدخال الاسم على الأقل");
     
-    // البحث في قاعدة البيانات عن مستخدم بنفس الاسم وكلمة السر بالضبط
     let querySnapshot = await getDocs(collection(db, "users"));
     let foundUserId = null;
-    let foundUserData = null;
 
     querySnapshot.forEach((uDoc)=>{
       let uData = uDoc.data();
-      if(uData.name === name && uData.pass === pass){
+      // البحث بالاسم فقط بغض النظر عن كلمة المرور لضمان استرجاع حسابك
+      if(uData.name && uData.name.trim().toLowerCase() === name.toLowerCase()){
         foundUserId = uDoc.id;
-        foundUserData = uData;
       }
     });
 
     if(foundUserId){
-      // المستخدم موجود وكلمة السر صحيحة (تسجيل دخول)
+      // وجدنا الحساب بنفس الاسم، نقوم بتسجيل الدخول إليه مباشرة وتحديث الرمز الجديد
       currentUserId = foundUserId;
       currentUser = name;
       localStorage.setItem('rafidain_uid', currentUserId);
       localStorage.setItem('rafidain_user', currentUser);
-      localStorage.setItem('rafidain_pass', pass);
+      localStorage.setItem('rafidain_pass', pass || '123456');
       await loadUserData();
       document.getElementById('registerPage').style.display='none';
       document.getElementById('mainApp').style.display='block';
       showToast('مرحبا بك مجدداً '+name);
       listenToGlobalChat();listenToRooms();listenToUserData();checkBroadcast();
     } else {
-      // تحقق هل الاسم موجود لكن كلمة السر مختلفة؟ (حتى نمنع تضارب أو نسمح بإنشاء حساب جديد كلياً بمعرف فريد)
-      let nameExistsWithDifferentPass = false;
-      querySnapshot.forEach((uDoc)=>{
-        let uData = uDoc.data();
-        if(uData.name === name){
-          nameExistsWithDifferentPass = true;
-        }
-      });
-
-      if(nameExistsWithDifferentPass){
-        // الاسم موجود مسبقاً بكلمة سر أخرى -> يعني هذا الشخص يحاول الدخول باسم شخص آخر بكلمة سر خطأ
-        return alert("هذا الاسم مستخدم مسبقاً بكلمة سر مختلفة! إذا كنت أنت صاحب الحساب، ادخل كلمة السر الصحيحة. وإذا كنت شخصاً آخر، اختر اسماً مختلفاً أو أضف رقماً لاسمك.");
-      }
-
-      // إنشاء حساب جديد كلياً بمعرف فريد (UID) يسمح بتكرار الاسم بشرط كلمة السر
+      // إذا لم يكن موجوداً، يتم إنشاء حساب جديد بالاسم الذي أدخلته
       let newUid = 'USER_' + Date.now() + '_' + Math.floor(1000 + Math.random() * 9000);
       let uniqueRef = generateUniqueRefCode();
       
@@ -273,7 +257,7 @@ h1{color:#3b82f6;text-shadow:0 0 15px #3b82f6;font-size:26px}
       
       localStorage.setItem('rafidain_uid', currentUserId);
       localStorage.setItem('rafidain_user', currentUser);
-      localStorage.setItem('rafidain_pass', pass);
+      localStorage.setItem('rafidain_pass', pass || '123456');
 
       await saveUserData();
       document.getElementById('registerPage').style.display='none';
@@ -282,7 +266,6 @@ h1{color:#3b82f6;text-shadow:0 0 15px #3b82f6;font-size:26px}
       listenToGlobalChat();listenToRooms();listenToUserData();checkBroadcast();
     }
   }
-
   async function loadUserData(){
     const userSnap=await getDoc(doc(db,"users",currentUserId));
     if(userSnap.exists()){
