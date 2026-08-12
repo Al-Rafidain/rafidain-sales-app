@@ -67,8 +67,7 @@ h1{color:#3b82f6;text-shadow:0 0 15px #3b82f6;font-size:26px}
 </style>
 </head>
 <body>
-<div id="splash"><div class="logo">🏛️</div><div style="color:#3b82f6;font-size:28px;font-weight:bold;margin-top:20px">AL-RAFIDAIN</div></div>
-  <div id="registerPage">
+<div id="splash"><div class="logo">🏛️</div><div style="color:#3b82f6;font-size:28px;font-weight:bold;margin-top:20px">AL-RAFIDAIN</div></div><div id="registerPage">
   <div class="logo">🏛️</div><h1>تسجيل الدخول / انشاء حساب</h1>
   <div class="box" style="max-width:400px;width:100%">
     <input type="text" id="regName" class="input" placeholder="ادخل اسمك">
@@ -124,7 +123,7 @@ h1{color:#3b82f6;text-shadow:0 0 15px #3b82f6;font-size:26px}
 <div id="memoryModal" class="modal"><div class="modal-content"><h2>🧠 لعبة الميموري</h2><p>طابق الرموز - الجائزة 250</p><div id="memoryBoard" style="display:grid;grid-template-columns:repeat(4,60px);gap:8px;justify-content:center;margin:20px auto"></div><p id="memoryResult"></p><button class="btn" onclick="closeModal('memoryModal')">خروج</button></div></div>
 <div id="createRoomModal" class="modal"><div class="modal-content"><h2>انشاء غرفة جديدة</h2><input type="text" id="newRoomName" class="input" placeholder="اسم الغرفة"><button class="btn btn-green" onclick="createRoom()">شراء وانشاء - 80000</button><button class="btn btn-red" onclick="closeModal('createRoomModal')">الغاء</button></div></div>
 <div id="toast" class="toast">تم استلام الارباح!</div>
-  <script type="module">  
+<script type="module">  
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
   import { getFirestore, doc, setDoc, getDoc, updateDoc, deleteDoc, collection, onSnapshot, arrayUnion, arrayRemove, getDocs, query, orderBy, limit } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
   
@@ -146,8 +145,7 @@ h1{color:#3b82f6;text-shadow:0 0 15px #3b82f6;font-size:26px}
   let streak=0, lastStreakDate='', totalGiftsSent=0, roomMics=Array(7).fill(null);  
   const LUDO_MAIN_PATH=[{x:6,y:13},{x:6,y:12},{x:6,y:11},{x:6,y:10},{x:6,y:9},{x:5,y:8},{x:4,y:8},{x:3,y:8},{x:2,y:8},{x:1,y:8},{x:0,y:8},{x:0,y:7},{x:0,y:6},{x:1,y:6},{x:2,y:6},{x:3,y:6},{x:4,y:6},{x:5,y:6},{x:6,y:5},{x:6,y:4},{x:6,y:3},{x:6,y:2},{x:6,y:1},{x:6,y:0},{x:7,y:0},{x:8,y:0},{x:8,y:1},{x:8,y:2},{x:8,y:3},{x:8,y:4},{x:8,y:5},{x:9,y:6},{x:10,y:6},{x:11,y:6},{x:12,y:6},{x:13,y:6},{x:14,y:6},{x:14,y:7},{x:14,y:8},{x:13,y:8},{x:12,y:8},{x:11,y:8},{x:10,y:8},{x:9,y:8},{x:8,y:9},{x:8,y:10},{x:8,y:11},{x:8,y:12},{x:8,y:13},{x:8,y:14},{x:7,y:14},{x:6,y:14}];
   const HOME_PATHS=[[{x:7,y:13},{x:7,y:12},{x:7,y:11},{x:7,y:10},{x:7,y:9},{x:7,y:8}],[{x:1,y:7},{x:2,y:7},{x:3,y:7},{x:4,y:7},{x:5,y:7},{x:6,y:7}],[{x:7,y:1},{x:7,y:2},{x:7,y:3},{x:7,y:4},{x:7,y:5},{x:7,y:6}],[{x:13,y:7},{x:12,y:7},{x:11,y:7},{x:10,y:7},{x:9,y:7},{x:8,y:7}]];
-  const START_OFFSETS=[0,13,26,39];
-    function generateUniqueRefCode(){return 'RAF' + Date.now().toString().slice(-4) + Math.floor(1000 + Math.random() * 9000);}
+  const START_OFFSETS=[0,13,26,39];function generateUniqueRefCode(){return 'RAF' + Date.now().toString().slice(-4) + Math.floor(1000 + Math.random() * 9000);}
 
   async function saveUserData(){
     if(!currentUser)return;
@@ -462,8 +460,7 @@ setTimeout(()=>{
       html+=`<div class="userItem"><div><b>👤 ${f}</b></div><div style="display:flex;gap:5px;"><button class="btn btn-blue" style="width:auto;padding:8px 12px;margin:0" onclick="openPrivateChat('${f}')">💬 مراسلة</button><button class="btn btn-red" style="width:auto;padding:8px 12px;margin:0" onclick="removeFriend('${f}')">حذف</button></div></div>`;
     });
     container.innerHTML=html;
-    }
-    function renderStreak(){
+  }function renderStreak(){
     let html='';
     for(let i=1;i<=7;i++){
       html+=`<div class="streakDay ${i<=streak?'active':''}">${i}</div>`;
@@ -640,8 +637,7 @@ setTimeout(()=>{
       html+=`<div class="leaderItem"><div>#${i+1} ${data.name}</div><div>${type=='gifts'?data.totalGiftsSent:data.coins.toLocaleString()}</div></div>`;
     });
     document.getElementById('leaderboardList').innerHTML=html;
-    }
-    function getDots(n){
+  }function getDots(n){
     const p={0:[],1:[[50,50]],2:[[25,25],[75,75]],3:[[25,25],[50,50],[75,75]],4:[[25,25],[75,25],[25,75],[75,75]],5:[[25,25],[75,25],[50,50],[25,75],[75,75]],6:[[25,20],[75,20],[25,50],[75,50],[25,80],[75,80]]};
     return p[n]||[];
   }
@@ -856,7 +852,6 @@ setTimeout(()=>{
     showToast(`تم تحويل ${amount} نقطة إلى ${recipientName}!`);
   }
 
-  // ربط كل الدوال للـ HTML
   window.createAccount = createAccount;
   window.showPage = showPage;
   window.logout = logout;
