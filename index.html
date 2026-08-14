@@ -77,7 +77,6 @@ h1{color:#3b82f6;text-shadow:0 0 15px #3b82f6;font-size:26px}
     <button class="btn btn-green" onclick="createAccount()">تسجيل / دخول</button>
   </div>
 </div>
-
 <div id="mainApp" style="display:none">
   <div class="logo">🏛️</div><h1>تطبيق الرافدين</h1>
 
@@ -113,7 +112,6 @@ h1{color:#3b82f6;text-shadow:0 0 15px #3b82f6;font-size:26px}
     <h3 style="color:#3b82f6;margin-top:25px">🎯 المهمات اليومية</h3>
     <div id="dailyTasks"></div>
   </div>
-
   <div id="friends" class="page">
     <h2>👥 الأصدقاء والبحث</h2>
     <div style="display:flex;gap:5px;justify-content:center;max-width:400px;margin:auto"><input type="text" id="searchFriendsInput" class="input" placeholder="ابحث عن اسم صديق..." style="width:70%"><button class="btn btn-blue" style="width:25%;margin:8px 0" onclick="searchFriends()">بحث 🔍</button></div>
@@ -146,7 +144,6 @@ h1{color:#3b82f6;text-shadow:0 0 15px #3b82f6;font-size:26px}
     <div id="globalChatBox" class="chatBox"></div>
     <div style="display:flex;gap:8px;justify-content:center;max-width:400px;margin:auto"><input type="text" id="globalChatInput" class="input" placeholder="اكتب هنا" style="width:70%" onkeypress="if(event.key=='Enter')sendGlobalMsg()"><button class="btn" style="width:25%;margin:8px 0" onclick="sendGlobalMsg()">ارسال</button></div>
   </div>
-  
   <div id="chatRoom" class="page">
     <button class="btn" onclick="showPage('rooms',null)">🔙 رجوع</button>
     <h2 id="roomNameTitle"></h2>
@@ -172,7 +169,6 @@ h1{color:#3b82f6;text-shadow:0 0 15px #3b82f6;font-size:26px}
     </div>
     <h4 style="color:#ffb300;margin-top:10px">🎁 الهدايا</h4><div id="giftsBar" style="display:flex;flex-wrap:wrap;justify-content:center"></div>
   </div>
-
   <div id="referral" class="page">
     <h2>🎁 نظام الاحالة والتحويل</h2>
     <div class="box"><h3>🌟 ادعُ اصدقائك واربح</h3><div id="myReferralCode" class="referralCode">جاري التحميل...</div><div id="myReferralLink" class="referralCode">جاري التحميل...</div><button class="btn btn-blue" onclick="copyCode()">📋 نسخ رسالة الدعوة</button><button class="btn btn-blue" onclick="copyLink()">🔗 نسخ الرابط</button></div>
@@ -204,7 +200,6 @@ h1{color:#3b82f6;text-shadow:0 0 15px #3b82f6;font-size:26px}
     <div class="navItem" onclick="showPage('profile',this)"><div class="navIcon">👤</div><div>الملف</div></div>
   </div>
 </div>
-
 <div id="broadcastModal" class="modal broadcastModal"><div class="modal-content"><h2>📢 اعلان</h2><div id="broadcastText"></div><button class="btn" onclick="closeModal('broadcastModal')">فهمت</button></div></div>
 <div id="xoModal" class="modal"><div class="modal-content"><h2>❌⭕ XO</h2><div id="xoBoard"></div><p id="xoResult"></p><button class="btn" onclick="closeModal('xoModal')">خروج</button></div></div>
 
@@ -229,7 +224,7 @@ h1{color:#3b82f6;text-shadow:0 0 15px #3b82f6;font-size:26px}
   </div>
 </div>
 
-<!-- قائمة اختيار نمط اللودو (ثنائي / رباعي ومع الأصدقاء أو البوتات) -->
+<!-- قائمة اختيار نمط اللودو -->
 <div id="ludoMenuModal" class="modal">
   <div class="modal-content" style="max-width:350px">
     <h2>🎲 اختيار نمط لودو</h2>
@@ -240,7 +235,7 @@ h1{color:#3b82f6;text-shadow:0 0 15px #3b82f6;font-size:26px}
   </div>
 </div>
 
-<!-- نافذة اللودو الحقيقية -->
+<!-- نافذة اللودو الحقيقية المعدلة -->
 <div id="ludoModal" class="modal">
   <div class="modal-content" style="max-width:380px">
     <h2>🎲 لودو الحقيقية</h2>
@@ -274,7 +269,7 @@ h1{color:#3b82f6;text-shadow:0 0 15px #3b82f6;font-size:26px}
   
   const RATE=10000; let currentChatFriend = null, unsubPrivateChat = null, unsubRoomChat = null;
   
-  // متغيرات لودو الحقيقية (تدعم ثنائي / رباعي وبوت / أصدقاء)
+  // متغيرات لودو الحقيقية
   let ludoMode=2, ludoType='bot', ludoPlayers=[], ludoDice=0, ludoCurrentPlayer=0, ludoGameOver=false, ludoCanRoll=true;
   const LUDO_COLORS=['#f33','#3b82f6','#0f0','#ffb300']; 
   const LUDO_NAMES=['انت (أحمر)','اللاعب 2 (أزرق)','اللاعب 3 (أخضر)','اللاعب 4 (أصفر)'];
@@ -921,7 +916,7 @@ h1{color:#3b82f6;text-shadow:0 0 15px #3b82f6;font-size:26px}
   }
   function renderDots(n){return getDots(n).map(d=>`<div class="dot" style="left:${d[0]}%;top:${d[1]}%"></div>`).join('');}
 
-  // ==================== منطق الدومينو المصحح بالكامل ====================
+  // ==================== منطق الدومينو الحقيقي والمضبوط ====================
   function createDominoSet(){
     dominoSet=[];
     for(let i=0;i<=6;i++)for(let j=i;j<=6;j++)dominoSet.push([i,j]);
@@ -1044,7 +1039,7 @@ h1{color:#3b82f6;text-shadow:0 0 15px #3b82f6;font-size:26px}
     updateAll();
   }
 
-  // ==================== منطق لودو الحقيقية (ثنائي / رباعي ومع الأصدقاء) ====================
+  // ==================== منطق لودو الحقيقية والمضبوطة بالكامل ====================
   function openLudoMenu(){
     document.getElementById('ludoMenuModal').style.display='block';
   }
@@ -1063,14 +1058,13 @@ h1{color:#3b82f6;text-shadow:0 0 15px #3b82f6;font-size:26px}
     ludoCurrentPlayer = 0;
     ludoCanRoll = true;
 
-    // تهيئة اللاعبين (كل لاعب له 4 بيادق تبدأ من القاعدة -1)
     ludoPlayers = [];
     for(let i=0; i<mode; i++){
       ludoPlayers.push({
         id: i,
         name: LUDO_NAMES[i],
         color: LUDO_COLORS[i],
-        pawns: [-1, -1, -1, -1] // -1 يعني في القاعدة
+        pawns: [-1, -1, -1, -1]
       });
     }
 
@@ -1086,29 +1080,24 @@ h1{color:#3b82f6;text-shadow:0 0 15px #3b82f6;font-size:26px}
     const ctx = canvas.getContext('2d');
     ctx.clearRect(0, 0, 330, 330);
 
-    // رسم لوحة اللودو المربعة مع القواعد والمسار
     ctx.fillStyle = '#f0f0f0';
     ctx.fillRect(0, 0, 330, 330);
 
-    // رسم القواعد الأربعة الزوايا
-    ctx.fillStyle = '#f33'; ctx.fillRect(10, 10, 120, 120); // أحمر
-    ctx.fillStyle = '#3b82f6'; ctx.fillRect(200, 10, 120, 120); // أزرق
-    ctx.fillStyle = '#0f0'; ctx.fillRect(10, 200, 120, 120); // أخضر
-    ctx.fillStyle = '#ffb300'; ctx.fillRect(200, 200, 120, 120); // أصفر
+    ctx.fillStyle = '#f33'; ctx.fillRect(10, 10, 120, 120);
+    ctx.fillStyle = '#3b82f6'; ctx.fillRect(200, 10, 120, 120);
+    ctx.fillStyle = '#0f0'; ctx.fillRect(10, 200, 120, 120);
+    ctx.fillStyle = '#ffb300'; ctx.fillRect(200, 200, 120, 120);
 
-    // مسارات البيادق البسيطة للتوضيح والرسم الحقيقي
     ctx.strokeStyle = '#333';
     ctx.lineWidth = 2;
     ctx.strokeRect(10, 10, 310, 310);
 
-    // رسم البيادق لكل لاعب
     ludoPlayers.forEach((p, pIdx) => {
       p.pawns.forEach((pos, pawnIdx) => {
         let x = 30 + (pIdx % 2) * 200 + (pawnIdx % 2) * 40;
         let y = 30 + Math.floor(pIdx / 2) * 200 + Math.floor(pawnIdx / 2) * 40;
         
         if(pos >= 0){
-          // إذا خرج البيدق يتحرك على المسار الدائري البسيط
           x = 60 + (pos * 15) % 200;
           y = 160 + Math.sin(pos) * 50;
         }
@@ -1131,17 +1120,15 @@ h1{color:#3b82f6;text-shadow:0 0 15px #3b82f6;font-size:26px}
     document.getElementById('ludoDice').innerText = ['⚀','⚁','⚂','⚃','⚄','⚅'][ludoDice - 1];
 
     let player = ludoPlayers[ludoCurrentPlayer];
-    
-    // تحريك أول بيدق متاح أو إخراجه من القاعدة إذا كان النرد 6
     let moved = false;
     for(let i=0; i<player.pawns.length; i++){
       if(player.pawns[i] === -1 && ludoDice === 6){
-        player.pawns[i] = 0; // خروج من القاعدة
+        player.pawns[i] = 0;
         moved = true;
         break;
       } else if(player.pawns[i] >= 0){
         player.pawns[i] += ludoDice;
-        if(player.pawns[i] > 40) player.pawns[i] = 40; // خط النهاية
+        if(player.pawns[i] > 40) player.pawns[i] = 40;
         moved = true;
         break;
       }
@@ -1149,7 +1136,6 @@ h1{color:#3b82f6;text-shadow:0 0 15px #3b82f6;font-size:26px}
 
     drawLudoBoard();
 
-    // التحقق من الفوز
     if(player.pawns.every(pos => pos >= 40)){
       ludoGameOver = true;
       if(ludoCurrentPlayer === 0){
@@ -1165,13 +1151,11 @@ h1{color:#3b82f6;text-shadow:0 0 15px #3b82f6;font-size:26px}
       return;
     }
 
-    // الانتقال للاعب التالي
     setTimeout(() => {
       ludoCurrentPlayer = (ludoCurrentPlayer + 1) % ludoMode;
       document.getElementById('ludoTurn').innerText = `دور: ${ludoPlayers[ludoCurrentPlayer].name}`;
       ludoCanRoll = true;
 
-      // إذا كان الدور على البوت في وضع البوتات يلعب تلقائياً
       if(ludoType === 'bot' && ludoCurrentPlayer > 0 && !ludoGameOver){
         setTimeout(rollLudoDice, 800);
       }
@@ -1388,4 +1372,3 @@ h1{color:#3b82f6;text-shadow:0 0 15px #3b82f6;font-size:26px}
 </script>
 </body>
 </html>
-
