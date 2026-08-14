@@ -1,9 +1,3 @@
-<!DOCTYPE html>
-<html lang="ar" dir="rtl">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1.0,user-scalable=no">
-<title>تطبيق الرافدين</title>
 <style>
 *{box-sizing:border-box}
 body{background:#000;color:#fff;font-family:tahoma,sans-serif;text-align:center;padding:10px;margin:0;padding-bottom:100px}
@@ -65,6 +59,13 @@ h1{color:#3b82f6;text-shadow:0 0 15px #3b82f6;font-size:26px}
 .streakDay.active{background:#0f0;color:#000}
 .broadcastModal .modal-content{background:linear-gradient(135deg,#1e3a8a,#3b82f6)}
 </style>
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,user-scalable=no">
+<title>تطبيق الرافدين</title>
+<!-- ضع هنا كود الـ CSS الموجود في الأعلى -->
 </head>
 <body>
 <div id="splash"><div class="logo">🏛️</div><div style="color:#3b82f6;font-size:28px;font-weight:bold;margin-top:20px">AL-RAFIDAIN</div></div>
@@ -101,7 +102,6 @@ h1{color:#3b82f6;text-shadow:0 0 15px #3b82f6;font-size:26px}
   </div>
 
   <div id="games" class="page"><h2>🎮 الالعاب والمهمات</h2><div id="coins3" class="box">رصيدك: 0 نقطة</div><h3 style="color:#3b82f6">العاب</h3><button class="btn" onclick="openXO()">❌⭕ XO - 50</button><button class="btn" onclick="openDomino()">🎲 دومينو - 50</button><button class="btn" onclick="openLudo()">🎲 لودو الحقيقية - 100</button><button class="btn" onclick="spinWheel()">🎡 العجلة - 50</button><button class="btn" onclick="openBox()">📦 الصندوق - 500</button><button class="btn" onclick="openMemory()">🧠 ميموري - 50</button><h3 style="color:#3b82f6;margin-top:25px">🎯 المهمات اليومية</h3><div id="dailyTasks"></div></div>
-  <div id="leaderboard" class="page"><h2>🏆 لوحة المتصدرين</h2><button class="btn btn-yellow" onclick="loadLeaderboard('coins')">اكثر نقاط</button><button class="btn btn-yellow" onclick="loadLeaderboard('gifts')">اكثر هدايا</button><div id="leaderboardList"></div></div>
   <div id="friends" class="page"><h2>👥 الأصدقاء والبحث</h2><div style="display:flex;gap:5px;justify-content:center;max-width:400px;margin:auto"><input type="text" id="searchFriendsInput" class="input" placeholder="ابحث عن اسم صديق..." style="width:70%"><button class="btn btn-blue" style="width:25%;margin:8px 0" onclick="searchFriends()">بحث 🔍</button></div><h3 style="color:#3b82f6;margin-top:15px;text-align:right">نتائج البحث / مستخدمون</h3><div id="searchResults"><p style="color:#aaa">اكتب اسم للبحث</p></div><hr style="border-color:#333;margin:20px 0"><h3 style="color:#ffb300;text-align:right">📩 طلبات الصداقة الواردة</h3><div id="friendRequestsList"><p style="color:#aaa">لا توجد طلبات صداقة جديدة</p></div><hr style="border-color:#333;margin:20px 0"><h3 style="color:#0f0;text-align:right">قائمة أصدقائي</h3><div id="friendsList"><p style="color:#aaa">ليس لديك أصدقاء بعد</p></div></div>
   <div id="privateChat" class="page"><button class="btn" onclick="showPage('friends',null)">🔙 رجوع للأصدقاء</button><h2 id="privateChatTitle">مراسلة الصديق</h2><div id="privateChatBox" class="chatBox"></div><div style="display:flex;gap:8px;justify-content:center;max-width:400px;margin:auto"><input type="text" id="privateChatInput" class="input" placeholder="اكتب رسالة خاصة..." style="width:70%" onkeypress="if(event.key=='Enter')sendPrivateMsg()"><button class="btn" style="width:25%;margin:8px 0" onclick="sendPrivateMsg()">ارسال</button></div></div>
   <div id="rooms" class="page"><h2>🏠 الغرف</h2><div id="myRoomSection"></div><div id="createRoomBtnSection"><button class="btn btn-green" onclick="openCreateRoom()">➕ انشاء غرفة - 80000</button></div><button class="btn" onclick="openGlobalChat()">🌍 الدردشة العامة</button><input type="text" id="searchRoomId" class="input" placeholder="ادخل ايدي الغرفة للبحث"><button class="btn" onclick="joinRoomById()">دخول</button><h3 style="color:#3b82f6;margin-top:20px">الغرف الموجودة</h3><div id="roomsList"><p style="color:#aaa">لا توجد غرف</p></div></div>
@@ -111,6 +111,14 @@ h1{color:#3b82f6;text-shadow:0 0 15px #3b82f6;font-size:26px}
     <button class="btn" onclick="showPage('rooms',null)">🔙 رجوع</button>
     <h2 id="roomNameTitle"></h2>
     <p class="roomId" id="roomIdTitle"></p>
+    <div class="box" style="background:#0a0a0a; border-color:#ffb300;">
+      <h3 style="color:#ffb300">👥 عدد الأعضاء في الغرفة: <span id="roomMembersCount" style="color:#0f0">1</span></h3>
+      <div id="roomAdminsSection" style="margin-top:10px;">
+        <input type="text" id="newAdminInput" class="input" placeholder="اكتب اسم العضو لإضافته مشرف">
+        <button class="btn btn-yellow" style="padding:10px;" onclick="addRoomAdmin()">➕ إضافة مشرف</button>
+        <div id="roomAdminsList" style="margin-top:10px; font-size:14px; color:#aaa;"></div>
+      </div>
+    </div>
     <div style="display:flex;gap:10px;justify-content:center;max-width:400px;margin:auto">
       <button id="editRoomBtn" class="btn btn-yellow" style="display:none;width:30%" onclick="alert('قريبا')">✏️ تعديل</button>
       <button id="clearRoomChatBtn" class="btn btn-red" style="display:none;width:30%" onclick="clearRoomChat()">🗑️ مسح الدردشة</button>
@@ -127,13 +135,22 @@ h1{color:#3b82f6;text-shadow:0 0 15px #3b82f6;font-size:26px}
 
   <div id="referral" class="page"><h2>🎁 نظام الاحالة والتحويل</h2><div class="box"><h3>🌟 ادعُ اصدقائك واربح</h3><div id="myReferralCode" class="referralCode">جاري التحميل...</div><div id="myReferralLink" class="referralCode">جاري التحميل...</div><button class="btn btn-blue" onclick="copyCode()">📋 نسخ رسالة الدعوة</button><button class="btn btn-blue" onclick="copyLink()">🔗 نسخ الرابط</button></div><div class="box"><h3>💸 تحويل نقاط لصديق</h3><input type="text" id="transferRefInput" class="input" placeholder="ادخل رمز الاحاله لصديقك"><input type="number" id="transferAmountInput" class="input" placeholder="كمية النقاط"><button class="btn btn-green" onclick="transferCoins()">تحويل النقاط 🚀</button></div></div>
   <div id="log" class="page"><h2>📜 سجل المعاملات</h2><div id="logList"></div><button class="btn btn-red" onclick="clearLog()">🗑️ مسح السجل</button></div>
-  <div id="profile" class="page"><h2>👤 الملف الشخصي</h2><div class="box"><h3 id="userName"></h3></div><div class="box"><h3>🎁 رمز الاحالة الخاص بك</h3><div id="myReferralCode2" class="referralCode">جاري التحميل...</div><button class="btn btn-blue" onclick="copyCode()">📋 نسخ</button></div><button class="btn btn-red" onclick="logout()">🚪 تسجيل خروج</button></div>
+  <div id="profile" class="page">
+    <h2>👤 الملف الشخصي</h2>
+    <div class="box"><h3 id="userName"></h3></div>
+    <div class="box"><h3>🎁 رمز الاحالة الخاص بك</h3><div id="myReferralCode2" class="referralCode">جاري التحميل...</div><button class="btn btn-blue" onclick="copyCode()">📋 نسخ</button></div>
+    <button class="btn btn-red" onclick="logout()">🚪 تسجيل خروج</button>
+    <div class="box" style="margin-top:30px; border-color:#f33;">
+      <h3 style="color:#f33">⚠️ منطقة الخطر</h3>
+      <p style="font-size:12px; color:#aaa;">حذف الحساب نهائياً من قاعدة البيانات</p>
+      <button class="btn btn-red" onclick="deleteMyAccount()">🗑️ حذف الحساب</button>
+    </div>
+  </div>
 
   <div class="bottomNav">
     <div class="navItem active" onclick="showPage('home',this)"><div class="navIcon">⚙️</div><div>العداد</div></div>
     <div class="navItem" onclick="showPage('store',this)"><div class="navIcon">🛒</div><div>المتجر</div></div>
     <div class="navItem" onclick="showPage('games',this)"><div class="navIcon">🎮</div><div>الالعاب</div></div>
-    <div class="navItem" onclick="showPage('leaderboard',this)"><div class="navIcon">🏆</div><div>المتصدرين</div></div>
     <div class="navItem" onclick="showPage('friends',this)"><div class="navIcon">👥</div><div>أصدقاء</div></div>
     <div class="navItem" onclick="showPage('rooms',this)"><div class="navIcon">🏠</div><div>الغرف</div></div>
     <div class="navItem" onclick="showPage('referral',this)"><div class="navIcon">🎁</div><div>احالة</div></div>
@@ -263,6 +280,19 @@ h1{color:#3b82f6;text-shadow:0 0 15px #3b82f6;font-size:26px}
     }
   }
 
+  async function deleteMyAccount(){
+    if(confirm("هل أنت متأكد من حذف حسابك نهائياً؟ لا يمكن التراجع عن هذا الإجراء.")){
+      try {
+        await deleteDoc(doc(db, "users", currentUserId));
+        localStorage.clear();
+        alert("تم حذف الحساب بنجاح.");
+        location.reload();
+      } catch(e) {
+        alert("حدث خطأ أثناء حذف الحساب.");
+      }
+    }
+  }
+
   async function loadUserData(){
     const userSnap=await getDoc(doc(db,"users",currentUserId));
     if(userSnap.exists()){
@@ -356,21 +386,37 @@ h1{color:#3b82f6;text-shadow:0 0 15px #3b82f6;font-size:26px}
     if(rooms.find(r=>r.id==id)){enterRoom(id);}else{alert("الغرفة غير موجودة");}
   }
 
-  function enterRoom(id){
+  async function enterRoom(id){
     currentRoom=rooms.find(r=>r.id==id);
     document.getElementById('roomNameTitle').innerText=currentRoom.name;
     document.getElementById('roomIdTitle').innerText='ID: '+currentRoom.id;
     document.getElementById('editRoomBtn').style.display = (currentRoom.owner==currentUser)?'inline-block':'none';
     document.getElementById('clearRoomChatBtn').style.display = (currentRoom.owner==currentUser)?'inline-block':'none';
     document.getElementById('deleteRoomBtn').style.display = (currentRoom.owner==currentUser)?'inline-block':'none';
+    
+    // إدارة ظهور قسم إضافة مشرف للمالك فقط
+    let isOwner = currentRoom.owner == currentUser;
+    document.getElementById('newAdminInput').style.display = isOwner ? 'block' : 'none';
+    document.querySelector('#roomAdminsSection button').style.display = isOwner ? 'block' : 'none';
+
     showPage('chatRoom',null);
+
+    // إضافة المستخدم للغرفة (تحديث الأعضاء) إذا لم يكن موجوداً
+    let members = currentRoom.members || [];
+    if(!members.includes(currentUser)){
+      members.push(currentUser);
+      await updateDoc(doc(db, "rooms", id), { members: members });
+    }
+
     onSnapshot(doc(db, "rooms", id), (snap) => {
       if(snap.exists()){
         currentRoom=snap.data();
         roomMics=currentRoom.mics||Array(7).fill(null);
         renderMics();
+        renderRoomInfo();
       }
     });
+
     if(unsubRoomChat) unsubRoomChat();
     unsubRoomChat = onSnapshot(doc(db, "roomMessages", id), (docSnap) => {
       roomMessages[id] = docSnap.exists()? (docSnap.data().messages || []) : [];
@@ -381,6 +427,35 @@ h1{color:#3b82f6;text-shadow:0 0 15px #3b82f6;font-size:26px}
       g+=`<button class="giftBtn" onclick="sendGift('${gf.icon}','${gf.name}',${gf.price})">${gf.icon}<br>${gf.price}</button>`;
     });
     document.getElementById('giftsBar').innerHTML=g;
+  }
+
+  function renderRoomInfo(){
+    let members = currentRoom.members || [];
+    document.getElementById('roomMembersCount').innerText = members.length;
+    
+    let admins = currentRoom.admins || [];
+    let adminsHtml = admins.length > 0 ? "المشرفون: " + admins.map(a => `${a} ${currentRoom.owner==currentUser?`<span style="color:red; cursor:pointer;" onclick="removeRoomAdmin('${a}')">❌</span>`:''}`).join(', ') : "لا يوجد مشرفين";
+    document.getElementById('roomAdminsList').innerHTML = adminsHtml;
+  }
+
+  async function addRoomAdmin(){
+    if(!currentRoom || currentRoom.owner !== currentUser) return;
+    let adminName = document.getElementById('newAdminInput').value.trim();
+    if(!adminName) return;
+    let admins = currentRoom.admins || [];
+    if(admins.includes(adminName)) return alert("هذا العضو مشرف مسبقاً");
+    admins.push(adminName);
+    await updateDoc(doc(db, "rooms", currentRoom.id), { admins: admins });
+    document.getElementById('newAdminInput').value = '';
+    showToast("تمت إضافة المشرف بنجاح");
+  }
+
+  async function removeRoomAdmin(adminName){
+    if(!currentRoom || currentRoom.owner !== currentUser) return;
+    let admins = currentRoom.admins || [];
+    admins = admins.filter(a => a !== adminName);
+    await updateDoc(doc(db, "rooms", currentRoom.id), { admins: admins });
+    showToast("تم إزالة المشرف");
   }
 
   async function deleteCurrentRoom(){
@@ -401,13 +476,15 @@ h1{color:#3b82f6;text-shadow:0 0 15px #3b82f6;font-size:26px}
     let grid=document.getElementById('roomMicsGrid');
     let html='';
     roomMics.forEach((m,i)=>{
-      html+=`<div class="micSeat ${m?'active':''}">${m||`مايك ${i+1}`} ${currentRoom.owner==currentUser?`<button class="micControl" onclick="toggleMicOwner(${i})">${m?'اغلاق':'فتح'}</button>`:''}</div>`
+      let canControl = (currentRoom.owner == currentUser || (currentRoom.admins && currentRoom.admins.includes(currentUser)));
+      html+=`<div class="micSeat ${m?'active':''}">${m||`مايك ${i+1}`} ${canControl?`<button class="micControl" onclick="toggleMicOwner(${i})">${m?'اغلاق':'فتح'}</button>`:''}</div>`
     });
     grid.innerHTML=html;
   }
 
   async function toggleMicOwner(i){
-    if(currentRoom.owner!=currentUser)return;
+    let canControl = (currentRoom.owner == currentUser || (currentRoom.admins && currentRoom.admins.includes(currentUser)));
+    if(!canControl)return;
     roomMics[i]=roomMics[i]?null:currentUser;
     await updateDoc(doc(db,"rooms",currentRoom.id),{mics:roomMics});
   }
@@ -611,7 +688,6 @@ h1{color:#3b82f6;text-shadow:0 0 15px #3b82f6;font-size:26px}
     if(id=='rooms')loadRooms();
     if(id=='globalChat')loadGlobalChat();
     if(id=='friends')loadFriendsPage();
-    if(id=='leaderboard')loadLeaderboard('coins');
   }
 
   function toDollar(n){return (n/RATE).toFixed(2);}
@@ -761,17 +837,6 @@ h1{color:#3b82f6;text-shadow:0 0 15px #3b82f6;font-size:26px}
     await saveUserData();
     showToast(`+${dailyTasks[task].reward} نقطة`);
     updateAll();loadTasks();
-  }
-
-  async function loadLeaderboard(type){
-    let q=query(collection(db,"users"),orderBy(type=='gifts'?'totalGiftsSent':'coins','desc'),limit(20));
-    let snap=await getDocs(q);
-    let html='';
-    snap.forEach((d,i)=>{
-      let data=d.data();
-      html+=`<div class="leaderItem"><div>#${i+1} ${data.name}</div><div>${type=='gifts'?data.totalGiftsSent:data.coins.toLocaleString()}</div></div>`;
-    });
-    document.getElementById('leaderboardList').innerHTML=html;
   }
 
   function getDots(n){
@@ -962,7 +1027,7 @@ h1{color:#3b82f6;text-shadow:0 0 15px #3b82f6;font-size:26px}
     if(!name)return alert("ادخل اسم الغرفة");
     if(coins<80000)return alert("تحتاج 80000 نقطة");
     coins-=80000;let id='RM'+Math.floor(Math.random()*900000);
-    await setDoc(doc(db,"rooms",id),{id,name,owner:currentUser,members:[currentUser],mics:Array(7).fill(null)});
+    await setDoc(doc(db,"rooms",id),{id,name,owner:currentUser,members:[currentUser],admins:[],mics:Array(7).fill(null)});
     addLog(`انشاء غرفة ${name}`,-80000,'buy');await saveUserData();
     closeModal('createRoomModal');enterRoom(id);
   }
@@ -990,10 +1055,10 @@ h1{color:#3b82f6;text-shadow:0 0 15px #3b82f6;font-size:26px}
   }
 
   window.createAccount = createAccount;
+  window.deleteMyAccount = deleteMyAccount;
   window.showPage = showPage;
   window.logout = logout;
   window.claimStreak = claimStreak;
-  window.loadLeaderboard = loadLeaderboard;
   window.searchFriends = searchFriends;
   window.sendFriendRequest = sendFriendRequest;
   window.acceptFriendRequest = acceptFriendRequest;
@@ -1019,6 +1084,8 @@ h1{color:#3b82f6;text-shadow:0 0 15px #3b82f6;font-size:26px}
   window.joinRoomById = joinRoomById;
   window.enterRoom = enterRoom;
   window.deleteCurrentRoom = deleteCurrentRoom;
+  window.addRoomAdmin = addRoomAdmin;
+  window.removeRoomAdmin = removeRoomAdmin;
   window.toggleMicOwner = toggleMicOwner;
   window.sendRoomMsg = sendRoomMsg;
   window.clearRoomChat = clearRoomChat;
@@ -1031,4 +1098,3 @@ h1{color:#3b82f6;text-shadow:0 0 15px #3b82f6;font-size:26px}
 </script>
 </body>
 </html>
-
