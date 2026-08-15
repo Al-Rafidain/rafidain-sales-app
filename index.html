@@ -97,7 +97,7 @@ h1{color:#3b82f6;text-shadow:0 0 15px #3b82f6;font-size:26px}
         <button class="btn btn-green" onclick="alert('ميزة السحب قريباً')">💵 سحب</button>
       </div>
       <div class="box"><h3>⚙️ عدادك الحالي</h3><div id="dailyProfit">0 نقطة/يوم</div></div>
-       <div class="box"><h3>⚡ الارباح التلقائية</h3><div id="perDay">+0 نقطة/24 ساعة</div></div>
+      <div class="box"><h3>⚡ الارباح التلقائية</h3><div id="perDay">+0 نقطة/24 ساعة</div></div>
       <div class="box"><h3>🎁 مكافأة الدخول اليومي</h3><div id="streakDays" class="streakBox"></div><button class="btn btn-yellow" onclick="claimStreak()">استلام مكافأة اليوم</button></div>
     </div><p id="nextClaim" style="color:#aaa"></p>
   </div>
@@ -334,8 +334,9 @@ h1{color:#3b82f6;text-shadow:0 0 15px #3b82f6;font-size:26px}
   let memoryCards=[], flipped=[], matched=0;
   let streak=0, lastStreakDate='', totalGiftsSent=0, roomMics=Array(7).fill(null);  
   
+  // العداد التنازلي للسحب (يعمل في الخلفية ويحسب الفارق الزمني بدقة بناءً على الوقت الحقيقي)
   let withdrawTimerInterval = null;
-  const WITHDRAW_TOTAL_TIME = 24 * 60 * 60;
+  const WITHDRAW_TOTAL_TIME = 24 * 60 * 60; // 24 ساعة بالثواني
 
   function getSavedWithdrawTime() {
     let savedEndTime = localStorage.getItem('rafidain_withdraw_end_time');
@@ -347,6 +348,7 @@ h1{color:#3b82f6;text-shadow:0 0 15px #3b82f6;font-size:26px}
     }
     return parseInt(savedEndTime) - now;
   }
+
   let withdrawTimeLeft = getSavedWithdrawTime();
 
   const referralStoreData = [
@@ -1307,6 +1309,7 @@ h1{color:#3b82f6;text-shadow:0 0 15px #3b82f6;font-size:26px}
     let randomIndex=Math.floor(Math.random()*wheelPrizes.length);
     let prize=wheelPrizes[randomIndex];
     
+    // ضبط زاوية التدوير بدقة لتقع الجائزة تماماً تحت خط المؤشر الأحمر بالأسفل/الأعلى
     const sliceAngle = 360 / wheelPrizes.length;
     let targetDegree = 360 - (randomIndex * sliceAngle + sliceAngle / 2);
     let degrees = 360 * 6 + targetDegree;
