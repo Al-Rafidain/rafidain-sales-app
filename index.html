@@ -112,11 +112,10 @@ h1{color:#3b82f6;text-shadow:0 0 15px #3b82f6;font-size:26px}
     <h3 style="color:#3b82f6;margin-top:25px">🎯 المهمات اليومية</h3>
     <div id="dailyTasks"></div>
   </div>
-
   <div id="friends" class="page">
-    <h2>👥 الأصدقاء والبحث</h2>
-    <div style="display:flex;gap:5px;justify-content:center;max-width:400px;margin:auto"><input type="text" id="searchFriendsInput" class="input" placeholder="ابحث عن اسم صديق..." style="width:70%"><button class="btn btn-blue" style="width:25%;margin:8px 0" onclick="searchFriends()">بحث 🔍</button></div>
-    <h3 style="color:#3b82f6;margin-top:15px;text-align:right">نتائج البحث / مستخدمون</h3><div id="searchResults"><p style="color:#aaa">اكتب اسم للبحث</p></div>
+    <h2>👥 الأصدقاء والبحث بررمز الإحالة</h2>
+    <div style="display:flex;gap:5px;justify-content:center;max-width:400px;margin:auto"><input type="text" id="searchFriendsInput" class="input" placeholder="ابحث بررمز الإحالة أو الاسم..." style="width:70%"><button class="btn btn-blue" style="width:25%;margin:8px 0" onclick="searchFriends()">بحث 🔍</button></div>
+    <h3 style="color:#3b82f6;margin-top:15px;text-align:right">نتائج البحث / مستخدمون</h3><div id="searchResults"><p style="color:#aaa">اكتب رمز الإحالة أو الاسم للبحث</p></div>
     <hr style="border-color:#333;margin:20px 0">
     <h3 style="color:#ffb300;text-align:right">📩 طلبات الصداقة الواردة</h3><div id="friendRequestsList"><p style="color:#aaa">لا توجد طلبات صداقة جديدة</p></div>
     <hr style="border-color:#333;margin:20px 0">
@@ -145,7 +144,6 @@ h1{color:#3b82f6;text-shadow:0 0 15px #3b82f6;font-size:26px}
     <div id="globalChatBox" class="chatBox"></div>
     <div style="display:flex;gap:8px;justify-content:center;max-width:400px;margin:auto"><input type="text" id="globalChatInput" class="input" placeholder="اكتب هنا" style="width:70%" onkeypress="if(event.key=='Enter')sendGlobalMsg()"><button class="btn" style="width:25%;margin:8px 0" onclick="sendGlobalMsg()">ارسال</button></div>
   </div>
-
   <div id="chatRoom" class="page">
     <button class="btn" onclick="showPage('rooms',null)">🔙 رجوع</button>
     <h2 id="roomNameTitle"></h2>
@@ -179,10 +177,14 @@ h1{color:#3b82f6;text-shadow:0 0 15px #3b82f6;font-size:26px}
   </div>
 
   <div id="log" class="page"><h2>📜 سجل المعاملات</h2><div id="logList"></div><button class="btn btn-red" onclick="clearLog()">🗑️ مسح السجل</button></div>
-  
   <div id="profile" class="page">
-    <h2>👤 الملف الشخصي</h2>
+    <h2>👤 الملف الشخصي والتخصيص</h2>
     <div class="box"><h3 id="userName"></h3></div>
+    <div class="box">
+      <h3>✏️ تعديل الملف الشخصي</h3>
+      <input type="text" id="editProfileName" class="input" placeholder="تعديل اسمك الجديد">
+      <button class="btn btn-yellow" onclick="saveProfileChanges()">حفظ التعديلات الشخصية</button>
+    </div>
     <div class="box"><h3>🎁 رمز الاحالة الخاص بك</h3><div id="myReferralCode2" class="referralCode">جاري التحميل...</div><button class="btn btn-blue" onclick="copyCode()">📋 نسخ</button></div>
     <button class="btn btn-red" onclick="logout()">🚪 تسجيل خروج</button>
     <div class="box" style="margin-top:30px; border-color:#f33;">
@@ -210,7 +212,7 @@ h1{color:#3b82f6;text-shadow:0 0 15px #3b82f6;font-size:26px}
 
 <div id="dominoModal" class="modal">
   <div class="modal-content">
-    <h2>🎲 دومينو ضد البوت</h2>
+    <h2>🎲 دومينو مرتبطة ضد البوت</h2>
     <div style="font-size:13px;color:#aaa;margin-bottom:5px">قطع البوت:</div>
     <div id="botTiles" style="display:flex;flex-wrap:wrap;justify-content:center;min-height:40px"></div>
     <hr style="border-color:#333">
@@ -227,10 +229,9 @@ h1{color:#3b82f6;text-shadow:0 0 15px #3b82f6;font-size:26px}
     <button class="btn" onclick="closeModal('dominoModal')">خروج</button>
   </div>
 </div>
-
 <div id="ludoMenuModal" class="modal">
   <div class="modal-content" style="max-width:350px">
-    <h2>🎲 اختيار نمط لودو</h2>
+    <h2>🎲 اختيار نمط لودو الحقيقية والواقعية</h2>
     <button class="btn btn-blue" onclick="startLudoGame(2, 'bot')">🤖 لعب ثنائي ضد البوت</button>
     <button class="btn btn-green" onclick="startLudoGame(4, 'bot')">🤖 لعب رباعي ضد البوتات</button>
     <button class="btn btn-yellow" onclick="startLudoGame(2, 'friend')">👥 لعب ثنائي مع صديق</button>
@@ -240,10 +241,10 @@ h1{color:#3b82f6;text-shadow:0 0 15px #3b82f6;font-size:26px}
 
 <div id="ludoModal" class="modal">
   <div class="modal-content" style="max-width:380px">
-    <h2>🎲 لودو الحقيقية</h2>
+    <h2>🎲 لودو الحقيقية والواقعية</h2>
     <p id="ludoTurn" style="color:#ffb300;font-size:16px;font-weight:bold"></p>
     <canvas id="ludoBoard" width="330" height="330" style="background:#fff;border:3px solid #3b82f6;border-radius:10px;margin:10px auto;display:block;cursor:pointer"></canvas>
-    <button class="btn btn-yellow" id="ludoDiceBtn" onclick="rollLudoDice()">🎲 ارمي النرد</button>
+    <button class="btn btn-yellow" id="ludoDiceBtn" onclick="rollLudoDice()">🎲 ارمي النرد الحقيقي</button>
     <p id="ludoDice" style="font-size:35px;margin:5px">🎲</p>
     <button class="btn" onclick="closeModal('ludoModal')">خروج</button>
   </div>
@@ -288,6 +289,24 @@ h1{color:#3b82f6;text-shadow:0 0 15px #3b82f6;font-size:26px}
 
   function generateUniqueRefCode(){return 'RAF' + Date.now().toString().slice(-4) + Math.floor(1000 + Math.random() * 9000);}
 
+  async function requestNotificationPermission() {
+    if ("Notification" in window) {
+      if (Notification.permission !== "granted") {
+        await Notification.requestPermission();
+      }
+    }
+  }
+
+  function sendBackgroundNotification(title, bodyText) {
+    if ("Notification" in window && Notification.permission === "granted") {
+      if (document.hidden) {
+        try {
+          new Notification(title, { body: bodyText, icon: "🏛️" });
+        } catch(e) {}
+      }
+    }
+  }
+
   async function saveUserData(){
     if(!currentUserId)return;
     try{
@@ -312,6 +331,7 @@ h1{color:#3b82f6;text-shadow:0 0 15px #3b82f6;font-size:26px}
       await loadUserData();
       document.getElementById('registerPage').style.display='none';
       document.getElementById('mainApp').style.display='block';
+      requestNotificationPermission();
       listenToGlobalChat();listenToRooms();listenToUserData();checkBroadcast();
     }else{
       document.getElementById('registerPage').style.display='flex';
@@ -343,6 +363,7 @@ h1{color:#3b82f6;text-shadow:0 0 15px #3b82f6;font-size:26px}
       await loadUserData();
       document.getElementById('registerPage').style.display='none';
       document.getElementById('mainApp').style.display='block';
+      requestNotificationPermission();
       showToast('مرحبا بك مجدداً '+name);
       listenToGlobalChat();listenToRooms();listenToUserData();checkBroadcast();
     } else {
@@ -360,9 +381,20 @@ h1{color:#3b82f6;text-shadow:0 0 15px #3b82f6;font-size:26px}
       await saveUserData();
       document.getElementById('registerPage').style.display='none';
       document.getElementById('mainApp').style.display='block';
+      requestNotificationPermission();
       showToast('مرحبا بك '+name);
       listenToGlobalChat();listenToRooms();listenToUserData();checkBroadcast();
     }
+  }
+
+  async function saveProfileChanges(){
+    let newName = document.getElementById('editProfileName').value.trim();
+    if(!newName) return alert("يرجى إدخال اسم جديد صحيح");
+    currentUser = newName;
+    localStorage.setItem('rafidain_user', currentUser);
+    await saveUserData();
+    document.getElementById('userName').innerText = currentUser;
+    showToast("✅ تم تحديث الملف الشخصي بنجاح");
   }
 
   async function deleteMyAccount(){
@@ -395,6 +427,7 @@ h1{color:#3b82f6;text-shadow:0 0 15px #3b82f6;font-size:26px}
       totalGiftsSent=data.totalGiftsSent||0;
       currentUser=data.name||currentUser;
       document.getElementById('userName').innerText=currentUser;
+      if(document.getElementById('editProfileName')) document.getElementById('editProfileName').value = currentUser;
       setupReferral();updateAll();renderStreak();
     }
   }
@@ -410,7 +443,14 @@ h1{color:#3b82f6;text-shadow:0 0 15px #3b82f6;font-size:26px}
       let box=document.getElementById('privateChatBox');box.innerHTML='';
       if(docSnap.exists()){
         let messages=docSnap.data().messages||[];
-        messages.forEach(m=>{let cls=m.u===currentUser?'me':'other';box.innerHTML+=`<div class="chatMsg ${cls}"><b>${m.u}:</b> ${m.t}</div>`;});
+        messages.forEach(m=>{
+          let cls=m.u===currentUser?'me':'other';
+          box.innerHTML+=`<div class="chatMsg ${cls}"><b>${m.u}:</b> ${m.t}</div>`;
+        });
+        let lastMsg = messages[messages.length - 1];
+        if(lastMsg && lastMsg.u !== currentUser){
+          sendBackgroundNotification("رسالة خاصة جديدة من " + lastMsg.u, lastMsg.t);
+        }
       }
       box.scrollTop=box.scrollHeight;
     });
@@ -583,14 +623,30 @@ h1{color:#3b82f6;text-shadow:0 0 15px #3b82f6;font-size:26px}
     await setDoc(doc(db,"roomMessages",currentRoom.id),{messages:[]});
   }
 
-  function loadChat(){
+  async function loadChat(){
     let box=document.getElementById('roomChatBox');
     box.innerHTML='';
     let msgs=roomMessages[currentRoom.id]||[];
+    
+    let usersQuery = await getDocs(collection(db, "users"));
+    let userRefMap = {};
+    usersQuery.forEach(uDoc => {
+      let uData = uDoc.data();
+      if(uData.name) {
+        userRefMap[uData.name] = uData.referral || 'بدون رمز';
+      }
+    });
+
     msgs.forEach(m=>{
       let cls=m.u===currentUser?'me':'other';
-      box.innerHTML+=`<div class="chatMsg ${cls}"><b>${m.u}:</b> ${m.t}</div>`;
+      let senderRef = userRefMap[m.u] || 'RAF...';
+      box.innerHTML+=`<div class="chatMsg ${cls}"><b>${m.u} <span style="color:#ffb300;font-size:11px;">[${senderRef}]</span>:</b> ${m.t}</div>`;
     });
+
+    let lastMsg = msgs[msgs.length - 1];
+    if(lastMsg && lastMsg.u !== currentUser){
+      sendBackgroundNotification("رسالة جديدة في الغرفة من " + lastMsg.u, lastMsg.t);
+    }
     box.scrollTop=box.scrollHeight;
   }
 
@@ -625,14 +681,15 @@ h1{color:#3b82f6;text-shadow:0 0 15px #3b82f6;font-size:26px}
   async function searchFriends(){
     let queryVal=document.getElementById('searchFriendsInput').value.trim();
     let resContainer=document.getElementById('searchResults');
-    if(!queryVal){resContainer.innerHTML='<p style="color:#aaa">اكتب اسم للبحث</p>';return;}
+    if(!queryVal){resContainer.innerHTML='<p style="color:#aaa">اكتب رمز الإحالة أو الاسم للبحث</p>';return;}
     resContainer.innerHTML='<p style="color:#aaa">جاري البحث...</p>';
     let querySnapshot=await getDocs(collection(db,"users"));
     let html='';let found=false;
     querySnapshot.forEach((uDoc)=>{
       let uData=uDoc.data();
       let uName=uData.name||uDoc.id;
-      if(uName.toLowerCase().includes(queryVal.toLowerCase())&&uName.toLowerCase()!==currentUser.toLowerCase()){
+      let uRef=uData.referral||'';
+      if((uName.toLowerCase().includes(queryVal.toLowerCase()) || uRef.toLowerCase().includes(queryVal.toLowerCase())) && uName.toLowerCase()!==currentUser.toLowerCase()){
         found=true;
         let isFriend=myFriends.includes(uName);
         let hasSent=sentRequests.includes(uName);
@@ -640,10 +697,10 @@ h1{color:#3b82f6;text-shadow:0 0 15px #3b82f6;font-size:26px}
         if(isFriend){btnHtml=`<button class="btn btn-red" style="width:auto;padding:8px 15px;margin:0" onclick="removeFriend('${uName}')">إزالة صديق</button>`;}
         else if(hasSent){btnHtml=`<button class="btn" style="width:auto;padding:8px 15px;margin:0;background:#555" disabled>تم إرسال الطلب</button>`;}
         else{btnHtml=`<button class="btn btn-green" style="width:auto;padding:8px 15px;margin:0" onclick="sendFriendRequest('${uName}')">إضافة طلب ➕</button>`;}
-        html+=`<div class="userItem"><div><b>👤 ${uName}</b></div><div>${btnHtml}</div></div>`;
+        html+=`<div class="userItem"><div><b>👤 ${uName}</b> <span style="color:#f0f;font-size:12px;">[${uRef}]</span></div><div>${btnHtml}</div></div>`;
       }
     });
-    resContainer.innerHTML=found?html:'<p style="color:#aaa">لم يتم العثور على مستخدم</p>';
+    resContainer.innerHTML=found?html:'<p style="color:#aaa">لم يتم العثور على مستخدم بهذا الرمز أو الاسم</p>';
   }
 
   async function sendFriendRequest(targetName){
@@ -959,7 +1016,7 @@ h1{color:#3b82f6;text-shadow:0 0 15px #3b82f6;font-size:26px}
       dominoLeftEnd = tile[0];
       played = true;
     } else {
-      return alert("لا يمكنك لعب هذه القطعة هنا!");
+      return alert("لا يمكنك لعب هذه القطعة هنا! يجب أن تتطابق مع أطراف الطاولة المفتوحة.");
     }
 
     if(played){
@@ -970,7 +1027,7 @@ h1{color:#3b82f6;text-shadow:0 0 15px #3b82f6;font-size:26px}
         return;
       }
       dominoTurn = 'bot';
-      document.getElementById('dominoResult').innerText = 'دور البوت يفكر...';
+      document.getElementById('dominoResult').innerText = 'دور البوت يفكر ويطابق القطع...';
       setTimeout(botDominoTurn, 1000);
     }
   }
@@ -981,7 +1038,7 @@ h1{color:#3b82f6;text-shadow:0 0 15px #3b82f6;font-size:26px}
     let newTile = dominoSet.pop();
     dominoMy.push(newTile);
     renderDomino();
-    showToast("تم سحب قطعة من البنك");
+    showToast("تم سحب قطعة مرتبطة من البنك");
   }
 
   function passDominoTurn(){
@@ -1029,7 +1086,7 @@ h1{color:#3b82f6;text-shadow:0 0 15px #3b82f6;font-size:26px}
     if(won){
       coins += 250;
       addLog('فوز دومينو', 250, 'win');
-      document.getElementById('dominoResult').innerText = '🎉 مبروك فزت! +250 نقطة';
+      document.getElementById('dominoResult').innerText = '🎉 مبروك فزت بالدومينو وترابطها! +250 نقطة';
     } else {
       document.getElementById('dominoResult').innerText = '❌ خسرت الجولة أمام البوت!';
     }
@@ -1042,7 +1099,7 @@ h1{color:#3b82f6;text-shadow:0 0 15px #3b82f6;font-size:26px}
   }
 
   function startLudoGame(mode, type){
-    if(coins < 100) return alert("تحتاج 100 نقطة للعب لودو!");
+    if(coins < 100) return alert("تحتاج 100 نقطة للعب لودو الحقيقية!");
     coins -= 100;
     addLog('لعب لودو الحقيقية', -100, 'buy');
     if(!dailyTasks.play.done)completeTask('play');
@@ -1061,7 +1118,7 @@ h1{color:#3b82f6;text-shadow:0 0 15px #3b82f6;font-size:26px}
         id: i,
         name: LUDO_NAMES[i],
         color: LUDO_COLORS[i],
-        pawns: [-1, -1, -1, -1]
+        pawns: [0, 0, 0, 0]
       });
     }
 
@@ -1077,30 +1134,31 @@ h1{color:#3b82f6;text-shadow:0 0 15px #3b82f6;font-size:26px}
     const ctx = canvas.getContext('2d');
     ctx.clearRect(0, 0, 330, 330);
 
-    ctx.fillStyle = '#f0f0f0';
+    ctx.fillStyle = '#f8f8f8';
     ctx.fillRect(0, 0, 330, 330);
 
-    ctx.fillStyle = '#f33'; ctx.fillRect(10, 10, 120, 120);
-    ctx.fillStyle = '#3b82f6'; ctx.fillRect(200, 10, 120, 120);
-    ctx.fillStyle = '#0f0'; ctx.fillRect(10, 200, 120, 120);
-    ctx.fillStyle = '#ffb300'; ctx.fillRect(200, 200, 120, 120);
+    ctx.fillStyle = '#f33'; ctx.fillRect(10, 10, 110, 110);
+    ctx.fillStyle = '#3b82f6'; ctx.fillRect(210, 10, 110, 110);
+    ctx.fillStyle = '#0f0'; ctx.fillRect(10, 210, 110, 110);
+    ctx.fillStyle = '#ffb300'; ctx.fillRect(210, 210, 110, 110);
 
     ctx.strokeStyle = '#333';
-    ctx.lineWidth = 2;
+    ctx.lineWidth = 3;
     ctx.strokeRect(10, 10, 310, 310);
 
     ludoPlayers.forEach((p, pIdx) => {
       p.pawns.forEach((pos, pawnIdx) => {
-        let x = 30 + (pIdx % 2) * 200 + (pawnIdx % 2) * 40;
-        let y = 30 + Math.floor(pIdx / 2) * 200 + Math.floor(pawnIdx / 2) * 40;
+        let x = 35 + (pIdx % 2) * 200 + (pawnIdx % 2) * 35;
+        let y = 35 + Math.floor(pIdx / 2) * 200 + Math.floor(pawnIdx / 2) * 35;
         
-        if(pos >= 0){
-          x = 60 + (pos * 15) % 200;
-          y = 160 + Math.sin(pos) * 50;
+        if(pos > 0){
+          let angle = (pos / 50) * Math.PI * 2;
+          x = 165 + Math.cos(angle) * (90 + pIdx * 5);
+          y = 165 + Math.sin(angle) * (90 + pIdx * 5);
         }
 
         ctx.beginPath();
-        ctx.arc(x, y, 12, 0, 2 * Math.PI);
+        ctx.arc(x, y, 10, 0, 2 * Math.PI);
         ctx.fillStyle = p.color;
         ctx.fill();
         ctx.lineWidth = 2;
@@ -1117,32 +1175,29 @@ h1{color:#3b82f6;text-shadow:0 0 15px #3b82f6;font-size:26px}
     document.getElementById('ludoDice').innerText = ['⚀','⚁','⚂','⚃','⚄','⚅'][ludoDice - 1];
 
     let player = ludoPlayers[ludoCurrentPlayer];
-    let moved = false;
     for(let i=0; i<player.pawns.length; i++){
-      if(player.pawns[i] === -1 && ludoDice === 6){
-        player.pawns[i] = 0;
-        moved = true;
+      if(player.pawns[i] === 0 && ludoDice === 6){
+        player.pawns[i] = 1;
         break;
-      } else if(player.pawns[i] >= 0){
+      } else if(player.pawns[i] > 0){
         player.pawns[i] += ludoDice;
-        if(player.pawns[i] > 40) player.pawns[i] = 40;
-        moved = true;
+        if(player.pawns[i] > 50) player.pawns[i] = 50;
         break;
       }
     }
 
     drawLudoBoard();
 
-    if(player.pawns.every(pos => pos >= 40)){
+    if(player.pawns.every(pos => pos >= 50)){
       ludoGameOver = true;
       if(ludoCurrentPlayer === 0){
-        coins += 500;
-        addLog('فوز لودو الحقيقية', 500, 'win');
+        coins += 1000;
+        addLog('فوز لودو الحقيقية الواقعية', 1000, 'win');
         saveUserData();
         updateAll();
-        alert("🎉 مبروك! فزت ببطولة لودو وربحت 500 نقطة!");
+        alert("🎉 مبروك! فزت ببطولة لودو الحقيقية وربحت 1000 نقطة!");
       } else {
-        alert(`❌ فاز اللاعب ${player.name} باللعبة!`);
+        alert(`❌ فاز اللاعب الواقعي ${player.name} باللعبة!`);
       }
       closeModal('ludoModal');
       return;
@@ -1321,6 +1376,7 @@ h1{color:#3b82f6;text-shadow:0 0 15px #3b82f6;font-size:26px}
   }
 
   window.createAccount = createAccount;
+  window.saveProfileChanges = saveProfileChanges;
   window.deleteMyAccount = deleteMyAccount;
   window.showPage = showPage;
   window.logout = logout;
