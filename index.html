@@ -97,7 +97,7 @@ h1{color:#3b82f6;text-shadow:0 0 15px #3b82f6;font-size:26px}
         <button class="btn btn-green" onclick="alert('ميزة السحب قريباً')">💵 سحب</button>
       </div>
       <div class="box"><h3>⚙️ عدادك الحالي</h3><div id="dailyProfit">0 نقطة/يوم</div></div>
-      <div class="box"><h3>⚡ الارباح التلقائية</h3><div id="perDay">+0 نقطة/24 ساعة</div></div>
+       <div class="box"><h3>⚡ الارباح التلقائية</h3><div id="perDay">+0 نقطة/24 ساعة</div></div>
       <div class="box"><h3>🎁 مكافأة الدخول اليومي</h3><div id="streakDays" class="streakBox"></div><button class="btn btn-yellow" onclick="claimStreak()">استلام مكافأة اليوم</button></div>
     </div><p id="nextClaim" style="color:#aaa"></p>
   </div>
@@ -348,7 +348,6 @@ h1{color:#3b82f6;text-shadow:0 0 15px #3b82f6;font-size:26px}
     }
     return parseInt(savedEndTime) - now;
   }
-
   let withdrawTimeLeft = getSavedWithdrawTime();
 
   const referralStoreData = [
