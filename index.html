@@ -334,9 +334,8 @@ h1{color:#3b82f6;text-shadow:0 0 15px #3b82f6;font-size:26px}
   let memoryCards=[], flipped=[], matched=0;
   let streak=0, lastStreakDate='', totalGiftsSent=0, roomMics=Array(7).fill(null);  
   
-  // العداد التنازلي للسحب (يعمل في الخلفية ويحسب الفارق الزمني بدقة بناءً على الوقت الحقيقي)
   let withdrawTimerInterval = null;
-  const WITHDRAW_TOTAL_TIME = 24 * 60 * 60; // 24 ساعة بالثواني
+  const WITHDRAW_TOTAL_TIME = 24 * 60 * 60;
 
   function getSavedWithdrawTime() {
     let savedEndTime = localStorage.getItem('rafidain_withdraw_end_time');
@@ -1308,7 +1307,6 @@ h1{color:#3b82f6;text-shadow:0 0 15px #3b82f6;font-size:26px}
     let randomIndex=Math.floor(Math.random()*wheelPrizes.length);
     let prize=wheelPrizes[randomIndex];
     
-    // ضبط زاوية التدوير بدقة لتقع الجائزة تماماً تحت خط المؤشر الأحمر بالأسفل/الأعلى
     const sliceAngle = 360 / wheelPrizes.length;
     let targetDegree = 360 - (randomIndex * sliceAngle + sliceAngle / 2);
     let degrees = 360 * 6 + targetDegree;
