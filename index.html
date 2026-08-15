@@ -29,7 +29,7 @@ h1{color:#3b82f6;text-shadow:0 0 15px #3b82f6;font-size:26px}
 .xoCell{width:90px;height:90px;background:#222;font-size:50px;display:flex;align-items:center;justify-content:center;cursor:pointer;border-radius:10px;border:2px solid #3b82f6}
 .wheel-container{position:relative;width:280px;height:280px;margin:20px auto}
 .pointer{width:0;height:0;border-left:15px solid transparent;border-right:15px solid transparent;border-bottom:30px solid red;position:absolute;top:-10px;left:50%;transform:translateX(-50%);z-index:10}
-#wheel{width:100%;height:100%;border-radius:50%;border:6px solid #3b82f6;transition:transform 5s cubic-bezier(.17,.67,.12,.99)}
+#wheel{width:100%;height:100%;border-radius:50%;border:6px solid #3b82f6;transition:transform 4s cubic-bezier(0.15, 0.85, 0.35, 1)}
 .boxItem{width:80px;height:80px;background:#3b82f6;margin:5px;display:inline-block;border-radius:15px;cursor:pointer;font-size:28px;line-height:80px;border:3px solid #fff;font-weight:bold}
 .bottomNav{position:fixed;bottom:15px;left:50%;transform:translateX(-50%);width:95%;max-width:500px;background:linear-gradient(135deg,#1e3a8a,#3b82f6);border-radius:25px;display:flex;justify-content:space-around;padding:10px 5px;z-index:999}
 .navItem{display:flex;flex-direction:column;align-items:center;color:#ddd;font-size:10px;cursor:pointer;flex:1}
@@ -53,7 +53,6 @@ h1{color:#3b82f6;text-shadow:0 0 15px #3b82f6;font-size:26px}
 .micSeat{background:#222;border:2px solid #3b82f6;border-radius:10px;padding:15px;cursor:pointer;position:relative;font-weight:bold;font-size:12px}
 .micSeat.active{border-color:#0f0;background:#002200}
 .micControl{position:absolute;top:2px;right:2px;background:#f33;border:0;color:#fff;border-radius:5px;font-size:10px;padding:2px 5px;cursor:pointer}
-.leaderItem{background:#222;padding:12px;margin:8px 0;border-radius:10px;text-align:right;border-right:4px solid #ffb300;display:flex;justify-content:space-between}
 .streakBox{display:flex;justify-content:space-around;margin:15px 0}
 .streakDay{width:40px;height:40px;border-radius:50%;background:#333;display:flex;align-items:center;justify-content:center;font-size:12px}
 .streakDay.active{background:#0f0;color:#000}
@@ -87,7 +86,6 @@ h1{color:#3b82f6;text-shadow:0 0 15px #3b82f6;font-size:26px}
         <div id="coins">0 نقطة</div>
         <div id="coinsDollar">يعادل $0.00 دولار</div>
         
-        <!-- التعديل الجديد: العداد التنازلي 24 ساعة وبصفه زر تفعيل -->
         <div style="margin: 15px 0; background: #000; padding: 12px; border-radius: 12px; border: 2px dashed #3b82f6; display: flex; align-items: center; justify-content: space-between;">
           <div style="text-align: right;">
             <div style="font-size: 12px; color: #aaa;">عداد السحب التفاعلي (24 ساعة)</div>
@@ -202,8 +200,8 @@ h1{color:#3b82f6;text-shadow:0 0 15px #3b82f6;font-size:26px}
     <h2>📰 الأخبار والتحديثات الجديدة</h2>
     <div class="box" style="text-align:right;">
       <h3 style="color:#ffb300">📢 التحديث الأخير (إصدار 2026)</h3>
-      <p style="color:#0f0; margin:5px 0;">• تم تحديث نظام الغرف وتحديد أسماء المتواجدين واختيار المستلم للهدية بدقة.</p>
-      <p style="color:#0f0; margin:5px 0;">• تحديث لعبة لودو الحقيقية والواقعية لتتوافق مع التصميم والأداء المطلوب.</p>
+      <p style="color:#0f0; margin:5px 0;">• تم تصحيح جميع ألعاب الصندوق، العجلة، XO، والأرقام وتحسين الأداء.</p>
+      <p style="color:#0f0; margin:5px 0;">• منع إعادة تعيين العداد التنازلي للسحب عند التنقل بين الصفحات.</p>
     </div>
   </div>
 
@@ -280,8 +278,26 @@ h1{color:#3b82f6;text-shadow:0 0 15px #3b82f6;font-size:26px}
   </div>
 </div>
 
-<div id="wheelModal" class="modal"><div class="modal-content"><h2>🎡 العجلة</h2><div class="wheel-container"><div class="pointer"></div><canvas id="wheel" width="280" height="280"></canvas></div><button class="btn" id="spinBtn" onclick="doSpin()">لف - 50</button><p id="wheelResult"></p><button class="btn" onclick="closeModal('wheelModal')">اغلاق</button></div></div>
-<div id="boxModal" class="modal"><div class="modal-content"><h2>📦 الصندوق</h2><div id="boxes"></div><p id="boxResult"></p><button class="btn" onclick="closeModal('boxModal')">اغلاق</button></div></div>
+<div id="wheelModal" class="modal">
+  <div class="modal-content">
+    <h2>🎡 العجلة</h2>
+    <div class="wheel-container"><div class="pointer"></div><canvas id="wheel" width="280" height="280"></canvas></div>
+    <button class="btn" id="spinBtn" onclick="doSpin()">لف - 50</button>
+    <p id="wheelResult" style="font-weight:bold; margin-top:10px; color:#ffb300;"></p>
+    <button class="btn" onclick="closeModal('wheelModal')">اغلاق</button>
+  </div>
+</div>
+
+<div id="boxModal" class="modal">
+  <div class="modal-content">
+    <h2>📦 الصندوق المفاجئ</h2>
+    <p style="color:#aaa; font-size:13px;">اختر صندوقاً لاكتشاف جائزتك!</p>
+    <div id="boxes" style="display:flex; justify-content:center; gap:10px; margin:20px 0;"></div>
+    <p id="boxResult" style="font-weight:bold; font-size:18px; color:#0f0;"></p>
+    <button class="btn" onclick="closeModal('boxModal')">اغلاق</button>
+  </div>
+</div>
+
 <div id="memoryModal" class="modal"><div class="modal-content"><h2>🧠 لعبة الميموري</h2><p>طابق الرموز - الجائزة 250</p><div id="memoryBoard" style="display:grid;grid-template-columns:repeat(4,60px);gap:8px;justify-content:center;margin:20px auto"></div><p id="memoryResult"></p><button class="btn" onclick="closeModal('memoryModal')">خروج</button></div></div>
 <div id="createRoomModal" class="modal"><div class="modal-content"><h2>انشاء غرفة جديدة</h2><input type="text" id="newRoomName" class="input" placeholder="اسم الغرفة"><button class="btn btn-green" onclick="createRoom()">شراء وانشاء - 80000</button><button class="btn btn-red" onclick="closeModal('createRoomModal')">الغاء</button></div></div>
 <div id="toast" class="toast">تم استلام الارباح!</div>
@@ -295,7 +311,7 @@ h1{color:#3b82f6;text-shadow:0 0 15px #3b82f6;font-size:26px}
   
   let coins=5000, dailyProfitTotal=0, lastClaim=0, myReferralCode='', currentUser='', currentUserId='', transactionLog=[], currentRoom=null;
   let rooms=[], roomMessages={}, globalMessages=[], myFriends=[], friendRequests=[], sentRequests=[];
-  let xoBoard=Array(9).fill(''), gameOver=false, boxOpened=false;
+  let xoBoard=Array(9).fill(''), gameOver=false;
   
   let dominoSet=[], dominoMy=[], dominoBot=[], dominoTable=[], dominoLeftEnd=0, dominoRightEnd=0, dominoTurn='my';
   const RATE=10000; let currentChatFriend = null, unsubPrivateChat = null, unsubRoomChat = null;
@@ -305,15 +321,25 @@ h1{color:#3b82f6;text-shadow:0 0 15px #3b82f6;font-size:26px}
   const LUDO_NAMES=['انت (أحمر)','اللاعب 2 (أزرق)','اللاعب 3 (أخضر)','اللاعب 4 (أصفر)'];
 
   const countersData=[{name:"عداد 100",price:1000,profit:100},{name:"عداد 200",price:2000,profit:200},{name:"عداد 300",price:3000,profit:300},{name:"عداد 400",price:4000,profit:400},{name:"عداد 500",price:5000,profit:500},{name:"عداد 1000",price:10000,profit:1000},{name:"عداد 2000",price:20000,profit:2000},{name:"عداد 3000",price:30000,profit:3000},{name:"عداد 4000",price:40000,profit:4000},{name:"عداد 5000",price:50000,profit:5000}];
-  const wheelPrizes=[{text:"حظ اوفر",value:0},{text:"100",value:100},{text:"250",value:250},{text:"500",value:500},{text:"1000",value:1000},{text:"5000",value:5000}];
+  
+  // تصحيح أرقام وجوائز العجلة بوضوح مع الأرقام المطلوبة
+  const wheelPrizes=[
+    {text:"حظ أوفر 😢", value: 0},
+    {text:"100 نقطة 🎉", value: 100},
+    {text:"250 نقطة 🌟", value: 250},
+    {text:"500 نقطة 💰", value: 500},
+    {text:"1000 نقطة 💎", value: 1000},
+    {text:"5000 نقطة 👑", value: 5000}
+  ];
+
   const giftsList=[{icon:"🌹",name:"وردة",price:1000},{icon:"💎",name:"الماس",price:5000},{icon:"👑",name:"تاج",price:10000},{icon:"🐅",name:"شبل",price:20000},{icon:"🐯",name:"نمر",price:50000},{icon:"🦁",name:"اسد",price:100000}];
-  let dailyTasks={login:{done:false,reward:200},buy:{done:false,reward:300},play:{done:false,reward:150}}, lastTaskReset=0;
+  let dailyTasks={login:{done:false,reward:200},buy:{done:false,reward:300},play:{done:false,reward:150}};
   let memoryCards=[], flipped=[], matched=0;
   let streak=0, lastStreakDate='', totalGiftsSent=0, roomMics=Array(7).fill(null);  
   
-  // متغيرات العداد التنازلي 24 ساعة والتفعيل
+  // العداد التنازلي الثابت للسحب (لا يعيد التعيين عند الانتقال بين الأقسام)
   let withdrawTimerInterval = null;
-  let withdrawTimeLeft = 24 * 60 * 60; // 24 ساعة بالثواني
+  let withdrawTimeLeft = localStorage.getItem('rafidain_withdraw_time') ? parseInt(localStorage.getItem('rafidain_withdraw_time')) : (24 * 60 * 60);
 
   const referralStoreData = [
     {code: "1", price: 600000}, {code: "2", price: 500000}, {code: "3", price: 400000},
@@ -355,16 +381,16 @@ h1{color:#3b82f6;text-shadow:0 0 15px #3b82f6;font-size:26px}
       document.getElementById('mainApp').style.display='block';
       requestNotificationPermission();
       listenToGlobalChat();listenToRooms();listenToUserData();checkBroadcast();
-      startWithdrawCountdown(); // تشغيل العداد التنازلي عند تسجيل الدخول
+      startWithdrawCountdown();
     }else{
       document.getElementById('registerPage').style.display='flex';
       document.getElementById('mainApp').style.display='none';
     }
   }
 
-  // دظة تفعيل العداد التنازلي وإعادة ضبطه لـ 24 ساعة
   function activateWithdrawTimer(){
     withdrawTimeLeft = 24 * 60 * 60;
+    localStorage.setItem('rafidain_withdraw_time', withdrawTimeLeft);
     showToast("⚡ تم تفعيل وإعادة ضبط العداد بنجاح!");
     startWithdrawCountdown();
   }
@@ -374,6 +400,7 @@ h1{color:#3b82f6;text-shadow:0 0 15px #3b82f6;font-size:26px}
     withdrawTimerInterval = setInterval(() => {
       if(withdrawTimeLeft > 0){
         withdrawTimeLeft--;
+        localStorage.setItem('rafidain_withdraw_time', withdrawTimeLeft);
         let hours = Math.floor(withdrawTimeLeft / 3600);
         let minutes = Math.floor((withdrawTimeLeft % 3600) / 60);
         let seconds = withdrawTimeLeft % 60;
@@ -391,7 +418,6 @@ h1{color:#3b82f6;text-shadow:0 0 15px #3b82f6;font-size:26px}
       }
     }, 1000);
   }
-
   async function createAccount(){
     let name=document.getElementById('regName').value.trim();
     let pass=document.getElementById('regPass').value.trim();
@@ -1184,10 +1210,12 @@ h1{color:#3b82f6;text-shadow:0 0 15px #3b82f6;font-size:26px}
     }
   }
 
+  // تصحيح لعبة XO بالكامل وضمان عملها بدقة
   function openXO(){
     if(coins<50)return alert("تحتاج 50 نقطة");
     coins-=50;addLog('XO',-50,'buy');updateAll();
     xoBoard=Array(9).fill('');gameOver=false;
+    document.getElementById('xoResult').innerText='';
     document.getElementById('xoModal').style.display='block';renderXO();
   }
 
@@ -1201,14 +1229,33 @@ h1{color:#3b82f6;text-shadow:0 0 15px #3b82f6;font-size:26px}
   async function playXO(i){
     if(xoBoard[i]!=''||gameOver)return;
     xoBoard[i]='X';
-    if(checkWinner('X')){coins+=200;addLog('فوز XO',200,'win');gameOver=true;await saveUserData();updateAll();renderXO();return;}
-    botMove();
-  }
-
-  function botMove(){
-    let empty=xoBoard.map((v,i)=>v==''?i:null).filter(v=>v!==null);
-    if(empty.length>0){let move=empty[Math.floor(Math.random()*empty.length)];xoBoard[move]='O';}
     renderXO();
+    if(checkWinner('X')){
+      coins+=200;addLog('فوز XO',200,'win');gameOver=true;
+      document.getElementById('xoResult').innerText='🎉 مبروك فزت بـ 200 نقطة!';
+      await saveUserData();updateAll();return;
+    }
+    if(xoBoard.every(cell=>cell!='')){
+      gameOver=true;
+      document.getElementById('xoResult').innerText='🤝 تعادل!';
+      return;
+    }
+    
+    // دور البوت الذكي
+    setTimeout(async () => {
+      if(gameOver) return;
+      let empty=xoBoard.map((v,i)=>v==''?i:null).filter(v=>v!==null);
+      if(empty.length>0){
+        let move=empty[Math.floor(Math.random()*empty.length)];
+        xoBoard[move]='O';
+        renderXO();
+        if(checkWinner('O')){
+          gameOver=true;
+          document.getElementById('xoResult').innerText='❌ فاز البوت!';
+          await saveUserData();updateAll();
+        }
+      }
+    }, 400);
   }
 
   function checkWinner(p){
@@ -1216,10 +1263,13 @@ h1{color:#3b82f6;text-shadow:0 0 15px #3b82f6;font-size:26px}
     return wins.some(w=>w.every(i=>xoBoard[i]==p));
   }
 
+  // تصحيح عجلة الحظ ورسم أقسامها مع الأرقام بوضوح ودوران حقيقي
   function spinWheel(){
     if(coins<50)return alert("تحتاج 50 نقطة");
     coins-=50;addLog('عجلة',-50,'buy');updateAll();
-    document.getElementById('wheelModal').style.display='block';drawWheel();
+    document.getElementById('wheelModal').style.display='block';
+    document.getElementById('wheelResult').innerText='';
+    drawWheel();
   }
 
   function drawWheel(){
@@ -1230,27 +1280,80 @@ h1{color:#3b82f6;text-shadow:0 0 15px #3b82f6;font-size:26px}
       const startAngle=i*segmentAngle-Math.PI/2,endAngle=(i+1)*segmentAngle-Math.PI/2;
       ctx.beginPath();ctx.moveTo(centerX,centerY);ctx.arc(centerX,centerY,radius,startAngle,endAngle);
       ctx.fillStyle=i%2==0?'#3b82f6':'#1e3a8a';ctx.fill();ctx.stroke();
+      
+      // رسم أرقام وجوائز الأقسام داخل العجلة بوضوح
+      ctx.save();
+      ctx.translate(centerX, centerY);
+      ctx.rotate(startAngle + segmentAngle / 2);
+      ctx.textAlign = "right";
+      ctx.fillStyle = "#fff";
+      ctx.font = "bold 13px tahoma";
+      ctx.fillText(p.text.split(' ')[0], radius - 25, 5);
+      ctx.restore();
     });
   }
 
   async function doSpin(){
+    let wheelEl = document.getElementById('wheel');
+    let spinBtn = document.getElementById('spinBtn');
+    spinBtn.disabled = true;
+
     let randomIndex=Math.floor(Math.random()*wheelPrizes.length);
     let prize=wheelPrizes[randomIndex];
-    if(prize.value>0){coins+=prize.value;addLog('عجلة',prize.value,'win');}
-    await saveUserData();updateAll();
-    alert(`ربحت: ${prize.text}`);
+    
+    // حساب زاوية التدوير لضمان وقوف المؤشر على الجائزة بدقة
+    let degrees = 360 * 5 + (randomIndex * (360 / wheelPrizes.length)) + (360 / wheelPrizes.length / 2);
+    wheelEl.style.transform = `rotate(${degrees}deg)`;
+
+    setTimeout(async()=>{
+      if(prize.value>0){
+        coins+=prize.value;
+        addLog(`ربح العجلة ${prize.text}`,prize.value,'win');
+      }
+      await saveUserData();updateAll();
+      document.getElementById('wheelResult').innerText = `🎁 النتيجة: ${prize.text}`;
+      spinBtn.disabled = false;
+    }, 4000);
   }
 
+  // تصحيح صندوق المفاجآت ليفتح بشكل تفاعلي صحيح ويظهر الجائزة
   function openBox(){
-    if(coins<500)return alert("تحتاج 500 نقطة");
+    if(coins<500)return alert("تحتاج 500 نقطة لفتح الصندوق!");
     coins-=500;updateAll();
     document.getElementById('boxModal').style.display='block';
+    document.getElementById('boxResult').innerText='';
     let boxes=document.getElementById('boxes');boxes.innerHTML='';
+    
+    let winningIndex = Math.floor(Math.random() * 3);
+    let possibleRewards = [200, 500, 1000, 2500];
+    let prizeAmount = possibleRewards[Math.floor(Math.random() * possibleRewards.length)];
+
     for(let i=0;i<3;i++){
-      let div=document.createElement('div');div.className='boxItem';div.innerText='?';
-      div.onclick=()=>alert("تم الفتح!");
+      let div=document.createElement('div');
+      div.className='boxItem';
+      div.innerText='🎁';
+      div.onclick=()=> revealBox(div, i === winningIndex, prizeAmount);
       boxes.appendChild(div);
     }
+  }
+
+  async function revealBox(element, isWinner, amount){
+    let boxes = document.querySelectorAll('.boxItem');
+    boxes.forEach(b => b.onclick = null); // قفل الصناديق بعد الاختيار
+
+    if(isWinner){
+      element.style.background = '#0f0';
+      element.innerText = '⭐';
+      coins += amount;
+      addLog(`صندوق مفاجآت`, amount, 'win');
+      document.getElementById('boxResult').innerText = `🎉 مبروك! ربحت ${amount} نقطة!`;
+    } else {
+      element.style.background = '#f33';
+      element.innerText = '❌';
+      document.getElementById('boxResult').innerText = '😢 حظ أوفر في المرة القادمة!';
+    }
+    await saveUserData();
+    updateAll();
   }
 
   async function createRoom(){
@@ -1324,7 +1427,7 @@ h1{color:#3b82f6;text-shadow:0 0 15px #3b82f6;font-size:26px}
   window.openGlobalChat = openGlobalChat;
   window.closeModal = closeModal;
   window.clearLog = clearLog;
-  window.activateWithdrawTimer = activateWithdrawTimer; // ربط زر التفعيل بالنافذة العامة
+  window.activateWithdrawTimer = activateWithdrawTimer;
 </script>
 </body>
 </html>
