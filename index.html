@@ -177,6 +177,17 @@ h1{color:#3b82f6;text-shadow:0 0 15px #3b82f6;font-size:26px}
   </div>
 
   <div id="log" class="page"><h2>📜 سجل المعاملات</h2><div id="logList"></div><button class="btn btn-red" onclick="clearLog()">🗑️ مسح السجل</button></div>
+  
+  <div id="news" class="page">
+    <h2>📰 الأخبار والتحديثات الجديدة</h2>
+    <div class="box" style="text-align:right;">
+      <h3 style="color:#ffb300">📢 التحديث الأخير (إصدار 2026)</h3>
+      <p style="color:#0f0; margin:5px 0;">• تم تفعيل نظام وصول الهدايا بالكامل داخل الغرف وتحويل نقاطها للشخص المستلم فوراً!</p>
+      <p style="color:#0f0; margin:5px 0;">• تم إضافة زر "الأخبار" لمعرفة كل ما هو جديد ومضاف أولاً بأول.</p>
+      <p style="color:#0f0; margin:5px 0;">• تم تفعيل الإشعارات الفورية (Notifications) لتصلك الرسائل والطلبات حتى عند الخروج من التطبيق.</p>
+    </div>
+  </div>
+
   <div id="profile" class="page">
     <h2>👤 الملف الشخصي والتخصيص</h2>
     <div class="box"><h3 id="userName"></h3></div>
@@ -202,11 +213,10 @@ h1{color:#3b82f6;text-shadow:0 0 15px #3b82f6;font-size:26px}
     <div class="navItem" onclick="showPage('rooms',this)"><div class="navIcon">🏠</div><div>الغرف</div></div>
     <div class="navItem" onclick="showPage('referral',this)"><div class="navIcon">🎁</div><div>احالة</div></div>
     <div class="navItem" onclick="showPage('log',this)"><div class="navIcon">📜</div><div>السجل</div></div>
+    <div class="navItem" onclick="showPage('news',this)"><div class="navIcon">📰</div><div>الأخبار</div></div>
     <div class="navItem" onclick="showPage('profile',this)"><div class="navIcon">👤</div><div>الملف</div></div>
   </div>
 </div>
-
-<!-- النوافذ المنبثقة (Modals) -->
 <div id="broadcastModal" class="modal broadcastModal"><div class="modal-content"><h2>📢 اعلان</h2><div id="broadcastText"></div><button class="btn" onclick="closeModal('broadcastModal')">فهمت</button></div></div>
 <div id="xoModal" class="modal"><div class="modal-content"><h2>❌⭕ XO</h2><div id="xoBoard"></div><p id="xoResult"></p><button class="btn" onclick="closeModal('xoModal')">خروج</button></div></div>
 
@@ -652,11 +662,35 @@ h1{color:#3b82f6;text-shadow:0 0 15px #3b82f6;font-size:26px}
 
   async function sendGift(icon, name, price){
     if(coins < price) return alert("ليس لديك نقاط كافية!");
-    coins -= price;totalGiftsSent++;
-    await setDoc(doc(db, "roomMessages", currentRoom.id), {messages: arrayUnion({u:currentUser, t:`🎁 ارسل ${name} ${icon}`, time:Date.now()})}, {merge: true});
+    coins -= price; totalGiftsSent++;
+    
+    let querySnapshot = await getDocs(collection(db, "users"));
+    let roomMembers = currentRoom.members || [currentRoom.owner];
+    let recipientName = roomMembers.find(m => m !== currentUser) || currentRoom.owner;
+    let recipientDocId = null;
+    let recipientData = null;
+
+    querySnapshot.forEach(uDoc => {
+      let uData = uDoc.data();
+      if(uData.name && uData.name.trim().toLowerCase() === recipientName.toLowerCase()) {
+        recipientDocId = uDoc.id;
+        recipientData = uData;
+      }
+    });
+
+    if(recipientDocId && recipientData) {
+      let newRecipientCoins = (recipientData.coins || 0) + price;
+      let recipientLog = recipientData.log || [];
+      recipientLog.unshift({text: `استلام هدية ${name} ${icon} من ${currentUser}`, amount: price, type: 'win', time: new Date().toLocaleString('ar-IQ')});
+      await updateDoc(doc(db, "users", recipientDocId), {coins: newRecipientCoins, log: recipientLog});
+      
+      sendBackgroundNotification("🎁 هدية جديدة!", `${currentUser} أرسل لك هدية ${name} (${price} نقطة)!`);
+    }
+
+    await setDoc(doc(db, "roomMessages", currentRoom.id), {messages: arrayUnion({u:currentUser, t:`🎁 ارسل هدية ${name} ${icon} إلى ${recipientName}`, time:Date.now()})}, {merge: true});
     await updateDoc(doc(db, "users", currentUserId), {totalGiftsSent});
-    addLog(`ارسال هدية ${name}`, -price, 'buy');
-    await saveUserData();updateAll();showToast("تم الارسال");
+    addLog(`ارسال هدية ${name} إلى ${recipientName}`, -price, 'buy');
+    await saveUserData(); updateAll(); showToast("✅ تم إرسال الهدية وإضافة النقاط بنجاح!");
   }
 
   function listenToUserData(){
@@ -710,6 +744,8 @@ h1{color:#3b82f6;text-shadow:0 0 15px #3b82f6;font-size:26px}
     if(targetDocId){
       await updateDoc(doc(db,"users",targetDocId),{friendRequests:arrayUnion(currentUser)});
       await updateDoc(doc(db,"users",currentUserId),{sentRequests:arrayUnion(targetName)});
+      
+      sendBackgroundNotification("طلب صداقة جديد", `أرسل لك ${currentUser} طلب صداقة!`);
       showToast(`تم إرسال طلب الصداقة إلى ${targetName}`);
       searchFriends();
     }
@@ -1370,11 +1406,12 @@ h1{color:#3b82f6;text-shadow:0 0 15px #3b82f6;font-size:26px}
     let recipientLog=recipientData.log||[];
     recipientLog.unshift({text:`استلام نقاط من ${currentUser}`,amount:amount,type:'win',time:new Date().toLocaleString('ar-IQ')});
     await updateDoc(doc(db,"users",recipientDocId),{coins:newRecipientCoins,log:recipientLog});
+    
+    sendBackgroundNotification("💸 تحويل نقاط", `تم تحويل ${amount} نقطة بنجاح إلى ${recipientName}!`);
     await saveUserData();
     document.getElementById('transferRefInput').value='';document.getElementById('transferAmountInput').value='';
     showToast(`تم تحويل ${amount} نقطة إلى ${recipientName}!`);
   }
-
   window.createAccount = createAccount;
   window.saveProfileChanges = saveProfileChanges;
   window.deleteMyAccount = deleteMyAccount;
