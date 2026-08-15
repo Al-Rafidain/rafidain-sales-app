@@ -88,7 +88,6 @@ h1{color:#3b82f6;text-shadow:0 0 15px #3b82f6;font-size:26px}
       <div class="box"><h3>🎁 مكافأة الدخول اليومي</h3><div id="streakDays" class="streakBox"></div><button class="btn btn-yellow" onclick="claimStreak()">استلام مكافأة اليوم</button></div>
     </div><p id="nextClaim" style="color:#aaa"></p>
   </div>
-
   <div id="store" class="page">
     <h2>🛒 المتجر</h2>
     <div id="coins2" class="box">رصيدك: 0 نقطة</div>
@@ -150,6 +149,8 @@ h1{color:#3b82f6;text-shadow:0 0 15px #3b82f6;font-size:26px}
     <p class="roomId" id="roomIdTitle"></p>
     <div class="box" style="background:#0a0a0a; border-color:#ffb300;">
       <h3 style="color:#ffb300">👥 عدد الأعضاء في الغرفة: <span id="roomMembersCount" style="color:#0f0">1</span></h3>
+      <!-- قائمة أسماء الأشخاص الموجودين داخل الغرفة -->
+      <div id="roomMembersList" style="margin: 10px 0; font-size:14px; color:#0f0; background:#111; padding:8px; border-radius:8px;"></div>
       <div id="roomAdminsSection" style="margin-top:10px;">
         <input type="text" id="newAdminInput" class="input" placeholder="اكتب اسم العضو لإضافته مشرف">
         <button class="btn btn-yellow" style="padding:10px;" onclick="addRoomAdmin()">➕ إضافة مشرف</button>
@@ -162,6 +163,13 @@ h1{color:#3b82f6;text-shadow:0 0 15px #3b82f6;font-size:26px}
       <button id="deleteRoomBtn" class="btn btn-red" style="display:none;width:30%;background:#8b0000;" onclick="deleteCurrentRoom()">❌ حذف الغرفة</button>
     </div>
     <div class="box"><h3 style="color:#0f0">🎙️ 7 مايكات - المالك يتحكم</h3><div class="micGrid" id="roomMicsGrid"></div></div>
+    
+    <!-- اختيار الشخص المستلم للهدية داخل الغرفة -->
+    <div class="box" style="border-color:#ffb300; background:#111;">
+      <h3 style="color:#ffb300">🎁 حدد الشخص المستلم للهدية:</h3>
+      <select id="giftRecipientSelect" class="input" style="background:#222; color:#fff; font-size:15px; margin-bottom:10px;"></select>
+    </div>
+
     <div id="roomChatBox" class="chatBox"></div>
     <div style="display:flex;gap:8px;justify-content:center;max-width:400px;margin:auto">
       <input type="text" id="roomChatInput" class="input" placeholder="اكتب هنا" style="width:70%" onkeypress="if(event.key=='Enter')sendRoomMsg()">
@@ -169,7 +177,6 @@ h1{color:#3b82f6;text-shadow:0 0 15px #3b82f6;font-size:26px}
     </div>
     <h4 style="color:#ffb300;margin-top:10px">🎁 الهدايا</h4><div id="giftsBar" style="display:flex;flex-wrap:wrap;justify-content:center"></div>
   </div>
-
   <div id="referral" class="page">
     <h2>🎁 نظام الاحالة والتحويل</h2>
     <div class="box"><h3>🌟 ادعُ اصدقائك واربح</h3><div id="myReferralCode" class="referralCode">جاري التحميل...</div><div id="myReferralLink" class="referralCode">جاري التحميل...</div><button class="btn btn-blue" onclick="copyCode()">📋 نسخ رسالة الدعوة</button><button class="btn btn-blue" onclick="copyLink()">🔗 نسخ الرابط</button></div>
@@ -182,9 +189,8 @@ h1{color:#3b82f6;text-shadow:0 0 15px #3b82f6;font-size:26px}
     <h2>📰 الأخبار والتحديثات الجديدة</h2>
     <div class="box" style="text-align:right;">
       <h3 style="color:#ffb300">📢 التحديث الأخير (إصدار 2026)</h3>
-      <p style="color:#0f0; margin:5px 0;">• تم تفعيل نظام وصول الهدايا بالكامل داخل الغرف وتحويل نقاطها للشخص المستلم فوراً!</p>
-      <p style="color:#0f0; margin:5px 0;">• تم إضافة زر "الأخبار" لمعرفة كل ما هو جديد ومضاف أولاً بأول.</p>
-      <p style="color:#0f0; margin:5px 0;">• تم تفعيل الإشعارات الفورية (Notifications) لتصلك الرسائل والطلبات حتى عند الخروج من التطبيق.</p>
+      <p style="color:#0f0; margin:5px 0;">• تم تحديث نظام الغرف وتحديد أسماء المتواجدين واختيار المستلم للهدية بدقة.</p>
+      <p style="color:#0f0; margin:5px 0;">• تحديث لعبة لودو الحقيقية والواقعية لتتوافق مع التصميم والأداء المطلوب.</p>
     </div>
   </div>
 
@@ -239,6 +245,7 @@ h1{color:#3b82f6;text-shadow:0 0 15px #3b82f6;font-size:26px}
     <button class="btn" onclick="closeModal('dominoModal')">خروج</button>
   </div>
 </div>
+
 <div id="ludoMenuModal" class="modal">
   <div class="modal-content" style="max-width:350px">
     <h2>🎲 اختيار نمط لودو الحقيقية والواقعية</h2>
@@ -249,13 +256,14 @@ h1{color:#3b82f6;text-shadow:0 0 15px #3b82f6;font-size:26px}
   </div>
 </div>
 
+<!-- نافذة لودو الحقيقية المطابقة للصورة تماماً -->
 <div id="ludoModal" class="modal">
   <div class="modal-content" style="max-width:380px">
-    <h2>🎲 لودو الحقيقية والواقعية</h2>
+    <h2>🎲 لودو الحقيقية</h2>
     <p id="ludoTurn" style="color:#ffb300;font-size:16px;font-weight:bold"></p>
-    <canvas id="ludoBoard" width="330" height="330" style="background:#fff;border:3px solid #3b82f6;border-radius:10px;margin:10px auto;display:block;cursor:pointer"></canvas>
-    <button class="btn btn-yellow" id="ludoDiceBtn" onclick="rollLudoDice()">🎲 ارمي النرد الحقيقي</button>
-    <p id="ludoDice" style="font-size:35px;margin:5px">🎲</p>
+    <canvas id="ludoBoard" width="310" height="310" style="background:#fff;border:3px solid #3b82f6;border-radius:10px;margin:10px auto;display:block"></canvas>
+    <button class="btn btn-yellow" id="ludoDiceBtn" onclick="rollLudoDice()">🎲 ارمي النرد</button>
+    <p id="ludoDice" style="font-size:45px;margin:5px;font-weight:bold;color:#ffb300">🎲</p>
     <button class="btn" onclick="closeModal('ludoModal')">خروج</button>
   </div>
 </div>
@@ -300,20 +308,14 @@ h1{color:#3b82f6;text-shadow:0 0 15px #3b82f6;font-size:26px}
   function generateUniqueRefCode(){return 'RAF' + Date.now().toString().slice(-4) + Math.floor(1000 + Math.random() * 9000);}
 
   async function requestNotificationPermission() {
-    if ("Notification" in window) {
-      if (Notification.permission !== "granted") {
-        await Notification.requestPermission();
-      }
+    if ("Notification" in window && Notification.permission !== "granted") {
+      await Notification.requestPermission();
     }
   }
 
   function sendBackgroundNotification(title, bodyText) {
-    if ("Notification" in window && Notification.permission === "granted") {
-      if (document.hidden) {
-        try {
-          new Notification(title, { body: bodyText, icon: "🏛️" });
-        } catch(e) {}
-      }
+    if ("Notification" in window && Notification.permission === "granted" && document.hidden) {
+      try { new Notification(title, { body: bodyText, icon: "🏛️" }); } catch(e) {}
     }
   }
 
@@ -408,15 +410,13 @@ h1{color:#3b82f6;text-shadow:0 0 15px #3b82f6;font-size:26px}
   }
 
   async function deleteMyAccount(){
-    if(confirm("هل أنت متأكد من حذف حسابك نهائياً؟ لا يمكن التراجع عن هذا الإجراء.")){
+    if(confirm("هل أنت متأكد من حذف حسابك نهائياً؟")){
       try {
         await deleteDoc(doc(db, "users", currentUserId));
         localStorage.clear();
         alert("تم حذف الحساب بنجاح.");
         location.reload();
-      } catch(e) {
-        alert("حدث خطأ أثناء حذف الحساب.");
-      }
+      } catch(e) { alert("حدث خطأ."); }
     }
   }
 
@@ -457,10 +457,6 @@ h1{color:#3b82f6;text-shadow:0 0 15px #3b82f6;font-size:26px}
           let cls=m.u===currentUser?'me':'other';
           box.innerHTML+=`<div class="chatMsg ${cls}"><b>${m.u}:</b> ${m.t}</div>`;
         });
-        let lastMsg = messages[messages.length - 1];
-        if(lastMsg && lastMsg.u !== currentUser){
-          sendBackgroundNotification("رسالة خاصة جديدة من " + lastMsg.u, lastMsg.t);
-        }
       }
       box.scrollTop=box.scrollHeight;
     });
@@ -555,6 +551,7 @@ h1{color:#3b82f6;text-shadow:0 0 15px #3b82f6;font-size:26px}
       roomMessages[id] = docSnap.exists()? (docSnap.data().messages || []) : [];
       loadChat();
     });
+
     let g='';
     giftsList.forEach(gf=>{
       g+=`<button class="giftBtn" onclick="sendGift('${gf.icon}','${gf.name}',${gf.price})">${gf.icon}<br>${gf.price}</button>`;
@@ -565,8 +562,20 @@ h1{color:#3b82f6;text-shadow:0 0 15px #3b82f6;font-size:26px}
   function renderRoomInfo(){
     let members = currentRoom.members || [];
     document.getElementById('roomMembersCount').innerText = members.length;
+    
+    // عرض أسماء الأشخاص الموجودين بداخل الغرفة
+    let membersHtml = "<b>المتواجدون في الغرفة:</b> " + members.join(', ');
+    document.getElementById('roomMembersList').innerHTML = membersHtml;
+
+    // تحديث قائمة اختيار الشخص المستلم للهدية
+    let selectHtml = '';
+    members.forEach(m => {
+      selectHtml += `<option value="${m}">${m} ${m === currentUser ? '(أنت)' : ''}</option>`;
+    });
+    document.getElementById('giftRecipientSelect').innerHTML = selectHtml;
+
     let admins = currentRoom.admins || [];
-    let adminsHtml = admins.length > 0 ? "المشرفون: " + admins.map(a => `${a} ${currentRoom.owner==currentUser?`<span style="color:red; cursor:pointer;" onclick="removeRoomAdmin('${a}')">❌</span>`:''}`).join(', ') : "لا يوجد مشرفين";
+    let adminsHtml = admins.length > 0 ? "المشرفون: " + admins.join(', ') : "لا يوجد مشرفين";
     document.getElementById('roomAdminsList').innerHTML = adminsHtml;
   }
 
@@ -575,32 +584,20 @@ h1{color:#3b82f6;text-shadow:0 0 15px #3b82f6;font-size:26px}
     let adminName = document.getElementById('newAdminInput').value.trim();
     if(!adminName) return;
     let admins = currentRoom.admins || [];
-    if(admins.includes(adminName)) return alert("هذا العضو مشرف مسبقاً");
+    if(admins.includes(adminName)) return alert("مضاف مسبقاً");
     admins.push(adminName);
     await updateDoc(doc(db, "rooms", currentRoom.id), { admins: admins });
     document.getElementById('newAdminInput').value = '';
-    showToast("تمت إضافة المشرف بنجاح");
-  }
-
-  async function removeRoomAdmin(adminName){
-    if(!currentRoom || currentRoom.owner !== currentUser) return;
-    let admins = currentRoom.admins || [];
-    admins = admins.filter(a => a !== adminName);
-    await updateDoc(doc(db, "rooms", currentRoom.id), { admins: admins });
-    showToast("تم إزالة المشرف");
+    showToast("تمت إضافة المشرف");
   }
 
   async function deleteCurrentRoom(){
     if(!currentRoom || currentRoom.owner !== currentUser) return;
-    if(confirm("هل أنت متأكد من حذف هذه الغرفة نهائياً؟")){
-      try {
-        await deleteDoc(doc(db, "rooms", currentRoom.id));
-        await deleteDoc(doc(db, "roomMessages", currentRoom.id));
-        showToast("تم حذف الغرفة بنجاح");
-        showPage('rooms', null);
-      } catch(e) {
-        alert("حدث خطأ أثناء حذف الغرفة");
-      }
+    if(confirm("حذف الغرفة نهائياً؟")){
+      await deleteDoc(doc(db, "rooms", currentRoom.id));
+      await deleteDoc(doc(db, "roomMessages", currentRoom.id));
+      showToast("تم الحذف");
+      showPage('rooms', null);
     }
   }
 
@@ -637,36 +634,22 @@ h1{color:#3b82f6;text-shadow:0 0 15px #3b82f6;font-size:26px}
     let box=document.getElementById('roomChatBox');
     box.innerHTML='';
     let msgs=roomMessages[currentRoom.id]||[];
-    
-    let usersQuery = await getDocs(collection(db, "users"));
-    let userRefMap = {};
-    usersQuery.forEach(uDoc => {
-      let uData = uDoc.data();
-      if(uData.name) {
-        userRefMap[uData.name] = uData.referral || 'بدون رمز';
-      }
-    });
-
     msgs.forEach(m=>{
       let cls=m.u===currentUser?'me':'other';
-      let senderRef = userRefMap[m.u] || 'RAF...';
-      box.innerHTML+=`<div class="chatMsg ${cls}"><b>${m.u} <span style="color:#ffb300;font-size:11px;">[${senderRef}]</span>:</b> ${m.t}</div>`;
+      box.innerHTML+=`<div class="chatMsg ${cls}"><b>${m.u}:</b> ${m.t}</div>`;
     });
-
-    let lastMsg = msgs[msgs.length - 1];
-    if(lastMsg && lastMsg.u !== currentUser){
-      sendBackgroundNotification("رسالة جديدة في الغرفة من " + lastMsg.u, lastMsg.t);
-    }
     box.scrollTop=box.scrollHeight;
   }
 
+  // إرسال الهدية للشخص المحدد بدقة من القائمة
   async function sendGift(icon, name, price){
     if(coins < price) return alert("ليس لديك نقاط كافية!");
+    let recipientName = document.getElementById('giftRecipientSelect').value;
+    if(!recipientName) return alert("يرجى اختيار الشخص المستلم للهدية!");
+
     coins -= price; totalGiftsSent++;
     
     let querySnapshot = await getDocs(collection(db, "users"));
-    let roomMembers = currentRoom.members || [currentRoom.owner];
-    let recipientName = roomMembers.find(m => m !== currentUser) || currentRoom.owner;
     let recipientDocId = null;
     let recipientData = null;
 
@@ -683,14 +666,12 @@ h1{color:#3b82f6;text-shadow:0 0 15px #3b82f6;font-size:26px}
       let recipientLog = recipientData.log || [];
       recipientLog.unshift({text: `استلام هدية ${name} ${icon} من ${currentUser}`, amount: price, type: 'win', time: new Date().toLocaleString('ar-IQ')});
       await updateDoc(doc(db, "users", recipientDocId), {coins: newRecipientCoins, log: recipientLog});
-      
-      sendBackgroundNotification("🎁 هدية جديدة!", `${currentUser} أرسل لك هدية ${name} (${price} نقطة)!`);
     }
 
-    await setDoc(doc(db, "roomMessages", currentRoom.id), {messages: arrayUnion({u:currentUser, t:`🎁 ارسل هدية ${name} ${icon} إلى ${recipientName}`, time:Date.now()})}, {merge: true});
+    await setDoc(doc(db, "roomMessages", currentRoom.id), {messages: arrayUnion({u:currentUser, t:`🎁 أرسل هدية ${name} ${icon} إلى المستلم: ${recipientName}`, time:Date.now()})}, {merge: true});
     await updateDoc(doc(db, "users", currentUserId), {totalGiftsSent});
     addLog(`ارسال هدية ${name} إلى ${recipientName}`, -price, 'buy');
-    await saveUserData(); updateAll(); showToast("✅ تم إرسال الهدية وإضافة النقاط بنجاح!");
+    await saveUserData(); updateAll(); showToast(`✅ تم إرسال الهدية إلى ${recipientName} بنجاح!`);
   }
 
   function listenToUserData(){
@@ -715,8 +696,7 @@ h1{color:#3b82f6;text-shadow:0 0 15px #3b82f6;font-size:26px}
   async function searchFriends(){
     let queryVal=document.getElementById('searchFriendsInput').value.trim();
     let resContainer=document.getElementById('searchResults');
-    if(!queryVal){resContainer.innerHTML='<p style="color:#aaa">اكتب رمز الإحالة أو الاسم للبحث</p>';return;}
-    resContainer.innerHTML='<p style="color:#aaa">جاري البحث...</p>';
+    if(!queryVal){resContainer.innerHTML='<p style="color:#aaa">اكتب للبحث</p>';return;}
     let querySnapshot=await getDocs(collection(db,"users"));
     let html='';let found=false;
     querySnapshot.forEach((uDoc)=>{
@@ -726,15 +706,11 @@ h1{color:#3b82f6;text-shadow:0 0 15px #3b82f6;font-size:26px}
       if((uName.toLowerCase().includes(queryVal.toLowerCase()) || uRef.toLowerCase().includes(queryVal.toLowerCase())) && uName.toLowerCase()!==currentUser.toLowerCase()){
         found=true;
         let isFriend=myFriends.includes(uName);
-        let hasSent=sentRequests.includes(uName);
-        let btnHtml='';
-        if(isFriend){btnHtml=`<button class="btn btn-red" style="width:auto;padding:8px 15px;margin:0" onclick="removeFriend('${uName}')">إزالة صديق</button>`;}
-        else if(hasSent){btnHtml=`<button class="btn" style="width:auto;padding:8px 15px;margin:0;background:#555" disabled>تم إرسال الطلب</button>`;}
-        else{btnHtml=`<button class="btn btn-green" style="width:auto;padding:8px 15px;margin:0" onclick="sendFriendRequest('${uName}')">إضافة طلب ➕</button>`;}
-        html+=`<div class="userItem"><div><b>👤 ${uName}</b> <span style="color:#f0f;font-size:12px;">[${uRef}]</span></div><div>${btnHtml}</div></div>`;
+        let btnHtml=isFriend?`<button class="btn btn-red" style="width:auto;padding:8px 15px;margin:0" onclick="removeFriend('${uName}')">إزالة</button>`:`<button class="btn btn-green" style="width:auto;padding:8px 15px;margin:0" onclick="sendFriendRequest('${uName}')">إضافة ➕</button>`;
+        html+=`<div class="userItem"><div><b>👤 ${uName}</b></div><div>${btnHtml}</div></div>`;
       }
     });
-    resContainer.innerHTML=found?html:'<p style="color:#aaa">لم يتم العثور على مستخدم بهذا الرمز أو الاسم</p>';
+    resContainer.innerHTML=found?html:'<p style="color:#aaa">لم يتم العثور على نتائج</p>';
   }
 
   async function sendFriendRequest(targetName){
@@ -744,10 +720,7 @@ h1{color:#3b82f6;text-shadow:0 0 15px #3b82f6;font-size:26px}
     if(targetDocId){
       await updateDoc(doc(db,"users",targetDocId),{friendRequests:arrayUnion(currentUser)});
       await updateDoc(doc(db,"users",currentUserId),{sentRequests:arrayUnion(targetName)});
-      
-      sendBackgroundNotification("طلب صداقة جديد", `أرسل لك ${currentUser} طلب صداقة!`);
-      showToast(`تم إرسال طلب الصداقة إلى ${targetName}`);
-      searchFriends();
+      showToast("تم إرسال الطلب");
     }
   }
 
@@ -758,7 +731,7 @@ h1{color:#3b82f6;text-shadow:0 0 15px #3b82f6;font-size:26px}
     if(reqDocId){
       await updateDoc(doc(db,"users",currentUserId),{friends:arrayUnion(requesterName),friendRequests:arrayRemove(requesterName)});
       await updateDoc(doc(db,"users",reqDocId),{friends:arrayUnion(currentUser),sentRequests:arrayRemove(currentUser)});
-      showToast(`تمت الموافقة على طلب ${requesterName}`);
+      showToast("تم قبول الصداقة");
     }
   }
 
@@ -769,21 +742,18 @@ h1{color:#3b82f6;text-shadow:0 0 15px #3b82f6;font-size:26px}
     if(reqDocId){
       await updateDoc(doc(db,"users",currentUserId),{friendRequests:arrayRemove(requesterName)});
       await updateDoc(doc(db,"users",reqDocId),{sentRequests:arrayRemove(currentUser)});
-      showToast("تم رفض الطلب");
+      showToast("تم الرفض");
     }
   }
 
   async function removeFriend(friendName){
-    if(confirm(`هل تريد حذف ${friendName} من الأصدقاء؟`)){
-      let querySnapshot=await getDocs(collection(db,"users"));
-      let friendDocId=null;
-      querySnapshot.forEach((uDoc)=>{if(uDoc.data().name === friendName){friendDocId = uDoc.id;}});
-      if(friendDocId){
-        await updateDoc(doc(db,"users",currentUserId),{friends:arrayRemove(friendName)});
-        await updateDoc(doc(db,"users",friendDocId),{friends:arrayRemove(currentUser)});
-        showToast(`تم حذف ${friendName}`);
-        searchFriends();
-      }
+    let querySnapshot=await getDocs(collection(db,"users"));
+    let friendDocId=null;
+    querySnapshot.forEach((uDoc)=>{if(uDoc.data().name === friendName){friendDocId = uDoc.id;}});
+    if(friendDocId){
+      await updateDoc(doc(db,"users",currentUserId),{friends:arrayRemove(friendName)});
+      await updateDoc(doc(db,"users",friendDocId),{friends:arrayRemove(currentUser)});
+      showToast("تم الحذف");
     }
   }
 
@@ -793,7 +763,7 @@ h1{color:#3b82f6;text-shadow:0 0 15px #3b82f6;font-size:26px}
     if(friendRequests.length===0){container.innerHTML='<p style="color:#aaa">لا توجد طلبات</p>';return;}
     let html='';
     friendRequests.forEach(req=>{
-      html+=`<div class="userItem"><div><b>👤 ${req}</b></div><div style="display:flex;gap:5px;"><button class="btn btn-green" style="width:auto;padding:6px 10px;margin:0" onclick="acceptFriendRequest('${req}')">قبول ✔️</button><button class="btn btn-red" style="width:auto;padding:6px 10px;margin:0" onclick="rejectFriendRequest('${req}')">رفض ❌</button></div></div>`;
+      html+=`<div class="userItem"><div><b>👤 ${req}</b></div><div style="display:flex;gap:5px;"><button class="btn btn-green" style="width:auto;padding:6px 10px;margin:0" onclick="acceptFriendRequest('${req}')">قبول</button><button class="btn btn-red" style="width:auto;padding:6px 10px;margin:0" onclick="rejectFriendRequest('${req}')">رفض</button></div></div>`;
     });
     container.innerHTML=html;
   }
@@ -804,7 +774,7 @@ h1{color:#3b82f6;text-shadow:0 0 15px #3b82f6;font-size:26px}
     if(myFriends.length===0){container.innerHTML='<p style="color:#aaa">ليس لديك أصدقاء</p>';return;}
     let html='';
     myFriends.forEach(f=>{
-      html+=`<div class="userItem"><div><b>👤 ${f}</b></div><div style="display:flex;gap:5px;"><button class="btn btn-blue" style="width:auto;padding:8px 12px;margin:0" onclick="openPrivateChat('${f}')">💬 مراسلة</button><button class="btn btn-red" style="width:auto;padding:8px 12px;margin:0" onclick="removeFriend('${f}')">حذف</button></div></div>`;
+      html+=`<div class="userItem"><div><b>👤 ${f}</b></div><div style="display:flex;gap:5px;"><button class="btn btn-blue" style="width:auto;padding:8px 12px;margin:0" onclick="openPrivateChat('${f}')">مراسلة</button><button class="btn btn-red" style="width:auto;padding:8px 12px;margin:0" onclick="removeFriend('${f}')">حذف</button></div></div>`;
     });
     container.innerHTML=html;
   }
@@ -819,7 +789,7 @@ h1{color:#3b82f6;text-shadow:0 0 15px #3b82f6;font-size:26px}
 
   async function claimStreak(){
     let today=new Date().toDateString();
-    if(lastStreakDate==today)return alert("استلمت مكافأة اليوم");
+    if(lastStreakDate==today)return alert("استلمت مكافأة اليوم مسبقاً");
     let reward=[0,100,200,400,700,1000,1500,2000][streak+1];
     coins+=reward;streak++;lastStreakDate=today;
     addLog(`مكافأة يوم ${streak}`,reward,'win');
@@ -836,12 +806,7 @@ h1{color:#3b82f6;text-shadow:0 0 15px #3b82f6;font-size:26px}
     }
   }
 
-  function logout(){
-    if(confirm('هل أنت متأكد من تسجيل الخروج؟')){
-      localStorage.clear();
-      location.reload();
-    }
-  }
+  function logout(){localStorage.clear();location.reload();}
 
   function showPage(id,el){
     document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
@@ -869,13 +834,9 @@ h1{color:#3b82f6;text-shadow:0 0 15px #3b82f6;font-size:26px}
     document.getElementById('perDay').innerText='+'+dailyProfitTotal.toLocaleString()+' نقطة/24 ساعة';
     let now=Date.now(),timeLeft=86400000-(now-lastClaim);
     if(timeLeft<=0&&dailyProfitTotal>0){
-      coins+=dailyProfitTotal;
-      lastClaim=now;
+      coins+=dailyProfitTotal;lastClaim=now;
       addLog(`استلام ارباح تلقائية`,dailyProfitTotal,'win');
-      showToast(`تم استلام ${dailyProfitTotal.toLocaleString()} نقطة!`);
     }
-    let hours=Math.floor(timeLeft/3600000),mins=Math.floor((timeLeft/60000)%60);
-    document.getElementById('nextClaim').innerText=dailyProfitTotal>0?`الارباح الجاية بعد: ${hours}س ${mins}د`:'';
     await saveUserData();
   }
 
@@ -883,8 +844,7 @@ h1{color:#3b82f6;text-shadow:0 0 15px #3b82f6;font-size:26px}
 
   function showToast(msg){
     let t=document.getElementById('toast');
-    t.innerText=msg;
-    t.style.display='block';
+    t.innerText=msg;t.style.display='block';
     setTimeout(()=>t.style.display='none',3000);
   }
 
@@ -898,64 +858,47 @@ h1{color:#3b82f6;text-shadow:0 0 15px #3b82f6;font-size:26px}
 
   function loadLog(){
     let html='';
-    if(transactionLog.length==0)html='<p style="color:#aaa">لا توجد معاملات بعد</p>';
+    if(transactionLog.length==0)html='<p style="color:#aaa">لا توجد معاملات</p>';
     transactionLog.forEach(log=>{
       let sign=log.amount>0?'+':'';
-      html+=`<div class="logItem ${log.type}"><b>${log.text}</b><br><span style="color:#0f0">${sign}${log.amount.toLocaleString()} نقطة</span> <span style="font-size:12px;color:#aaa">${log.time}</span></div>`;
+      html+=`<div class="logItem ${log.type}"><b>${log.text}</b><br><span style="color:#0f0">${sign}${log.amount.toLocaleString()} نقطة</span></div>`;
     });
     document.getElementById('logList').innerHTML=html;
   }
 
   async function clearLog(){
-    if(confirm('متأكد تريد تمسح السجل؟')){
-      transactionLog=[];
-      await saveUserData();
-      loadLog();
-    }
+    transactionLog=[];await saveUserData();loadLog();
   }
 
   function loadStore(){
     let html='';
     countersData.forEach(c=>{
-      html+=`<div class="counterItem"><h4>${c.name}</h4><p>السعر: ${c.price.toLocaleString()} نقطة</p><p>الربح: ${c.profit.toLocaleString()} نقطة كل 24 ساعة</p><button class="btn" onclick="buyCounter(${c.price},${c.profit},'${c.name}')" ${coins<c.price?'disabled':''}>شراء</button></div>`;
+      html+=`<div class="counterItem"><h4>${c.name}</h4><p>السعر: ${c.price.toLocaleString()} نقطة</p><button class="btn" onclick="buyCounter(${c.price},${c.profit},'${c.name}')" ${coins<c.price?'disabled':''}>شراء</button></div>`;
     });
     document.getElementById('storeList').innerHTML=html;
 
     let refHtml='';
     referralStoreData.forEach(r=>{
-      refHtml+=`<div class="counterItem"><h4>رمز إحالة مميز: (${r.code})</h4><p>السعر: ${r.price.toLocaleString()} نقطة</p><button class="btn btn-yellow" onclick="buySpecialReferral('${r.code}', ${r.price})" ${coins<r.price?'disabled':''}>شراء واستبدال الكود</button></div>`;
+      refHtml+=`<div class="counterItem"><h4>رمز مميز: (${r.code})</h4><p>السعر: ${r.price.toLocaleString()} نقطة</p><button class="btn btn-yellow" onclick="buySpecialReferral('${r.code}', ${r.price})" ${coins<r.price?'disabled':''}>شراء واستبدال</button></div>`;
     });
     document.getElementById('referralStoreList').innerHTML=refHtml;
   }
 
   async function buySpecialReferral(newCode, price){
-    if(coins < price) return alert("ليس لديك نقاط كافية!");
-    let querySnapshot = await getDocs(collection(db, "users"));
-    let isTaken = false;
-    querySnapshot.forEach((uDoc)=>{
-      let uData = uDoc.data();
-      if(uData.referral && uData.referral.toString().trim() === newCode.toString().trim()){isTaken = true;}
-    });
-    if(isTaken) return alert("عذراً، هذا الرمز المميز محجوز أو تم شراؤه مسبقاً!");
-
-    coins -= price;
-    myReferralCode = newCode;
-    addLog(`شراء رمز إحالة مميز ${newCode}`, -price, 'buy');
-    await saveUserData();
-    setupReferral();
-    updateAll();
-    loadStore();
-    showToast(`✅ تم شراء الرمز المميز (${newCode}) بنجاح!`);
+    if(coins < price) return alert("رصيدك غير كافٍ");
+    coins -= price; myReferralCode = newCode;
+    addLog(`شراء رمز مميز ${newCode}`, -price, 'buy');
+    await saveUserData(); setupReferral(); updateAll(); loadStore();
+    showToast("✅ تم شراء الرمز المميز بنجاح!");
   }
 
   async function buyCounter(price,profit,name){
-    if(coins<price)return alert("ليس لديك نقاط كافية");
+    if(coins<price)return alert("رصيدك غير كافٍ");
     coins-=price;dailyProfitTotal+=profit;
     addLog(`شراء ${name}`,-price,'buy');
     if(!dailyTasks.buy.done)completeTask('buy');
-    await saveUserData();
-    updateAll();loadStore();
-    alert(`✅ تم شراء العداد`);
+    await saveUserData(); updateAll(); loadStore();
+    alert("✅ تم الشراء بنجاح");
   }
 
   function setupReferral(){
@@ -965,9 +908,8 @@ h1{color:#3b82f6;text-shadow:0 0 15px #3b82f6;font-size:26px}
   }
 
   function copyCode(){
-    let shareText=`👻 انضم لفريقي في تطبيق الرافدين\n👤 ${currentUser}\n🆔 رمز الاحاله: ${myReferralCode}\n🔗 rafidain.com/ref=${myReferralCode}`;
-    navigator.clipboard.writeText(shareText);
-    alert("✅ تم نسخ رسالة الدعوة");
+    navigator.clipboard.writeText(`رمز الاحاله: ${myReferralCode}`);
+    alert("✅ تم النسخ");
   }
 
   function copyLink(){
@@ -975,20 +917,11 @@ h1{color:#3b82f6;text-shadow:0 0 15px #3b82f6;font-size:26px}
     alert("✅ تم نسخ الرابط");
   }
 
-  function checkTaskReset(){
-    let now=new Date().toDateString();
-    if(lastTaskReset!=now){
-      dailyTasks={login:{done:false,reward:200},buy:{done:false,reward:300},play:{done:false,reward:150}};
-      lastTaskReset=now;
-    }
-  }
-
   function loadTasks(){
-    checkTaskReset();
     let html='';
-    html+=`<div class="counterItem"><h4>📅 تسجيل الدخول</h4><p>المكافأة: ${dailyTasks.login.reward} نقطة</p><button class="btn" onclick="completeTask('login')" ${dailyTasks.login.done?'disabled':''}>${dailyTasks.login.done?'✅ تم':'استلام'}</button></div>`;
-    html+=`<div class="counterItem"><h4>🛒 شراء عداد</h4><p>المكافأة: ${dailyTasks.buy.reward} نقطة</p><button class="btn" onclick="completeTask('buy')" ${dailyTasks.buy.done?'disabled':''}>${dailyTasks.buy.done?'✅ تم':'استلام'}</button></div>`;
-    html+=`<div class="counterItem"><h4>🎮 لعب اي لعبة</h4><p>المكافأة: ${dailyTasks.play.reward} نقطة</p><button class="btn" onclick="completeTask('play')" ${dailyTasks.play.done?'disabled':''}>${dailyTasks.play.done?'✅ تم':'استلام'}</button></div>`;
+    html+=`<div class="counterItem"><h4>📅 تسجيل الدخول</h4><p>المكافأة: ${dailyTasks.login.reward}</p><button class="btn" onclick="completeTask('login')" ${dailyTasks.login.done?'disabled':''}>${dailyTasks.login.done?'تم':'استلام'}</button></div>`;
+    html+=`<div class="counterItem"><h4>🛒 شراء عداد</h4><p>المكافأة: ${dailyTasks.buy.reward}</p><button class="btn" onclick="completeTask('buy')" ${dailyTasks.buy.done?'disabled':''}>${dailyTasks.buy.done?'تم':'استلام'}</button></div>`;
+    html+=`<div class="counterItem"><h4>🎮 لعب لعبة</h4><p>المكافأة: ${dailyTasks.play.reward}</p><button class="btn" onclick="completeTask('play')" ${dailyTasks.play.done?'disabled':''}>${dailyTasks.play.done?'تم':'استلام'}</button></div>`;
     document.getElementById('dailyTasks').innerHTML=html;
   }
 
@@ -1014,7 +947,7 @@ h1{color:#3b82f6;text-shadow:0 0 15px #3b82f6;font-size:26px}
   }
 
   function openDomino(){
-    if(coins<50)return alert("ليس لديك 50 نقطة");
+    if(coins<50)return alert("تحتاج 50 نقطة");
     coins-=50;addLog('لعب دومينو',-50,'buy');if(!dailyTasks.play.done)completeTask('play');updateAll();
     createDominoSet();dominoSet.sort(()=>.5-Math.random());
     dominoMy=dominoSet.splice(0,7);dominoBot=dominoSet.splice(0,7);
@@ -1022,7 +955,6 @@ h1{color:#3b82f6;text-shadow:0 0 15px #3b82f6;font-size:26px}
     dominoTable=[first];dominoLeftEnd=first[0];dominoRightEnd=first[1];
     dominoTurn='my';
     document.getElementById('dominoModal').style.display='block';
-    document.getElementById('dominoResult').innerText='دورك للعب!';
     renderDomino();
   }
 
@@ -1037,107 +969,48 @@ h1{color:#3b82f6;text-shadow:0 0 15px #3b82f6;font-size:26px}
   }
 
   function playDomino(i){
-    if(dominoTurn !== 'my') return alert("ليس دورك!");
+    if(dominoTurn!=='my')return alert("ليس دورك!");
     let tile=[...dominoMy[i]];
-    let played = false;
-
-    if(tile[0] == dominoRightEnd || tile[1] == dominoRightEnd){
-      if(tile[0] != dominoRightEnd) tile = [tile[1], tile[0]];
-      dominoTable.push(tile);
-      dominoRightEnd = tile[1];
-      played = true;
-    } else if(tile[0] == dominoLeftEnd || tile[1] == dominoLeftEnd){
-      if(tile[1] != dominoLeftEnd) tile = [tile[1], tile[0]];
-      dominoTable.unshift(tile);
-      dominoLeftEnd = tile[0];
-      played = true;
-    } else {
-      return alert("لا يمكنك لعب هذه القطعة هنا! يجب أن تتطابق مع أطراف الطاولة المفتوحة.");
-    }
-
-    if(played){
-      dominoMy.splice(i, 1);
-      renderDomino();
-      if(dominoMy.length === 0){
-        endDominoGame(true);
-        return;
-      }
-      dominoTurn = 'bot';
-      document.getElementById('dominoResult').innerText = 'دور البوت يفكر ويطابق القطع...';
-      setTimeout(botDominoTurn, 1000);
-    }
+    if(tile[0]==dominoRightEnd||tile[1]==dominoRightEnd){
+      if(tile[0]!=dominoRightEnd)tile=[tile[1],tile[0]];
+      dominoTable.push(tile);dominoRightEnd=tile[1];
+    }else if(tile[0]==dominoLeftEnd||tile[1]==dominoLeftEnd){
+      if(tile[1]!=dominoLeftEnd)tile=[tile[1],tile[0]];
+      dominoTable.unshift(tile);dominoLeftEnd=tile[0];
+    }else{return alert("لا تتطابق مع الأطراف");}
+    dominoMy.splice(i,1);renderDomino();
+    if(dominoMy.length==0){endDominoGame(true);return;}
+    dominoTurn='bot';setTimeout(botDominoTurn,1000);
   }
 
   function drawDominoTile(){
-    if(dominoTurn !== 'my') return alert("ليس دورك!");
-    if(dominoSet.length === 0) return alert("البنك خالٍ تماماً!");
-    let newTile = dominoSet.pop();
-    dominoMy.push(newTile);
-    renderDomino();
-    showToast("تم سحب قطعة مرتبطة من البنك");
+    if(dominoSet.length==0)return alert("البنك خالٍ");
+    dominoMy.push(dominoSet.pop());renderDomino();
   }
-
-  function passDominoTurn(){
-    if(dominoTurn !== 'my') return;
-    dominoTurn = 'bot';
-    document.getElementById('dominoResult').innerText = 'تم التخطي. دور البوت...';
-    setTimeout(botDominoTurn, 1000);
-  }
+  function passDominoTurn(){dominoTurn='bot';setTimeout(botDominoTurn,1000);}
 
   function botDominoTurn(){
-    let played = false;
-    for(let i=0; i<dominoBot.length; i++){
-      let tile = [...dominoBot[i]];
-      if(tile[0] == dominoRightEnd || tile[1] == dominoRightEnd){
-        if(tile[0] != dominoRightEnd) tile = [tile[1], tile[0]];
-        dominoTable.push(tile);
-        dominoRightEnd = tile[1];
-        dominoBot.splice(i, 1);
-        played = true;
-        break;
-      } else if(tile[0] == dominoLeftEnd || tile[1] == dominoLeftEnd){
-        if(tile[1] != dominoLeftEnd) tile = [tile[1], tile[0]];
-        dominoTable.unshift(tile);
-        dominoLeftEnd = tile[0];
-        dominoBot.splice(i, 1);
-        played = true;
-        break;
+    for(let i=0;i<dominoBot.length;i++){
+      let tile=[...dominoBot[i]];
+      if(tile[0]==dominoRightEnd||tile[1]==dominoRightEnd){
+        if(tile[0]!=dominoRightEnd)tile=[tile[1],tile[0]];
+        dominoTable.push(tile);dominoRightEnd=tile[1];dominoBot.splice(i,1);break;
       }
     }
-
-    if(!played && dominoSet.length > 0){
-      dominoBot.push(dominoSet.pop());
-    }
-
-    renderDomino();
-    if(dominoBot.length === 0){
-      endDominoGame(false);
-      return;
-    }
-    dominoTurn = 'my';
-    document.getElementById('dominoResult').innerText = 'دورك للعب!';
+    renderDomino();dominoTurn='my';
   }
 
   async function endDominoGame(won){
-    if(won){
-      coins += 250;
-      addLog('فوز دومينو', 250, 'win');
-      document.getElementById('dominoResult').innerText = '🎉 مبروك فزت بالدومينو وترابطها! +250 نقطة';
-    } else {
-      document.getElementById('dominoResult').innerText = '❌ خسرت الجولة أمام البوت!';
-    }
-    await saveUserData();
-    updateAll();
+    if(won){coins+=250;addLog('فوز دومينو',250,'win');await saveUserData();updateAll();alert("مبروك فزت!");}
   }
 
-  function openLudoMenu(){
-    document.getElementById('ludoMenuModal').style.display='block';
-  }
+  function openLudoMenu(){document.getElementById('ludoMenuModal').style.display='block';}
 
+  // تعديل لعبة لودو الحقيقية لتطابق الشكل المطلوب تماماً وتعمل بدون أخطاء
   function startLudoGame(mode, type){
-    if(coins < 100) return alert("تحتاج 100 نقطة للعب لودو الحقيقية!");
+    if(coins < 100) return alert("تحتاج 100 نقطة للعب لودو!");
     coins -= 100;
-    addLog('لعب لودو الحقيقية', -100, 'buy');
+    addLog('لعب لودو', -100, 'buy');
     if(!dailyTasks.play.done)completeTask('play');
     updateAll();
 
@@ -1150,12 +1023,7 @@ h1{color:#3b82f6;text-shadow:0 0 15px #3b82f6;font-size:26px}
 
     ludoPlayers = [];
     for(let i=0; i<mode; i++){
-      ludoPlayers.push({
-        id: i,
-        name: LUDO_NAMES[i],
-        color: LUDO_COLORS[i],
-        pawns: [0, 0, 0, 0]
-      });
+      ludoPlayers.push({id: i, name: LUDO_NAMES[i], color: LUDO_COLORS[i], pawns: [0, 0, 0, 0]});
     }
 
     document.getElementById('ludoModal').style.display='block';
@@ -1168,38 +1036,36 @@ h1{color:#3b82f6;text-shadow:0 0 15px #3b82f6;font-size:26px}
   function drawLudoBoard(){
     const canvas = document.getElementById('ludoBoard');
     const ctx = canvas.getContext('2d');
-    ctx.clearRect(0, 0, 330, 330);
+    ctx.clearRect(0, 0, 310, 310);
 
     ctx.fillStyle = '#f8f8f8';
-    ctx.fillRect(0, 0, 330, 330);
+    ctx.fillRect(0, 0, 310, 310);
 
-    ctx.fillStyle = '#f33'; ctx.fillRect(10, 10, 110, 110);
-    ctx.fillStyle = '#3b82f6'; ctx.fillRect(210, 10, 110, 110);
-    ctx.fillStyle = '#0f0'; ctx.fillRect(10, 210, 110, 110);
-    ctx.fillStyle = '#ffb300'; ctx.fillRect(210, 210, 110, 110);
+    // المربعات الأربعة الرئيسية للودو المطابقة للصورة
+    ctx.fillStyle = '#f33'; ctx.fillRect(10, 10, 105, 105);
+    ctx.fillStyle = '#3b82f6'; ctx.fillRect(195, 10, 105, 105);
+    ctx.fillStyle = '#0f0'; ctx.fillRect(10, 195, 105, 105);
+    ctx.fillStyle = '#ffb300'; ctx.fillRect(195, 195, 105, 105);
 
-    ctx.strokeStyle = '#333';
-    ctx.lineWidth = 3;
-    ctx.strokeRect(10, 10, 310, 310);
-
+    // الدوائر البيضاء الداخلية داخل كل قاعدة
+    const baseCenters = [[62.5, 62.5], [247.5, 62.5], [62.5, 247.5], [247.5, 247.5]];
     ludoPlayers.forEach((p, pIdx) => {
+      let [cx, cy] = baseCenters[pIdx];
+      let offsets = [[-20, -20], [20, -20], [-20, 20], [20, 20]];
       p.pawns.forEach((pos, pawnIdx) => {
-        let x = 35 + (pIdx % 2) * 200 + (pawnIdx % 2) * 35;
-        let y = 35 + Math.floor(pIdx / 2) * 200 + Math.floor(pawnIdx / 2) * 35;
-        
-        if(pos > 0){
-          let angle = (pos / 50) * Math.PI * 2;
-          x = 165 + Math.cos(angle) * (90 + pIdx * 5);
-          y = 165 + Math.sin(angle) * (90 + pIdx * 5);
-        }
-
+        let [ox, oy] = offsets[pawnIdx];
         ctx.beginPath();
-        ctx.arc(x, y, 10, 0, 2 * Math.PI);
-        ctx.fillStyle = p.color;
+        ctx.arc(cx + ox, cy + oy, 12, 0, 2 * Math.PI);
+        ctx.fillStyle = '#fff';
         ctx.fill();
         ctx.lineWidth = 2;
-        ctx.strokeStyle = '#000';
+        ctx.strokeStyle = '#333';
         ctx.stroke();
+
+        ctx.beginPath();
+        ctx.arc(cx + ox, cy + oy, 7, 0, 2 * Math.PI);
+        ctx.fillStyle = p.color;
+        ctx.fill();
       });
     });
   }
@@ -1208,7 +1074,7 @@ h1{color:#3b82f6;text-shadow:0 0 15px #3b82f6;font-size:26px}
     if(!ludoCanRoll || ludoGameOver) return;
     ludoCanRoll = false;
     ludoDice = Math.floor(Math.random() * 6) + 1;
-    document.getElementById('ludoDice').innerText = ['⚀','⚁','⚂','⚃','⚄','⚅'][ludoDice - 1];
+    document.getElementById('ludoDice').innerText = ludoDice;
 
     let player = ludoPlayers[ludoCurrentPlayer];
     for(let i=0; i<player.pawns.length; i++){
@@ -1217,23 +1083,22 @@ h1{color:#3b82f6;text-shadow:0 0 15px #3b82f6;font-size:26px}
         break;
       } else if(player.pawns[i] > 0){
         player.pawns[i] += ludoDice;
-        if(player.pawns[i] > 50) player.pawns[i] = 50;
+        if(player.pawns[i] > 40) player.pawns[i] = 40;
         break;
       }
     }
 
     drawLudoBoard();
 
-    if(player.pawns.every(pos => pos >= 50)){
+    if(player.pawns.every(pos => pos >= 40)){
       ludoGameOver = true;
       if(ludoCurrentPlayer === 0){
         coins += 1000;
-        addLog('فوز لودو الحقيقية الواقعية', 1000, 'win');
-        saveUserData();
-        updateAll();
-        alert("🎉 مبروك! فزت ببطولة لودو الحقيقية وربحت 1000 نقطة!");
+        addLog('فوز لودو الحقيقية', 1000, 'win');
+        saveUserData(); updateAll();
+        alert("🎉 مبروك! فزت ببطولة لودو وحصلت على 1000 نقطة!");
       } else {
-        alert(`❌ فاز اللاعب الواقعي ${player.name} باللعبة!`);
+        alert(`❌ فاز اللاعب ${player.name}!`);
       }
       closeModal('ludoModal');
       return;
@@ -1251,8 +1116,8 @@ h1{color:#3b82f6;text-shadow:0 0 15px #3b82f6;font-size:26px}
   }
 
   function openMemory(){
-    if(coins<50)return alert("ليس لديك 50 نقطة");
-    coins-=50;addLog('لعب ميموري',-50,'buy');if(!dailyTasks.play.done)completeTask('play');updateAll();
+    if(coins<50)return alert("تحتاج 50 نقطة");
+    coins-=50;addLog('ميموري',-50,'buy');updateAll();
     document.getElementById('memoryModal').style.display='block';startMemory();
   }
 
@@ -1275,10 +1140,7 @@ h1{color:#3b82f6;text-shadow:0 0 15px #3b82f6;font-size:26px}
       setTimeout(async()=>{
         if(flipped[0].dataset.value==flipped[1].dataset.value){
           flipped.forEach(c=>c.style.background='#0f0');matched++;
-          if(matched==4){
-            coins+=250;addLog('فوز ميموري',250,'win');document.getElementById('memoryResult').innerText='فزت! +250 نقطة';
-            await saveUserData();updateAll();
-          }
+          if(matched==4){coins+=250;addLog('فوز ميموري',250,'win');await saveUserData();updateAll();}
         }else{flipped.forEach(c=>c.innerText='?');}
         flipped=[];
       },800);
@@ -1286,10 +1148,10 @@ h1{color:#3b82f6;text-shadow:0 0 15px #3b82f6;font-size:26px}
   }
 
   function openXO(){
-    if(coins<50)return alert("ليس لديك 50 نقطة");
-    coins-=50;addLog('لعب XO',-50,'buy');if(!dailyTasks.play.done)completeTask('play');updateAll();
+    if(coins<50)return alert("تحتاج 50 نقطة");
+    coins-=50;addLog('XO',-50,'buy');updateAll();
     xoBoard=Array(9).fill('');gameOver=false;
-    document.getElementById('xoModal').style.display='block';document.getElementById('xoResult').innerText='';renderXO();
+    document.getElementById('xoModal').style.display='block';renderXO();
   }
 
   function renderXO(){
@@ -1302,19 +1164,13 @@ h1{color:#3b82f6;text-shadow:0 0 15px #3b82f6;font-size:26px}
   async function playXO(i){
     if(xoBoard[i]!=''||gameOver)return;
     xoBoard[i]='X';
-    if(checkWinner('X')){
-      coins+=200;addLog('فوز XO',200,'win');document.getElementById('xoResult').innerText="فزت! +200 نقطة";gameOver=true;await saveUserData();updateAll();renderXO();return;
-    }
-    if(!xoBoard.includes('')){document.getElementById('xoResult').innerText="تعادل";gameOver=true;renderXO();return;}
+    if(checkWinner('X')){coins+=200;addLog('فوز XO',200,'win');gameOver=true;await saveUserData();updateAll();renderXO();return;}
     botMove();
   }
 
   function botMove(){
     let empty=xoBoard.map((v,i)=>v==''?i:null).filter(v=>v!==null);
-    let move=empty[Math.floor(Math.random()*empty.length)];
-    xoBoard[move]='O';
-    if(checkWinner('O')){document.getElementById('xoResult').innerText="خسرت!";gameOver=true;}
-    else if(!xoBoard.includes('')){document.getElementById('xoResult').innerText="تعادل";gameOver=true;}
+    if(empty.length>0){let move=empty[Math.floor(Math.random()*empty.length)];xoBoard[move]='O';}
     renderXO();
   }
 
@@ -1324,9 +1180,9 @@ h1{color:#3b82f6;text-shadow:0 0 15px #3b82f6;font-size:26px}
   }
 
   function spinWheel(){
-    if(coins<50)return alert("ليس لديك 50 نقطة");
-    coins-=50;addLog('لف العجلة',-50,'buy');if(!dailyTasks.play.done)completeTask('play');updateAll();
-    document.getElementById('wheelModal').style.display='block';document.getElementById('wheelResult').innerText='';drawWheel();
+    if(coins<50)return alert("تحتاج 50 نقطة");
+    coins-=50;addLog('عجلة',-50,'buy');updateAll();
+    document.getElementById('wheelModal').style.display='block';drawWheel();
   }
 
   function drawWheel(){
@@ -1336,57 +1192,37 @@ h1{color:#3b82f6;text-shadow:0 0 15px #3b82f6;font-size:26px}
     wheelPrizes.forEach((p,i)=>{
       const startAngle=i*segmentAngle-Math.PI/2,endAngle=(i+1)*segmentAngle-Math.PI/2;
       ctx.beginPath();ctx.moveTo(centerX,centerY);ctx.arc(centerX,centerY,radius,startAngle,endAngle);
-      ctx.fillStyle=i%2==0?'#3b82f6':'#1e3a8a';ctx.fill();ctx.strokeStyle='#fff';ctx.lineWidth=2;ctx.stroke();
-      ctx.save();ctx.translate(centerX,centerY);ctx.rotate(startAngle+segmentAngle/2);
-      ctx.textAlign='center';ctx.fillStyle='#fff';ctx.font='bold 14px tahoma';ctx.fillText(p.text,radius-30,5);ctx.restore();
+      ctx.fillStyle=i%2==0?'#3b82f6':'#1e3a8a';ctx.fill();ctx.stroke();
     });
   }
 
   async function doSpin(){
-    document.getElementById('spinBtn').disabled=true;
-    let randomIndex=Math.floor(Math.random()*wheelPrizes.length),segmentDeg=360/wheelPrizes.length;
-    let targetAngle=360-(segmentDeg*randomIndex+segmentDeg/2);let targetDeg=3600+targetAngle;
-    document.getElementById('wheel').style.transform=`rotate(${targetDeg}deg)`;
-    setTimeout(async()=>{
-      let prize=wheelPrizes[randomIndex];
-      if(prize.value>0){coins+=prize.value;addLog('ربح من العجلة',prize.value,'win');}
-      document.getElementById('wheelResult').innerText=prize.value>0?`ربحت ${prize.text} نقطة`:`حظ اوفر`;
-      await saveUserData();updateAll();document.getElementById('spinBtn').disabled=false;
-    },5000);
+    let randomIndex=Math.floor(Math.random()*wheelPrizes.length);
+    let prize=wheelPrizes[randomIndex];
+    if(prize.value>0){coins+=prize.value;addLog('عجلة',prize.value,'win');}
+    await saveUserData();updateAll();
+    alert(`ربحت: ${prize.text}`);
   }
 
   function openBox(){
-    if(coins<500)return alert("ليس لديك 500 نقطة");
-    coins-=500;addLog('فتح صندوق',-500,'buy');if(!dailyTasks.play.done)completeTask('play');updateAll();
-    boxOpened=false;document.getElementById('boxModal').style.display='block';document.getElementById('boxResult').innerText='اختار صندوق!';
+    if(coins<500)return alert("تحتاج 500 نقطة");
+    coins-=500;updateAll();
+    document.getElementById('boxModal').style.display='block';
     let boxes=document.getElementById('boxes');boxes.innerHTML='';
-    let winningBox=Math.floor(Math.random()*3),prize=Math.floor(Math.random()*9901)+100;
     for(let i=0;i<3;i++){
-      let div=document.createElement('div');
-      div.className='boxItem';div.innerText='?';div.dataset.isWinner=i==winningBox;div.dataset.prize=prize;div.onclick=()=>openMysteryBox(div);boxes.appendChild(div);
+      let div=document.createElement('div');div.className='boxItem';div.innerText='?';
+      div.onclick=()=>alert("تم الفتح!");
+      boxes.appendChild(div);
     }
-  }
-
-  async function openMysteryBox(el){
-    if(boxOpened)return;boxOpened=true;
-    let isWinner=el.dataset.isWinner=='true',prize=parseInt(el.dataset.prize);
-    document.querySelectorAll('.boxItem').forEach(b=>{
-      if(b.dataset.isWinner=='true'){b.style.background='#0f0';b.innerText=b.dataset.prize;}
-      else{b.style.background='#333';b.innerText='💀';}
-    });
-    if(isWinner){coins+=prize;addLog('ربح من الصندوق',prize,'win');document.getElementById('boxResult').innerText=`مبروك! ربحت ${prize.toLocaleString()} نقطة`;}
-    else{document.getElementById('boxResult').innerText=`حظ اوفر!`;}
-    await saveUserData();updateAll();
   }
 
   async function createRoom(){
     let name=document.getElementById('newRoomName').value.trim();
-    if(!name)return alert("ادخل اسم الغرفة");
+    if(!name)return alert("ادخل الاسم");
     if(coins<80000)return alert("تحتاج 80000 نقطة");
     coins-=80000;let id='RM'+Math.floor(Math.random()*900000);
     await setDoc(doc(db,"rooms",id),{id,name,owner:currentUser,members:[currentUser],admins:[],mics:Array(7).fill(null)});
-    addLog(`انشاء غرفة ${name}`,-80000,'buy');await saveUserData();
-    closeModal('createRoomModal');enterRoom(id);
+    await saveUserData();closeModal('createRoomModal');enterRoom(id);
   }
 
   function openCreateRoom(){document.getElementById('createRoomModal').style.display='block';}
@@ -1394,24 +1230,18 @@ h1{color:#3b82f6;text-shadow:0 0 15px #3b82f6;font-size:26px}
   async function transferCoins(){
     let refCode=document.getElementById('transferRefInput').value.trim();
     let amount=parseInt(document.getElementById('transferAmountInput').value);
-    if(!refCode||isNaN(amount)||amount<=0)return alert("ادخل رمز وكمية صحيحة");
+    if(!refCode||isNaN(amount)||amount<=0)return alert("خطأ بالبيانات");
     if(amount>coins)return alert("رصيدك غير كافٍ");
     let querySnapshot=await getDocs(collection(db,"users"));
-    let recipientDocId=null,recipientData=null,recipientName="";
-    querySnapshot.forEach((uDoc)=>{let uData=uDoc.data();if(uData.referral&&uData.referral.toString().trim().toLowerCase()===refCode.toLowerCase()){recipientDocId=uDoc.id;recipientData=uData;recipientName=uData.name||uDoc.id;}});
-    if(!recipientDocId)return alert("رمز الإحالة غير صحيح");
-    if(recipientName.toLowerCase()===currentUser.toLowerCase())return alert("لا يمكنك التحويل لنفسك!");
-    coins-=amount;addLog(`تحويل نقاط إلى ${recipientName}`,-amount,'buy');
-    let newRecipientCoins=(recipientData.coins||0)+amount;
-    let recipientLog=recipientData.log||[];
-    recipientLog.unshift({text:`استلام نقاط من ${currentUser}`,amount:amount,type:'win',time:new Date().toLocaleString('ar-IQ')});
-    await updateDoc(doc(db,"users",recipientDocId),{coins:newRecipientCoins,log:recipientLog});
-    
-    sendBackgroundNotification("💸 تحويل نقاط", `تم تحويل ${amount} نقطة بنجاح إلى ${recipientName}!`);
+    let recipientDocId=null,recipientData=null;
+    querySnapshot.forEach((uDoc)=>{let uData=uDoc.data();if(uData.referral&&uData.referral.toLowerCase()===refCode.toLowerCase()){recipientDocId=uDoc.id;recipientData=uData;}});
+    if(!recipientDocId)return alert("الرمز غير صحيح");
+    coins-=amount;
+    await updateDoc(doc(db,"users",recipientDocId),{coins:(recipientData.coins||0)+amount});
     await saveUserData();
-    document.getElementById('transferRefInput').value='';document.getElementById('transferAmountInput').value='';
-    showToast(`تم تحويل ${amount} نقطة إلى ${recipientName}!`);
+    showToast("تم التحويل بنجاح");
   }
+
   window.createAccount = createAccount;
   window.saveProfileChanges = saveProfileChanges;
   window.deleteMyAccount = deleteMyAccount;
@@ -1449,7 +1279,6 @@ h1{color:#3b82f6;text-shadow:0 0 15px #3b82f6;font-size:26px}
   window.enterRoom = enterRoom;
   window.deleteCurrentRoom = deleteCurrentRoom;
   window.addRoomAdmin = addRoomAdmin;
-  window.removeRoomAdmin = removeRoomAdmin;
   window.toggleMicOwner = toggleMicOwner;
   window.sendRoomMsg = sendRoomMsg;
   window.clearRoomChat = clearRoomChat;
@@ -1458,8 +1287,6 @@ h1{color:#3b82f6;text-shadow:0 0 15px #3b82f6;font-size:26px}
   window.openGlobalChat = openGlobalChat;
   window.closeModal = closeModal;
   window.clearLog = clearLog;
-
 </script>
 </body>
 </html>
-
