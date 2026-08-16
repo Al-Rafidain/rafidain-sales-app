@@ -78,7 +78,6 @@ h1{color:#3b82f6;text-shadow:0 0 15px #3b82f6;font-size:26px}
 </div>
 <div id="mainApp" style="display:none">
   <div class="logo">🏛️</div><h1>تطبيق الرافدين</h1>
-
   <div id="home" class="page active">
     <div class="stats">
       <div class="box">
@@ -147,7 +146,6 @@ h1{color:#3b82f6;text-shadow:0 0 15px #3b82f6;font-size:26px}
     <input type="text" id="searchRoomId" class="input" placeholder="ادخل ايدي الغرفة للبحث"><button class="btn" onclick="joinRoomById()">دخول</button>
     <h3 style="color:#3b82f6;margin-top:20px">الغرف الموجودة</h3><div id="roomsList"><p style="color:#aaa">لا توجد غرف</p></div>
   </div>
-
   <div id="globalChat" class="page">
     <button class="btn" onclick="showPage('rooms',null)">🔙 رجوع</button>
     <h2>🌍 الدردشة العامة</h2>
@@ -191,7 +189,6 @@ h1{color:#3b82f6;text-shadow:0 0 15px #3b82f6;font-size:26px}
     <div class="box"><h3>🌟 ادعُ اصدقائك واربح</h3><div id="myReferralCode" class="referralCode">جاري التحميل...</div><div id="myReferralLink" class="referralCode">جاري التحميل...</div><button class="btn btn-blue" onclick="copyCode()">📋 نسخ رسالة الدعوة</button><button class="btn btn-blue" onclick="copyLink()">🔗 نسخ الرابط</button></div>
     <div class="box"><h3>💸 تحويل نقاط لصديق</h3><input type="text" id="transferRefInput" class="input" placeholder="ادخل رمز الاحاله لصديقك"><input type="number" id="transferAmountInput" class="input" placeholder="كمية النقاط"><button class="btn btn-green" onclick="transferCoins()">تحويل النقاط 🚀</button></div>
   </div>
-
   <div id="log" class="page"><h2>📜 سجل المعاملات</h2><div id="logList"></div><button class="btn btn-red" onclick="clearLog()">🗑️ مسح السجل</button></div>
   
   <div id="news" class="page">
@@ -334,9 +331,8 @@ h1{color:#3b82f6;text-shadow:0 0 15px #3b82f6;font-size:26px}
   let memoryCards=[], flipped=[], matched=0;
   let streak=0, lastStreakDate='', totalGiftsSent=0, roomMics=Array(7).fill(null);  
   
-  // العداد التنازلي للسحب (يعمل في الخلفية ويحسب الفارق الزمني بدقة بناءً على الوقت الحقيقي)
   let withdrawTimerInterval = null;
-  const WITHDRAW_TOTAL_TIME = 24 * 60 * 60; // 24 ساعة بالثواني
+  const WITHDRAW_TOTAL_TIME = 24 * 60 * 60;
 
   function getSavedWithdrawTime() {
     let savedEndTime = localStorage.getItem('rafidain_withdraw_end_time');
@@ -430,6 +426,7 @@ h1{color:#3b82f6;text-shadow:0 0 15px #3b82f6;font-size:26px}
       }
     }, 1000);
   }
+
   async function createAccount(){
     let name=document.getElementById('regName').value.trim();
     let pass=document.getElementById('regPass').value.trim();
@@ -522,7 +519,6 @@ h1{color:#3b82f6;text-shadow:0 0 15px #3b82f6;font-size:26px}
       setupReferral();updateAll();renderStreak();
     }
   }
-
   function getChatId(user1,user2){return user1<user2?`${user1}_${user2}`:`${user2}_${user1}`; }
 
   function openPrivateChat(friendName){
@@ -1309,7 +1305,6 @@ h1{color:#3b82f6;text-shadow:0 0 15px #3b82f6;font-size:26px}
     let randomIndex=Math.floor(Math.random()*wheelPrizes.length);
     let prize=wheelPrizes[randomIndex];
     
-    // ضبط زاوية التدوير بدقة لتقع الجائزة تماماً تحت خط المؤشر الأحمر بالأسفل/الأعلى
     const sliceAngle = 360 / wheelPrizes.length;
     let targetDegree = 360 - (randomIndex * sliceAngle + sliceAngle / 2);
     let degrees = 360 * 6 + targetDegree;
@@ -1322,7 +1317,7 @@ h1{color:#3b82f6;text-shadow:0 0 15px #3b82f6;font-size:26px}
         addLog(`ربح العجلة ${prize.text}`,prize.value,'win');
       }
       await saveUserData();updateAll();
-      document.getElementById('wheelResult').innerText = `🎁 النتيجة: ${prize.text}`;
+      document.getElementById('wheelResult').innerText = `🎁 النتيجة: لقد ربحت ${prize.text}`;
       spinBtn.disabled = false;
     }, 4000);
   }
@@ -1356,7 +1351,7 @@ h1{color:#3b82f6;text-shadow:0 0 15px #3b82f6;font-size:26px}
       element.innerText = '⭐';
       coins += amount;
       addLog(`صندوق مفاجآت`, amount, 'win');
-      document.getElementById('boxResult').innerText = `🎉 مبروك! ربحت ${amount} نقطة!`;
+      document.getElementById('boxResult').innerText = `🎉 مبروك! لقد ربحت ${amount} نقطة!`;
     } else {
       element.style.background = '#f33';
       element.innerText = '❌';
