@@ -67,7 +67,7 @@ h1{color:#3b82f6;text-shadow:0 0 15px #3b82f6;font-size:26px}
 </head>
 <body>
 <div id="splash"><div class="logo">🏛️</div><div style="color:#3b82f6;font-size:28px;font-weight:bold;margin-top:20px">AL-RAFIDAIN</div></div>
-<div id="registerPage">
+  <div id="registerPage">
   <div class="logo">🏛️</div><h1>تسجيل الدخول / انشاء حساب</h1>
   <div class="box" style="max-width:400px;width:100%">
     <input type="text" id="regName" class="input" placeholder="ادخل اسمك">
@@ -84,7 +84,6 @@ h1{color:#3b82f6;text-shadow:0 0 15px #3b82f6;font-size:26px}
         <h3>💰 الرصيد</h3>
         <div id="coins">0 نقطة</div>
         <div id="coinsDollar">يعادل $0.00 دولار</div>
-        
         <div style="margin: 15px 0; background: #000; padding: 12px; border-radius: 12px; border: 2px dashed #3b82f6; display: flex; align-items: center; justify-content: space-between;">
           <div style="text-align: right;">
             <div style="font-size: 12px; color: #aaa;">عداد السحب التفاعلي (24 ساعة)</div>
@@ -92,7 +91,6 @@ h1{color:#3b82f6;text-shadow:0 0 15px #3b82f6;font-size:26px}
           </div>
           <button class="btn btn-yellow" style="width: auto; margin: 0; padding: 10px 15px; font-size: 14px;" onclick="activateWithdrawTimer()">تفعيل ⚡</button>
         </div>
-
         <button class="btn btn-green" onclick="alert('ميزة السحب قريباً')">💵 سحب</button>
       </div>
       <div class="box"><h3>⚙️ عدادك الحالي</h3><div id="dailyProfit">0 نقطة/يوم</div></div>
@@ -109,7 +107,6 @@ h1{color:#3b82f6;text-shadow:0 0 15px #3b82f6;font-size:26px}
     <p style="color:#aaa;font-size:13px">عند شراء رمز إحالة مميز، سيتم استبدال رمزك القديم فوراً!</p>
     <div id="referralStoreList"></div>
   </div>
-
   <div id="games" class="page">
     <h2>🎮 الالعاب والمهمات</h2>
     <div id="coins3" class="box">رصيدك: 0 نقطة</div>
@@ -171,12 +168,10 @@ h1{color:#3b82f6;text-shadow:0 0 15px #3b82f6;font-size:26px}
       <button id="deleteRoomBtn" class="btn btn-red" style="display:none;width:30%;background:#8b0000;" onclick="deleteCurrentRoom()">❌ حذف الغرفة</button>
     </div>
     <div class="box"><h3 style="color:#0f0">🎙️ 7 مايكات - المالك يتحكم</h3><div class="micGrid" id="roomMicsGrid"></div></div>
-    
     <div class="box" style="border-color:#ffb300; background:#111;">
       <h3 style="color:#ffb300">🎁 حدد الشخص المستلم للهدية:</h3>
       <select id="giftRecipientSelect" class="input" style="background:#222; color:#fff; font-size:15px; margin-bottom:10px;"></select>
     </div>
-
     <div id="roomChatBox" class="chatBox"></div>
     <div style="display:flex;gap:8px;justify-content:center;max-width:400px;margin:auto">
       <input type="text" id="roomChatInput" class="input" placeholder="اكتب هنا" style="width:70%" onkeypress="if(event.key=='Enter')sendRoomMsg()">
@@ -189,8 +184,7 @@ h1{color:#3b82f6;text-shadow:0 0 15px #3b82f6;font-size:26px}
     <div class="box"><h3>🌟 ادعُ اصدقائك واربح</h3><div id="myReferralCode" class="referralCode">جاري التحميل...</div><div id="myReferralLink" class="referralCode">جاري التحميل...</div><button class="btn btn-blue" onclick="copyCode()">📋 نسخ رسالة الدعوة</button><button class="btn btn-blue" onclick="copyLink()">🔗 نسخ الرابط</button></div>
     <div class="box"><h3>💸 تحويل نقاط لصديق</h3><input type="text" id="transferRefInput" class="input" placeholder="ادخل رمز الاحاله لصديقك"><input type="number" id="transferAmountInput" class="input" placeholder="كمية النقاط"><button class="btn btn-green" onclick="transferCoins()">تحويل النقاط 🚀</button></div>
   </div>
-  <div id="log" class="page"><h2>📜 سجل المعاملات</h2><div id="logList"></div><button class="btn btn-red" onclick="clearLog()">🗑️ مسح السجل</button></div>
-  
+<div id="log" class="page"><h2>📜 سجل المعاملات</h2><div id="logList"></div><button class="btn btn-red" onclick="clearLog()">🗑️ مسح السجل</button></div>
   <div id="news" class="page">
     <h2>📰 الأخبار والتحديثات الجديدة</h2>
     <div class="box" style="text-align:right;">
@@ -199,7 +193,6 @@ h1{color:#3b82f6;text-shadow:0 0 15px #3b82f6;font-size:26px}
       <p style="color:#0f0; margin:5px 0;">• منع إعادة تعيين العداد التنازلي للسحب عند التنقل بين الصفحات وتعديله ليصبح بالساعات والدقائق.</p>
     </div>
   </div>
-
   <div id="profile" class="page">
     <h2>👤 الملف الشخصي والتخصيص</h2>
     <div class="box"><h3 id="userName"></h3></div>
@@ -216,7 +209,6 @@ h1{color:#3b82f6;text-shadow:0 0 15px #3b82f6;font-size:26px}
       <button class="btn btn-red" onclick="deleteMyAccount()">🗑️ حذف الحساب</button>
     </div>
   </div>
-
   <div class="bottomNav">
     <div class="navItem active" onclick="showPage('home',this)"><div class="navIcon">⚙️</div><div>العداد</div></div>
     <div class="navItem" onclick="showPage('store',this)"><div class="navIcon">🛒</div><div>المتجر</div></div>
@@ -229,9 +221,8 @@ h1{color:#3b82f6;text-shadow:0 0 15px #3b82f6;font-size:26px}
     <div class="navItem" onclick="showPage('profile',this)"><div class="navIcon">👤</div><div>الملف</div></div>
   </div>
 </div>
-<div id="broadcastModal" class="modal broadcastModal"><div class="modal-content"><h2>📢 اعلان</h2><div id="broadcastText"></div><button class="btn" onclick="closeModal('broadcastModal')">فهمت</button></div></div>
+  <div id="broadcastModal" class="modal broadcastModal"><div class="modal-content"><h2>📢 اعلان</h2><div id="broadcastText"></div><button class="btn" onclick="closeModal('broadcastModal')">فهمت</button></div></div>
 <div id="xoModal" class="modal"><div class="modal-content"><h2>❌⭕ XO</h2><div id="xoBoard"></div><p id="xoResult"></p><button class="btn" onclick="closeModal('xoModal')">خروج</button></div></div>
-
 <div id="dominoModal" class="modal">
   <div class="modal-content">
     <h2>🎲 دومينو مرتبطة ضد البوت</h2>
@@ -251,8 +242,7 @@ h1{color:#3b82f6;text-shadow:0 0 15px #3b82f6;font-size:26px}
     <button class="btn" onclick="closeModal('dominoModal')">خروج</button>
   </div>
 </div>
-
-<div id="ludoMenuModal" class="modal">
+  <div id="ludoMenuModal" class="modal">
   <div class="modal-content" style="max-width:350px">
     <h2>🎲 اختيار نمط لودو الحقيقية والواقعية</h2>
     <button class="btn btn-blue" onclick="startLudoGame(2, 'bot')">🤖 لعب ثنائي ضد البوت</button>
@@ -261,7 +251,6 @@ h1{color:#3b82f6;text-shadow:0 0 15px #3b82f6;font-size:26px}
     <button class="btn btn-red" onclick="closeModal('ludoMenuModal')">إلغاء</button>
   </div>
 </div>
-
 <div id="ludoModal" class="modal">
   <div class="modal-content" style="max-width:380px">
     <h2>🎲 لودو الحقيقية</h2>
@@ -272,7 +261,6 @@ h1{color:#3b82f6;text-shadow:0 0 15px #3b82f6;font-size:26px}
     <button class="btn" onclick="closeModal('ludoModal')">خروج</button>
   </div>
 </div>
-
 <div id="wheelModal" class="modal">
   <div class="modal-content">
     <h2>🎡 العجلة</h2>
@@ -282,7 +270,6 @@ h1{color:#3b82f6;text-shadow:0 0 15px #3b82f6;font-size:26px}
     <button class="btn" onclick="closeModal('wheelModal')">اغلاق</button>
   </div>
 </div>
-
 <div id="boxModal" class="modal">
   <div class="modal-content">
     <h2>📦 الصندوق المفاجئ</h2>
@@ -292,8 +279,7 @@ h1{color:#3b82f6;text-shadow:0 0 15px #3b82f6;font-size:26px}
     <button class="btn" onclick="closeModal('boxModal')">اغلاق</button>
   </div>
 </div>
-
-<div id="memoryModal" class="modal"><div class="modal-content"><h2>🧠 لعبة الميموري</h2><p>طابق الرموز - الجائزة 250</p><div id="memoryBoard" style="display:grid;grid-template-columns:repeat(4,60px);gap:8px;justify-content:center;margin:20px auto"></div><p id="memoryResult"></p><button class="btn" onclick="closeModal('memoryModal')">خروج</button></div></div>
+  <div id="memoryModal" class="modal"><div class="modal-content"><h2>🧠 لعبة الميموري</h2><p>طابق الرموز - الجائزة 250</p><div id="memoryBoard" style="display:grid;grid-template-columns:repeat(4,60px);gap:8px;justify-content:center;margin:20px auto"></div><p id="memoryResult"></p><button class="btn" onclick="closeModal('memoryModal')">خروج</button></div></div>
 <div id="createRoomModal" class="modal"><div class="modal-content"><h2>انشاء غرفة جديدة</h2><input type="text" id="newRoomName" class="input" placeholder="اسم الغرفة"><button class="btn btn-green" onclick="createRoom()">شراء وانشاء - 80000</button><button class="btn btn-red" onclick="closeModal('createRoomModal')">الغاء</button></div></div>
 <div id="toast" class="toast">تم استلام الارباح!</div>
 <script type="module">  
@@ -303,7 +289,6 @@ h1{color:#3b82f6;text-shadow:0 0 15px #3b82f6;font-size:26px}
   const firebaseConfig = {apiKey: "AIzaSyBbkpcBPq8G2OpyKxaVqPO7Mkfla4X9hxU",authDomain: "rafidainapp.firebaseapp.com",projectId: "rafidainapp",storageBucket: "rafidainapp.firebasestorage.app",messagingSenderId: "512875147812",appId: "1:512875147812:web:54f33bda3780db7a4a9eb1",measurementId: "G-X059J6K4L7"};
   const app = initializeApp(firebaseConfig); 
   const db = getFirestore(app);
-  
   let coins=5000, dailyProfitTotal=0, lastClaim=0, myReferralCode='', currentUser='', currentUserId='', transactionLog=[], currentRoom=null;
   let rooms=[], roomMessages={}, globalMessages=[], myFriends=[], friendRequests=[], sentRequests=[];
   let xoBoard=Array(9).fill(''), gameOver=false;
@@ -363,6 +348,9 @@ h1{color:#3b82f6;text-shadow:0 0 15px #3b82f6;font-size:26px}
 
   async function saveUserData(){
     if(!currentUserId)return;
+    localStorage.setItem('rafidain_coins', coins);
+    localStorage.setItem('rafidain_profit', dailyProfitTotal);
+    localStorage.setItem('rafidain_log', JSON.stringify(transactionLog));
     try{
       await setDoc(doc(db,"users",currentUserId),{
         coins,dailyProfit:dailyProfitTotal,lastClaim,referral:myReferralCode,
@@ -371,7 +359,6 @@ h1{color:#3b82f6;text-shadow:0 0 15px #3b82f6;font-size:26px}
       },{merge:true});
     }catch(e){console.error("خطا بالحفظ",e)}
   }
-
   setTimeout(()=>{
     document.getElementById('splash').style.opacity='0';
     document.getElementById('splash').style.visibility='hidden';
@@ -381,6 +368,9 @@ h1{color:#3b82f6;text-shadow:0 0 15px #3b82f6;font-size:26px}
   async function checkLogin(){
     currentUserId=localStorage.getItem('rafidain_uid');
     currentUser=localStorage.getItem('rafidain_user');
+    coins=parseInt(localStorage.getItem('rafidain_coins'))||5000;
+    dailyProfitTotal=parseInt(localStorage.getItem('rafidain_profit'))||0;
+    transactionLog=JSON.parse(localStorage.getItem('rafidain_log'))||[];
     if(currentUserId){
       await loadUserData();
       document.getElementById('registerPage').style.display='none';
@@ -409,42 +399,32 @@ h1{color:#3b82f6;text-shadow:0 0 15px #3b82f6;font-size:26px}
       let now = Math.floor(Date.now() / 1000);
       let savedEndTime = parseInt(localStorage.getItem('rafidain_withdraw_end_time') || (now + WITHDRAW_TOTAL_TIME));
       withdrawTimeLeft = savedEndTime - now;
-
       if(withdrawTimeLeft > 0){
         let hours = Math.floor(withdrawTimeLeft / 3600);
         let minutes = Math.floor((withdrawTimeLeft % 3600) / 60);
-        
-        let formatted = 
-          String(hours).padStart(2, '0') + ":" + 
-          String(minutes).padStart(2, '0');
-        
+        let formatted = String(hours).padStart(2, '0') + ":" + String(minutes).padStart(2, '0');
         let el = document.getElementById('withdrawCountdown');
         if(el) el.innerText = formatted;
       } else {
         let el = document.getElementById('withdrawCountdown');
-        if(el) el.innerText = "انتهى الوقت!";
+        if(el) el.innerText = "جاهز للسحب!";
       }
     }, 1000);
   }
-
   async function createAccount(){
     let name=document.getElementById('regName').value.trim();
     let pass=document.getElementById('regPass').value.trim();
     if(!name)return alert("يرجى إدخال الاسم على الأقل");
-    
     let querySnapshot = await getDocs(collection(db, "users"));
     let foundUserId = null;
-
     querySnapshot.forEach((uDoc)=>{
       let uData = uDoc.data();
       if(uData.name && uData.name.trim().toLowerCase() === name.toLowerCase()){
         foundUserId = uDoc.id;
       }
     });
-
     if(foundUserId){
-      currentUserId = foundUserId;
-      currentUser = name;
+      currentUserId = foundUserId; currentUser = name;
       localStorage.setItem('rafidain_uid', currentUserId);
       localStorage.setItem('rafidain_user', currentUser);
       localStorage.setItem('rafidain_pass', pass || '123456');
@@ -458,15 +438,10 @@ h1{color:#3b82f6;text-shadow:0 0 15px #3b82f6;font-size:26px}
     } else {
       let newUid = 'USER_' + Date.now() + '_' + Math.floor(1000 + Math.random() * 9000);
       let uniqueRef = generateUniqueRefCode();
-      
-      currentUserId = newUid;
-      currentUser = name;
-      myReferralCode = uniqueRef;
-      
+      currentUserId = newUid; currentUser = name; myReferralCode = uniqueRef;
       localStorage.setItem('rafidain_uid', currentUserId);
       localStorage.setItem('rafidain_user', currentUser);
       localStorage.setItem('rafidain_pass', pass || '123456');
-
       await saveUserData();
       document.getElementById('registerPage').style.display='none';
       document.getElementById('mainApp').style.display='block';
@@ -502,11 +477,11 @@ h1{color:#3b82f6;text-shadow:0 0 15px #3b82f6;font-size:26px}
     const userSnap=await getDoc(doc(db,"users",currentUserId));
     if(userSnap.exists()){
       let data=userSnap.data();
-      coins=data.coins||5000;
+      coins=data.coins||coins;
       dailyProfitTotal=data.dailyProfit||0;
       lastClaim=data.lastClaim||Date.now();
       myReferralCode=data.referral||'';
-      transactionLog=data.log||[];
+      transactionLog=data.log||transactionLog;
       myFriends=data.friends||[];
       friendRequests=data.friendRequests||[];
       sentRequests=data.sentRequests||[];
@@ -518,9 +493,8 @@ h1{color:#3b82f6;text-shadow:0 0 15px #3b82f6;font-size:26px}
       if(document.getElementById('editProfileName')) document.getElementById('editProfileName').value = currentUser;
       setupReferral();updateAll();renderStreak();
     }
-  }
+      }
   function getChatId(user1,user2){return user1<user2?`${user1}_${user2}`:`${user2}_${user1}`; }
-
   function openPrivateChat(friendName){
     currentChatFriend=friendName;
     document.getElementById('privateChatTitle').innerText=`مراسلة: ${friendName}`;
@@ -538,7 +512,6 @@ h1{color:#3b82f6;text-shadow:0 0 15px #3b82f6;font-size:26px}
       box.scrollTop=box.scrollHeight;
     });
   }
-
   async function sendPrivateMsg(){
     let txt=document.getElementById('privateChatInput').value.trim();
     if(!txt||!currentChatFriend)return;
@@ -546,14 +519,12 @@ h1{color:#3b82f6;text-shadow:0 0 15px #3b82f6;font-size:26px}
     await setDoc(doc(db,"privateChats",chatId),{messages:arrayUnion({u:currentUser,t:txt,time:Date.now()})},{merge:true});
     document.getElementById('privateChatInput').value='';
   }
-
   function listenToGlobalChat(){
     onSnapshot(doc(db,"globalChat","main"),(docSnap)=>{
       globalMessages=docSnap.exists()?(docSnap.data().messages||[]):[];
       loadGlobalChat();
     });
   }
-
   function loadGlobalChat(){
     let box=document.getElementById('globalChatBox');
     box.innerHTML='';
@@ -563,23 +534,19 @@ h1{color:#3b82f6;text-shadow:0 0 15px #3b82f6;font-size:26px}
     });
     box.scrollTop=box.scrollHeight;
   }
-
   async function sendGlobalMsg(){
     let txt=document.getElementById('globalChatInput').value.trim();
     if(!txt)return;
     await setDoc(doc(db,"globalChat","main"),{messages:arrayUnion({u:currentUser,t:txt,time:Date.now()})},{merge:true});
     document.getElementById('globalChatInput').value='';
   }
-
   function openGlobalChat(){showPage('globalChat',null);}
-
   function listenToRooms(){
     onSnapshot(collection(db,"rooms"),(snap)=>{
       rooms=[];snap.forEach((d)=>rooms.push(d.data()));
       loadRooms();
     });
   }
-
   function loadRooms(){
     let html='';
     if(rooms.length==0)html='<p style="color:#aaa">لا توجد غرف</p>';
@@ -588,12 +555,10 @@ h1{color:#3b82f6;text-shadow:0 0 15px #3b82f6;font-size:26px}
     });
     document.getElementById('roomsList').innerHTML=html;
   }
-
   function joinRoomById(){
     let id=document.getElementById('searchRoomId').value.trim();
     if(rooms.find(r=>r.id==id)){enterRoom(id);}else{alert("الغرفة غير موجودة");}
   }
-
   async function enterRoom(id){
     currentRoom=rooms.find(r=>r.id==id);
     document.getElementById('roomNameTitle').innerText=currentRoom.name;
@@ -601,19 +566,15 @@ h1{color:#3b82f6;text-shadow:0 0 15px #3b82f6;font-size:26px}
     document.getElementById('editRoomBtn').style.display = (currentRoom.owner==currentUser)?'inline-block':'none';
     document.getElementById('clearRoomChatBtn').style.display = (currentRoom.owner==currentUser)?'inline-block':'none';
     document.getElementById('deleteRoomBtn').style.display = (currentRoom.owner==currentUser)?'inline-block':'none';
-    
     let isOwner = currentRoom.owner == currentUser;
     document.getElementById('newAdminInput').style.display = isOwner ? 'block' : 'none';
     document.querySelector('#roomAdminsSection button').style.display = isOwner ? 'block' : 'none';
-
     showPage('chatRoom',null);
-
     let members = currentRoom.members || [];
     if(!members.includes(currentUser)){
       members.push(currentUser);
       await updateDoc(doc(db, "rooms", id), { members: members });
     }
-
     onSnapshot(doc(db, "rooms", id), (snap) => {
       if(snap.exists()){
         currentRoom=snap.data();
@@ -622,38 +583,31 @@ h1{color:#3b82f6;text-shadow:0 0 15px #3b82f6;font-size:26px}
         renderRoomInfo();
       }
     });
-
     if(unsubRoomChat) unsubRoomChat();
     unsubRoomChat = onSnapshot(doc(db, "roomMessages", id), (docSnap) => {
       roomMessages[id] = docSnap.exists()? (docSnap.data().messages || []) : [];
       loadChat();
     });
-
     let g='';
     giftsList.forEach(gf=>{
       g+=`<button class="giftBtn" onclick="sendGift('${gf.icon}','${gf.name}',${gf.price})">${gf.icon}<br>${gf.price}</button>`;
     });
     document.getElementById('giftsBar').innerHTML=g;
   }
-
   function renderRoomInfo(){
     let members = currentRoom.members || [];
     document.getElementById('roomMembersCount').innerText = members.length;
-    
     let membersHtml = "<b>المتواجدون في الغرفة:</b> " + members.join(', ');
     document.getElementById('roomMembersList').innerHTML = membersHtml;
-
     let selectHtml = '';
     members.forEach(m => {
       selectHtml += `<option value="${m}">${m} ${m === currentUser ? '(أنت)' : ''}</option>`;
     });
     document.getElementById('giftRecipientSelect').innerHTML = selectHtml;
-
     let admins = currentRoom.admins || [];
     let adminsHtml = admins.length > 0 ? "المشرفون: " + admins.join(', ') : "لا يوجد مشرفين";
     document.getElementById('roomAdminsList').innerHTML = adminsHtml;
   }
-
   async function addRoomAdmin(){
     if(!currentRoom || currentRoom.owner !== currentUser) return;
     let adminName = document.getElementById('newAdminInput').value.trim();
@@ -665,7 +619,6 @@ h1{color:#3b82f6;text-shadow:0 0 15px #3b82f6;font-size:26px}
     document.getElementById('newAdminInput').value = '';
     showToast("تمت إضافة المشرف");
   }
-
   async function deleteCurrentRoom(){
     if(!currentRoom || currentRoom.owner !== currentUser) return;
     if(confirm("حذف الغرفة نهائياً؟")){
@@ -675,7 +628,6 @@ h1{color:#3b82f6;text-shadow:0 0 15px #3b82f6;font-size:26px}
       showPage('rooms', null);
     }
   }
-
   function renderMics(){
     let grid=document.getElementById('roomMicsGrid');
     let html='';
@@ -685,26 +637,22 @@ h1{color:#3b82f6;text-shadow:0 0 15px #3b82f6;font-size:26px}
     });
     grid.innerHTML=html;
   }
-
   async function toggleMicOwner(i){
     let canControl = (currentRoom.owner == currentUser || (currentRoom.admins && currentRoom.admins.includes(currentUser)));
     if(!canControl)return;
     roomMics[i]=roomMics[i]?null:currentUser;
     await updateDoc(doc(db,"rooms",currentRoom.id),{mics:roomMics});
   }
-
   async function sendRoomMsg(){
     let txt=document.getElementById('roomChatInput').value.trim();
     if(!txt||!currentRoom)return;
     await setDoc(doc(db,"roomMessages",currentRoom.id),{messages:arrayUnion({u:currentUser,t:txt,time:Date.now()})},{merge:true});
     document.getElementById('roomChatInput').value='';
   }
-
   async function clearRoomChat(){
     if(!currentRoom)return;
     await setDoc(doc(db,"roomMessages",currentRoom.id),{messages:[]});
   }
-
   async function loadChat(){
     let box=document.getElementById('roomChatBox');
     box.innerHTML='';
@@ -715,39 +663,30 @@ h1{color:#3b82f6;text-shadow:0 0 15px #3b82f6;font-size:26px}
     });
     box.scrollTop=box.scrollHeight;
   }
-
   async function sendGift(icon, name, price){
     if(coins < price) return alert("ليس لديك نقاط كافية!");
     let recipientName = document.getElementById('giftRecipientSelect').value;
     if(!recipientName) return alert("يرجى اختيار الشخص المستلم للهدية!");
-
     coins -= price; totalGiftsSent++;
-    
     let querySnapshot = await getDocs(collection(db, "users"));
-    let recipientDocId = null;
-    let recipientData = null;
-
+    let recipientDocId = null; let recipientData = null;
     querySnapshot.forEach(uDoc => {
       let uData = uDoc.data();
       if(uData.name && uData.name.trim().toLowerCase() === recipientName.toLowerCase()) {
-        recipientDocId = uDoc.id;
-        recipientData = uData;
+        recipientDocId = uDoc.id; recipientData = uData;
       }
     });
-
     if(recipientDocId && recipientData) {
       let newRecipientCoins = (recipientData.coins || 0) + price;
       let recipientLog = recipientData.log || [];
       recipientLog.unshift({text: `استلام هدية ${name} ${icon} من ${currentUser}`, amount: price, type: 'win', time: new Date().toLocaleString('ar-IQ')});
       await updateDoc(doc(db, "users", recipientDocId), {coins: newRecipientCoins, log: recipientLog});
     }
-
     await setDoc(doc(db, "roomMessages", currentRoom.id), {messages: arrayUnion({u:currentUser, t:`🎁 أرسل هدية ${name} ${icon} إلى المستلم: ${recipientName}`, time:Date.now()})}, {merge: true});
     await updateDoc(doc(db, "users", currentUserId), {totalGiftsSent});
     addLog(`ارسال هدية ${name} إلى ${recipientName}`, -price, 'buy');
     await saveUserData(); updateAll(); showToast(`✅ تم إرسال الهدية إلى ${recipientName} بنجاح!`);
-  }
-
+    }
   function listenToUserData(){
     onSnapshot(doc(db,"users",currentUserId),(snapshot)=>{
       if(snapshot.exists()){
@@ -763,10 +702,8 @@ h1{color:#3b82f6;text-shadow:0 0 15px #3b82f6;font-size:26px}
       }
     });
   }
-
   function loadFriendsPage(){renderFriendsList();renderRequestsList();}
   function renderFriendsPage(){renderFriendsList();renderRequestsList();}
-
   async function searchFriends(){
     let queryVal=document.getElementById('searchFriendsInput').value.trim();
     let resContainer=document.getElementById('searchResults');
@@ -786,7 +723,6 @@ h1{color:#3b82f6;text-shadow:0 0 15px #3b82f6;font-size:26px}
     });
     resContainer.innerHTML=found?html:'<p style="color:#aaa">لم يتم العثور على نتائج</p>';
   }
-
   async function sendFriendRequest(targetName){
     let querySnapshot=await getDocs(collection(db,"users"));
     let targetDocId=null;
@@ -797,7 +733,6 @@ h1{color:#3b82f6;text-shadow:0 0 15px #3b82f6;font-size:26px}
       showToast("تم إرسال الطلب");
     }
   }
-
   async function acceptFriendRequest(requesterName){
     let querySnapshot=await getDocs(collection(db,"users"));
     let reqDocId=null;
@@ -808,7 +743,6 @@ h1{color:#3b82f6;text-shadow:0 0 15px #3b82f6;font-size:26px}
       showToast("تم قبول الصداقة");
     }
   }
-
   async function rejectFriendRequest(requesterName){
     let querySnapshot=await getDocs(collection(db,"users"));
     let reqDocId=null;
@@ -819,7 +753,6 @@ h1{color:#3b82f6;text-shadow:0 0 15px #3b82f6;font-size:26px}
       showToast("تم الرفض");
     }
   }
-
   async function removeFriend(friendName){
     let querySnapshot=await getDocs(collection(db,"users"));
     let friendDocId=null;
@@ -830,7 +763,6 @@ h1{color:#3b82f6;text-shadow:0 0 15px #3b82f6;font-size:26px}
       showToast("تم الحذف");
     }
   }
-
   function renderRequestsList(){
     let container=document.getElementById('friendRequestsList');
     if(!container)return;
@@ -841,7 +773,6 @@ h1{color:#3b82f6;text-shadow:0 0 15px #3b82f6;font-size:26px}
     });
     container.innerHTML=html;
   }
-
   function renderFriendsList(){
     let container=document.getElementById('friendsList');
     if(!container)return;
@@ -852,7 +783,6 @@ h1{color:#3b82f6;text-shadow:0 0 15px #3b82f6;font-size:26px}
     });
     container.innerHTML=html;
   }
-
   function renderStreak(){
     let html='';
     for(let i=1;i<=7;i++){
@@ -860,7 +790,6 @@ h1{color:#3b82f6;text-shadow:0 0 15px #3b82f6;font-size:26px}
     }
     document.getElementById('streakDays').innerHTML=html;
   }
-
   async function claimStreak(){
     let today=new Date().toDateString();
     if(lastStreakDate==today)return alert("استلمت مكافأة اليوم مسبقاً");
@@ -871,7 +800,6 @@ h1{color:#3b82f6;text-shadow:0 0 15px #3b82f6;font-size:26px}
     updateAll();renderStreak();showToast(`+${reward} نقطة`);
     if(streak==7)streak=0;
   }
-
   async function checkBroadcast(){
     let snap=await getDoc(doc(db,"admin","broadcast"));
     if(snap.exists()&&snap.data().text){
@@ -879,9 +807,7 @@ h1{color:#3b82f6;text-shadow:0 0 15px #3b82f6;font-size:26px}
       document.getElementById('broadcastModal').style.display='block';
     }
   }
-
   function logout(){localStorage.clear();location.reload();}
-
   function showPage(id,el){
     document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
     document.querySelectorAll('.navItem').forEach(b=>b.classList.remove('active'));
@@ -895,9 +821,7 @@ h1{color:#3b82f6;text-shadow:0 0 15px #3b82f6;font-size:26px}
     if(id=='globalChat')loadGlobalChat();
     if(id=='friends')loadFriendsPage();
   }
-
   function toDollar(n){return (n/RATE).toFixed(2);}
-
   async function updateAll(){
     let dollar=toDollar(coins);
     document.getElementById('coins').innerText=coins.toLocaleString()+' نقطة';
@@ -913,23 +837,18 @@ h1{color:#3b82f6;text-shadow:0 0 15px #3b82f6;font-size:26px}
     }
     await saveUserData();
   }
-
   setInterval(updateAll,60000);
-
   function showToast(msg){
     let t=document.getElementById('toast');
     t.innerText=msg;t.style.display='block';
     setTimeout(()=>t.style.display='none',3000);
   }
-
   function closeModal(id){document.getElementById(id).style.display='none';}
-
   function addLog(text,amount,type){
     let time=new Date().toLocaleString('ar-IQ');
     transactionLog.unshift({text,amount,type,time});
     if(transactionLog.length>50)transactionLog.pop();
   }
-
   function loadLog(){
     let html='';
     if(transactionLog.length==0)html='<p style="color:#aaa">لا توجد معاملات</p>';
@@ -939,25 +858,21 @@ h1{color:#3b82f6;text-shadow:0 0 15px #3b82f6;font-size:26px}
     });
     document.getElementById('logList').innerHTML=html;
   }
-
   async function clearLog(){
     transactionLog=[];await saveUserData();loadLog();
-  }
-
+        }
   function loadStore(){
     let html='';
     countersData.forEach(c=>{
       html+=`<div class="counterItem"><h4>${c.name}</h4><p>السعر: ${c.price.toLocaleString()} نقطة</p><button class="btn" onclick="buyCounter(${c.price},${c.profit},'${c.name}')" ${coins<c.price?'disabled':''}>شراء</button></div>`;
     });
     document.getElementById('storeList').innerHTML=html;
-
     let refHtml='';
     referralStoreData.forEach(r=>{
       refHtml+=`<div class="counterItem"><h4>رمز مميز: (${r.code})</h4><p>السعر: ${r.price.toLocaleString()} نقطة</p><button class="btn btn-yellow" onclick="buySpecialReferral('${r.code}', ${r.price})" ${coins<r.price?'disabled':''}>شراء واستبدال</button></div>`;
     });
     document.getElementById('referralStoreList').innerHTML=refHtml;
   }
-
   async function buySpecialReferral(newCode, price){
     if(coins < price) return alert("رصيدك غير كافٍ");
     coins -= price; myReferralCode = newCode;
@@ -965,7 +880,6 @@ h1{color:#3b82f6;text-shadow:0 0 15px #3b82f6;font-size:26px}
     await saveUserData(); setupReferral(); updateAll(); loadStore();
     showToast("✅ تم شراء الرمز المميز بنجاح!");
   }
-
   async function buyCounter(price,profit,name){
     if(coins<price)return alert("رصيدك غير كافٍ");
     coins-=price;dailyProfitTotal+=profit;
@@ -974,23 +888,19 @@ h1{color:#3b82f6;text-shadow:0 0 15px #3b82f6;font-size:26px}
     await saveUserData(); updateAll(); loadStore();
     alert("✅ تم الشراء بنجاح");
   }
-
   function setupReferral(){
     if(document.getElementById('myReferralCode'))document.getElementById('myReferralCode').innerText=myReferralCode;
     if(document.getElementById('myReferralCode2'))document.getElementById('myReferralCode2').innerText=myReferralCode;
     if(document.getElementById('myReferralLink'))document.getElementById('myReferralLink').innerText=`rafidain.com/ref=${myReferralCode}`;
   }
-
   function copyCode(){
     navigator.clipboard.writeText(`رمز الاحاله: ${myReferralCode}`);
     alert("✅ تم النسخ");
   }
-
   function copyLink(){
     navigator.clipboard.writeText(`rafidain.com/ref=${myReferralCode}`);
     alert("✅ تم نسخ الرابط");
   }
-
   function loadTasks(){
     let html='';
     html+=`<div class="counterItem"><h4>📅 تسجيل الدخول</h4><p>المكافأة: ${dailyTasks.login.reward}</p><button class="btn" onclick="completeTask('login')" ${dailyTasks.login.done?'disabled':''}>${dailyTasks.login.done?'تم':'استلام'}</button></div>`;
@@ -998,7 +908,6 @@ h1{color:#3b82f6;text-shadow:0 0 15px #3b82f6;font-size:26px}
     html+=`<div class="counterItem"><h4>🎮 لعب لعبة</h4><p>المكافأة: ${dailyTasks.play.reward}</p><button class="btn" onclick="completeTask('play')" ${dailyTasks.play.done?'disabled':''}>${dailyTasks.play.done?'تم':'استلام'}</button></div>`;
     document.getElementById('dailyTasks').innerHTML=html;
   }
-
   async function completeTask(task){
     if(dailyTasks[task].done)return;
     coins+=dailyTasks[task].reward;
@@ -1008,18 +917,30 @@ h1{color:#3b82f6;text-shadow:0 0 15px #3b82f6;font-size:26px}
     showToast(`+${dailyTasks[task].reward} نقطة`);
     updateAll();loadTasks();
   }
-
+  async function transferCoins(){
+    let refCode=document.getElementById('transferRefInput').value.trim();
+    let amount=parseInt(document.getElementById('transferAmountInput').value);
+    if(!refCode||isNaN(amount)||amount<=0)return alert("خطأ بالبيانات");
+    if(amount>coins)return alert("رصيدك غير كافٍ");
+    let querySnapshot=await getDocs(collection(db,"users"));
+    let recipientDocId=null,recipientData=null;
+    querySnapshot.forEach((uDoc)=>{let uData=uDoc.data();if(uData.referral&&uData.referral.toLowerCase()===refCode.toLowerCase()){recipientDocId=uDoc.id;recipientData=uData;}});
+    if(!recipientDocId)return alert("الرمز غير صحيح");
+    coins-=amount;
+    await updateDoc(doc(db,"users",recipientDocId),{coins:(recipientData.coins||0)+amount});
+    addLog(`تحويل ${amount} نقطة الى ${refCode}`,-amount,'buy');
+    await saveUserData();
+    showToast("تم التحويل بنجاح");
+                                                                                                                                                                                                   }
   function getDots(n){
     const p={0:[],1:[[50,50]],2:[[25,25],[75,75]],3:[[25,25],[50,50],[75,75]],4:[[25,25],[75,25],[25,75],[75,75]],5:[[25,25],[75,25],[50,50],[25,75],[75,75]],6:[[25,20],[75,20],[25,50],[75,50],[25,80],[75,80]]};
     return p[n]||[];
   }
   function renderDots(n){return getDots(n).map(d=>`<div class="dot" style="left:${d[0]}%;top:${d[1]}%"></div>`).join('');}
-
   function createDominoSet(){
     dominoSet=[];
     for(let i=0;i<=6;i++)for(let j=i;j<=6;j++)dominoSet.push([i,j]);
   }
-
   function openDomino(){
     if(coins<50)return alert("تحتاج 50 نقطة");
     coins-=50;addLog('لعب دومينو',-50,'buy');if(!dailyTasks.play.done)completeTask('play');updateAll();
@@ -1031,17 +952,14 @@ h1{color:#3b82f6;text-shadow:0 0 15px #3b82f6;font-size:26px}
     document.getElementById('dominoModal').style.display='block';
     renderDomino();
   }
-
   function renderTile(tile){
     return `<div class="dominoTile"><div class="dominoHalf top">${renderDots(tile[0])}</div><div class="dominoHalf">${renderDots(tile[1])}</div></div>`;
   }
-
   function renderDomino(){
     document.getElementById('botTiles').innerHTML=dominoBot.map(_=>`<div class="dominoTile" style="background:#444">?</div>`).join('');
     document.getElementById('dominoTable').innerHTML=dominoTable.map(t=>renderTile(t)).join('');
     document.getElementById('myTiles').innerHTML=dominoMy.map((t,i)=>`<div class="dominoTile" onclick="playDomino(${i})"><div class="dominoHalf top">${renderDots(t[0])}</div><div class="dominoHalf">${renderDots(t[1])}</div></div>`).join('');
   }
-
   function playDomino(i){
     if(dominoTurn!=='my')return alert("ليس دورك!");
     let tile=[...dominoMy[i]];
@@ -1056,13 +974,11 @@ h1{color:#3b82f6;text-shadow:0 0 15px #3b82f6;font-size:26px}
     if(dominoMy.length==0){endDominoGame(true);return;}
     dominoTurn='bot';setTimeout(botDominoTurn,1000);
   }
-
   function drawDominoTile(){
     if(dominoSet.length==0)return alert("البنك خالٍ");
     dominoMy.push(dominoSet.pop());renderDomino();
   }
   function passDominoTurn(){dominoTurn='bot';setTimeout(botDominoTurn,1000);}
-
   function botDominoTurn(){
     for(let i=0;i<dominoBot.length;i++){
       let tile=[...dominoBot[i]];
@@ -1073,52 +989,38 @@ h1{color:#3b82f6;text-shadow:0 0 15px #3b82f6;font-size:26px}
     }
     renderDomino();dominoTurn='my';
   }
-
   async function endDominoGame(won){
     if(won){coins+=250;addLog('فوز دومينو',250,'win');await saveUserData();updateAll();alert("مبروك فزت!");}
   }
-
   function openLudoMenu(){document.getElementById('ludoMenuModal').style.display='block';}
-
   function startLudoGame(mode, type){
     if(coins < 100) return alert("تحتاج 100 نقطة للعب لودو!");
     coins -= 100;
     addLog('لعب لودو', -100, 'buy');
     if(!dailyTasks.play.done)completeTask('play');
     updateAll();
-
     closeModal('ludoMenuModal');
-    ludoMode = mode;
-    ludoType = type;
-    ludoGameOver = false;
-    ludoCurrentPlayer = 0;
-    ludoCanRoll = true;
-
+    ludoMode = mode; ludoType = type; ludoGameOver = false; ludoCurrentPlayer = 0; ludoCanRoll = true;
     ludoPlayers = [];
     for(let i=0; i<mode; i++){
       ludoPlayers.push({id: i, name: LUDO_NAMES[i], color: LUDO_COLORS[i], pawns: [0, 0, 0, 0]});
     }
-
     document.getElementById('ludoModal').style.display='block';
     document.getElementById('ludoTurn').innerText = `دور: ${ludoPlayers[0].name}`;
     document.getElementById('ludoDice').innerText = '🎲';
     document.getElementById('ludoDiceBtn').disabled = false;
     drawLudoBoard();
   }
-
   function drawLudoBoard(){
     const canvas = document.getElementById('ludoBoard');
     const ctx = canvas.getContext('2d');
     ctx.clearRect(0, 0, 310, 310);
-
     ctx.fillStyle = '#f8f8f8';
     ctx.fillRect(0, 0, 310, 310);
-
     ctx.fillStyle = '#f33'; ctx.fillRect(10, 10, 105, 105);
     ctx.fillStyle = '#3b82f6'; ctx.fillRect(195, 10, 105, 105);
     ctx.fillStyle = '#0f0'; ctx.fillRect(10, 195, 105, 105);
     ctx.fillStyle = '#ffb300'; ctx.fillRect(195, 195, 105, 105);
-
     const baseCenters = [[62.5, 62.5], [247.5, 62.5], [62.5, 247.5], [247.5, 247.5]];
     ludoPlayers.forEach((p, pIdx) => {
       let [cx, cy] = baseCenters[pIdx];
@@ -1132,7 +1034,6 @@ h1{color:#3b82f6;text-shadow:0 0 15px #3b82f6;font-size:26px}
         ctx.lineWidth = 2;
         ctx.strokeStyle = '#333';
         ctx.stroke();
-
         ctx.beginPath();
         ctx.arc(cx + ox, cy + oy, 7, 0, 2 * Math.PI);
         ctx.fillStyle = p.color;
@@ -1140,13 +1041,11 @@ h1{color:#3b82f6;text-shadow:0 0 15px #3b82f6;font-size:26px}
       });
     });
   }
-
   function rollLudoDice(){
     if(!ludoCanRoll || ludoGameOver) return;
     ludoCanRoll = false;
     ludoDice = Math.floor(Math.random() * 6) + 1;
     document.getElementById('ludoDice').innerText = ludoDice;
-
     let player = ludoPlayers[ludoCurrentPlayer];
     for(let i=0; i<player.pawns.length; i++){
       if(player.pawns[i] === 0 && ludoDice === 6){
@@ -1158,9 +1057,7 @@ h1{color:#3b82f6;text-shadow:0 0 15px #3b82f6;font-size:26px}
         break;
       }
     }
-
     drawLudoBoard();
-
     if(player.pawns.every(pos => pos >= 40)){
       ludoGameOver = true;
       if(ludoCurrentPlayer === 0){
@@ -1174,24 +1071,20 @@ h1{color:#3b82f6;text-shadow:0 0 15px #3b82f6;font-size:26px}
       closeModal('ludoModal');
       return;
     }
-
     setTimeout(() => {
       ludoCurrentPlayer = (ludoCurrentPlayer + 1) % ludoMode;
       document.getElementById('ludoTurn').innerText = `دور: ${ludoPlayers[ludoCurrentPlayer].name}`;
       ludoCanRoll = true;
-
-      if(ludoType === 'bot' && ludoCurrentPlayer > 0 && !ludoGameOver){
+      if(ludoType === 'bot' && ludoCurrentPlayer > 0 &&!ludoGameOver){
         setTimeout(rollLudoDice, 800);
       }
     }, 1000);
   }
-
   function openMemory(){
     if(coins<50)return alert("تحتاج 50 نقطة");
     coins-=50;addLog('ميموري',-50,'buy');updateAll();
     document.getElementById('memoryModal').style.display='block';startMemory();
   }
-
   function startMemory(){
     matched=0;flipped=[];
     let emojis=['💎','💰','🏛️','⚡','💎','💰','🏛️','⚡'];
@@ -1203,7 +1096,6 @@ h1{color:#3b82f6;text-shadow:0 0 15px #3b82f6;font-size:26px}
       div.dataset.index=i;div.dataset.value=card;div.innerText='?';div.onclick=()=>flipCard(div);board.appendChild(div);
     });
   }
-
   async function flipCard(el){
     if(flipped.length==2||el.innerText!='?')return;
     el.innerText=el.dataset.value;flipped.push(el);
@@ -1217,7 +1109,6 @@ h1{color:#3b82f6;text-shadow:0 0 15px #3b82f6;font-size:26px}
       },800);
     }
   }
-
   function openXO(){
     if(coins<50)return alert("تحتاج 50 نقطة");
     coins-=50;addLog('XO',-50,'buy');updateAll();
@@ -1225,14 +1116,12 @@ h1{color:#3b82f6;text-shadow:0 0 15px #3b82f6;font-size:26px}
     document.getElementById('xoResult').innerText='';
     document.getElementById('xoModal').style.display='block';renderXO();
   }
-
   function renderXO(){
     let b=document.getElementById('xoBoard');b.innerHTML='';
     xoBoard.forEach((cell,i)=>{
       let div=document.createElement('div');div.className='xoCell';div.innerText=cell;div.onclick=()=>playXO(i);b.appendChild(div);
     });
   }
-
   async function playXO(i){
     if(xoBoard[i]!=''||gameOver)return;
     xoBoard[i]='X';
@@ -1247,7 +1136,6 @@ h1{color:#3b82f6;text-shadow:0 0 15px #3b82f6;font-size:26px}
       document.getElementById('xoResult').innerText='🤝 تعادل!';
       return;
     }
-    
     setTimeout(async () => {
       if(gameOver) return;
       let empty=xoBoard.map((v,i)=>v==''?i:null).filter(v=>v!==null);
@@ -1263,12 +1151,10 @@ h1{color:#3b82f6;text-shadow:0 0 15px #3b82f6;font-size:26px}
       }
     }, 400);
   }
-
   function checkWinner(p){
     const wins=[[0,1,2],[3,4,5],[6,7,8],[0,3,6],[1,4,7],[2,5,8],[0,4,8],[2,4,6]];
     return wins.some(w=>w.every(i=>xoBoard[i]==p));
   }
-
   function spinWheel(){
     if(coins<50)return alert("تحتاج 50 نقطة");
     coins-=50;addLog('عجلة',-50,'buy');updateAll();
@@ -1276,7 +1162,6 @@ h1{color:#3b82f6;text-shadow:0 0 15px #3b82f6;font-size:26px}
     document.getElementById('wheelResult').innerText='';
     drawWheel();
   }
-
   function drawWheel(){
     const canvas=document.getElementById('wheel'),ctx=canvas.getContext('2d');
     const centerX=140,centerY=140,radius=130,segmentAngle=2*Math.PI/wheelPrizes.length;
@@ -1285,7 +1170,6 @@ h1{color:#3b82f6;text-shadow:0 0 15px #3b82f6;font-size:26px}
       const startAngle=i*segmentAngle-Math.PI/2,endAngle=(i+1)*segmentAngle-Math.PI/2;
       ctx.beginPath();ctx.moveTo(centerX,centerY);ctx.arc(centerX,centerY,radius,startAngle,endAngle);
       ctx.fillStyle=i%2==0?'#3b82f6':'#1e3a8a';ctx.fill();ctx.stroke();
-      
       ctx.save();
       ctx.translate(centerX, centerY);
       ctx.rotate(startAngle + segmentAngle / 2);
@@ -1296,21 +1180,16 @@ h1{color:#3b82f6;text-shadow:0 0 15px #3b82f6;font-size:26px}
       ctx.restore();
     });
   }
-
   async function doSpin(){
     let wheelEl = document.getElementById('wheel');
     let spinBtn = document.getElementById('spinBtn');
     spinBtn.disabled = true;
-
     let randomIndex=Math.floor(Math.random()*wheelPrizes.length);
     let prize=wheelPrizes[randomIndex];
-    
     const sliceAngle = 360 / wheelPrizes.length;
     let targetDegree = 360 - (randomIndex * sliceAngle + sliceAngle / 2);
     let degrees = 360 * 6 + targetDegree;
-    
     wheelEl.style.transform = `rotate(${degrees}deg)`;
-
     setTimeout(async()=>{
       if(prize.value>0){
         coins+=prize.value;
@@ -1321,18 +1200,15 @@ h1{color:#3b82f6;text-shadow:0 0 15px #3b82f6;font-size:26px}
       spinBtn.disabled = false;
     }, 4000);
   }
-
   function openBox(){
     if(coins<500)return alert("تحتاج 500 نقطة لفتح الصندوق!");
     coins-=500;updateAll();
     document.getElementById('boxModal').style.display='block';
     document.getElementById('boxResult').innerText='';
     let boxes=document.getElementById('boxes');boxes.innerHTML='';
-    
     let winningIndex = Math.floor(Math.random() * 3);
     let possibleRewards = [200, 500, 1000, 2500];
     let prizeAmount = possibleRewards[Math.floor(Math.random() * possibleRewards.length)];
-
     for(let i=0;i<3;i++){
       let div=document.createElement('div');
       div.className='boxItem';
@@ -1341,11 +1217,9 @@ h1{color:#3b82f6;text-shadow:0 0 15px #3b82f6;font-size:26px}
       boxes.appendChild(div);
     }
   }
-
   async function revealBox(element, isWinner, amount){
     let boxes = document.querySelectorAll('.boxItem');
     boxes.forEach(b => b.onclick = null);
-
     if(isWinner){
       element.style.background = '#0f0';
       element.innerText = '⭐';
@@ -1360,7 +1234,6 @@ h1{color:#3b82f6;text-shadow:0 0 15px #3b82f6;font-size:26px}
     await saveUserData();
     updateAll();
   }
-
   async function createRoom(){
     let name=document.getElementById('newRoomName').value.trim();
     if(!name)return alert("ادخل الاسم");
@@ -1369,23 +1242,7 @@ h1{color:#3b82f6;text-shadow:0 0 15px #3b82f6;font-size:26px}
     await setDoc(doc(db,"rooms",id),{id,name,owner:currentUser,members:[currentUser],admins:[],mics:Array(7).fill(null)});
     await saveUserData();closeModal('createRoomModal');enterRoom(id);
   }
-
   function openCreateRoom(){document.getElementById('createRoomModal').style.display='block';}
-
-  async function transferCoins(){
-    let refCode=document.getElementById('transferRefInput').value.trim();
-    let amount=parseInt(document.getElementById('transferAmountInput').value);
-    if(!refCode||isNaN(amount)||amount<=0)return alert("خطأ بالبيانات");
-    if(amount>coins)return alert("رصيدك غير كافٍ");
-    let querySnapshot=await getDocs(collection(db,"users"));
-    let recipientDocId=null,recipientData=null;
-    querySnapshot.forEach((uDoc)=>{let uData=uDoc.data();if(uData.referral&&uData.referral.toLowerCase()===refCode.toLowerCase()){recipientDocId=uDoc.id;recipientData=uData;}});
-    if(!recipientDocId)return alert("الرمز غير صحيح");
-    coins-=amount;
-    await updateDoc(doc(db,"users",recipientDocId),{coins:(recipientData.coins||0)+amount});
-    await saveUserData();
-    showToast("تم التحويل بنجاح");
-  }
 
   window.createAccount = createAccount;
   window.saveProfileChanges = saveProfileChanges;
@@ -1436,4 +1293,3 @@ h1{color:#3b82f6;text-shadow:0 0 15px #3b82f6;font-size:26px}
 </script>
 </body>
 </html>
-
