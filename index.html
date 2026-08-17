@@ -66,8 +66,7 @@ h1{color:#3b82f6;text-shadow:0 0 15px #3b82f6;font-size:26px}
 <title>تطبيق الرافدين</title>
 </head>
 <body>
-<div id="splash"><div class="logo">🏛️</div><div style="color:#3b82f6;font-size:28px;font-weight:bold;margin-top:20px">AL-RAFIDAIN</div></div>
-  <div id="registerPage">
+<div id="splash"><div class="logo">🏛️</div><div style="color:#3b82f6;font-size:28px;font-weight:bold;margin-top:20px">AL-RAFIDAIN</div></div><div id="registerPage">
   <div class="logo">🏛️</div><h1>تسجيل الدخول / انشاء حساب</h1>
   <div class="box" style="max-width:400px;width:100%">
     <input type="text" id="regName" class="input" placeholder="ادخل اسمك">
@@ -97,8 +96,7 @@ h1{color:#3b82f6;text-shadow:0 0 15px #3b82f6;font-size:26px}
       <div class="box"><h3>⚡ الارباح التلقائية</h3><div id="perDay">+0 نقطة/24 ساعة</div></div>
       <div class="box"><h3>🎁 مكافأة الدخول اليومي</h3><div id="streakDays" class="streakBox"></div><button class="btn btn-yellow" onclick="claimStreak()">استلام مكافأة اليوم</button></div>
     </div><p id="nextClaim" style="color:#aaa"></p>
-  </div>
-  <div id="store" class="page">
+  </div><div id="store" class="page">
     <h2>🛒 المتجر</h2>
     <div id="coins2" class="box">رصيدك: 0 نقطة</div>
     <h3 style="color:#3b82f6">متجر العدادات</h3>
@@ -119,8 +117,7 @@ h1{color:#3b82f6;text-shadow:0 0 15px #3b82f6;font-size:26px}
     <button class="btn" onclick="openMemory()">🧠 ميموري - 50</button>
     <h3 style="color:#3b82f6;margin-top:25px">🎯 المهمات اليومية</h3>
     <div id="dailyTasks"></div>
-  </div>
-  <div id="friends" class="page">
+  </div><div id="friends" class="page">
     <h2>👥 الأصدقاء والبحث بررمز الإحالة</h2>
     <div style="display:flex;gap:5px;justify-content:center;max-width:400px;margin:auto"><input type="text" id="searchFriendsInput" class="input" placeholder="ابحث بررمز الإحالة أو الاسم..." style="width:70%"><button class="btn btn-blue" style="width:25%;margin:8px 0" onclick="searchFriends()">بحث 🔍</button></div>
     <h3 style="color:#3b82f6;margin-top:15px;text-align:right">نتائج البحث / مستخدمون</h3><div id="searchResults"><p style="color:#aaa">اكتب رمز الإحالة أو الاسم للبحث</p></div>
@@ -134,8 +131,7 @@ h1{color:#3b82f6;text-shadow:0 0 15px #3b82f6;font-size:26px}
     <h2 id="privateChatTitle">مراسلة الصديق</h2>
     <div id="privateChatBox" class="chatBox"></div>
     <div style="display:flex;gap:8px;justify-content:center;max-width:400px;margin:auto"><input type="text" id="privateChatInput" class="input" placeholder="اكتب رسالة خاصة..." style="width:70%" onkeypress="if(event.key=='Enter')sendPrivateMsg()"><button class="btn" style="width:25%;margin:8px 0" onclick="sendPrivateMsg()">ارسال</button></div>
-  </div>
-  <div id="rooms" class="page">
+  </div><div id="rooms" class="page">
     <h2>🏠 الغرف</h2>
     <div id="myRoomSection"></div>
     <div id="createRoomBtnSection"><button class="btn btn-green" onclick="openCreateRoom()">➕ انشاء غرفة - 80000</button></div>
@@ -149,7 +145,7 @@ h1{color:#3b82f6;text-shadow:0 0 15px #3b82f6;font-size:26px}
     <div id="globalChatBox" class="chatBox"></div>
     <div style="display:flex;gap:8px;justify-content:center;max-width:400px;margin:auto"><input type="text" id="globalChatInput" class="input" placeholder="اكتب هنا" style="width:70%" onkeypress="if(event.key=='Enter')sendGlobalMsg()"><button class="btn" style="width:25%;margin:8px 0" onclick="sendGlobalMsg()">ارسال</button></div>
   </div>
-  <div id="chatRoom" class="page">
+<div id="chatRoom" class="page">
     <button class="btn" onclick="showPage('rooms',null)">🔙 رجوع</button>
     <h2 id="roomNameTitle"></h2>
     <p class="roomId" id="roomIdTitle"></p>
@@ -178,8 +174,7 @@ h1{color:#3b82f6;text-shadow:0 0 15px #3b82f6;font-size:26px}
       <button class="btn" style="width:25%;margin:8px 0" onclick="sendRoomMsg()">ارسال</button>
     </div>
     <h4 style="color:#ffb300;margin-top:10px">🎁 الهدايا</h4><div id="giftsBar" style="display:flex;flex-wrap:wrap;justify-content:center"></div>
-  </div>
-  <div id="referral" class="page">
+  </div><div id="referral" class="page">
     <h2>🎁 نظام الاحالة والتحويل</h2>
     <div class="box"><h3>🌟 ادعُ اصدقائك واربح</h3><div id="myReferralCode" class="referralCode">جاري التحميل...</div><div id="myReferralLink" class="referralCode">جاري التحميل...</div><button class="btn btn-blue" onclick="copyCode()">📋 نسخ رسالة الدعوة</button><button class="btn btn-blue" onclick="copyLink()">🔗 نسخ الرابط</button></div>
     <div class="box"><h3>💸 تحويل نقاط لصديق</h3><input type="text" id="transferRefInput" class="input" placeholder="ادخل رمز الاحاله لصديقك"><input type="number" id="transferAmountInput" class="input" placeholder="كمية النقاط"><button class="btn btn-green" onclick="transferCoins()">تحويل النقاط 🚀</button></div>
@@ -192,8 +187,7 @@ h1{color:#3b82f6;text-shadow:0 0 15px #3b82f6;font-size:26px}
       <p style="color:#0f0; margin:5px 0;">• تم تصحيح جميع ألعاب الصندوق، العجلة، XO، والأرقام وتحسين الأداء.</p>
       <p style="color:#0f0; margin:5px 0;">• منع إعادة تعيين العداد التنازلي للسحب عند التنقل بين الصفحات وتعديله ليصبح بالساعات والدقائق.</p>
     </div>
-  </div>
-  <div id="profile" class="page">
+  </div><div id="profile" class="page">
     <h2>👤 الملف الشخصي والتخصيص</h2>
     <div class="box"><h3 id="userName"></h3></div>
     <div class="box">
@@ -220,8 +214,7 @@ h1{color:#3b82f6;text-shadow:0 0 15px #3b82f6;font-size:26px}
     <div class="navItem" onclick="showPage('news',this)"><div class="navIcon">📰</div><div>الأخبار</div></div>
     <div class="navItem" onclick="showPage('profile',this)"><div class="navIcon">👤</div><div>الملف</div></div>
   </div>
-</div>
-  <div id="broadcastModal" class="modal broadcastModal"><div class="modal-content"><h2>📢 اعلان</h2><div id="broadcastText"></div><button class="btn" onclick="closeModal('broadcastModal')">فهمت</button></div></div>
+</div><div id="broadcastModal" class="modal broadcastModal"><div class="modal-content"><h2>📢 اعلان</h2><div id="broadcastText"></div><button class="btn" onclick="closeModal('broadcastModal')">فهمت</button></div></div>
 <div id="xoModal" class="modal"><div class="modal-content"><h2>❌⭕ XO</h2><div id="xoBoard"></div><p id="xoResult"></p><button class="btn" onclick="closeModal('xoModal')">خروج</button></div></div>
 <div id="dominoModal" class="modal">
   <div class="modal-content">
@@ -241,8 +234,7 @@ h1{color:#3b82f6;text-shadow:0 0 15px #3b82f6;font-size:26px}
     <p id="dominoResult" style="font-weight:bold;font-size:16px"></p>
     <button class="btn" onclick="closeModal('dominoModal')">خروج</button>
   </div>
-</div>
-  <div id="ludoMenuModal" class="modal">
+</div><div id="ludoMenuModal" class="modal">
   <div class="modal-content" style="max-width:350px">
     <h2>🎲 اختيار نمط لودو الحقيقية والواقعية</h2>
     <button class="btn btn-blue" onclick="startLudoGame(2, 'bot')">🤖 لعب ثنائي ضد البوت</button>
@@ -278,8 +270,7 @@ h1{color:#3b82f6;text-shadow:0 0 15px #3b82f6;font-size:26px}
     <p id="boxResult" style="font-weight:bold; font-size:18px; color:#0f0;"></p>
     <button class="btn" onclick="closeModal('boxModal')">اغلاق</button>
   </div>
-</div>
-  <div id="memoryModal" class="modal"><div class="modal-content"><h2>🧠 لعبة الميموري</h2><p>طابق الرموز - الجائزة 250</p><div id="memoryBoard" style="display:grid;grid-template-columns:repeat(4,60px);gap:8px;justify-content:center;margin:20px auto"></div><p id="memoryResult"></p><button class="btn" onclick="closeModal('memoryModal')">خروج</button></div></div>
+</div><div id="memoryModal" class="modal"><div class="modal-content"><h2>🧠 لعبة الميموري</h2><p>طابق الرموز - الجائزة 250</p><div id="memoryBoard" style="display:grid;grid-template-columns:repeat(4,60px);gap:8px;justify-content:center;margin:20px auto"></div><p id="memoryResult"></p><button class="btn" onclick="closeModal('memoryModal')">خروج</button></div></div>
 <div id="createRoomModal" class="modal"><div class="modal-content"><h2>انشاء غرفة جديدة</h2><input type="text" id="newRoomName" class="input" placeholder="اسم الغرفة"><button class="btn btn-green" onclick="createRoom()">شراء وانشاء - 80000</button><button class="btn btn-red" onclick="closeModal('createRoomModal')">الغاء</button></div></div>
 <div id="toast" class="toast">تم استلام الارباح!</div>
 <script type="module">  
@@ -288,8 +279,7 @@ h1{color:#3b82f6;text-shadow:0 0 15px #3b82f6;font-size:26px}
   
   const firebaseConfig = {apiKey: "AIzaSyBbkpcBPq8G2OpyKxaVqPO7Mkfla4X9hxU",authDomain: "rafidainapp.firebaseapp.com",projectId: "rafidainapp",storageBucket: "rafidainapp.firebasestorage.app",messagingSenderId: "512875147812",appId: "1:512875147812:web:54f33bda3780db7a4a9eb1",measurementId: "G-X059J6K4L7"};
   const app = initializeApp(firebaseConfig); 
-  const db = getFirestore(app);
-  let coins=5000, dailyProfitTotal=0, lastClaim=0, myReferralCode='', currentUser='', currentUserId='', transactionLog=[], currentRoom=null;
+  const db = getFirestore(app);let coins=5000, dailyProfitTotal=0, lastClaim=0, myReferralCode='', currentUser='', currentUserId='', transactionLog=[], currentRoom=null;
   let rooms=[], roomMessages={}, globalMessages=[], myFriends=[], friendRequests=[], sentRequests=[];
   let xoBoard=Array(9).fill(''), gameOver=false;
   
@@ -358,8 +348,7 @@ h1{color:#3b82f6;text-shadow:0 0 15px #3b82f6;font-size:26px}
         streak,lastStreakDate,totalGiftsSent,name:currentUser,pass:localStorage.getItem('rafidain_pass')
       },{merge:true});
     }catch(e){console.error("خطا بالحفظ",e)}
-  }
-  setTimeout(()=>{
+  }setTimeout(()=>{
     document.getElementById('splash').style.opacity='0';
     document.getElementById('splash').style.visibility='hidden';
     checkLogin();
@@ -384,18 +373,29 @@ h1{color:#3b82f6;text-shadow:0 0 15px #3b82f6;font-size:26px}
     }
   }
 
-  function activateWithdrawTimer(){
+  async function activateWithdrawTimer(){
     let now = Math.floor(Date.now() / 1000);
     let newEndTime = now + WITHDRAW_TOTAL_TIME;
     localStorage.setItem('rafidain_withdraw_end_time', newEndTime);
     withdrawTimeLeft = WITHDRAW_TOTAL_TIME;
-    showToast("⚡ تم تفعيل وإعادة ضبط العداد بنجاح!");
+
+    // إضافة أرباح العداد اليومي للرصيد فور النقر على تفعيل العداد
+    if(dailyProfitTotal > 0){
+      coins += dailyProfitTotal;
+      addLog(`استلام أرباح العداد التفاعلي`, dailyProfitTotal, 'win');
+      showToast(`⚡ تم تفعيل العداد وإضافة +${dailyProfitTotal.toLocaleString()} نقطة لرصيدك!`);
+    } else {
+      showToast("⚡ تم تفعيل وإعادة ضبط العداد بنجاح!");
+    }
+
+    await saveUserData();
+    updateAll();
     startWithdrawCountdown();
   }
 
   function startWithdrawCountdown(){
     if(withdrawTimerInterval) clearInterval(withdrawTimerInterval);
-    withdrawTimerInterval = setInterval(() => {
+    withdrawTimerInterval = setInterval(async () => {
       let now = Math.floor(Date.now() / 1000);
       let savedEndTime = parseInt(localStorage.getItem('rafidain_withdraw_end_time') || (now + WITHDRAW_TOTAL_TIME));
       withdrawTimeLeft = savedEndTime - now;
@@ -408,9 +408,20 @@ h1{color:#3b82f6;text-shadow:0 0 15px #3b82f6;font-size:26px}
       } else {
         let el = document.getElementById('withdrawCountdown');
         if(el) el.innerText = "جاهز للسحب!";
+        
+        // عند انتهاء العداد تماماً، إضافة الأرباح تلقائياً إذا كان هناك أرباح عداد مفعلة وتجديد العداد
+        if(dailyProfitTotal > 0){
+          coins += dailyProfitTotal;
+          addLog(`استلام الأرباح التلقائية (انتهاء العداد)`, dailyProfitTotal, 'win');
+          let nextEndTime = now + WITHDRAW_TOTAL_TIME;
+          localStorage.setItem('rafidain_withdraw_end_time', nextEndTime);
+          await saveUserData();
+          updateAll();
+        }
       }
     }, 1000);
   }
+
   async function createAccount(){
     let name=document.getElementById('regName').value.trim();
     let pass=document.getElementById('regPass').value.trim();
@@ -493,8 +504,7 @@ h1{color:#3b82f6;text-shadow:0 0 15px #3b82f6;font-size:26px}
       if(document.getElementById('editProfileName')) document.getElementById('editProfileName').value = currentUser;
       setupReferral();updateAll();renderStreak();
     }
-      }
-  function getChatId(user1,user2){return user1<user2?`${user1}_${user2}`:`${user2}_${user1}`; }
+  }function getChatId(user1,user2){return user1<user2?`${user1}_${user2}`:`${user2}_${user1}`; }
   function openPrivateChat(friendName){
     currentChatFriend=friendName;
     document.getElementById('privateChatTitle').innerText=`مراسلة: ${friendName}`;
@@ -540,8 +550,7 @@ h1{color:#3b82f6;text-shadow:0 0 15px #3b82f6;font-size:26px}
     await setDoc(doc(db,"globalChat","main"),{messages:arrayUnion({u:currentUser,t:txt,time:Date.now()})},{merge:true});
     document.getElementById('globalChatInput').value='';
   }
-  function openGlobalChat(){showPage('globalChat',null);}
-  function listenToRooms(){
+  function openGlobalChat(){showPage('globalChat',null);}function listenToRooms(){
     onSnapshot(collection(db,"rooms"),(snap)=>{
       rooms=[];snap.forEach((d)=>rooms.push(d.data()));
       loadRooms();
@@ -686,8 +695,7 @@ h1{color:#3b82f6;text-shadow:0 0 15px #3b82f6;font-size:26px}
     await updateDoc(doc(db, "users", currentUserId), {totalGiftsSent});
     addLog(`ارسال هدية ${name} إلى ${recipientName}`, -price, 'buy');
     await saveUserData(); updateAll(); showToast(`✅ تم إرسال الهدية إلى ${recipientName} بنجاح!`);
-    }
-  function listenToUserData(){
+  }function listenToUserData(){
     onSnapshot(doc(db,"users",currentUserId),(snapshot)=>{
       if(snapshot.exists()){
         let data=snapshot.data();
@@ -782,8 +790,7 @@ h1{color:#3b82f6;text-shadow:0 0 15px #3b82f6;font-size:26px}
       html+=`<div class="userItem"><div><b>👤 ${f}</b></div><div style="display:flex;gap:5px;"><button class="btn btn-blue" style="width:auto;padding:8px 12px;margin:0" onclick="openPrivateChat('${f}')">مراسلة</button><button class="btn btn-red" style="width:auto;padding:8px 12px;margin:0" onclick="removeFriend('${f}')">حذف</button></div></div>`;
     });
     container.innerHTML=html;
-  }
-  function renderStreak(){
+  }function renderStreak(){
     let html='';
     for(let i=1;i<=7;i++){
       html+=`<div class="streakDay ${i<=streak?'active':''}">${i}</div>`;
@@ -830,11 +837,6 @@ h1{color:#3b82f6;text-shadow:0 0 15px #3b82f6;font-size:26px}
     document.getElementById('coins3').innerText=`رصيدك: ${coins.toLocaleString()} نقطة`;
     document.getElementById('dailyProfit').innerText=dailyProfitTotal.toLocaleString()+' نقطة/يوم';
     document.getElementById('perDay').innerText='+'+dailyProfitTotal.toLocaleString()+' نقطة/24 ساعة';
-    let now=Date.now(),timeLeft=86400000-(now-lastClaim);
-    if(timeLeft<=0&&dailyProfitTotal>0){
-      coins+=dailyProfitTotal;lastClaim=now;
-      addLog(`استلام ارباح تلقائية`,dailyProfitTotal,'win');
-    }
     await saveUserData();
   }
   setInterval(updateAll,60000);
@@ -860,8 +862,7 @@ h1{color:#3b82f6;text-shadow:0 0 15px #3b82f6;font-size:26px}
   }
   async function clearLog(){
     transactionLog=[];await saveUserData();loadLog();
-        }
-  function loadStore(){
+  }function loadStore(){
     let html='';
     countersData.forEach(c=>{
       html+=`<div class="counterItem"><h4>${c.name}</h4><p>السعر: ${c.price.toLocaleString()} نقطة</p><button class="btn" onclick="buyCounter(${c.price},${c.profit},'${c.name}')" ${coins<c.price?'disabled':''}>شراء</button></div>`;
@@ -931,8 +932,7 @@ h1{color:#3b82f6;text-shadow:0 0 15px #3b82f6;font-size:26px}
     addLog(`تحويل ${amount} نقطة الى ${refCode}`,-amount,'buy');
     await saveUserData();
     showToast("تم التحويل بنجاح");
-                                                                                                                                                                                                   }
-  function getDots(n){
+  }function getDots(n){
     const p={0:[],1:[[50,50]],2:[[25,25],[75,75]],3:[[25,25],[50,50],[75,75]],4:[[25,25],[75,25],[25,75],[75,75]],5:[[25,25],[75,25],[50,50],[25,75],[75,75]],6:[[25,20],[75,20],[25,50],[75,50],[25,80],[75,80]]};
     return p[n]||[];
   }
@@ -1293,3 +1293,4 @@ h1{color:#3b82f6;text-shadow:0 0 15px #3b82f6;font-size:26px}
 </script>
 </body>
 </html>
+
