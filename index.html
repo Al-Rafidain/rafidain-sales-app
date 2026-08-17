@@ -88,7 +88,7 @@ h1{color:#3b82f6;text-shadow:0 0 15px #3b82f6;font-size:26px}
             <div style="font-size: 12px; color: #aaa;">عداد السحب التفاعلي (24 ساعة)</div>
             <div id="withdrawCountdown" style="font-size: 20px; font-weight: bold; color: #ffb300;">24:00</div>
           </div>
-          <button class="btn btn-yellow" style="width: auto; margin: 0; padding: 10px 15px; font-size: 14px;" onclick="activateWithdrawTimer()">تفعيل ⚡</button>
+          <button id="withdrawBtn" class="btn btn-yellow" style="width: auto; margin: 0; padding: 10px 15px; font-size: 14px;" onclick="activateWithdrawTimer()" disabled>انتظار العداد ⏳</button>
         </div>
         <button class="btn btn-green" onclick="alert('ميزة السحب قريباً')">💵 سحب</button>
       </div>
@@ -184,8 +184,8 @@ h1{color:#3b82f6;text-shadow:0 0 15px #3b82f6;font-size:26px}
     <h2>📰 الأخبار والتحديثات الجديدة</h2>
     <div class="box" style="text-align:right;">
       <h3 style="color:#ffb300">📢 التحديث الأخير (إصدار 2026)</h3>
-      <p style="color:#0f0; margin:5px 0;">• تم تصحيح جميع ألعاب الصندوق، العجلة، XO، والأرقام وتحسين الأداء.</p>
-      <p style="color:#0f0; margin:5px 0;">• منع إعادة تعيين العداد التنازلي للسحب عند التنقل بين الصفحات وتعديله ليصبح بالساعات والدقائق.</p>
+      <p style="color:#0f0; margin:5px 0;">• تم تصحيح نظام العداد التنازلي بحيث لا يمكن استلام الأرباح إلا بعد انتهاء الـ 24 ساعة تماماً.</p>
+      <p style="color:#0f0; margin:5px 0;">• منع إعادة تعيين العداد إلا عند استلام المكافأة المنتهية.</p>
     </div>
   </div><div id="profile" class="page">
     <h2>👤 الملف الشخصي والتخصيص</h2>
@@ -307,11 +307,12 @@ h1{color:#3b82f6;text-shadow:0 0 15px #3b82f6;font-size:26px}
   let streak=0, lastStreakDate='', totalGiftsSent=0, roomMics=Array(7).fill(null);  
   
   let withdrawTimerInterval = null;
-  const WITHDRAW_TOTAL_TIME = 24 * 60 * 60;
+  const WITHDRAW_TOTAL_TIME = 24 * 60 * 60; // 24 ساعة بالثواني
 
   function getSavedWithdrawTime() {
     let savedEndTime = localStorage.getItem('rafidain_withdraw_end_time');
     let now = Math.floor(Date.now() / 1000);
+    // إذا لم يتم حفظ وقت سابق، أو أن الوقت القديم قد انتهى، ابدأ عداد جديد لمدة 24 ساعة
     if (!savedEndTime || parseInt(savedEndTime) <= now) {
       let newEndTime = now + WITHDRAW_TOTAL_TIME;
       localStorage.setItem('rafidain_withdraw_end_time', newEndTime);
@@ -373,21 +374,29 @@ h1{color:#3b82f6;text-shadow:0 0 15px #3b82f6;font-size:26px}
     }
   }
 
+  // هذه الدالة تعمل فقط عندما ينتهي العداد (يصبح 0) ويضغط المستخدم لاستلام الأرباح
   async function activateWithdrawTimer(){
     let now = Math.floor(Date.now() / 1000);
-    let newEndTime = now + WITHDRAW_TOTAL_TIME;
-    localStorage.setItem('rafidain_withdraw_end_time', newEndTime);
-    withdrawTimeLeft = WITHDRAW_TOTAL_TIME;
-
-    // إضافة أرباح العداد اليومي للرصيد فور النقر على تفعيل العداد
-    if(dailyProfitTotal > 0){
-      coins += dailyProfitTotal;
-      addLog(`استلام أرباح العداد التفاعلي`, dailyProfitTotal, 'win');
-      showToast(`⚡ تم تفعيل العداد وإضافة +${dailyProfitTotal.toLocaleString()} نقطة لرصيدك!`);
-    } else {
-      showToast("⚡ تم تفعيل وإعادة ضبط العداد بنجاح!");
+    let savedEndTime = parseInt(localStorage.getItem('rafidain_withdraw_end_time') || 0);
+    
+    // التحقق الفعلي من أن الوقت قد انتهى
+    if (savedEndTime > now) {
+      alert("العداد لم ينتهِ بعد! يانتظار إتمام الـ 24 ساعة.");
+      return;
     }
 
+    if(dailyProfitTotal > 0){
+      coins += dailyProfitTotal;
+      addLog(`استلام أرباح العداد التفاعلي (24 ساعة)`, dailyProfitTotal, 'win');
+      showToast(`🎉 تم استلام أرباح العداد وإضافة +${dailyProfitTotal.toLocaleString()} نقطة لرصيدك!`);
+    } else {
+      showToast("⚡ تم إعادة ضبط العداد لدورة جديدة 24 ساعة!");
+    }
+
+    // بدء دورة جديدة 24 ساعة القادمة
+    let newEndTime = now + WITHDRAW_TOTAL_TIME;
+    localStorage.setItem('rafidain_withdraw_end_time', newEndTime);
+    
     await saveUserData();
     updateAll();
     startWithdrawCountdown();
@@ -395,28 +404,36 @@ h1{color:#3b82f6;text-shadow:0 0 15px #3b82f6;font-size:26px}
 
   function startWithdrawCountdown(){
     if(withdrawTimerInterval) clearInterval(withdrawTimerInterval);
-    withdrawTimerInterval = setInterval(async () => {
+    withdrawTimerInterval = setInterval(() => {
       let now = Math.floor(Date.now() / 1000);
       let savedEndTime = parseInt(localStorage.getItem('rafidain_withdraw_end_time') || (now + WITHDRAW_TOTAL_TIME));
       withdrawTimeLeft = savedEndTime - now;
+      
+      let btnEl = document.getElementById('withdrawBtn');
+      let countdownEl = document.getElementById('withdrawCountdown');
+
       if(withdrawTimeLeft > 0){
         let hours = Math.floor(withdrawTimeLeft / 3600);
         let minutes = Math.floor((withdrawTimeLeft % 3600) / 60);
-        let formatted = String(hours).padStart(2, '0') + ":" + String(minutes).padStart(2, '0');
-        let el = document.getElementById('withdrawCountdown');
-        if(el) el.innerText = formatted;
-      } else {
-        let el = document.getElementById('withdrawCountdown');
-        if(el) el.innerText = "جاهز للسحب!";
+        let seconds = withdrawTimeLeft % 60;
+        let formatted = String(hours).padStart(2, '0') + ":" + String(minutes).padStart(2, '0') + ":" + String(seconds).padStart(2, '0');
         
-        // عند انتهاء العداد تماماً، إضافة الأرباح تلقائياً إذا كان هناك أرباح عداد مفعلة وتجديد العداد
-        if(dailyProfitTotal > 0){
-          coins += dailyProfitTotal;
-          addLog(`استلام الأرباح التلقائية (انتهاء العداد)`, dailyProfitTotal, 'win');
-          let nextEndTime = now + WITHDRAW_TOTAL_TIME;
-          localStorage.setItem('rafidain_withdraw_end_time', nextEndTime);
-          await saveUserData();
-          updateAll();
+        if(countdownEl) countdownEl.innerText = formatted;
+        
+        // تعطيل الزر طالما الوقت لم ينتهِ
+        if(btnEl) {
+          btnEl.disabled = true;
+          btnEl.innerText = "انتظار العداد ⏳";
+          btnEl.className = "btn btn-yellow";
+        }
+      } else {
+        if(countdownEl) countdownEl.innerText = "00:00:00 (انتهى الوقت!)";
+        
+        // تفعيل الزر لكي يتمكن المستخدم من الضغط واستلام الأرباح
+        if(btnEl) {
+          btnEl.disabled = false;
+          btnEl.innerText = "استلام الأرباح ⚡";
+          btnEl.className = "btn btn-green";
         }
       }
     }, 1000);
